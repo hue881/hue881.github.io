@@ -1,0 +1,811 @@
+
+DAY 15 · SPRING 2026
+AI & Coding for Beginners
+"How Apps Pick What's Next" — Recommendation Systems
+Expert Teaching Script (PhD-Level Explanations, Beginner-Friendly Delivery)
+Instructor: Mr. Hsiao "Hue" Weng
+Total Time: ~60 minutes
+================================================================================
+
+HOW TO USE THIS SCRIPT
+─────────────────────────────────────────────────────────────────────
+- Text in [BRACKETS] = instructor stage directions or timing cues
+- "Quoted text" = suggested exact words to say aloud
+- → means a natural transition or follow-up thought
+- 💡 = deep conceptual explanation (say or adapt as needed)
+- ✋ = student interaction moment — pause and wait for responses
+================================================================================
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SLIDE 1 — TITLE SLIDE & LEARNING OBJECTIVES
+[Duration: ~3 minutes]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+[As students settle in, display the slide. Begin speaking with genuine enthusiasm.]
+
+"Good morning everyone — welcome to Day 15! Today's lesson is one of my
+absolute favorites, because we're going to solve a mystery that affects
+every single one of you, probably every single day."
+
+"Here's the mystery: How does YouTube know what video to play next? How
+does Spotify know which song you might want to hear after the one you just
+listened to? How does Netflix decide which show pops up first on your
+screen?"
+
+"The answer is something called a RECOMMENDATION SYSTEM — and today,
+by the end of this class, you are going to BUILD one. From scratch. In
+real Python code."
+
+💡 [DEEP CONTEXT — say in plain terms]:
+"Recommendation systems are one of the most impactful inventions in the
+history of computing. They are a branch of machine learning — which is
+a type of artificial intelligence — where a computer learns from data
+to make predictions. The 'prediction' here is: 'What will this person
+want to see, hear, or buy next?' Companies like Netflix have said that
+their recommendation engine saves them over a BILLION dollars per year
+in customer retention, because people keep watching instead of leaving."
+
+"But here's the amazing thing — the core idea is actually very simple
+math that you already know. You already know what a list looks like in
+Python. You already know how to find an average. That's all we need."
+
+[Point to the 'You already know' section of the slide]
+
+"Look at what's already in your toolkit:
+  - Lists like [1, 0, 1] — you know those
+  - How to find an average — you know that too
+
+By the end of today, you'll add two more tools: a loop and a dictionary.
+And together, those four ingredients become a recommender. The same kind
+of code that runs YouTube."
+
+[Point to 'Today you'll be able to…']
+"Two goals today — write a tiny picker program, and explain it to a
+friend in your own words. If you can explain it, you truly understand it.
+Let's go."
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SLIDE 2 — WARM-UP: THE ICE CREAM TRUCK PROBLEM
+[Duration: ~5 minutes]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+[Read the scenario with some drama]
+
+"Picture this. An ice cream truck pulls up outside school. Four flavors:
+chocolate, vanilla, strawberry, and mint chip. Twenty kids are in line.
+One kid is new to the neighborhood, looks at the menu, and says: 'I can't
+decide — just pick one for me.'"
+
+"So — what do YOU do? How do you pick?"
+
+✋ [Give students 60 seconds to turn & talk to a partner. Then call on a few.]
+
+"Let's look at the three strategies on the slide:"
+
+"Strategy 1: Pick the flavor MOST kids love.
+→ This is called a POPULARITY-BASED recommendation. You count up which
+  flavor the majority of people prefer, and suggest that one. Simple,
+  fast, and works pretty well for a crowd.
+  In the real world: YouTube's 'Trending' page does exactly this.
+  Whatever has the most views and likes rises to the top."
+
+"Strategy 2: Pick a DIFFERENT one for each kid.
+→ This is called a PERSONALIZED recommendation. Instead of asking 'what
+  does the group like?', you ask 'what does THIS specific person like?'
+  This requires knowing something about each person.
+  In the real world: Spotify's Discover Weekly playlist is built for you
+  specifically — nobody else has the exact same playlist."
+
+"Strategy 3: Pick the NEWEST flavor.
+→ This is called a NOVELTY or RECENCY-BASED approach. You recommend
+  whatever is fresh and new, regardless of whether people like it yet.
+  In the real world: TikTok sometimes does this — pushing new creators
+  into your feed to give them a chance."
+
+💡 [DEEP INSIGHT — say this part slowly]:
+"Here's what's mind-blowing: every single recommendation system you have
+ever used is essentially a combination of these three strategies. Netflix
+uses popularity (trending shows), personalization (based on your history),
+AND novelty (new releases). Computer scientists spend their entire careers
+figuring out how to BLEND these three ideas in the smartest way possible."
+
+"Today we start with Strategy 1 — popularity. It's the foundation.
+Once you understand this, everything else builds on top of it."
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SLIDE 3 — TODAY'S PLAN
+[Duration: ~2 minutes]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+[Use this as a roadmap moment — a brief overview so students know what's coming]
+
+"Alright, here's our adventure map for today. Five stops:"
+
+"Stop 1: We'll watch a short video about what an algorithm is.
+Stop 2: We'll learn just four new vocabulary words — and I mean JUST four.
+Stop 3: We'll write real Python code together, step by step.
+Stop 4: You'll remix the code with your OWN favorite things.
+Stop 5: We close with a quick recap and an exit ticket."
+
+"I want you to hold onto this sentence — we're going to BUILD up to it
+together:
+
+  'My computer picks the top game by adding all the thumbs-ups and
+   dividing by how many kids voted.'
+
+That one sentence IS the algorithm. Say it with me."
+
+✋ [Have students say the sentence out loud together once]
+
+💡 [CONNECT TO BIG PICTURE]:
+"That sentence describes what's called a 'mean-based collaborative filter.'
+Spotify's very first recommendation engine, before they had deep learning,
+worked almost exactly like what you're going to write today. You are not
+learning a toy version of computer science — you are learning the REAL
+foundation."
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SLIDE 4 — VIDEO 1: WHAT'S AN ALGORITHM?
+[Duration: ~5 minutes + video ~5 min = ~10 min total]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+[Before pressing play]
+
+"Before we write any code, we need to understand the word 'algorithm.'
+This is one of the most important words in all of computer science.
+We're going to watch a TED-Ed video — about 5 minutes — and I want you
+to listen for three specific things."
+
+[Point to the three questions on the slide:]
+"ONE: What IS an algorithm in simple words?
+TWO: Can you name one algorithm you used today — before school even started?
+THREE: Does an algorithm have to be on a computer?"
+
+[Play the video]
+
+[AFTER video — debrief for ~2 minutes]
+
+"Okay — what is an algorithm in simple words?"
+✋ [Take 2-3 student responses]
+
+💡 [SYNTHESIZE their answers with this explanation]:
+"Here's the way I want you to think about it: an algorithm is a RECIPE.
+A recipe tells you, step by step, exactly what to do to get a specific
+result. And just like a recipe, an algorithm has three properties:
+
+  1. It has a clear INPUT — what you start with (ingredients / data)
+  2. It has defined STEPS — the process (the cooking instructions)
+  3. It produces an OUTPUT — a result (the finished dish / a recommendation)
+
+And just like recipes, algorithms can be simple — like 'make toast' — or
+enormously complex — like the algorithm that lands a spacecraft on Mars."
+
+"Did an algorithm run before you got to school today?"
+✋ [Take responses — likely: alarm clock, GPS directions, traffic apps, etc.]
+
+"Absolutely. When Google Maps tells you the fastest route, that is an
+algorithm called 'shortest path.' When your phone's alarm picks a gentle
+sound to wake you up, that's an algorithm. We live inside algorithms.
+Today you're going to write one."
+
+"And the answer to question 3 — does an algorithm have to be on a
+computer? NO. A recipe is an algorithm. Tying your shoelaces is an
+algorithm. A doctor's checklist is an algorithm. The computer just runs
+algorithms incredibly fast — millions of steps per second."
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SLIDE 5 — JUST 4 WORDS TO REMEMBER
+[Duration: ~3 minutes]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+"Now — our entire vocabulary for today. Four words. That's it. Let's go
+through each one carefully."
+
+"WORD 1: VOTE — A thumbs-up (1) or thumbs-down (0) from ONE person about
+ONE thing.
+
+  💡 Why do we use 1s and 0s? Because computers understand numbers, not
+  feelings. When you say 'I like this game,' a computer needs to store that
+  as a number. 1 means 'yes, I liked it,' 0 means 'no, I didn't.' This is
+  called BINARY ENCODING — turning real-world information into numbers.
+  Every piece of data your computer processes — photos, videos, songs,
+  text — is ultimately stored as 1s and 0s. Today we're doing that at the
+  simplest possible level."
+
+"WORD 2: AVERAGE — Add all the votes, then divide by how many people voted.
+
+  💡 The average is also called the ARITHMETIC MEAN in mathematics, and
+  it represents the 'central tendency' of a group of numbers — basically,
+  what's typical. In machine learning, averages are absolutely everywhere.
+  When a neural network — the kind used in ChatGPT and image recognition —
+  learns from data, it is constantly computing weighted averages. The
+  humble average you learned in 3rd grade is the conceptual ancestor of
+  the most powerful AI systems in the world."
+
+"WORD 3: PICKER — The program that does the picking for us. Fancy term:
+RECOMMENDER.
+
+  💡 In professional computer science, this is called a 'recommendation
+  engine' or 'recommender system.' It's an entire subfield of AI. There
+  are academic conferences, research papers, and billion-dollar companies
+  built around improving pickers. Amazon's recommendation system (the
+  'customers also bought' section) reportedly generates 35% of their total
+  revenue. That's the power of a good picker."
+
+"WORD 4: TOP — The item with the highest average score. The one the picker
+shows first.
+
+  💡 In software, 'top' sounds simple, but choosing the right ranking
+  criterion is one of the hardest problems in all of AI. What does 'top'
+  even mean? Most liked? Most relevant? Most likely to keep the user
+  engaged? These choices have enormous social consequences — what rises to
+  'top' on social media shapes what millions of people think and believe.
+  Today we rank by average score. That's our definition of 'top.'"
+
+"Quick mental check — if 5 friends all thumbs-up a snack: [1,1,1,1,1],
+what's the average?"
+✋ [Students: 5/5 = 1.0]
+"Right — perfect score, 1.0. What about [1,0,0,0,0]?"
+✋ [Students: 1/5 = 0.2]
+"Exactly. Now you have all the vocabulary you need to write real AI code."
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SLIDE 6 — PENCIL & PAPER: FIND THE AVERAGE BY HAND
+[Duration: ~5 minutes]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+"Before we touch code, we do it by HAND. This is important. When you
+understand the math manually, you'll understand exactly what your code is
+doing — and when something goes wrong, you'll be able to debug it."
+
+"Let's walk through the worked example. Five friends voted on 'Racing':
+  Votes: [1, 1, 0, 1, 1]
+
+  Step 1 — Add the thumbs-ups: 1+1+0+1+1 = 4
+  Step 2 — Count the voters: 5
+  Step 3 — Divide: 4 ÷ 5 = 0.8
+
+  80% thumbs-up score. Four out of five friends liked it."
+
+💡 [CONNECT MATH TO CODE]:
+"Here's what's beautiful: in Python, Step 1 is the built-in function
+sum(), and Step 2 is the built-in function len(). So sum([1,1,0,1,1])
+gives you 4, and len([1,1,0,1,1]) gives you 5. Python does the adding
+and counting for you. Your job — your algorithm — is telling Python WHEN
+to do those steps and WHAT to do with the result."
+
+"Now you try the three puzzles. Pencils out."
+
+  Puzzle:  [1, 0, 0, 1, 0] → answer: 2/5 = 0.4
+  Shooter: [0, 0, 1, 0, 0] → answer: 1/5 = 0.2
+  Sports:  [1, 1, 1, 1, 1] → answer: 5/5 = 1.0
+
+✋ [Give 90 seconds, then go over answers. Have students hold up fingers to show their answer — 1 finger for Puzzle winning, 2 for Shooter, 3 for Sports]
+
+"Sports wins with a perfect 1.0. Everyone loved it. That's what our
+picker will figure out — automatically — when we write the code."
+
+"Notice something: we just created what's called a RANKING. We put all
+four options in order from best to worst: Sports (1.0), Racing (0.8),
+Puzzle (0.4), Shooter (0.2). Ranking by average score is one of the
+foundational operations in search engines, recommendation systems, and
+basically all of modern AI."
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SLIDE 7 — CODE STEP 1 OF 3: THE DICTIONARY
+[Duration: ~4 minutes]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+[Have students open their Python editor / Replit / IDLE]
+
+"Code time! We build in three steps — do NOT skip ahead. Type exactly
+what you see on the slide. After each step we'll run it and check."
+
+"Step 1: We store our data in a DICTIONARY."
+
+[Walk around the room as students type. Dictate slowly:]
+
+  ratings = {
+    'Racing':  [1, 1, 0, 1, 1],
+    'Puzzle':  [1, 0, 0, 1, 0],
+    'Shooter': [0, 0, 1, 0, 0],
+    'Sports':  [1, 1, 1, 1, 1],
+  }
+  print(ratings)
+
+"Now run it."
+
+✋ [Wait for students to run, help those with errors]
+
+💡 [EXPLAIN THE DICTIONARY IN DEPTH — this is a critical concept]:
+"Let's talk about what a dictionary IS. In Python, a dictionary is a
+data structure that pairs a LABEL — called a KEY — with a piece of DATA
+— called a VALUE. Think of it like a physical dictionary: you look up a
+WORD (the key) and find its DEFINITION (the value).
+
+In our code:
+  - 'Racing' is a KEY — the label for one game
+  - [1, 1, 0, 1, 1] is the VALUE — the votes for that game
+
+Why use a dictionary instead of separate variables? Because now we can
+write code that works on ALL games at once, without knowing in advance
+how many games there are. That's scalability — the ability to handle
+bigger and bigger datasets with the same code. Netflix has 17,000 titles.
+They don't write a separate line for each one. They use data structures
+exactly like this dictionary."
+
+"The key-value pair structure of a dictionary shows up EVERYWHERE in
+computer science:
+  - A phone contact list: name → phone number
+  - A login system: username → password hash
+  - A shopping cart: item name → price
+  - A word counter: word → count
+
+It is one of the most important data structures you will ever use."
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SLIDE 8 — CODE STEP 2 OF 3: THE LOOP & AVERAGE
+[Duration: ~5 minutes]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+"Step 2: We loop through all the games and compute the average score for
+each one. Type this BELOW your Step 1 code:"
+
+  averages = {}
+  for game, votes in ratings.items():
+      score = sum(votes) / len(votes)
+      averages[game] = score
+
+  for game, score in averages.items():
+      print(game, '->', round(score, 2))
+
+"Run it. Did Sports come out as 1.0?"
+
+✋ [Wait — help students troubleshoot indentation errors, which are the most common issue here]
+
+💡 [LINE BY LINE EXPLANATION — go slowly, this is the heart of the lesson]:
+
+"Let's read this code like a story. Every line has a job:
+
+  LINE 1: averages = {}
+  → We create a new, EMPTY dictionary called 'averages.' Think of it as
+    an empty scoreboard. No scores yet — we're about to fill it in.
+
+  LINE 2: for game, votes in ratings.items():
+  → This is a FOR LOOP. In Python, a for loop says: 'Go through every
+    item in this collection, one at a time, and do something with each.'
+
+    ratings.items() gives us each key-value pair. So on the FIRST pass,
+    game = 'Racing' and votes = [1, 1, 0, 1, 1]. On the SECOND pass,
+    game = 'Puzzle' and votes = [1, 0, 0, 1, 0]. And so on.
+
+    💡 DEEP INSIGHT: This is called ITERATION — visiting each element in
+    a collection exactly once. Iteration is the mechanism behind almost
+    every algorithm in computer science. When Google indexes the web,
+    it iterates over billions of pages. When a face recognition system
+    scans a photo, it iterates over millions of pixels. The FOR loop is
+    the basic unit of that process.
+
+  LINE 3: score = sum(votes) / len(votes)
+  → This is our average formula — the same math you did by hand.
+    sum(votes) adds all the 1s and 0s. len(votes) counts how many voters
+    there were. Divide: you get the score.
+
+    💡 In machine learning, this exact operation has a formal name:
+    it's computing a MEAN RATING. The entire field of 'collaborative
+    filtering' — used by Amazon, Netflix, and Spotify — extends this
+    simple mean to consider patterns across thousands of users and items.
+    The foundation is this one line of code.
+
+  LINE 4: averages[game] = score
+  → We write the score onto our scoreboard. We're saying: 'In the
+    averages dictionary, the entry for THIS game equals THIS score.'
+    After the loop finishes, averages contains a score for every game.
+
+  LINES 5-6: The print loop
+  → We loop through averages and print each game's score, rounded to
+    2 decimal places. round(..., 2) is just cosmetic — it keeps our
+    output clean and readable. In a real app, this would be the data
+    sent to a display or a database."
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SLIDE 9 — CODE STEP 3 OF 3: PICK THE WINNER
+[Duration: ~3 minutes]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+"Final line of code. Add this at the very bottom:"
+
+  best_game = max(averages, key=averages.get)
+  print('Recommended first:', best_game)
+
+"Run the full program. You should see:"
+
+  Racing -> 0.8
+  Puzzle -> 0.4
+  Shooter -> 0.2
+  Sports -> 1.0
+  Recommended first: Sports
+
+✋ [Make sure everyone sees the correct output before moving on. High-five your neighbor!]
+
+💡 [DEEP EXPLANATION OF max() WITH A KEY FUNCTION — this is subtle]:
+
+"Let's break down that one line:
+
+  max(averages, key=averages.get)
+
+  max() normally finds the biggest NUMBER in a list. But averages is a
+  DICTIONARY — it contains key-value pairs, not just numbers. So we need
+  to tell max() a rule: 'When comparing items, compare them BY their
+  score, not by their name.'
+
+  The argument key=averages.get does exactly that. averages.get is a
+  function that, given a game name, returns its score. So we're saying:
+  'Find the game whose score, as reported by averages.get, is the maximum.'
+
+  💡 This pattern — max(collection, key=some_function) — is one of the
+  most powerful one-liners in Python. In professional code you'll see it
+  everywhere. When ranking search results, finding the fastest route,
+  picking the highest-paying job offer, selecting the most statistically
+  significant result in an experiment — all of these use this same pattern.
+
+  The technical term for what we just built is an ARGMAX operation:
+  'Find the ARGUMENT (input) that produces the MAXIMUM output.' It's a
+  fundamental operation in calculus, optimization theory, machine learning
+  training, and game theory. You just wrote argmax. In 8 lines."
+
+"Let's zoom out. We have:
+  1. Stored structured data → dictionary
+  2. Processed it with a loop → iteration
+  3. Applied a mathematical operation → mean
+  4. Selected the best result → argmax
+
+That is not a toy exercise. That is a complete data pipeline. The only
+difference between this and Netflix's system is scale: they have 200
+million users, you have 5. The logic is identical."
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SLIDE 10 — VIDEO 2: REAL APPS DO THIS — BUT BIGGER
+[Duration: ~5 minutes + video ~3 min = ~8 min total]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+[Before pressing play]
+
+"You just wrote a recommendation system. Now let's see what one looks
+like in the wild. This is a CBC Kids News video about how YouTube and
+apps track you — and how that connects to what you just built."
+
+"Three things to notice:
+  1. What does an app TRACK when you scroll?
+  2. Why does the next video sometimes feel spooky — like it already knows?
+  3. How is YouTube's picker the same as ours? How is it bigger?"
+
+[Play video]
+
+[AFTER video — ~2 min debrief]
+
+"What did the app track?"
+✋ [Students: watch time, likes, what you skip, search history, etc.]
+
+💡 [CONNECT THEIR ANSWERS TO THE CODE]:
+"Exactly. Every one of those is a VOTE — but a more sophisticated one than
+our 1s and 0s. Instead of just thumbs-up or thumbs-down, YouTube tracks:
+  - Did you watch 100% of the video? That's a STRONG thumbs-up.
+  - Did you watch 10% and skip? That's a thumbs-DOWN.
+  - Did you re-watch a section? That's a strong thumbs-up on that moment.
+  - Did you subscribe after watching? Extremely strong signal.
+
+In machine learning, these are called IMPLICIT RATINGS — signals the
+user gives without explicitly clicking a star rating. They're actually
+MORE reliable than explicit ratings, because people forget to rate things
+but they never forget to stop watching something they hate."
+
+"And the 'spooky' feeling? That's because the algorithm has seen the
+votes of millions of other people who watched the same video as you,
+and noticed a pattern: 'People who watch Video A almost always want to
+watch Video B next.' That pattern — learned from millions of users — is
+what makes a recommendation feel eerie. The algorithm isn't reading
+your mind. It's reading a very, very large dataset."
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SLIDE 11 — TALK TIME: WHEN DOES "MOST POPULAR" GO WRONG?
+[Duration: ~4 minutes]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+"Our picker is smart — but it has real problems. Every algorithm does.
+Let's be critical thinkers. There are three specific failure modes on the
+slide."
+
+"PROBLEM 1: Tastes are different.
+If 19 kids love chocolate but YOU love mint, the popular pick is wrong —
+for you. In AI, this is called the MAJORITY BIAS or POPULARITY BIAS. The
+algorithm unfairly favors items that already have lots of votes, which
+tends to be things that mainstream, majority groups prefer. For minority
+tastes, popular-based recommendations fail."
+
+"PROBLEM 2: Brand new things get zero votes.
+A new game or song starts with ZERO data. Our algorithm can't possibly
+recommend it — it has no score. In the tech world this is called the
+COLD START PROBLEM. It's one of the hardest problems in recommendation
+systems. How do you recommend something you've never seen data on? This
+is why apps often ask new users to rate a bunch of things immediately
+after signing up — they need data to warm the system up."
+
+"PROBLEM 3: You only see what you already like.
+If the algorithm always recommends things similar to what's already
+popular with you, you end up in what researchers call a FILTER BUBBLE
+or ECHO CHAMBER. You only see one type of content, one type of opinion,
+one type of music — forever. This has real social consequences. It's one
+reason why social media can feel so divided — everyone is in their own
+recommendation bubble."
+
+💡 [CRITICAL THINKING MOMENT]:
+"Here's what makes this philosophically interesting: these are not just
+technical bugs. They're ETHICAL questions. Who should decide what 'top'
+means? Who is responsible when an algorithm amplifies harmful content?
+When recommendation systems make mistakes at scale — with millions of
+users — the consequences are enormous. This is why AI Ethics is now
+a major field in computer science. The code you wrote in 8 lines raises
+real questions that the biggest tech companies in the world are still
+trying to answer."
+
+✋ [Class chat — have students share experiences with repetitive app recommendations]
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SLIDE 12 — BONUS TWIST: ONE PICKER PER PERSON (PERSONALIZATION)
+[Duration: ~5 minutes]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+"Now we fix Problem 1. We give every person their OWN picker."
+
+[Have students open a FRESH Python file — separate from their Step 1-3 code]
+
+  player_ratings = {
+    'Alex':   {'Racing':[1,1,1], 'Puzzle':[1,1,0], 'Shooter':[0,0,0]},
+    'Jordan': {'Racing':[0,1,0], 'Puzzle':[1,1,1], 'Shooter':[1,1,0]},
+  }
+
+  for name, games in player_ratings.items():
+      print('
+For', name)
+      for game, votes in games.items():
+          score = sum(votes) / len(votes)
+          print(' ', game, '->', round(score, 2))
+
+"Before you run it — PREDICT: who likes Racing more, Alex or Jordan?"
+✋ [Let students guess — Alex has [1,1,1]=1.0 vs Jordan's [0,1,0]=0.33]
+
+"Run it. Does each person get their own list?"
+
+💡 [DEEP EXPLANATION — introduce collaborative filtering]:
+"Look at the structure of player_ratings. It's a dictionary of
+dictionaries — or in computer science terms, a NESTED DATA STRUCTURE.
+The outer dictionary maps person names to their data. The inner
+dictionary maps game names to votes. Two levels of organization.
+
+This data structure, if you scaled it up, becomes what's called a
+USER-ITEM MATRIX — the foundational data structure of collaborative
+filtering. Imagine a giant table:
+
+              Racing  Puzzle  Shooter  Sports
+  Alex:         1.0    0.67     0.0     ???
+  Jordan:       0.33   1.0      0.67    ???
+
+Each row is a USER. Each column is an ITEM. The values are average
+ratings. Notice the question marks — Alex hasn't rated Sports yet.
+How do we fill in that blank?
+
+That's exactly what Netflix's recommendation engine does. It looks at
+your row, finds users whose rows look SIMILAR to yours, and predicts
+what YOU would rate the items you haven't seen yet — based on what
+SIMILAR users rated. This technique is called USER-BASED COLLABORATIVE
+FILTERING, and it was the winning algorithm in the famous Netflix Prize —
+a $1 million competition in 2009 that transformed the field of AI.
+
+What you just coded — two levels of nested loops, two levels of nested
+dictionaries — is the SKELETON of that $1 million algorithm."
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SLIDE 13 — MAKE IT YOURS: PERSONALIZE YOUR PICKER
+[Duration: ~6 minutes]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+"This is your creative time. You have three idea prompts — pick one:"
+
+"IDEA 1: Four lunch foods. Pretend you surveyed 5 friends. Which food wins?
+IDEA 2: Four songs you like. Make up five votes. Predict the winner first —
+  before you run the code. Does the picker agree with you?
+IDEA 3: Four TV shows. Make up the votes."
+
+"Here are your four steps:
+  1. Copy your code from Step 3 (Slide 9)
+  2. Replace the four game names with your own items
+  3. Replace the vote lists with your own data
+  4. Run it and show a partner"
+
+[Walk the room, help with any syntax errors, encourage creativity]
+
+✋ [After 4-5 minutes, ask 2-3 students to share their picker and results]
+
+💡 [REFLECTION PROMPT — ask this while circulating]:
+"When you predicted the winner before running the code — were you right?
+If you were wrong, why? Was the data misleading? Did you accidentally
+give one item better votes without realizing it?
+
+This is what data scientists call VALIDATING A MODEL — checking whether
+the algorithm's answer matches what you expected, and if not, figuring
+out whether the algorithm is wrong or whether YOUR assumptions were wrong.
+That detective process is a huge part of real AI work."
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SLIDE 14 — HOMEWORK
+[Duration: ~3 minutes]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+"Tonight's homework has two parts — a CODE part and a WRITING part."
+
+"PART A — CODE:
+Pick four things you love — snacks, books, video games, movies, whatever.
+Make up 4 to 5 votes for each one. Run the picker. Look at the winner —
+is it what YOU would have chosen? If not, why not? Does the data reflect
+your real preferences, or did you accidentally bias it?"
+
+💡 [EXPLAIN THE DEEPER PURPOSE]:
+"This is called GROUND TRUTH CHECKING. In machine learning, the 'ground
+truth' is what you know to be true from the real world. A good algorithm
+should match ground truth. If your picker chose vanilla but you KNOW you
+love chocolate more, something is off — either the votes don't reflect
+reality, or the algorithm is too simple. This tension between algorithm
+output and real-world truth is what AI researchers spend careers on."
+
+"PART B — WRITE 3 SENTENCES:
+Think of a time an app suggested something GREAT. Then think of a time
+it suggested something WEIRD. What was different? Why do you think the
+algorithm got one right and the other wrong?"
+
+"Take a screenshot of your code's output and email BOTH parts —
+the screenshot and your 3 sentences — to hue.weng.88@gmail.com
+before next class."
+
+💡 [EXPLAIN WHY THE WRITING MATTERS]:
+"The writing part is not just a writing exercise. It is training you to
+think about algorithms as things that have EFFECTS on the real world.
+Computer scientists who cannot communicate about their algorithms — who
+cannot explain when they work and when they fail — build systems that
+cause real harm. Writing clearly about code is as important as writing
+the code."
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SLIDE 15 — RECAP & EXIT TICKET
+[Duration: ~3 minutes]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+[Display the summary statistics on the slide with genuine pride]
+
+"Look at what you did today:"
+
+  4    New vocabulary words: Vote · Average · Picker · Top
+  8    Lines of code — a real, working recommender system
+  ∞    Things you can now apply it to: songs, snacks, shows, anything
+
+"That infinity symbol is real. The structure of what you built today —
+data in, loop, average, pick the top — applies to any set of items and
+any group of voters. The code scales."
+
+"Before you go — sticky note exit ticket. Answer ONE of these two
+questions:"
+
+"QUESTION 1: What does the picker actually DO, in your own words?
+
+  💡 A great answer sounds like: 'It takes a list of thumbs-up and
+  thumbs-down votes for each item, calculates the percentage of people
+  who liked each one, and prints the item with the highest percentage.'
+  If a student can say that unprompted, they have genuine understanding."
+
+"QUESTION 2: Name one thing the picker CAN'T figure out on its own.
+
+  💡 Great answers: It can't recommend things with no votes (cold start).
+  It can't tell the difference between you liking something for one reason
+  vs another reason. It doesn't know if your taste changed. It can't
+  understand emotions. It can't recommend things based on the CONTENT of
+  an item — it only knows what people voted on, not why.
+
+  That 'why' problem — teaching an algorithm to understand the CONTENT and
+  MEANING of items — is exactly what deep learning and large language
+  models like ChatGPT are designed to solve. And it's where we're headed
+  next in this course."
+
+✋ [Collect sticky notes as students leave — use them to guide next class]
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SLIDE 16 — CLOSING SLIDE
+[Duration: ~1 minute]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+"I'll leave you with this: today you wrote a recommender system.
+The same fundamental logic sits inside some of the most profitable and
+influential software ever created. You didn't just learn ABOUT AI today —
+you MADE AI."
+
+"Any questions? Great work today. I am genuinely proud of every one of you."
+
+[Display contact info]
+  Email:   hue.weng.88@gmail.com
+  Website: hue881.github.io
+  Phone:   646-280-7089
+
+
+================================================================================
+APPENDIX A — COMMON ERRORS & HOW TO FIX THEM
+================================================================================
+
+ERROR: IndentationError
+  Cause: Python uses indentation to define code blocks. One extra or
+         missing space breaks everything.
+  Fix:   Make sure every line inside a `for` loop is indented exactly
+         4 spaces (or one tab consistently). Use the TAB key, not spacebar.
+
+ERROR: KeyError or TypeError
+  Cause: Mistyped a game name, or tried to use a string where a number
+         was expected.
+  Fix:   Check that your dictionary keys match EXACTLY — including
+         capitalization and quotes.
+
+ERROR: ZeroDivisionError
+  Cause: An empty vote list [] causes len(votes) = 0, and division by 0
+         crashes Python.
+  Fix:   Make sure every game has at least one vote in its list.
+
+ERROR: Output is wrong / not what expected
+  Cause: Data entry error — a 1 typed where a 0 should be, etc.
+  Fix:   Manually compute the average on paper, then check whether the
+         code matches. This is debugging by verification.
+
+
+================================================================================
+APPENDIX B — EXTENSION QUESTIONS FOR ADVANCED STUDENTS
+================================================================================
+
+1. What would happen if we allowed votes of 0, 1, AND 2 (love it)?
+   [Answer: The average still works — just the scale changes. This is how
+   5-star ratings work — they're averages of scores 1-5.]
+
+2. What if 1000 people vote on one game, but only 3 on another?
+   Should those count equally?
+   [Answer: No — small samples are less reliable. This introduces the
+   concept of CONFIDENCE INTERVALS and BAYESIAN AVERAGING, which
+   Reddit and IMDB use to make their rankings more fair.]
+
+3. How would you find not just the #1 game, but the TOP 3?
+   [Answer: sorted(averages, key=averages.get, reverse=True)[:3] —
+   introduce the sorted() function and list slicing.]
+
+4. What if different people have different tastes? How would you pick
+   differently for each person?
+   [Answer: This is collaborative filtering — tease Slide 12's nested
+   dict structure and the Netflix Prize story.]
+
+5. What's a situation where 'most popular' could be HARMFUL to recommend?
+   [Answer: Misinformation, extreme content, addictive content — this
+   leads to a discussion of algorithmic amplification and AI ethics.]
+
+
+================================================================================
+END OF SCRIPT — Day 15 · Spring 2026 · Mr. Hsiao "Hue" Weng
+================================================================================
