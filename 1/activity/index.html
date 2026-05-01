@@ -1,1 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Day 15 · Activity Sheet — Build Your Picker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f4fbff; --ink:#1f2a37; --muted:#5b6b7e; --line:rgba(11,99,206,0.16);
+  --blue:#0b63ce; --green:#10b981; --amber:#f59e0b; --red:#ef4444;
+  --paper:#ffffff;
+}
+*,*::before,*::after{box-sizing:border-box;}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:"Nunito",Arial,sans-serif;line-height:1.5;}
+.page{max-width:820px;margin:0 auto;padding:28px 36px;background:var(--paper);
+  box-shadow:0 8px 28px rgba(15,23,42,0.07); border-radius:18px; margin-top:24px; margin-bottom:24px;
+  position:relative; overflow:hidden;}
+.page + .page{margin-top:18px;}
+h1,h2,h3{font-family:"Fredoka","Trebuchet MS",sans-serif; line-height:1.18; margin:0;}
+h1{font-size:1.9rem; font-weight:700;}
+h2{font-size:1.25rem; font-weight:700; margin-bottom:6px;}
+h3{font-size:1.0rem; font-weight:600; margin-bottom:6px;}
+p{margin:6px 0;}
+.grad-text{background:linear-gradient(135deg,#0b63ce 0%,#10b981 50%,#f59e0b 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:3px 11px;border-radius:999px;border:1px solid rgba(148,163,184,0.5);background:#fff;font-size:0.7rem;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;color:var(--blue);}
+.pill.green{color:#047857;background:rgba(16,185,129,0.08);}
+.pill.amber{color:#b45309;background:rgba(245,158,11,0.08);}
+.pill.red{color:#b91c1c;background:rgba(239,68,68,0.08);}
+hr{border:none;border-top:1px dashed var(--line);margin:14px 0;}
+header.title-bar{display:flex;justify-content:space-between;align-items:flex-end;gap:14px;flex-wrap:wrap;border-bottom:2px solid var(--line);padding-bottom:12px;margin-bottom:14px;}
+.namebox{font-size:0.78rem;color:var(--muted);}
+.card{border-radius:13px;padding:13px 16px;border:1px solid var(--line);background:#fff;margin:10px 0;}
+.card.blue{border-left:5px solid var(--blue);}
+.card.green{border-left:5px solid var(--green);}
+.card.amber{border-left:5px solid var(--amber);}
+.card.red{border-left:5px solid var(--red);}
+.card.tinted-blue{background:rgba(11,99,206,0.05);}
+.card.tinted-green{background:rgba(16,185,129,0.06);}
+.card.tinted-amber{background:rgba(245,158,11,0.07);}
+ul,ol{margin:6px 0 6px 20px;padding:0;}
+ul li,ol li{margin:3px 0;}
+.code{background:#1e293b;color:#e2e8f0;border-radius:10px;padding:11px 14px;font-family:"Fira Code",Consolas,monospace;font-size:0.82rem;line-height:1.55;overflow-x:auto;}
+.code .kw{color:#93c5fd;} .code .cm{color:#64748b;font-style:italic;} .code .st{color:#86efac;} .code .nb{color:#fcd34d;}
+table{border-collapse:collapse;width:100%;margin:8px 0;font-size:0.88rem;}
+th,td{border:1px solid #cbd5e1;padding:6px 8px;text-align:center;}
+th{background:rgba(11,99,206,0.07);font-weight:700;color:var(--blue);}
+td.label{text-align:left;font-weight:700;background:#f8fafc;}
+.q{display:flex;gap:8px;align-items:flex-start;margin:6px 0;}
+.q .num{flex:0 0 28px;height:28px;border-radius:50%;background:rgba(11,99,206,0.1);color:var(--blue);font-weight:800;display:flex;align-items:center;justify-content:center;font-size:0.85rem;}
+.q .body{flex:1;}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+@media(max-width:640px){.two-col{grid-template-columns:1fr;}}
+.tag{display:inline-block;padding:2px 8px;border-radius:999px;font-size:0.72rem;font-weight:700;background:rgba(11,99,206,0.08);color:var(--blue);}
+.tag.g{background:rgba(16,185,129,0.1);color:#047857;}
+.tag.a{background:rgba(245,158,11,0.1);color:#b45309;}
+.tag.r{background:rgba(239,68,68,0.1);color:#b91c1c;}
+.note{font-size:0.78rem;color:var(--muted);}
+.expected-out{background:#0f172a;color:#e2e8f0;border-radius:8px;padding:9px 12px;font-family:"Fira Code",Consolas,monospace;font-size:0.78rem;line-height:1.55;}
+.brand{font-size:0.7rem;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;}
+.row-tight{margin:4px 0;}
 
+/* ===== form inputs ===== */
+.tinput, .ttextarea, .tcell{
+  font-family:"Nunito",Arial,sans-serif; color:var(--ink); font-size:0.95rem;
+  border:none; border-bottom:1.5px solid var(--ink); background:transparent;
+  outline:none; padding:2px 4px; transition:background 0.15s, border-color 0.15s;
+}
+.tinput:focus,.ttextarea:focus,.tcell:focus{background:rgba(11,99,206,0.06);border-color:var(--blue);}
+.tinput.short{width:80px;}
+.tinput.med{width:140px;}
+.tinput.long{width:220px;}
+.tinput.full{width:100%;}
+.tinput.line{display:block;width:100%;margin:6px 0;}
+.ttextarea{display:block;width:100%;border:1px dashed #94a3b8;background:rgba(255,255,255,0.6);
+  border-radius:8px;padding:8px 10px;min-height:60px;line-height:1.5;resize:vertical;}
+.ttextarea.tall{min-height:90px;}
+.ttextarea:focus{background:rgba(11,99,206,0.04);border-color:var(--blue);border-style:solid;}
+.tcell{display:block;width:100%;text-align:center;border:none;border-radius:4px;font-size:0.92rem;padding:4px 2px;}
+.tcell:focus{background:rgba(11,99,206,0.07);}
+.namebox .tinput{font-size:0.85rem;width:160px;}
+.namebox .tinput.med{width:130px;}
+
+/* checkboxes */
+.cb{appearance:none;-webkit-appearance:none;width:16px;height:16px;border:1.5px solid var(--ink);
+  border-radius:3px;vertical-align:-3px;margin-right:5px;cursor:pointer;background:#fff;
+  position:relative;transition:background 0.15s,border-color 0.15s;}
+.cb:checked{background:var(--blue);border-color:var(--blue);}
+.cb:checked::after{content:"✓";position:absolute;top:-3px;left:1px;color:#fff;font-size:14px;font-weight:800;}
+label.cb-label{display:inline-flex;align-items:center;cursor:pointer;margin-right:14px;}
+
+/* radios */
+.rb{appearance:none;-webkit-appearance:none;width:16px;height:16px;border:1.5px solid var(--ink);
+  border-radius:50%;vertical-align:-3px;margin-right:5px;cursor:pointer;background:#fff;
+  position:relative;transition:background 0.15s,border-color 0.15s;}
+.rb:checked{border-color:var(--blue);}
+.rb:checked::after{content:"";position:absolute;inset:3px;border-radius:50%;background:var(--blue);}
+
+/* toolbar */
+.toolbar{position:fixed;top:14px;right:14px;display:flex;gap:8px;z-index:50;}
+.btn{background:var(--blue);color:#fff;border:none;border-radius:999px;padding:9px 16px;
+  font-weight:800;font-size:0.74rem;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;
+  box-shadow:0 6px 20px rgba(11,99,206,0.35);font-family:"Nunito",sans-serif;}
+.btn:hover{transform:translateY(-1px);}
+.btn.alt{background:#fff;color:var(--blue);border:1.5px solid var(--blue);box-shadow:0 4px 12px rgba(15,23,42,0.06);}
+.btn.warn{background:#fff;color:var(--red);border:1.5px solid var(--red);box-shadow:0 4px 12px rgba(15,23,42,0.06);}
+.savestate{position:fixed;top:62px;right:14px;font-size:0.7rem;color:var(--muted);
+  background:#fff;border-radius:999px;padding:4px 12px;border:1px solid var(--line);
+  z-index:49;opacity:0;transition:opacity 0.3s;}
+.savestate.show{opacity:1;}
+
+@media print{
+  body{background:#fff;}
+  .page{box-shadow:none;border-radius:0;margin:0;max-width:none;padding:24px 30px;page-break-after:always;}
+  .page:last-of-type{page-break-after:auto;}
+  .toolbar,.savestate{display:none;}
+  .tinput,.ttextarea,.tcell{border-color:#1f2a37 !important;background:transparent !important;}
+  .ttextarea{border-style:dashed !important;}
+}
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <button class="btn" onclick="window.print()">🖨️ Print</button>
+  <button class="btn alt" onclick="saveNow()">💾 Save</button>
+  <button class="btn warn" onclick="resetAll()">↺ Reset</button>
+</div>
+<div class="savestate" id="savestate">Saved ✓</div>
+
+<!-- =================== PAGE 1 =================== -->
+<section class="page">
+  <header class="title-bar">
+    <div>
+      <p class="brand">Day 15 · AI &amp; Coding for Kids · Spring 2026</p>
+      <h1 class="grad-text">Build Your Own Picker 🎯</h1>
+      <p class="note">A Python recommender system you'll write in about 60 minutes.</p>
+    </div>
+    <div class="namebox">
+      <p>Name: <input class="tinput" type="text" data-key="name" placeholder="your name"></p>
+      <p>Date: <input class="tinput med" type="text" data-key="date" placeholder="MM/DD"></p>
+    </div>
+  </header>
+
+  <div class="two-col">
+    <div class="card blue tinted-blue">
+      <span class="pill">What you'll build</span>
+      <p class="row-tight">A small Python program that:</p>
+      <ol>
+        <li>Stores votes for 4 things (games, snacks, songs — your choice)</li>
+        <li>Calculates the average vote for each one</li>
+        <li>Recommends the <strong>top</strong> one to a friend</li>
+      </ol>
+    </div>
+    <div class="card green tinted-green">
+      <span class="pill green">What you need</span>
+      <ul>
+        <li>A computer running Python (Replit, Thonny, or IDLE all work)</li>
+        <li>This worksheet + a pencil</li>
+        <li>A partner to test it with at the end</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2 style="margin-top:14px;">🧠 Word Check</h2>
+  <p class="note">Pick the meaning that matches each word.</p>
+  <table>
+    <thead><tr><th style="width:24%;">Word</th><th>Pick the matching meaning</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="label">Vote</td>
+        <td style="text-align:left;">
+          <select class="tinput full" data-key="match-vote">
+            <option value="">— choose —</option>
+            <option>The item with the highest score</option>
+            <option>The little program that picks for you</option>
+            <option>A thumbs-up (1) or thumbs-down (0)</option>
+            <option>Add all the votes, divide by how many voters</option>
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <td class="label">Average</td>
+        <td style="text-align:left;">
+          <select class="tinput full" data-key="match-average">
+            <option value="">— choose —</option>
+            <option>The item with the highest score</option>
+            <option>The little program that picks for you</option>
+            <option>A thumbs-up (1) or thumbs-down (0)</option>
+            <option>Add all the votes, divide by how many voters</option>
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <td class="label">Picker</td>
+        <td style="text-align:left;">
+          <select class="tinput full" data-key="match-picker">
+            <option value="">— choose —</option>
+            <option>The item with the highest score</option>
+            <option>The little program that picks for you</option>
+            <option>A thumbs-up (1) or thumbs-down (0)</option>
+            <option>Add all the votes, divide by how many voters</option>
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <td class="label">Top</td>
+        <td style="text-align:left;">
+          <select class="tinput full" data-key="match-top">
+            <option value="">— choose —</option>
+            <option>The item with the highest score</option>
+            <option>The little program that picks for you</option>
+            <option>A thumbs-up (1) or thumbs-down (0)</option>
+            <option>Add all the votes, divide by how many voters</option>
+          </select>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 style="margin-top:14px;">✋ Warm-Up · Average by Hand</h2>
+  <p>For each game, type the sum, the count, and the average.</p>
+  <table>
+    <thead><tr><th>Game</th><th>Votes</th><th>Sum</th><th>How many?</th><th>Average</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="label">🏁 Racing</td>
+        <td>[1, 1, 0, 1, 1]</td>
+        <td><input class="tcell" data-key="racing-sum" value="4"></td>
+        <td><input class="tcell" data-key="racing-n" value="5"></td>
+        <td><input class="tcell" data-key="racing-avg" value="0.8"></td>
+      </tr>
+      <tr>
+        <td class="label">🧩 Puzzle</td>
+        <td>[1, 0, 0, 1, 0]</td>
+        <td><input class="tcell" data-key="puzzle-sum"></td>
+        <td><input class="tcell" data-key="puzzle-n"></td>
+        <td><input class="tcell" data-key="puzzle-avg"></td>
+      </tr>
+      <tr>
+        <td class="label">🎯 Shooter</td>
+        <td>[0, 0, 1, 0, 0]</td>
+        <td><input class="tcell" data-key="shooter-sum"></td>
+        <td><input class="tcell" data-key="shooter-n"></td>
+        <td><input class="tcell" data-key="shooter-avg"></td>
+      </tr>
+      <tr>
+        <td class="label">⚽ Sports</td>
+        <td>[1, 1, 1, 1, 1]</td>
+        <td><input class="tcell" data-key="sports-sum"></td>
+        <td><input class="tcell" data-key="sports-n"></td>
+        <td><input class="tcell" data-key="sports-avg"></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="card amber tinted-amber">
+    <p class="row-tight"><strong>🥇 Which game has the biggest average?</strong></p>
+    <input class="tinput full" data-key="biggest-avg" placeholder="Type your answer">
+    <p class="row-tight" style="margin-top:8px;"><strong>🤔 If a brand-new game has zero votes, what would its average be?</strong></p>
+    <input class="tinput full" data-key="zero-vote-avg" placeholder="Type your answer">
+  </div>
+</section>
+
+<!-- =================== PAGE 2 =================== -->
+<section class="page">
+  <header class="title-bar">
+    <div>
+      <span class="pill">Part 1 · Code · Step-by-step</span>
+      <h1 class="grad-text" style="font-size:1.6rem;">Type along — 3 small steps 💻</h1>
+    </div>
+    <div class="namebox"><p class="note">Open your Python editor.</p></div>
+  </header>
+
+  <div class="card blue">
+    <h2><span class="tag">Step 1</span> Make the votes dictionary</h2>
+    <p class="note">Type this exactly. Then click Run.</p>
+    <div class="code">
+<span class="nb">ratings</span> = {
+    <span class="st">'Racing'</span>:  [<span class="kw">1</span>, <span class="kw">1</span>, <span class="kw">0</span>, <span class="kw">1</span>, <span class="kw">1</span>],
+    <span class="st">'Puzzle'</span>:  [<span class="kw">1</span>, <span class="kw">0</span>, <span class="kw">0</span>, <span class="kw">1</span>, <span class="kw">0</span>],
+    <span class="st">'Shooter'</span>: [<span class="kw">0</span>, <span class="kw">0</span>, <span class="kw">1</span>, <span class="kw">0</span>, <span class="kw">0</span>],
+    <span class="st">'Sports'</span>:  [<span class="kw">1</span>, <span class="kw">1</span>, <span class="kw">1</span>, <span class="kw">1</span>, <span class="kw">1</span>],
+}
+<span class="nb">print</span>(ratings)
+    </div>
+    <p class="row-tight"><label class="cb-label"><input type="checkbox" class="cb" data-key="step1-runs"> It runs without errors.</label></p>
+    <p class="row-tight"><strong>What do you see printed?</strong></p>
+    <textarea class="ttextarea" data-key="step1-output" placeholder="Type the output you see..."></textarea>
+  </div>
+
+  <div class="card green">
+    <h2><span class="tag g">Step 2</span> Loop and average each game</h2>
+    <p class="note">Add this <em>below</em> what you already typed.</p>
+    <div class="code">
+<span class="nb">averages</span> = {}
+<span class="kw">for</span> game, votes <span class="kw">in</span> ratings.items():
+    score = <span class="nb">sum</span>(votes) / <span class="nb">len</span>(votes)
+    averages[game] = score
+
+<span class="kw">for</span> game, score <span class="kw">in</span> averages.items():
+    <span class="nb">print</span>(game, <span class="st">'->'</span>, <span class="nb">round</span>(score, <span class="kw">2</span>))
+    </div>
+    <p class="row-tight"><strong>Write the four lines that printed:</strong></p>
+    <input class="tinput line" data-key="step2-line1" placeholder="line 1">
+    <input class="tinput line" data-key="step2-line2" placeholder="line 2">
+    <input class="tinput line" data-key="step2-line3" placeholder="line 3">
+    <input class="tinput line" data-key="step2-line4" placeholder="line 4">
+    <p class="row-tight"><label class="cb-label"><input type="checkbox" class="cb" data-key="step2-match"> My answers match the table I filled in on Page 1.</label></p>
+  </div>
+
+  <div class="card amber">
+    <h2><span class="tag a">Step 3</span> Pick the winner</h2>
+    <p class="note">Add these last two lines.</p>
+    <div class="code">
+best_game = <span class="nb">max</span>(averages, key=averages.get)
+<span class="nb">print</span>(<span class="st">'Recommended first:'</span>, best_game)
+    </div>
+    <p class="row-tight"><strong>Expected output:</strong></p>
+    <div class="expected-out">
+Racing -&gt; 0.8<br>
+Puzzle -&gt; 0.4<br>
+Shooter -&gt; 0.2<br>
+Sports -&gt; 1.0<br>
+Recommended first: Sports
+    </div>
+    <p class="row-tight" style="margin-top:8px;">
+      <label class="cb-label"><input type="checkbox" class="cb" data-key="step3-match"> My output matches.</label>
+      <label class="cb-label"><input type="checkbox" class="cb" data-key="step3-highfive"> I high-fived a partner. 🙌</label>
+    </p>
+  </div>
+</section>
+
+<!-- =================== PAGE 3 =================== -->
+<section class="page">
+  <header class="title-bar">
+    <div>
+      <span class="pill green">Part 2 · Read &amp; Reason</span>
+      <h1 class="grad-text" style="font-size:1.6rem;">Code Detective 🔍</h1>
+    </div>
+    <div class="namebox"><p class="note">Look at your code. Answer in your own words.</p></div>
+  </header>
+
+  <div class="card blue tinted-blue">
+    <div class="q"><div class="num">1</div><div class="body">
+      What does <code style="background:#fff;padding:1px 5px;border-radius:4px;font-family:monospace;">sum(votes)</code> do?
+      <input class="tinput line" data-key="q1" placeholder="Type your answer">
+    </div></div>
+    <div class="q"><div class="num">2</div><div class="body">
+      Why do we divide by <code style="background:#fff;padding:1px 5px;border-radius:4px;font-family:monospace;">len(votes)</code> and not just by 5?
+      <input class="tinput line" data-key="q2" placeholder="Type your answer">
+    </div></div>
+    <div class="q"><div class="num">3</div><div class="body">
+      The line <code style="background:#fff;padding:1px 5px;border-radius:4px;font-family:monospace;">averages[game] = score</code> stores something. What is being stored, and what does it look like in <code style="background:#fff;padding:1px 5px;border-radius:4px;font-family:monospace;">averages</code> after one loop?
+      <textarea class="ttextarea" data-key="q3" placeholder="Type your answer"></textarea>
+    </div></div>
+    <div class="q"><div class="num">4</div><div class="body">
+      <code style="background:#fff;padding:1px 5px;border-radius:4px;font-family:monospace;">max(averages, key=averages.get)</code> — explain it like you're telling your sibling.
+      <textarea class="ttextarea" data-key="q4" placeholder="Type your answer"></textarea>
+    </div></div>
+  </div>
+
+  <h2 style="margin-top:14px;">🧪 Predict, then test</h2>
+  <p class="note">Predict the output <strong>before</strong> you run the code.</p>
+  <div class="card green">
+    <p class="row-tight"><strong>Change A</strong> — Replace Sports votes with <code style="background:#f1f5f9;padding:1px 5px;border-radius:4px;font-family:monospace;">[0, 0, 0, 0, 0]</code>. Who wins now?</p>
+    <p class="row-tight">My prediction: <input class="tinput long" data-key="changeA-pred"></p>
+    <p class="row-tight">Actual result: <input class="tinput long" data-key="changeA-actual"></p>
+    <p class="row-tight">✅ Match?
+      <label class="cb-label"><input type="radio" name="changeA" class="rb" data-key="changeA-yes"> Yes</label>
+      <label class="cb-label"><input type="radio" name="changeA" class="rb" data-key="changeA-no"> No</label>
+    </p>
+  </div>
+  <div class="card amber">
+    <p class="row-tight"><strong>Change B</strong> — Add a new game called <code style="background:#f1f5f9;padding:1px 5px;border-radius:4px;font-family:monospace;">'Coding'</code> with votes <code style="background:#f1f5f9;padding:1px 5px;border-radius:4px;font-family:monospace;">[1, 1, 1, 1, 0]</code>. Does it beat Sports? Why or why not?</p>
+    <textarea class="ttextarea" data-key="changeB" placeholder="Type your answer"></textarea>
+  </div>
+  <div class="card red">
+    <p class="row-tight"><strong>Change C</strong> — Imagine a new game has <em>zero</em> votes (an empty list). What do you think Python will do? Try it!</p>
+    <p class="row-tight">My prediction: <input class="tinput long" data-key="changeC-pred"></p>
+    <p class="row-tight">What actually happened? <input class="tinput long" data-key="changeC-actual"></p>
+    <p class="row-tight note">💡 This is called a <strong>cold start</strong> problem — the picker has nothing to work with.</p>
+  </div>
+</section>
+
+<!-- =================== PAGE 4 =================== -->
+<section class="page">
+  <header class="title-bar">
+    <div>
+      <span class="pill amber">Part 3 · Make It Yours</span>
+      <h1 class="grad-text" style="font-size:1.6rem;">Build a Picker for YOU 🎨</h1>
+    </div>
+    <div class="namebox"><p class="note">Pick a topic. Make up the votes.</p></div>
+  </header>
+
+  <div class="card blue tinted-blue">
+    <p class="row-tight"><strong>Step 1.</strong> What is your picker about?</p>
+    <p class="row-tight">
+      <label class="cb-label"><input type="radio" name="topic" class="rb" data-key="topic-food"> 🍕 Lunch foods</label>
+      <label class="cb-label"><input type="radio" name="topic" class="rb" data-key="topic-songs"> 🎵 Songs</label>
+      <label class="cb-label"><input type="radio" name="topic" class="rb" data-key="topic-tv"> 📺 TV shows</label>
+      <label class="cb-label"><input type="radio" name="topic" class="rb" data-key="topic-books"> 📚 Books</label>
+      <label class="cb-label"><input type="radio" name="topic" class="rb" data-key="topic-other"> Other:</label>
+      <input class="tinput med" data-key="topic-other-text" placeholder="your topic">
+    </p>
+  </div>
+
+  <p style="margin-top:8px;"><strong>Step 2.</strong> Write your 4 items and 5 votes for each. (Use 1 = thumbs-up, 0 = thumbs-down.)</p>
+  <table>
+    <thead><tr><th>Item name</th><th>Vote 1</th><th>Vote 2</th><th>Vote 3</th><th>Vote 4</th><th>Vote 5</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><input class="tcell" style="text-align:left;" data-key="item1-name" placeholder="my item"></td>
+        <td><input class="tcell" data-key="item1-v1"></td><td><input class="tcell" data-key="item1-v2"></td>
+        <td><input class="tcell" data-key="item1-v3"></td><td><input class="tcell" data-key="item1-v4"></td>
+        <td><input class="tcell" data-key="item1-v5"></td>
+      </tr>
+      <tr>
+        <td><input class="tcell" style="text-align:left;" data-key="item2-name" placeholder="my item"></td>
+        <td><input class="tcell" data-key="item2-v1"></td><td><input class="tcell" data-key="item2-v2"></td>
+        <td><input class="tcell" data-key="item2-v3"></td><td><input class="tcell" data-key="item2-v4"></td>
+        <td><input class="tcell" data-key="item2-v5"></td>
+      </tr>
+      <tr>
+        <td><input class="tcell" style="text-align:left;" data-key="item3-name" placeholder="my item"></td>
+        <td><input class="tcell" data-key="item3-v1"></td><td><input class="tcell" data-key="item3-v2"></td>
+        <td><input class="tcell" data-key="item3-v3"></td><td><input class="tcell" data-key="item3-v4"></td>
+        <td><input class="tcell" data-key="item3-v5"></td>
+      </tr>
+      <tr>
+        <td><input class="tcell" style="text-align:left;" data-key="item4-name" placeholder="my item"></td>
+        <td><input class="tcell" data-key="item4-v1"></td><td><input class="tcell" data-key="item4-v2"></td>
+        <td><input class="tcell" data-key="item4-v3"></td><td><input class="tcell" data-key="item4-v4"></td>
+        <td><input class="tcell" data-key="item4-v5"></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p style="margin-top:6px;"><strong>Step 3.</strong> Type your finished Python program here:</p>
+  <textarea class="ttextarea tall" data-key="my-code" style="font-family:'Fira Code',Consolas,monospace;font-size:0.86rem;min-height:160px;background:#f8fafc;" placeholder="ratings = {
+    'Item1': [1, 0, 1, 1, 0],
+    ...
+}
+
+# ...your loop here..."></textarea>
+
+  <p style="margin-top:6px;"><strong>Step 4.</strong> Run it. Write the picker's recommendation:</p>
+  <div class="card amber tinted-amber">
+    <p class="row-tight">My picker recommended: <input class="tinput long" data-key="my-rec"></p>
+    <p class="row-tight">Would <em>I</em> have picked the same one?
+      <label class="cb-label"><input type="radio" name="agree" class="rb" data-key="agree-yes"> Yes</label>
+      <label class="cb-label"><input type="radio" name="agree" class="rb" data-key="agree-no"> No</label>
+    </p>
+    <p class="row-tight"><strong>Why or why not?</strong></p>
+    <textarea class="ttextarea" data-key="why-not" placeholder="Type your answer"></textarea>
+  </div>
+</section>
+
+<!-- =================== PAGE 5 =================== -->
+<section class="page">
+  <header class="title-bar">
+    <div>
+      <span class="pill red">Part 4 · Think Deeper</span>
+      <h1 class="grad-text" style="font-size:1.6rem;">When Pickers Get It Wrong 🤔</h1>
+    </div>
+    <div class="namebox"><p class="note">Big-kid thinking time.</p></div>
+  </header>
+
+  <div class="card red">
+    <h3>🍦 The Mint Chocolate problem</h3>
+    <p>Most kids in class love chocolate ice cream. But Maya only loves mint. The picker keeps recommending chocolate to her.</p>
+    <p class="row-tight"><strong>Why does this happen?</strong></p>
+    <input class="tinput line" data-key="mint-why">
+    <p class="row-tight"><strong>What could the picker do differently to help Maya?</strong></p>
+    <textarea class="ttextarea" data-key="mint-fix" placeholder="Type your answer"></textarea>
+  </div>
+
+  <div class="card amber">
+    <h3>🔁 The Same-thing-again trap</h3>
+    <p>Have you ever felt an app showed you the same kind of video over and over? Describe it.</p>
+    <textarea class="ttextarea" data-key="trap-describe" placeholder="Type your answer"></textarea>
+    <p class="row-tight"><strong>How is that like our picker?</strong></p>
+    <input class="tinput line" data-key="trap-similar">
+  </div>
+
+  <div class="card blue tinted-blue">
+    <h3>🌟 Bonus Challenge — One picker per person</h3>
+    <p>Try giving each player their own dictionary of votes. Then run the picker for each one. (See Slide 12 of today's lesson if you need a starter.)</p>
+    <p class="row-tight"><strong>Predict:</strong> If Alex rates Racing high but Jordan rates Puzzle high, will they get the same recommendation?</p>
+    <input class="tinput line" data-key="bonus-predict">
+    <p class="row-tight"><strong>Run it. What did you find?</strong></p>
+    <input class="tinput line" data-key="bonus-found">
+  </div>
+
+  <h2 style="margin-top:10px;">🎟️ Exit Ticket</h2>
+  <p class="note">Pick one prompt and answer in 2–3 sentences.</p>
+  <div class="card green tinted-green">
+    <p class="row-tight">
+      <label class="cb-label"><input type="radio" name="exit" class="rb" data-key="exit-1"> What does my picker actually <em>do</em>, in my own words?</label>
+    </p>
+    <p class="row-tight">
+      <label class="cb-label"><input type="radio" name="exit" class="rb" data-key="exit-2"> Name one thing the picker can't figure out by itself.</label>
+    </p>
+    <p class="row-tight">
+      <label class="cb-label"><input type="radio" name="exit" class="rb" data-key="exit-3"> Give one example where average-rating would be the wrong tool.</label>
+    </p>
+    <textarea class="ttextarea tall" data-key="exit-answer" placeholder="Type your exit ticket answer here..."></textarea>
+  </div>
+
+  <hr>
+  <p class="note" style="text-align:center;">📬 Email a screenshot of your output + this exit ticket to <strong>hue.weng.88@gmail.com</strong> · Day 15 · AI &amp; Coding for Kids · Spring 2026</p>
+</section>
+
+<script>
+const STORE_KEY = "day15-activity-v1";
+const fields = document.querySelectorAll('[data-key]');
+const stateEl = document.getElementById('savestate');
+let saveTimer = null;
+
+function loadAll(){
+  let data = {};
+  try { data = JSON.parse(localStorage.getItem(STORE_KEY) || "{}"); } catch(e){ data = {}; }
+  fields.forEach(el => {
+    const key = el.dataset.key;
+    if (!(key in data)) return;
+    if (el.type === "checkbox" || el.type === "radio") el.checked = !!data[key];
+    else el.value = data[key];
+  });
+}
+function collect(){
+  const data = {};
+  fields.forEach(el => {
+    const key = el.dataset.key;
+    if (el.type === "checkbox" || el.type === "radio") data[key] = el.checked;
+    else data[key] = el.value;
+  });
+  return data;
+}
+function saveAll(showToast = false){
+  localStorage.setItem(STORE_KEY, JSON.stringify(collect()));
+  if (showToast) showSaved();
+}
+function showSaved(){
+  stateEl.classList.add('show');
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => stateEl.classList.remove('show'), 1400);
+}
+function saveNow(){ saveAll(true); }
+function resetAll(){
+  if (!confirm('Erase all answers on this worksheet? This cannot be undone.')) return;
+  localStorage.removeItem(STORE_KEY);
+  fields.forEach(el => {
+    if (el.type === "checkbox" || el.type === "radio") el.checked = false;
+    else if (el.tagName === "SELECT") el.selectedIndex = 0;
+    else el.value = "";
+  });
+  // restore the worked example values for Racing
+  const defaults = { "racing-sum":"4", "racing-n":"5", "racing-avg":"0.8" };
+  for (const k in defaults){
+    const el = document.querySelector(`[data-key="${k}"]`);
+    if (el) el.value = defaults[k];
+  }
+}
+fields.forEach(el => {
+  const evt = (el.type === "checkbox" || el.type === "radio" || el.tagName === "SELECT") ? "change" : "input";
+  el.addEventListener(evt, () => {
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(() => saveAll(true), 350);
+  });
+});
+loadAll();
+</script>
+</body>
+</html>
