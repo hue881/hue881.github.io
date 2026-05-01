@@ -1,1 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Day 15 · Activity Sheet — Build a Recommender</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f4fbff; --ink:#1f2a37; --muted:#5b6b7e; --line:rgba(11,99,206,0.16);
+  --blue:#0b63ce; --green:#10b981; --amber:#f59e0b; --red:#ef4444;
+  --paper:#ffffff;
+}
+*,*::before,*::after{box-sizing:border-box;}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:"Nunito",Arial,sans-serif;line-height:1.5;}
+.page{max-width:840px;margin:24px auto;padding:28px 36px;background:var(--paper);
+  box-shadow:0 8px 28px rgba(15,23,42,0.07); border-radius:18px; position:relative; overflow:hidden;}
+h1,h2,h3{font-family:"Fredoka","Trebuchet MS",sans-serif; line-height:1.18; margin:0;}
+h1{font-size:1.9rem; font-weight:700;}
+h2{font-size:1.25rem; font-weight:700; margin-bottom:6px;}
+h3{font-size:1rem; font-weight:600; margin-bottom:6px;}
+p{margin:6px 0;}
+.grad-text{background:linear-gradient(135deg,#0b63ce 0%,#10b981 50%,#f59e0b 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:3px 11px;border-radius:999px;border:1px solid rgba(148,163,184,0.5);background:#fff;font-size:0.7rem;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;color:var(--blue);}
+.pill.green{color:#047857;background:rgba(16,185,129,0.08);}
+.pill.amber{color:#b45309;background:rgba(245,158,11,0.08);}
+.pill.red{color:#b91c1c;background:rgba(239,68,68,0.08);}
+.pill.purple{color:#6d28d9;background:rgba(124,58,237,0.08);}
+hr{border:none;border-top:1px dashed var(--line);margin:14px 0;}
+header.title-bar{display:flex;justify-content:space-between;align-items:flex-end;gap:14px;flex-wrap:wrap;border-bottom:2px solid var(--line);padding-bottom:12px;margin-bottom:14px;}
+.namebox{font-size:0.78rem;color:var(--muted);}
+.card{border-radius:13px;padding:13px 16px;border:1px solid var(--line);background:#fff;margin:10px 0;}
+.card.blue{border-left:5px solid var(--blue);}
+.card.green{border-left:5px solid var(--green);}
+.card.amber{border-left:5px solid var(--amber);}
+.card.red{border-left:5px solid var(--red);}
+.card.purple{border-left:5px solid #7c3aed;}
+.card.tinted-blue{background:rgba(11,99,206,0.05);}
+.card.tinted-green{background:rgba(16,185,129,0.06);}
+.card.tinted-amber{background:rgba(245,158,11,0.07);}
+.card.tinted-purple{background:rgba(124,58,237,0.05);}
+ul,ol{margin:6px 0 6px 20px;padding:0;}
+ul li,ol li{margin:3px 0;}
+.code{background:#1e293b;color:#e2e8f0;border-radius:10px;padding:11px 14px;font-family:"Fira Code",Consolas,monospace;font-size:0.82rem;line-height:1.55;overflow-x:auto;}
+.code .kw{color:#93c5fd;} .code .cm{color:#64748b;font-style:italic;} .code .st{color:#86efac;} .code .nb{color:#fcd34d;}
+table{border-collapse:collapse;width:100%;margin:8px 0;font-size:0.88rem;}
+th,td{border:1px solid #cbd5e1;padding:6px 8px;text-align:center;}
+th{background:rgba(11,99,206,0.07);font-weight:700;color:var(--blue);}
+td.label{text-align:left;font-weight:700;background:#f8fafc;}
+.q{display:flex;gap:8px;align-items:flex-start;margin:6px 0;}
+.q .num{flex:0 0 28px;height:28px;border-radius:50%;background:rgba(11,99,206,0.1);color:var(--blue);font-weight:800;display:flex;align-items:center;justify-content:center;font-size:0.85rem;}
+.q .body{flex:1;}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+@media(max-width:640px){.two-col{grid-template-columns:1fr;}}
+.tag{display:inline-block;padding:2px 8px;border-radius:999px;font-size:0.72rem;font-weight:700;background:rgba(11,99,206,0.08);color:var(--blue);}
+.tag.g{background:rgba(16,185,129,0.1);color:#047857;}
+.tag.a{background:rgba(245,158,11,0.1);color:#b45309;}
+.tag.r{background:rgba(239,68,68,0.1);color:#b91c1c;}
+.tag.p{background:rgba(124,58,237,0.1);color:#6d28d9;}
+.note{font-size:0.78rem;color:var(--muted);}
+.expected-out{background:#0f172a;color:#e2e8f0;border-radius:8px;padding:9px 12px;font-family:"Fira Code",Consolas,monospace;font-size:0.78rem;line-height:1.55;}
+.brand{font-size:0.7rem;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;}
+.row-tight{margin:4px 0;}
 
+/* form inputs */
+.tinput, .ttextarea, .tcell{
+  font-family:"Nunito",Arial,sans-serif; color:var(--ink); font-size:0.95rem;
+  border:none; border-bottom:1.5px solid var(--ink); background:transparent;
+  outline:none; padding:2px 4px; transition:background 0.15s, border-color 0.15s;
+}
+.tinput:focus,.ttextarea:focus,.tcell:focus{background:rgba(11,99,206,0.06);border-color:var(--blue);}
+.tinput.short{width:80px;} .tinput.med{width:140px;} .tinput.long{width:220px;} .tinput.full{width:100%;}
+.tinput.line{display:block;width:100%;margin:6px 0;}
+.tinput.mono{font-family:"Fira Code",Consolas,monospace;font-size:0.88rem;}
+.ttextarea{display:block;width:100%;border:1px dashed #94a3b8;background:rgba(255,255,255,0.6);
+  border-radius:8px;padding:8px 10px;min-height:64px;line-height:1.5;resize:vertical;font-size:0.92rem;}
+.ttextarea.tall{min-height:110px;} .ttextarea.huge{min-height:180px;}
+.ttextarea.code-area{font-family:"Fira Code",Consolas,monospace;font-size:0.85rem;background:#f8fafc;}
+.ttextarea:focus{background:rgba(11,99,206,0.04);border-color:var(--blue);border-style:solid;}
+.tcell{display:block;width:100%;text-align:center;border:none;border-radius:4px;font-size:0.92rem;padding:4px 2px;}
+.tcell:focus{background:rgba(11,99,206,0.07);}
+.namebox .tinput{font-size:0.85rem;width:160px;}
+.namebox .tinput.med{width:130px;}
+
+.cb{appearance:none;-webkit-appearance:none;width:16px;height:16px;border:1.5px solid var(--ink);
+  border-radius:3px;vertical-align:-3px;margin-right:5px;cursor:pointer;background:#fff;
+  position:relative;transition:background 0.15s,border-color 0.15s;}
+.cb:checked{background:var(--blue);border-color:var(--blue);}
+.cb:checked::after{content:"✓";position:absolute;top:-3px;left:1px;color:#fff;font-size:14px;font-weight:800;}
+label.cb-label{display:inline-flex;align-items:center;cursor:pointer;margin-right:14px;}
+.rb{appearance:none;-webkit-appearance:none;width:16px;height:16px;border:1.5px solid var(--ink);
+  border-radius:50%;vertical-align:-3px;margin-right:5px;cursor:pointer;background:#fff;
+  position:relative;transition:background 0.15s,border-color 0.15s;}
+.rb:checked{border-color:var(--blue);}
+.rb:checked::after{content:"";position:absolute;inset:3px;border-radius:50%;background:var(--blue);}
+
+.toolbar{position:fixed;top:14px;right:14px;display:flex;gap:8px;z-index:50;}
+.btn{background:var(--blue);color:#fff;border:none;border-radius:999px;padding:9px 16px;
+  font-weight:800;font-size:0.74rem;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;
+  box-shadow:0 6px 20px rgba(11,99,206,0.35);font-family:"Nunito",sans-serif;}
+.btn:hover{transform:translateY(-1px);}
+.btn.alt{background:#fff;color:var(--blue);border:1.5px solid var(--blue);box-shadow:0 4px 12px rgba(15,23,42,0.06);}
+.btn.warn{background:#fff;color:var(--red);border:1.5px solid var(--red);box-shadow:0 4px 12px rgba(15,23,42,0.06);}
+.savestate{position:fixed;top:62px;right:14px;font-size:0.7rem;color:var(--muted);
+  background:#fff;border-radius:999px;padding:4px 12px;border:1px solid var(--line);
+  z-index:49;opacity:0;transition:opacity 0.3s;}
+.savestate.show{opacity:1;}
+.kv-table th{font-size:0.78rem;}
+
+@media print{
+  body{background:#fff;}
+  .page{box-shadow:none;border-radius:0;margin:0;max-width:none;padding:24px 30px;page-break-after:always;}
+  .page:last-of-type{page-break-after:auto;}
+  .toolbar,.savestate{display:none;}
+  .tinput,.ttextarea,.tcell{border-color:#1f2a37 !important;background:transparent !important;}
+  .ttextarea{border-style:dashed !important;}
+}
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <button class="btn" onclick="window.print()">🖨️ Print</button>
+  <button class="btn alt" onclick="saveNow()">💾 Save</button>
+  <button class="btn warn" onclick="resetAll()">↺ Reset</button>
+</div>
+<div class="savestate" id="savestate">Saved ✓</div>
+
+<!-- =================== PAGE 1 =================== -->
+<section class="page">
+  <header class="title-bar">
+    <div>
+      <p class="brand">Day 15 · AI &amp; Coding · Spring 2026 · Advanced</p>
+      <h1 class="grad-text">Build a Recommender System 🎯</h1>
+      <p class="note">A two-algorithm Python build — average-rating <em>and</em> personalized. ~60 minutes.</p>
+    </div>
+    <div class="namebox">
+      <p>Name: <input class="tinput" type="text" data-key="name" placeholder="your name"></p>
+      <p>Date: <input class="tinput med" type="text" data-key="date" placeholder="MM/DD"></p>
+      <p>Partner: <input class="tinput" type="text" data-key="partner" placeholder="partner name"></p>
+    </div>
+  </header>
+
+  <div class="two-col">
+    <div class="card blue tinted-blue">
+      <span class="pill">What you'll build</span>
+      <ol>
+        <li><strong>v1</strong> — Average-rating recommender for the whole class</li>
+        <li><strong>v2</strong> — Personalized recommender (one ranking per user)</li>
+        <li><strong>Stretch</strong> — A "look-alike" recommender (the seed of collaborative filtering)</li>
+      </ol>
+    </div>
+    <div class="card green tinted-green">
+      <span class="pill green">What you need</span>
+      <ul>
+        <li>Python 3 (Replit, Thonny, or VS Code)</li>
+        <li>Comfort with lists, dictionaries, loops, <code>sum()</code> &amp; <code>len()</code></li>
+        <li>A partner to test ideas with</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2 style="margin-top:14px;">🧠 Vocabulary Check</h2>
+  <p class="note">Choose the meaning that fits each term.</p>
+  <table class="kv-table">
+    <thead><tr><th style="width:24%;">Term</th><th>Meaning</th></tr></thead>
+    <tbody>
+      <tr><td class="label">Recommender</td>
+        <td style="text-align:left;"><select class="tinput full" data-key="match-recommender">
+          <option value="">— choose —</option>
+          <option>Code whose only job is to pick what to show next</option>
+          <option>A list ordered from best to worst</option>
+          <option>A number describing how much someone liked an item</option>
+          <option>A summary of what most people thought</option>
+          <option>Showing each person a different ranking</option>
+          <option>The new-item / new-user "no data yet" issue</option>
+        </select></td></tr>
+      <tr><td class="label">Rating</td>
+        <td style="text-align:left;"><select class="tinput full" data-key="match-rating">
+          <option value="">— choose —</option>
+          <option>Code whose only job is to pick what to show next</option>
+          <option>A list ordered from best to worst</option>
+          <option>A number describing how much someone liked an item</option>
+          <option>A summary of what most people thought</option>
+          <option>Showing each person a different ranking</option>
+          <option>The new-item / new-user "no data yet" issue</option>
+        </select></td></tr>
+      <tr><td class="label">Average</td>
+        <td style="text-align:left;"><select class="tinput full" data-key="match-average">
+          <option value="">— choose —</option>
+          <option>Code whose only job is to pick what to show next</option>
+          <option>A list ordered from best to worst</option>
+          <option>A number describing how much someone liked an item</option>
+          <option>A summary of what most people thought</option>
+          <option>Showing each person a different ranking</option>
+          <option>The new-item / new-user "no data yet" issue</option>
+        </select></td></tr>
+      <tr><td class="label">Ranking</td>
+        <td style="text-align:left;"><select class="tinput full" data-key="match-ranking">
+          <option value="">— choose —</option>
+          <option>Code whose only job is to pick what to show next</option>
+          <option>A list ordered from best to worst</option>
+          <option>A number describing how much someone liked an item</option>
+          <option>A summary of what most people thought</option>
+          <option>Showing each person a different ranking</option>
+          <option>The new-item / new-user "no data yet" issue</option>
+        </select></td></tr>
+      <tr><td class="label">Personalization</td>
+        <td style="text-align:left;"><select class="tinput full" data-key="match-personalization">
+          <option value="">— choose —</option>
+          <option>Code whose only job is to pick what to show next</option>
+          <option>A list ordered from best to worst</option>
+          <option>A number describing how much someone liked an item</option>
+          <option>A summary of what most people thought</option>
+          <option>Showing each person a different ranking</option>
+          <option>The new-item / new-user "no data yet" issue</option>
+        </select></td></tr>
+      <tr><td class="label">Cold start</td>
+        <td style="text-align:left;"><select class="tinput full" data-key="match-coldstart">
+          <option value="">— choose —</option>
+          <option>Code whose only job is to pick what to show next</option>
+          <option>A list ordered from best to worst</option>
+          <option>A number describing how much someone liked an item</option>
+          <option>A summary of what most people thought</option>
+          <option>Showing each person a different ranking</option>
+          <option>The new-item / new-user "no data yet" issue</option>
+        </select></td></tr>
+    </tbody>
+  </table>
+
+  <h2 style="margin-top:14px;">✋ Warm-Up · Predict the Averages</h2>
+  <p>Compute by hand, then check with code on Page 2.</p>
+  <table>
+    <thead><tr><th>Game</th><th>Votes</th><th>Sum</th><th>Count</th><th>Average</th></tr></thead>
+    <tbody>
+      <tr><td class="label">🏁 Racing</td><td>[1, 1, 0, 1, 1]</td>
+        <td><input class="tcell" data-key="racing-sum" value="4"></td>
+        <td><input class="tcell" data-key="racing-n" value="5"></td>
+        <td><input class="tcell" data-key="racing-avg" value="0.8"></td></tr>
+      <tr><td class="label">🧩 Puzzle</td><td>[1, 0, 0, 1, 0]</td>
+        <td><input class="tcell" data-key="puzzle-sum"></td>
+        <td><input class="tcell" data-key="puzzle-n"></td>
+        <td><input class="tcell" data-key="puzzle-avg"></td></tr>
+      <tr><td class="label">🎯 Shooter</td><td>[0, 0, 1, 0, 0]</td>
+        <td><input class="tcell" data-key="shooter-sum"></td>
+        <td><input class="tcell" data-key="shooter-n"></td>
+        <td><input class="tcell" data-key="shooter-avg"></td></tr>
+      <tr><td class="label">⚽ Sports</td><td>[1, 1, 1, 1, 1]</td>
+        <td><input class="tcell" data-key="sports-sum"></td>
+        <td><input class="tcell" data-key="sports-n"></td>
+        <td><input class="tcell" data-key="sports-avg"></td></tr>
+    </tbody>
+  </table>
+  <div class="card amber tinted-amber">
+    <p class="row-tight"><strong>🥇 Predicted top game:</strong> <input class="tinput long" data-key="predicted-top" placeholder="Type the winner"></p>
+    <p class="row-tight"><strong>📐 Edge case:</strong> If a game has zero votes, what should the algorithm do? (Be specific.)</p>
+    <input class="tinput full" data-key="zero-vote-edge" placeholder="Type your answer">
+  </div>
+</section>
+
+<!-- =================== PAGE 2 =================== -->
+<section class="page">
+  <header class="title-bar">
+    <div>
+      <span class="pill">Part 1 · v1 · Average-Rating Recommender</span>
+      <h1 class="grad-text" style="font-size:1.55rem;">Code &amp; verify 💻</h1>
+    </div>
+    <div class="namebox"><p class="note">Save the file as <code>recommender_v1.py</code></p></div>
+  </header>
+
+  <div class="card blue">
+    <h2><span class="tag">Build it</span> Type this exactly</h2>
+    <div class="code">
+<span class="nb">ratings</span> = {
+    <span class="st">'Racing'</span>:  [<span class="kw">1</span>, <span class="kw">1</span>, <span class="kw">0</span>, <span class="kw">1</span>, <span class="kw">1</span>],
+    <span class="st">'Puzzle'</span>:  [<span class="kw">1</span>, <span class="kw">0</span>, <span class="kw">0</span>, <span class="kw">1</span>, <span class="kw">0</span>],
+    <span class="st">'Shooter'</span>: [<span class="kw">0</span>, <span class="kw">0</span>, <span class="kw">1</span>, <span class="kw">0</span>, <span class="kw">0</span>],
+    <span class="st">'Sports'</span>:  [<span class="kw">1</span>, <span class="kw">1</span>, <span class="kw">1</span>, <span class="kw">1</span>, <span class="kw">1</span>],
+}
+
+<span class="nb">averages</span> = {}
+<span class="kw">for</span> game, votes <span class="kw">in</span> ratings.items():
+    averages[game] = <span class="nb">sum</span>(votes) / <span class="nb">len</span>(votes)
+
+<span class="kw">for</span> game, score <span class="kw">in</span> averages.items():
+    <span class="nb">print</span>(game, <span class="st">'->'</span>, <span class="nb">round</span>(score, <span class="kw">2</span>))
+
+best_game = <span class="nb">max</span>(averages, key=averages.get)
+<span class="nb">print</span>(<span class="st">'Recommended first:'</span>, best_game)
+    </div>
+    <p class="row-tight" style="margin-top:8px;">
+      <label class="cb-label"><input type="checkbox" class="cb" data-key="v1-runs"> It runs without errors.</label>
+      <label class="cb-label"><input type="checkbox" class="cb" data-key="v1-matches"> Output matches my Page-1 predictions.</label>
+    </p>
+    <p class="row-tight"><strong>Paste your full output:</strong></p>
+    <textarea class="ttextarea code-area" data-key="v1-output" placeholder="Racing -> 0.8&#10;Puzzle -> 0.4&#10;..."></textarea>
+  </div>
+
+  <h2 style="margin-top:10px;">🔍 Code Detective — answer in your own words</h2>
+  <div class="card blue tinted-blue">
+    <div class="q"><div class="num">1</div><div class="body">
+      What does <code style="background:#fff;padding:1px 5px;border-radius:4px;font-family:monospace;">.items()</code> hand back to us each loop iteration?
+      <input class="tinput line" data-key="q-items" placeholder="Your answer">
+    </div></div>
+    <div class="q"><div class="num">2</div><div class="body">
+      Why divide by <code style="background:#fff;padding:1px 5px;border-radius:4px;font-family:monospace;">len(votes)</code> rather than literally by <code>5</code>?
+      <input class="tinput line" data-key="q-len" placeholder="Your answer">
+    </div></div>
+    <div class="q"><div class="num">3</div><div class="body">
+      What does <code style="background:#fff;padding:1px 5px;border-radius:4px;font-family:monospace;">key=averages.get</code> tell <code>max()</code> to compare?
+      <textarea class="ttextarea" data-key="q-key" placeholder="Your answer"></textarea>
+    </div></div>
+    <div class="q"><div class="num">4</div><div class="body">
+      Big-O thinking: if I had <strong>1,000,000</strong> games and <strong>100</strong> votes each, roughly how many additions would the loop perform? Show your reasoning.
+      <input class="tinput line" data-key="q-bigo" placeholder="e.g. 100,000,000 because...">
+    </div></div>
+  </div>
+
+  <h2 style="margin-top:10px;">🧪 Failure Hunt — push the algorithm until it breaks</h2>
+  <div class="card amber">
+    <p class="row-tight"><strong>Mod A.</strong> Add a 5th game <code>'Coding'</code> with votes <code>[1,1,1,1,0]</code>. Does it dethrone Sports? <strong>Why?</strong></p>
+    <input class="tinput full" data-key="modA" placeholder="Your answer">
+  </div>
+  <div class="card red">
+    <p class="row-tight"><strong>Mod B.</strong> Add a brand-new game <code>'Indie'</code> with an <em>empty</em> list <code>[]</code>. What does Python do? Defend the design choice you'd make.</p>
+    <textarea class="ttextarea" data-key="modB" placeholder="Your answer"></textarea>
+  </div>
+  <div class="card amber">
+    <p class="row-tight"><strong>Mod C.</strong> A game has just <strong>one</strong> vote: <code>[1]</code>. Its average is <code>1.0</code> — beating Sports' <code>1.0</code> on a tiebreak. Is that fair? What's a smarter rule?</p>
+    <textarea class="ttextarea" data-key="modC" placeholder="Your answer"></textarea>
+  </div>
+</section>
+
+<!-- =================== PAGE 3 =================== -->
+<section class="page">
+  <header class="title-bar">
+    <div>
+      <span class="pill green">Part 2 · v2 · Personalized Recommender</span>
+      <h1 class="grad-text" style="font-size:1.55rem;">One ranking per user 🧍🧍</h1>
+    </div>
+    <div class="namebox"><p class="note">Save as <code>recommender_v2.py</code></p></div>
+  </header>
+
+  <div class="card green">
+    <h2><span class="tag g">Build it</span> Nested dictionaries + sorted ranking</h2>
+    <div class="code">
+<span class="nb">player_ratings</span> = {
+    <span class="st">'Alex'</span>:   {<span class="st">'Racing'</span>:[<span class="kw">1</span>,<span class="kw">1</span>,<span class="kw">1</span>],
+                <span class="st">'Puzzle'</span>:[<span class="kw">1</span>,<span class="kw">1</span>,<span class="kw">0</span>],
+                <span class="st">'Shooter'</span>:[<span class="kw">0</span>,<span class="kw">0</span>,<span class="kw">0</span>]},
+    <span class="st">'Jordan'</span>: {<span class="st">'Racing'</span>:[<span class="kw">0</span>,<span class="kw">1</span>,<span class="kw">0</span>],
+                <span class="st">'Puzzle'</span>:[<span class="kw">1</span>,<span class="kw">1</span>,<span class="kw">1</span>],
+                <span class="st">'Shooter'</span>:[<span class="kw">1</span>,<span class="kw">1</span>,<span class="kw">0</span>]},
+}
+
+<span class="kw">for</span> name, games <span class="kw">in</span> player_ratings.items():
+    <span class="nb">print</span>(<span class="st">'\nRecommendations for'</span>, name)
+    averages = {g: <span class="nb">sum</span>(v)/<span class="nb">len</span>(v) <span class="kw">for</span> g,v <span class="kw">in</span> games.items()}
+    ranked = <span class="nb">sorted</span>(averages.items(),
+        key=<span class="kw">lambda</span> item: item[<span class="kw">1</span>],
+        reverse=<span class="kw">True</span>)
+    <span class="kw">for</span> game, score <span class="kw">in</span> ranked:
+        <span class="nb">print</span>(<span class="st">' '</span>, game, <span class="st">'->'</span>, <span class="nb">round</span>(score, <span class="kw">2</span>))
+    </div>
+    <p class="row-tight" style="margin-top:8px;">
+      <label class="cb-label"><input type="checkbox" class="cb" data-key="v2-runs"> Runs without errors.</label>
+      <label class="cb-label"><input type="checkbox" class="cb" data-key="v2-two-rankings"> I see <strong>two</strong> separate rankings printed.</label>
+    </p>
+  </div>
+
+  <h2 style="margin-top:10px;">📋 Trace each user's ranking</h2>
+  <div class="two-col">
+    <div class="card blue">
+      <h3>Alex's ranking (top → bottom)</h3>
+      <ol>
+        <li><input class="tinput full" data-key="alex-rank-1" placeholder="game and score"></li>
+        <li><input class="tinput full" data-key="alex-rank-2" placeholder="game and score"></li>
+        <li><input class="tinput full" data-key="alex-rank-3" placeholder="game and score"></li>
+      </ol>
+    </div>
+    <div class="card green">
+      <h3>Jordan's ranking (top → bottom)</h3>
+      <ol>
+        <li><input class="tinput full" data-key="jordan-rank-1" placeholder="game and score"></li>
+        <li><input class="tinput full" data-key="jordan-rank-2" placeholder="game and score"></li>
+        <li><input class="tinput full" data-key="jordan-rank-3" placeholder="game and score"></li>
+      </ol>
+    </div>
+  </div>
+
+  <h2 style="margin-top:10px;">🔬 Reason about the changes</h2>
+  <div class="card green tinted-green">
+    <div class="q"><div class="num">1</div><div class="body">
+      The outer loop runs <strong><input class="tinput short" data-key="outer-loops"></strong> times — why?
+      The inner part runs <strong><input class="tinput short" data-key="inner-loops"></strong> times per user — why?
+    </div></div>
+    <div class="q"><div class="num">2</div><div class="body">
+      What does <code style="background:#fff;padding:1px 5px;border-radius:4px;font-family:monospace;">lambda item: item[1]</code> do — and why <code>item[1]</code> instead of <code>item[0]</code>?
+      <input class="tinput line" data-key="q-lambda" placeholder="Your answer">
+    </div></div>
+    <div class="q"><div class="num">3</div><div class="body">
+      What does <code style="background:#fff;padding:1px 5px;border-radius:4px;font-family:monospace;">reverse=True</code> change about the output? What if we left it off?
+      <input class="tinput line" data-key="q-reverse" placeholder="Your answer">
+    </div></div>
+    <div class="q"><div class="num">4</div><div class="body">
+      The inner part uses a <em>dictionary comprehension</em>: <code style="background:#fff;padding:1px 5px;border-radius:4px;font-family:monospace;">{g: sum(v)/len(v) for g,v in games.items()}</code>. Rewrite that as a regular for-loop in plain Python.
+      <textarea class="ttextarea code-area" data-key="q-rewrite" placeholder="averages = {}&#10;for g, v in games.items():&#10;    ..."></textarea>
+    </div></div>
+  </div>
+</section>
+
+<!-- =================== PAGE 4 =================== -->
+<section class="page">
+  <header class="title-bar">
+    <div>
+      <span class="pill amber">Part 3 · Make It Yours</span>
+      <h1 class="grad-text" style="font-size:1.55rem;">Design a real recommender 🎨</h1>
+    </div>
+    <div class="namebox"><p class="note">Pick a domain &amp; collect realistic data.</p></div>
+  </header>
+
+  <div class="card blue tinted-blue">
+    <p class="row-tight"><strong>Step 1 · Domain.</strong></p>
+    <p class="row-tight">
+      <label class="cb-label"><input type="radio" name="domain" class="rb" data-key="domain-music"> 🎵 Songs</label>
+      <label class="cb-label"><input type="radio" name="domain" class="rb" data-key="domain-tv"> 📺 TV / Movies</label>
+      <label class="cb-label"><input type="radio" name="domain" class="rb" data-key="domain-books"> 📚 Books</label>
+      <label class="cb-label"><input type="radio" name="domain" class="rb" data-key="domain-snack"> 🍫 Snacks</label>
+      <label class="cb-label"><input type="radio" name="domain" class="rb" data-key="domain-other"> Other:</label>
+      <input class="tinput med" data-key="domain-other-text" placeholder="your domain">
+    </p>
+    <p class="row-tight"><strong>Step 2 · Why this domain?</strong> What makes it interesting for personalization?</p>
+    <input class="tinput full" data-key="domain-why" placeholder="Your answer">
+  </div>
+
+  <p style="margin-top:8px;"><strong>Step 3 · Survey 3 friends.</strong> Fill the matrix (1 = liked, 0 = didn't, blank = unknown).</p>
+  <table>
+    <thead>
+      <tr>
+        <th>User ↓ / Item →</th>
+        <th><input class="tcell" data-key="item-A" placeholder="Item A"></th>
+        <th><input class="tcell" data-key="item-B" placeholder="Item B"></th>
+        <th><input class="tcell" data-key="item-C" placeholder="Item C"></th>
+        <th><input class="tcell" data-key="item-D" placeholder="Item D"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="label"><input class="tcell" style="text-align:left;" data-key="user-1" placeholder="User 1"></td>
+        <td><input class="tcell" data-key="u1-A"></td><td><input class="tcell" data-key="u1-B"></td>
+        <td><input class="tcell" data-key="u1-C"></td><td><input class="tcell" data-key="u1-D"></td>
+      </tr>
+      <tr>
+        <td class="label"><input class="tcell" style="text-align:left;" data-key="user-2" placeholder="User 2"></td>
+        <td><input class="tcell" data-key="u2-A"></td><td><input class="tcell" data-key="u2-B"></td>
+        <td><input class="tcell" data-key="u2-C"></td><td><input class="tcell" data-key="u2-D"></td>
+      </tr>
+      <tr>
+        <td class="label"><input class="tcell" style="text-align:left;" data-key="user-3" placeholder="User 3"></td>
+        <td><input class="tcell" data-key="u3-A"></td><td><input class="tcell" data-key="u3-B"></td>
+        <td><input class="tcell" data-key="u3-C"></td><td><input class="tcell" data-key="u3-D"></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p style="margin-top:6px;"><strong>Step 4 · Type your finished Python program here.</strong> (Use the v1 or v2 structure — your call.)</p>
+  <textarea class="ttextarea code-area huge" data-key="my-code" placeholder="ratings = {
+    'Item A': [1, 0, 1],
+    ...
+}
+
+# your loop here..."></textarea>
+
+  <p style="margin-top:6px;"><strong>Step 5 · Run &amp; reflect.</strong></p>
+  <div class="card amber tinted-amber">
+    <p class="row-tight">My program recommended: <input class="tinput long" data-key="my-rec"></p>
+    <p class="row-tight">Did it match what each user would pick for themselves?
+      <label class="cb-label"><input type="radio" name="agree" class="rb" data-key="agree-yes"> Yes for all</label>
+      <label class="cb-label"><input type="radio" name="agree" class="rb" data-key="agree-some"> Yes for some</label>
+      <label class="cb-label"><input type="radio" name="agree" class="rb" data-key="agree-no"> No</label>
+    </p>
+    <p class="row-tight"><strong>Where it failed and why:</strong></p>
+    <textarea class="ttextarea" data-key="my-fail" placeholder="Type your reflection"></textarea>
+  </div>
+</section>
+
+<!-- =================== PAGE 5 =================== -->
+<section class="page">
+  <header class="title-bar">
+    <div>
+      <span class="pill purple">Part 4 · Stretch · Look-Alike Recommender</span>
+      <h1 class="grad-text" style="font-size:1.55rem;">The Netflix Prize idea 🥇</h1>
+    </div>
+    <div class="namebox"><p class="note">Optional but powerful. ~10 min.</p></div>
+  </header>
+
+  <div class="card purple tinted-purple">
+    <p class="row-tight"><strong>The challenge:</strong> Find Alex's <em>most similar</em> user, then recommend the one game Alex hasn't tried that the look-alike loved.</p>
+    <ol>
+      <li>Pick a similarity score. Easiest: count how many items two users <em>agreed on</em> (same 1 or same 0).</li>
+      <li>Run the score for every other user.</li>
+      <li>Pick the user with the highest similarity → that's the "look-alike".</li>
+      <li>Recommend the look-alike's top item that Alex hasn't rated.</li>
+    </ol>
+    <p class="row-tight"><strong>Pseudocode plan</strong> (write your version before coding):</p>
+    <textarea class="ttextarea code-area" data-key="lookalike-plan" placeholder="for other in users:&#10;    score = ...&#10;..."></textarea>
+  </div>
+
+  <div class="card purple">
+    <p class="row-tight"><strong>Your similarity function</strong> — paste the Python:</p>
+    <textarea class="ttextarea code-area tall" data-key="lookalike-code" placeholder="def similarity(a, b):&#10;    ..."></textarea>
+    <p class="row-tight"><strong>Result:</strong> Alex's look-alike is <input class="tinput long" data-key="lookalike-name" placeholder="user name"> with a similarity score of <input class="tinput short" data-key="lookalike-score">.</p>
+    <p class="row-tight"><strong>Recommendation for Alex:</strong> <input class="tinput long" data-key="lookalike-rec" placeholder="game name"></p>
+  </div>
+
+  <h2 style="margin-top:10px;">⚖️ Ethics &amp; Trade-offs</h2>
+  <div class="card red">
+    <div class="q"><div class="num">1</div><div class="body">
+      <strong>Filter bubble:</strong> If the algorithm only shows you what users like you already enjoyed, what kinds of content might you <em>never</em> discover?
+      <textarea class="ttextarea" data-key="ethics-bubble" placeholder="Your answer"></textarea>
+    </div></div>
+    <div class="q"><div class="num">2</div><div class="body">
+      <strong>Cold start:</strong> Suggest <em>two</em> different strategies a real app could use when a brand-new user signs up with zero ratings.
+      <input class="tinput line" data-key="ethics-coldA" placeholder="Strategy 1">
+      <input class="tinput line" data-key="ethics-coldB" placeholder="Strategy 2">
+    </div></div>
+    <div class="q"><div class="num">3</div><div class="body">
+      <strong>Whose interests?</strong> A platform's recommender can be tuned to maximize <em>your</em> happiness or the <em>company's</em> profit. Give one example where these goals could disagree.
+      <textarea class="ttextarea" data-key="ethics-interests" placeholder="Your answer"></textarea>
+    </div></div>
+  </div>
+
+  <h2 style="margin-top:10px;">🎟️ Exit Ticket — choose one prompt</h2>
+  <div class="card green tinted-green">
+    <p class="row-tight"><label class="cb-label"><input type="radio" name="exit" class="rb" data-key="exit-1"> When is average-rating the <em>right</em> tool for the job?</label></p>
+    <p class="row-tight"><label class="cb-label"><input type="radio" name="exit" class="rb" data-key="exit-2"> When does it fail a user, and what would you change?</label></p>
+    <p class="row-tight"><label class="cb-label"><input type="radio" name="exit" class="rb" data-key="exit-3"> What new question about algorithms are you walking out with?</label></p>
+    <textarea class="ttextarea tall" data-key="exit-answer" placeholder="2–3 sentences..."></textarea>
+  </div>
+
+  <hr>
+  <p class="note" style="text-align:center;">📬 Email a screenshot of all three programs + this exit ticket to <strong>hue.weng.88@gmail.com</strong> · Day 15 · Spring 2026 · Advanced</p>
+</section>
+
+<script>
+const STORE_KEY = "day15-activity-adv-v1";
+const fields = document.querySelectorAll('[data-key]');
+const stateEl = document.getElementById('savestate');
+let saveTimer = null;
+function loadAll(){
+  let data = {};
+  try { data = JSON.parse(localStorage.getItem(STORE_KEY) || "{}"); } catch(e){ data = {}; }
+  fields.forEach(el => {
+    const key = el.dataset.key;
+    if (!(key in data)) return;
+    if (el.type === "checkbox" || el.type === "radio") el.checked = !!data[key];
+    else el.value = data[key];
+  });
+}
+function collect(){
+  const data = {};
+  fields.forEach(el => {
+    const key = el.dataset.key;
+    if (el.type === "checkbox" || el.type === "radio") data[key] = el.checked;
+    else data[key] = el.value;
+  });
+  return data;
+}
+function saveAll(showToast = false){
+  localStorage.setItem(STORE_KEY, JSON.stringify(collect()));
+  if (showToast) showSaved();
+}
+function showSaved(){
+  stateEl.classList.add('show');
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => stateEl.classList.remove('show'), 1400);
+}
+function saveNow(){ saveAll(true); }
+function resetAll(){
+  if (!confirm('Erase all answers on this worksheet? This cannot be undone.')) return;
+  localStorage.removeItem(STORE_KEY);
+  fields.forEach(el => {
+    if (el.type === "checkbox" || el.type === "radio") el.checked = false;
+    else if (el.tagName === "SELECT") el.selectedIndex = 0;
+    else el.value = "";
+  });
+  const defaults = { "racing-sum":"4", "racing-n":"5", "racing-avg":"0.8" };
+  for (const k in defaults){
+    const el = document.querySelector(`[data-key="${k}"]`);
+    if (el) el.value = defaults[k];
+  }
+}
+fields.forEach(el => {
+  const evt = (el.type === "checkbox" || el.type === "radio" || el.tagName === "SELECT") ? "change" : "input";
+  el.addEventListener(evt, () => {
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(() => saveAll(true), 350);
+  });
+});
+loadAll();
+</script>
+</body>
+</html>
