@@ -3,603 +3,746 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Day 15 · Activity Sheet — Build a Recommender</title>
+<title>Activity Sheet · Python Image Edge Detection System</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
 <style>
-:root{
-  --bg:#f4fbff; --ink:#1f2a37; --muted:#5b6b7e; --line:rgba(11,99,206,0.16);
-  --blue:#0b63ce; --green:#10b981; --amber:#f59e0b; --red:#ef4444;
-  --paper:#ffffff;
-}
-*,*::before,*::after{box-sizing:border-box;}
-html,body{margin:0;background:var(--bg);color:var(--ink);font-family:"Nunito",Arial,sans-serif;line-height:1.5;}
-.page{max-width:840px;margin:24px auto;padding:28px 36px;background:var(--paper);
-  box-shadow:0 8px 28px rgba(15,23,42,0.07); border-radius:18px; position:relative; overflow:hidden;}
-h1,h2,h3{font-family:"Fredoka","Trebuchet MS",sans-serif; line-height:1.18; margin:0;}
-h1{font-size:1.9rem; font-weight:700;}
-h2{font-size:1.25rem; font-weight:700; margin-bottom:6px;}
-h3{font-size:1rem; font-weight:600; margin-bottom:6px;}
-p{margin:6px 0;}
-.grad-text{background:linear-gradient(135deg,#0b63ce 0%,#10b981 50%,#f59e0b 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-.pill{display:inline-flex;align-items:center;gap:6px;padding:3px 11px;border-radius:999px;border:1px solid rgba(148,163,184,0.5);background:#fff;font-size:0.7rem;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;color:var(--blue);}
-.pill.green{color:#047857;background:rgba(16,185,129,0.08);}
-.pill.amber{color:#b45309;background:rgba(245,158,11,0.08);}
-.pill.red{color:#b91c1c;background:rgba(239,68,68,0.08);}
-.pill.purple{color:#6d28d9;background:rgba(124,58,237,0.08);}
-hr{border:none;border-top:1px dashed var(--line);margin:14px 0;}
-header.title-bar{display:flex;justify-content:space-between;align-items:flex-end;gap:14px;flex-wrap:wrap;border-bottom:2px solid var(--line);padding-bottom:12px;margin-bottom:14px;}
-.namebox{font-size:0.78rem;color:var(--muted);}
-.card{border-radius:13px;padding:13px 16px;border:1px solid var(--line);background:#fff;margin:10px 0;}
-.card.blue{border-left:5px solid var(--blue);}
-.card.green{border-left:5px solid var(--green);}
-.card.amber{border-left:5px solid var(--amber);}
-.card.red{border-left:5px solid var(--red);}
-.card.purple{border-left:5px solid #7c3aed;}
-.card.tinted-blue{background:rgba(11,99,206,0.05);}
-.card.tinted-green{background:rgba(16,185,129,0.06);}
-.card.tinted-amber{background:rgba(245,158,11,0.07);}
-.card.tinted-purple{background:rgba(124,58,237,0.05);}
-ul,ol{margin:6px 0 6px 20px;padding:0;}
-ul li,ol li{margin:3px 0;}
-.code{background:#1e293b;color:#e2e8f0;border-radius:10px;padding:11px 14px;font-family:"Fira Code",Consolas,monospace;font-size:0.82rem;line-height:1.55;overflow-x:auto;}
-.code .kw{color:#93c5fd;} .code .cm{color:#64748b;font-style:italic;} .code .st{color:#86efac;} .code .nb{color:#fcd34d;}
-table{border-collapse:collapse;width:100%;margin:8px 0;font-size:0.88rem;}
-th,td{border:1px solid #cbd5e1;padding:6px 8px;text-align:center;}
-th{background:rgba(11,99,206,0.07);font-weight:700;color:var(--blue);}
-td.label{text-align:left;font-weight:700;background:#f8fafc;}
-.q{display:flex;gap:8px;align-items:flex-start;margin:6px 0;}
-.q .num{flex:0 0 28px;height:28px;border-radius:50%;background:rgba(11,99,206,0.1);color:var(--blue);font-weight:800;display:flex;align-items:center;justify-content:center;font-size:0.85rem;}
-.q .body{flex:1;}
-.two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
-@media(max-width:640px){.two-col{grid-template-columns:1fr;}}
-.tag{display:inline-block;padding:2px 8px;border-radius:999px;font-size:0.72rem;font-weight:700;background:rgba(11,99,206,0.08);color:var(--blue);}
-.tag.g{background:rgba(16,185,129,0.1);color:#047857;}
-.tag.a{background:rgba(245,158,11,0.1);color:#b45309;}
-.tag.r{background:rgba(239,68,68,0.1);color:#b91c1c;}
-.tag.p{background:rgba(124,58,237,0.1);color:#6d28d9;}
-.note{font-size:0.78rem;color:var(--muted);}
-.expected-out{background:#0f172a;color:#e2e8f0;border-radius:8px;padding:9px 12px;font-family:"Fira Code",Consolas,monospace;font-size:0.78rem;line-height:1.55;}
-.brand{font-size:0.7rem;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;}
-.row-tight{margin:4px 0;}
-
-/* form inputs */
-.tinput, .ttextarea, .tcell{
-  font-family:"Nunito",Arial,sans-serif; color:var(--ink); font-size:0.95rem;
-  border:none; border-bottom:1.5px solid var(--ink); background:transparent;
-  outline:none; padding:2px 4px; transition:background 0.15s, border-color 0.15s;
-}
-.tinput:focus,.ttextarea:focus,.tcell:focus{background:rgba(11,99,206,0.06);border-color:var(--blue);}
-.tinput.short{width:80px;} .tinput.med{width:140px;} .tinput.long{width:220px;} .tinput.full{width:100%;}
-.tinput.line{display:block;width:100%;margin:6px 0;}
-.tinput.mono{font-family:"Fira Code",Consolas,monospace;font-size:0.88rem;}
-.ttextarea{display:block;width:100%;border:1px dashed #94a3b8;background:rgba(255,255,255,0.6);
-  border-radius:8px;padding:8px 10px;min-height:64px;line-height:1.5;resize:vertical;font-size:0.92rem;}
-.ttextarea.tall{min-height:110px;} .ttextarea.huge{min-height:180px;}
-.ttextarea.code-area{font-family:"Fira Code",Consolas,monospace;font-size:0.85rem;background:#f8fafc;}
-.ttextarea:focus{background:rgba(11,99,206,0.04);border-color:var(--blue);border-style:solid;}
-.tcell{display:block;width:100%;text-align:center;border:none;border-radius:4px;font-size:0.92rem;padding:4px 2px;}
-.tcell:focus{background:rgba(11,99,206,0.07);}
-.namebox .tinput{font-size:0.85rem;width:160px;}
-.namebox .tinput.med{width:130px;}
-
-.cb{appearance:none;-webkit-appearance:none;width:16px;height:16px;border:1.5px solid var(--ink);
-  border-radius:3px;vertical-align:-3px;margin-right:5px;cursor:pointer;background:#fff;
-  position:relative;transition:background 0.15s,border-color 0.15s;}
-.cb:checked{background:var(--blue);border-color:var(--blue);}
-.cb:checked::after{content:"✓";position:absolute;top:-3px;left:1px;color:#fff;font-size:14px;font-weight:800;}
-label.cb-label{display:inline-flex;align-items:center;cursor:pointer;margin-right:14px;}
-.rb{appearance:none;-webkit-appearance:none;width:16px;height:16px;border:1.5px solid var(--ink);
-  border-radius:50%;vertical-align:-3px;margin-right:5px;cursor:pointer;background:#fff;
-  position:relative;transition:background 0.15s,border-color 0.15s;}
-.rb:checked{border-color:var(--blue);}
-.rb:checked::after{content:"";position:absolute;inset:3px;border-radius:50%;background:var(--blue);}
-
-.toolbar{position:fixed;top:14px;right:14px;display:flex;gap:8px;z-index:50;}
-.btn{background:var(--blue);color:#fff;border:none;border-radius:999px;padding:9px 16px;
-  font-weight:800;font-size:0.74rem;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;
-  box-shadow:0 6px 20px rgba(11,99,206,0.35);font-family:"Nunito",sans-serif;}
-.btn:hover{transform:translateY(-1px);}
-.btn.alt{background:#fff;color:var(--blue);border:1.5px solid var(--blue);box-shadow:0 4px 12px rgba(15,23,42,0.06);}
-.btn.warn{background:#fff;color:var(--red);border:1.5px solid var(--red);box-shadow:0 4px 12px rgba(15,23,42,0.06);}
-.savestate{position:fixed;top:62px;right:14px;font-size:0.7rem;color:var(--muted);
-  background:#fff;border-radius:999px;padding:4px 12px;border:1px solid var(--line);
-  z-index:49;opacity:0;transition:opacity 0.3s;}
-.savestate.show{opacity:1;}
-.kv-table th{font-size:0.78rem;}
-
-@media print{
-  body{background:#fff;}
-  .page{box-shadow:none;border-radius:0;margin:0;max-width:none;padding:24px 30px;page-break-after:always;}
-  .page:last-of-type{page-break-after:auto;}
-  .toolbar,.savestate{display:none;}
-  .tinput,.ttextarea,.tcell{border-color:#1f2a37 !important;background:transparent !important;}
-  .ttextarea{border-style:dashed !important;}
-}
+  :root {
+    --bg: #f4fbff; --surface: rgba(255,255,255,0.97);
+    --text: #1f2a37; --text2: #374151; --muted: #5b6b7e;
+    --a1: #0b63ce; --a2: #10b981; --a3: #f59e0b; --ar: #ef4444;
+    --fd: 'Fredoka','Trebuchet MS',sans-serif;
+    --fb: 'Nunito',Arial,sans-serif;
+    --fc: 'Fira Code',Consolas,monospace;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  @media print{
+    body{background:#fff!important}
+    .no-print{display:none!important}
+    .page-break{page-break-before:always}
+    .card{box-shadow:none!important;border:1.5px solid #d1d5db!important}
+  }
+  body{font-family:var(--fb);color:var(--text);background:var(--bg);min-height:100vh}
+  /* ── PRINT BAR ── */
+  .print-bar{background:rgba(255,255,255,0.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(148,163,184,.3);padding:10px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;gap:12px;flex-wrap:wrap}
+  .bar-title{font-family:var(--fd);font-size:1.05rem;font-weight:700;color:var(--a1)}
+  .bar-sub{font-size:.78rem;color:var(--muted)}
+  .btn-print{background:var(--a1);color:#fff;border:none;padding:8px 20px;border-radius:999px;font-family:var(--fb);font-size:.82rem;font-weight:800;cursor:pointer;letter-spacing:.06em;transition:background .2s,transform .15s}
+  .btn-print:hover{background:#0952b0;transform:translateY(-1px)}
+  /* ── PAGE ── */
+  .page{max-width:920px;margin:0 auto;padding:32px 24px 60px}
+  /* ── HEADER ── */
+  .sheet-header{background:linear-gradient(135deg,#0b63ce 0%,#10b981 60%,#f59e0b 100%);border-radius:20px;padding:28px 32px 24px;color:#fff;margin-bottom:28px;position:relative;overflow:hidden}
+  .sheet-header::before{content:'';position:absolute;top:-60px;right:-60px;width:200px;height:200px;background:rgba(255,255,255,.08);border-radius:50%}
+  .sheet-header::after{content:'';position:absolute;bottom:-40px;left:-40px;width:140px;height:140px;background:rgba(255,255,255,.06);border-radius:50%}
+  .header-emoji{font-size:2.8rem;margin-bottom:6px}
+  .header-day{font-size:.75rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;opacity:.85;margin-bottom:4px}
+  .header-title{font-family:var(--fd);font-size:clamp(1.6rem,4vw,2.4rem);font-weight:700;line-height:1.1;margin-bottom:6px}
+  .header-sub{font-size:.88rem;opacity:.85;margin-bottom:14px}
+  .header-pills{display:flex;gap:8px;flex-wrap:wrap}
+  .header-pill{background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:4px 14px;font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+  /* ── STUDENT INFO ── */
+  .student-info{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:28px}
+  @media(max-width:600px){.student-info{grid-template-columns:1fr}}
+  .info-field{background:var(--surface);border-radius:12px;padding:12px 14px;border:1.5px solid rgba(11,99,206,.14);box-shadow:0 2px 8px rgba(15,23,42,.05)}
+  .info-label{font-size:.65rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--a1);margin-bottom:6px}
+  /* ── SHARED INPUT STYLES ── */
+  input[type=text], textarea, select {
+    font-family:var(--fb);font-size:.88rem;color:var(--text);background:#fff;
+    border:1.5px solid #cbd5e1;border-radius:7px;outline:none;
+    transition:border-color .2s,box-shadow .2s;
+    width:100%;
+  }
+  input[type=text]:focus, textarea:focus {
+    border-color:var(--a1);box-shadow:0 0 0 3px rgba(11,99,206,.12);
+  }
+  .info-line{border:none;border-bottom:1.5px solid #cbd5e1;border-radius:0;padding:4px 2px;background:transparent;display:block}
+  .info-line:focus{border-bottom-color:var(--a1);box-shadow:none}
+  /* single-line write field */
+  .wline{
+    display:block;width:100%;padding:5px 10px;
+    margin-bottom:9px;
+    border:none;border-bottom:1.5px solid #cbd5e1;border-radius:0;
+    background:transparent;font-family:var(--fb);font-size:.85rem;color:var(--text);
+    outline:none;transition:border-color .2s;
+  }
+  .wline:focus{border-bottom-color:var(--a1)}
+  /* multi-line textarea */
+  .warea{
+    display:block;width:100%;padding:8px 10px;
+    min-height:72px;resize:vertical;
+    background:#f8fafc;border-radius:8px;
+    font-family:var(--fb);font-size:.84rem;color:var(--text);line-height:1.5;
+  }
+  /* blank fill-in (inline inside code) */
+  .blank{
+    display:inline-block;background:rgba(251,191,36,.18);
+    border-bottom:2px solid #f59e0b;border-radius:3px;
+    vertical-align:middle;margin:0 2px;
+  }
+  .blankinput{
+    display:inline-block;vertical-align:middle;margin:0 3px;
+    background:rgba(251,191,36,.13);border:none;border-bottom:2px solid #f59e0b;
+    border-radius:3px;padding:1px 4px;font-family:var(--fc);font-size:.78rem;
+    color:#fcd34d;width:60px;outline:none;text-align:center;
+  }
+  .blankinput.wide{width:90px}
+  .blankinput:focus{background:rgba(251,191,36,.25);border-bottom-color:#e07c00}
+  /* predict grid input cells */
+  .pred-input{
+    width:50px;height:48px;text-align:center;
+    font-family:var(--fc);font-size:.92rem;font-weight:700;
+    border:2px dashed #cbd5e1;border-radius:8px;background:#f8fafc;
+    color:var(--text);padding:0;
+  }
+  .pred-input:focus{border-color:var(--a1);background:#eff6ff}
+  /* pixel grid design cells */
+  .pxinput{
+    width:48px;height:48px;text-align:center;
+    font-family:var(--fc);font-size:.9rem;font-weight:700;
+    border:2px dashed #cbd5e1;border-radius:8px;background:#f8fafc;
+    color:var(--text);padding:0;transition:background .3s,color .3s;
+  }
+  .pxinput:focus{border-color:var(--a1)}
+  /* ── SECTION LABELS ── */
+  .section-label{display:inline-flex;align-items:center;gap:8px;padding:5px 16px;border-radius:999px;border:1px solid rgba(148,163,184,.4);background:rgba(255,255,255,.9);font-size:.72rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--a1);margin-bottom:10px}
+  .section-title{font-family:var(--fd);font-size:clamp(1.3rem,2.5vw,1.8rem);font-weight:700;margin-bottom:16px;color:var(--text);line-height:1.2}
+  /* ── CARDS ── */
+  .card{background:var(--surface);border-radius:16px;padding:18px 20px;box-shadow:0 4px 18px rgba(15,23,42,.07);border:1px solid rgba(255,255,255,.7);margin-bottom:16px}
+  .card.ab{border-left:4px solid var(--a1)}
+  .card.ag{border-left:4px solid var(--a2)}
+  .card.aa{border-left:4px solid var(--a3)}
+  .card.ar{border-left:4px solid var(--ar)}
+  .clabel{font-size:.68rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;margin-bottom:8px}
+  .clabel.b{color:var(--a1)}.clabel.g{color:#047857}.clabel.a{color:#b45309}.clabel.r{color:#b91c1c}
+  /* ── GRIDS ── */
+  .g2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .g3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  @media(max-width:680px){.g2,.g3{grid-template-columns:1fr}}
+  /* ── CODE ── */
+  .codeblock{background:#1e293b;color:#e2e8f0;border-radius:12px;padding:14px 18px;font-family:var(--fc);font-size:clamp(.68rem,1.1vw,.83rem);line-height:1.65;overflow-x:auto;border:1px solid rgba(255,255,255,.06);margin-bottom:12px;white-space:pre}
+  .kw{color:#93c5fd}.nb{color:#fcd34d}.st{color:#86efac}.cm{color:#64748b;font-style:italic}.op{color:#93c5fd}
+  /* ── PIXEL GRIDS ── */
+  .pgrid{display:grid;gap:4px;width:fit-content;margin:0 auto 10px}
+  .pgrid5{grid-template-columns:repeat(5,48px)}
+  .pgrid3{grid-template-columns:repeat(3,56px)}
+  .pcell{display:flex;align-items:center;justify-content:center;font-family:var(--fc);font-size:.9rem;font-weight:700;border-radius:8px;height:48px}
+  /* ── TIMELINE ── */
+  .timeline{position:relative;padding-left:22px}
+  .timeline::before{content:'';position:absolute;left:8px;top:4px;bottom:4px;width:3px;border-radius:999px;background:linear-gradient(to bottom,#0b63ce,#10b981)}
+  .tstep{position:relative;margin-bottom:12px}
+  .tdot{position:absolute;left:-15px;top:4px;width:12px;height:12px;border-radius:999px;border:2px solid #f4fbff;background:#0b63ce;box-shadow:0 0 0 3px rgba(11,99,206,.2)}
+  .tdot.g{background:#10b981}.tdot.a{background:#f59e0b}
+  /* ── TIP BOX ── */
+  .tip{border-radius:10px;padding:10px 14px;font-size:.8rem;line-height:1.5;margin-top:10px}
+  .tip.b{background:rgba(11,99,206,.07);color:#1e40af}
+  .tip.g{background:rgba(16,185,129,.07);color:#065f46}
+  .tip.a{background:rgba(245,158,11,.07);color:#92400e}
+  /* ── RUBRIC ── */
+  table.rub{width:100%;border-collapse:collapse;font-size:.82rem;margin-top:8px}
+  table.rub th{background:#1e293b;color:#e2e8f0;padding:8px 10px;text-align:left;font-weight:700;letter-spacing:.05em}
+  table.rub td{padding:8px 10px;border-bottom:1px solid #e2e8f0;vertical-align:top;color:var(--text2)}
+  table.rub tr:nth-child(even) td{background:rgba(241,245,249,.6)}
+  table.rub td:first-child{font-weight:700;color:var(--text)}
+  .pts{font-family:var(--fc);font-size:.75rem;font-weight:800;color:var(--a1);white-space:nowrap}
+  /* ── CHALLENGE BADGE ── */
+  .cbadge{display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff;padding:4px 14px;border-radius:999px;font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px}
+  /* ── FORMULA ── */
+  .fbox{background:#1e293b;color:#e2e8f0;border-radius:10px;padding:10px 16px;font-family:var(--fc);font-size:.9rem;text-align:center;margin-bottom:10px}
+  /* ── MISC ── */
+  .divider{border:none;border-top:2px dashed #dde6f0;margin:28px 0}
+  .checklist{list-style:none;padding:0}
+  .checklist li{display:flex;align-items:flex-start;gap:8px;font-size:.85rem;color:var(--text2);margin-bottom:8px;line-height:1.45}
+  .chkbox{flex-shrink:0;width:17px;height:17px;border:2px solid #94a3b8;border-radius:4px;margin-top:1px;background:#fff;display:inline-block}
+  .grad-text{background:linear-gradient(135deg,#0b63ce 0%,#10b981 50%,#f59e0b 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  p,li{font-size:.88rem;color:var(--text2);line-height:1.55}
+  strong{color:var(--text)}
+  code{background:#e0f2ff;padding:1px 6px;border-radius:4px;font-family:var(--fc);font-size:.82em;color:#0b63ce}
+  .mb1{margin-bottom:6px}.mb2{margin-bottom:10px}.mb3{margin-bottom:14px}
+  .mt2{margin-top:10px}.mt3{margin-top:14px}
+  .tc{text-align:center}.tm{color:var(--muted);font-size:.78rem}
+  .sheet-footer{margin-top:40px;padding:16px 20px;border-radius:12px;background:rgba(11,99,206,.05);border:1px solid rgba(11,99,206,.12);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:.76rem;color:var(--muted)}
 </style>
 </head>
 <body>
 
-<div class="toolbar">
-  <button class="btn" onclick="window.print()">🖨️ Print</button>
-  <button class="btn alt" onclick="saveNow()">💾 Save</button>
-  <button class="btn warn" onclick="resetAll()">↺ Reset</button>
+<!-- PRINT BAR -->
+<div class="print-bar no-print">
+  <div>
+    <div class="bar-title">🐍 Day 16 · Activity Sheet</div>
+    <div class="bar-sub">Python Image Edge Detection System · Ages 11–12</div>
+  </div>
+  <button class="btn-print" onclick="window.print()">🖨️ Print / Save as PDF</button>
 </div>
-<div class="savestate" id="savestate">Saved ✓</div>
 
-<!-- =================== PAGE 1 =================== -->
-<section class="page">
-  <header class="title-bar">
+<div class="page">
+
+<!-- ═══ HEADER ═══ -->
+<div class="sheet-header">
+  <div class="header-emoji">🐍📸</div>
+  <div class="header-day">Day 16 · AI for Images · Activity Sheet</div>
+  <div class="header-title">Build Your Own Python<br>Image Edge Detection System</div>
+  <div class="header-sub">From a 5×5 number grid → working filter → real edge detector</div>
+  <div class="header-pills">
+    <span class="header-pill">⏱ ~60 min</span>
+    <span class="header-pill">🐍 Python</span>
+    <span class="header-pill">Ages 11–12</span>
+    <span class="header-pill">Laplacian Filter</span>
+  </div>
+</div>
+
+<!-- ═══ STUDENT INFO ═══ -->
+<div class="student-info">
+  <div class="info-field">
+    <div class="info-label">👤 Your Name</div>
+    <input class="info-line" type="text" placeholder="First Last" />
+  </div>
+  <div class="info-field">
+    <div class="info-label">📅 Date</div>
+    <input class="info-line" type="text" placeholder="Month Day, Year" />
+  </div>
+  <div class="info-field">
+    <div class="info-label">🏫 Class / Period</div>
+    <input class="info-line" type="text" placeholder="Period ___" />
+  </div>
+</div>
+
+<!-- ═══ BEFORE YOU BEGIN ═══ -->
+<div class="section-label">🎯 Before You Begin</div>
+<div class="section-title">What This Activity Sheet Asks You to Build</div>
+<div class="g2 mb3">
+  <div class="card ab">
+    <div class="clabel b">🎯 Your Mission</div>
+    <p class="mb2">You will write a <strong>Python program</strong> that detects edges in an image — step by step, building from scratch.</p>
+    <div class="timeline">
+      <div class="tstep"><div class="tdot"></div><p><strong>Part 1</strong> — Vocabulary &amp; Formula Check</p></div>
+      <div class="tstep"><div class="tdot"></div><p><strong>Part 2</strong> — Fix the broken code (fill blanks)</p></div>
+      <div class="tstep"><div class="tdot"></div><p><strong>Part 3</strong> — Predict &amp; run filter on your own image</p></div>
+      <div class="tstep"><div class="tdot"></div><p><strong>Part 4</strong> — Write a <em>complete</em> edge detector in Python</p></div>
+      <div class="tstep" style="margin-bottom:0"><div class="tdot g"></div><p><strong>⭐ Part 5</strong> — Bonus: real image with <code>Pillow</code></p></div>
+    </div>
+  </div>
+  <div class="card ag">
+    <div class="clabel g">🔑 Key Formula</div>
+    <p class="mb2">Every answer today uses the <strong>Laplacian-style edge filter</strong>:</p>
+    <div class="fbox"><span style="color:#fcd34d">value</span> = <span style="color:#93c5fd">center × 4</span> − <span style="color:#fcd34d">(up + down + left + right)</span></div>
+    <ul style="list-style:disc;padding-left:18px">
+      <li><strong>Big positive value</strong> → edge detected 🔴</li>
+      <li><strong>Value near zero</strong> → flat region, no edge</li>
+      <li>We skip row / col 0 and the last row / col</li>
+    </ul>
+    <div class="tip b">💡 <strong>Predict before you run.</strong> If you can predict the output, you truly understand the code.</div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ═══ PART 1 ═══ -->
+<div class="section-label">📖 Part 1 of 5</div>
+<div class="section-title">Vocabulary &amp; Concept Check</div>
+
+<div class="g2 mb3">
+  <!-- MATCHING -->
+  <div class="card">
+    <div class="clabel b">🖼️ Match the Word</div>
+    <p class="mb2">Write the correct letter (A–E) next to each definition.</p>
+    <table style="width:100%;font-size:.83rem;border-collapse:collapse;margin-bottom:10px">
+      <tr><td style="padding:4px 0;font-weight:700;color:#0b63ce;width:36%">A. Pixel</td><td style="padding:4px 0;font-weight:700;color:#0b63ce">B. Grayscale Grid</td></tr>
+      <tr><td style="padding:4px 0;font-weight:700;color:#0b63ce">C. Edge</td><td style="padding:4px 0;font-weight:700;color:#0b63ce">D. Kernel / Filter</td></tr>
+      <tr><td colspan="2" style="padding:4px 0;font-weight:700;color:#0b63ce">E. Nested Loop</td></tr>
+    </table>
+    <table style="width:100%;font-size:.82rem;border-collapse:collapse">
+      <tr>
+        <td style="padding:5px 0;border-bottom:1px solid #f1f5f9;color:#374151;width:78%">A loop inside another loop that visits every pixel</td>
+        <td style="padding:5px 0;border-bottom:1px solid #f1f5f9"><input type="text" style="width:48px;text-align:center;border-radius:6px;padding:3px" placeholder="___" /></td>
+      </tr>
+      <tr>
+        <td style="padding:5px 0;border-bottom:1px solid #f1f5f9;color:#374151">Where brightness changes rapidly between neighbors</td>
+        <td style="padding:5px 0;border-bottom:1px solid #f1f5f9"><input type="text" style="width:48px;text-align:center;border-radius:6px;padding:3px" placeholder="___" /></td>
+      </tr>
+      <tr>
+        <td style="padding:5px 0;border-bottom:1px solid #f1f5f9;color:#374151">A 2D list of brightness numbers with no color</td>
+        <td style="padding:5px 0;border-bottom:1px solid #f1f5f9"><input type="text" style="width:48px;text-align:center;border-radius:6px;padding:3px" placeholder="___" /></td>
+      </tr>
+      <tr>
+        <td style="padding:5px 0;border-bottom:1px solid #f1f5f9;color:#374151">The smallest dot in a digital image (0–255)</td>
+        <td style="padding:5px 0;border-bottom:1px solid #f1f5f9"><input type="text" style="width:48px;text-align:center;border-radius:6px;padding:3px" placeholder="___" /></td>
+      </tr>
+      <tr>
+        <td style="padding:5px 0;color:#374151">A math operation slid over every pixel</td>
+        <td style="padding:5px 0"><input type="text" style="width:48px;text-align:center;border-radius:6px;padding:3px" placeholder="___" /></td>
+      </tr>
+    </table>
+  </div>
+  <!-- TRUE/FALSE -->
+  <div class="card">
+    <div class="clabel a">✏️ True or False</div>
+    <p class="mb2">Select <strong>T</strong> (True) or <strong>F</strong> (False) for each statement.</p>
+    <table style="width:100%;font-size:.82rem;border-collapse:collapse">
+      <tr>
+        <td style="padding:6px 0;border-bottom:1px solid #f1f5f9;color:#374151;width:80%">A pixel value of 0 means the pixel is pure white.</td>
+        <td style="padding:6px 0;border-bottom:1px solid #f1f5f9">
+          <select style="width:60px;padding:3px 4px;border-radius:6px">
+            <option value="">—</option><option>T</option><option>F</option>
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding:6px 0;border-bottom:1px solid #f1f5f9;color:#374151">We skip row 0 because it has no neighbor above it.</td>
+        <td style="padding:6px 0;border-bottom:1px solid #f1f5f9">
+          <select style="width:60px;padding:3px 4px;border-radius:6px">
+            <option value="">—</option><option>T</option><option>F</option>
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding:6px 0;border-bottom:1px solid #f1f5f9;color:#374151">A filtered value near zero means a strong edge was found.</td>
+        <td style="padding:6px 0;border-bottom:1px solid #f1f5f9">
+          <select style="width:60px;padding:3px 4px;border-radius:6px">
+            <option value="">—</option><option>T</option><option>F</option>
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding:6px 0;border-bottom:1px solid #f1f5f9;color:#374151">The Laplacian formula compares center to its 4 neighbors.</td>
+        <td style="padding:6px 0;border-bottom:1px solid #f1f5f9">
+          <select style="width:60px;padding:3px 4px;border-radius:6px">
+            <option value="">—</option><option>T</option><option>F</option>
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding:6px 0;color:#374151">Self-driving cars use edge detection in real time.</td>
+        <td style="padding:6px 0">
+          <select style="width:60px;padding:3px 4px;border-radius:6px">
+            <option value="">—</option><option>T</option><option>F</option>
+          </select>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+<!-- HAND CALCULATIONS -->
+<div class="card ab mb3">
+  <div class="clabel b">🧮 Quick-Calculate: Do It By Hand</div>
+  <div class="g2">
     <div>
-      <p class="brand">Day 15 · AI &amp; Coding · Spring 2026 · Advanced</p>
-      <h1 class="grad-text">Build a Recommender System 🎯</h1>
-      <p class="note">A two-algorithm Python build — average-rating <em>and</em> personalized. ~60 minutes.</p>
+      <p class="mb2">Formula: <code>value = center×4 − (up + down + left + right)</code></p>
+      <p class="mb2"><strong>Scenario A</strong> — center=<strong>5</strong>, all 4 neighbors=5</p>
+      <p style="font-size:.78rem;color:#64748b;margin-bottom:4px">Show your working:</p>
+      <input type="text" class="wline" placeholder="e.g.  5×4 − (5+5+5+5) = …" />
+      <input type="text" class="wline" placeholder="Value = ___   Edge? Yes / No" />
     </div>
-    <div class="namebox">
-      <p>Name: <input class="tinput" type="text" data-key="name" placeholder="your name"></p>
-      <p>Date: <input class="tinput med" type="text" data-key="date" placeholder="MM/DD"></p>
-      <p>Partner: <input class="tinput" type="text" data-key="partner" placeholder="partner name"></p>
+    <div>
+      <p class="mb2"><strong>Scenario B</strong> — center=<strong>9</strong>, all 4 neighbors=5</p>
+      <p style="font-size:.78rem;color:#64748b;margin-bottom:4px">Show your working:</p>
+      <input type="text" class="wline" placeholder="e.g.  9×4 − (5+5+5+5) = …" />
+      <input type="text" class="wline" placeholder="Value = ___   Edge? Yes / No" />
     </div>
-  </header>
+  </div>
+</div>
 
-  <div class="two-col">
-    <div class="card blue tinted-blue">
-      <span class="pill">What you'll build</span>
-      <ol>
-        <li><strong>v1</strong> — Average-rating recommender for the whole class</li>
-        <li><strong>v2</strong> — Personalized recommender (one ranking per user)</li>
-        <li><strong>Stretch</strong> — A "look-alike" recommender (the seed of collaborative filtering)</li>
-      </ol>
+<hr class="divider">
+
+<!-- ═══ PART 2 ═══ -->
+<div class="section-label">🔧 Part 2 of 5</div>
+<div class="section-title">Fix the Broken Code — Fill in the Blanks</div>
+
+<div class="card aa mb2">
+  <div class="clabel a">📝 Your Task</div>
+  <p class="mb2">The code below has <strong>5 blanks</strong>. Fill each yellow box so the program correctly detects edges in the 5×5 image. Then predict the output before running.</p>
+
+  <div class="codeblock"><span class="kw">image</span> = [
+    [<span class="nb">0</span>, <span class="nb">0</span>, <span class="nb">0</span>, <span class="nb">0</span>, <span class="nb">0</span>],
+    [<span class="nb">0</span>, <span class="nb">7</span>, <span class="nb">7</span>, <span class="nb">7</span>, <span class="nb">0</span>],
+    [<span class="nb">0</span>, <span class="nb">7</span>, <span class="nb">7</span>, <span class="nb">7</span>, <span class="nb">0</span>],   <span class="cm"># bright square in the middle</span>
+    [<span class="nb">0</span>, <span class="nb">7</span>, <span class="nb">7</span>, <span class="nb">7</span>, <span class="nb">0</span>],
+    [<span class="nb">0</span>, <span class="nb">0</span>, <span class="nb">0</span>, <span class="nb">0</span>, <span class="nb">0</span>],
+]
+
+filtered = []
+<span class="kw">for</span> y <span class="kw">in</span> range(<input class="blankinput" id="b1" placeholder="?" title="Blank 1"/>, <input class="blankinput" id="b2" placeholder="?" title="Blank 2"/>):  <span class="cm"># Blank 1 &amp; 2: which rows?</span>
+    new_row = []
+    <span class="kw">for</span> x <span class="kw">in</span> range(1, 4):
+        center = image[y][x]
+        up     = image[<input class="blankinput" id="b3" placeholder="?" title="Blank 3"/>][x]   <span class="cm"># Blank 3: one row ABOVE y</span>
+        down   = image[<input class="blankinput" id="b4" placeholder="?" title="Blank 4"/>][x]   <span class="cm"># Blank 4: one row BELOW y</span>
+        left   = image[y][x-1]
+        right  = image[y][x+1]
+        value  = center*<input class="blankinput" id="b5" placeholder="?" title="Blank 5"/> - (up + down + left + right)
+        new_row.append(value)
+    filtered.append(new_row)
+
+<span class="kw">print</span>(filtered)</div>
+
+  <div class="tip a mb2" style="font-size:.78rem">🔑 <strong>Answer key</strong> (check after trying!): Blank 1 = <code>1</code> · Blank 2 = <code>4</code> · Blank 3 = <code>y-1</code> · Blank 4 = <code>y+1</code> · Blank 5 = <code>4</code></div>
+
+  <div class="g2">
+    <div>
+      <div class="clabel b mb1">💭 Predict the 3×3 output before running:</div>
+      <div class="pgrid pgrid3" style="grid-template-columns:repeat(3,56px)">
+        <input type="text" class="pred-input" placeholder="?" maxlength="4" />
+        <input type="text" class="pred-input" placeholder="?" maxlength="4" />
+        <input type="text" class="pred-input" placeholder="?" maxlength="4" />
+        <input type="text" class="pred-input" placeholder="?" maxlength="4" />
+        <input type="text" class="pred-input" placeholder="?" maxlength="4" />
+        <input type="text" class="pred-input" placeholder="?" maxlength="4" />
+        <input type="text" class="pred-input" placeholder="?" maxlength="4" />
+        <input type="text" class="pred-input" placeholder="?" maxlength="4" />
+        <input type="text" class="pred-input" placeholder="?" maxlength="4" />
+      </div>
+      <p class="tm tc mt2">Type your predicted values in each cell</p>
     </div>
-    <div class="card green tinted-green">
-      <span class="pill green">What you need</span>
-      <ul>
-        <li>Python 3 (Replit, Thonny, or VS Code)</li>
-        <li>Comfort with lists, dictionaries, loops, <code>sum()</code> &amp; <code>len()</code></li>
-        <li>A partner to test ideas with</li>
+    <div>
+      <div class="clabel g mb1">✅ Actual output after running:</div>
+      <textarea class="warea" placeholder="Paste or write the actual Python output here…"></textarea>
+      <p style="font-size:.8rem;color:#374151;margin-top:8px">Were you surprised? Which cells were highest? Why?</p>
+      <input type="text" class="wline mt2" placeholder="Your answer…" />
+      <input type="text" class="wline" placeholder="" />
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ═══ PART 3 ═══ -->
+<div class="section-label">🎨 Part 3 of 5</div>
+<div class="section-title">Design Your Own 5×5 Image &amp; Predict the Edges</div>
+
+<div class="card ag mb3">
+  <div class="clabel g">✏️ Step 1 — Type Your 5×5 Number Grid (use 0–9)</div>
+  <p class="mb2">Create a grayscale image with at least <strong>one clear edge</strong> (a region where numbers jump from low to high). Ideas: a stripe, a letter shape, a bright corner.</p>
+  <div class="g2">
+    <div>
+      <p style="font-size:.78rem;font-weight:700;color:#047857;margin-bottom:6px">📝 Your 5×5 image grid:</p>
+      <div class="pgrid pgrid5">
+        <input type="text" class="pxinput" maxlength="1" /><input type="text" class="pxinput" maxlength="1" /><input type="text" class="pxinput" maxlength="1" /><input type="text" class="pxinput" maxlength="1" /><input type="text" class="pxinput" maxlength="1" />
+        <input type="text" class="pxinput" maxlength="1" /><input type="text" class="pxinput" maxlength="1" /><input type="text" class="pxinput" maxlength="1" /><input type="text" class="pxinput" maxlength="1" /><input type="text" class="pxinput" maxlength="1" />
+        <input type="text" class="pxinput" maxlength="1" /><input type="text" class="pxinput" maxlength="1" /><input type="text" class="pxinput" maxlength="1" /><input type="text" class="pxinput" maxlength="1" /><input type="text" class="pxinput" maxlength="1" />
+        <input type="text" class="pxinput" maxlength="1" /><input type="text" class="pxinput" maxlength="1" /><input type="text" class="pxinput" maxlength="1" /><input type="text" class="pxinput" maxlength="1" /><input type="text" class="pxinput" maxlength="1" />
+        <input type="text" class="pxinput" maxlength="1" /><input type="text" class="pxinput" maxlength="1" /><input type="text" class="pxinput" maxlength="1" /><input type="text" class="pxinput" maxlength="1" /><input type="text" class="pxinput" maxlength="1" />
+      </div>
+      <p class="tm tc mt2">Each cell = one pixel value (0 = black, 9 = very bright)</p>
+    </div>
+    <div>
+      <p style="font-size:.78rem;font-weight:700;color:#0b63ce;margin-bottom:6px">💭 Predict your 3×3 filtered output:</p>
+      <div class="pgrid pgrid3" style="grid-template-columns:repeat(3,56px)">
+        <input type="text" class="pred-input" placeholder="?" maxlength="4" />
+        <input type="text" class="pred-input" placeholder="?" maxlength="4" />
+        <input type="text" class="pred-input" placeholder="?" maxlength="4" />
+        <input type="text" class="pred-input" placeholder="?" maxlength="4" />
+        <input type="text" class="pred-input" placeholder="?" maxlength="4" />
+        <input type="text" class="pred-input" placeholder="?" maxlength="4" />
+        <input type="text" class="pred-input" placeholder="?" maxlength="4" />
+        <input type="text" class="pred-input" placeholder="?" maxlength="4" />
+        <input type="text" class="pred-input" placeholder="?" maxlength="4" />
+      </div>
+      <p style="font-size:.78rem;font-weight:700;color:#047857;margin:10px 0 4px">✅ Actual output after running:</p>
+      <textarea class="warea" placeholder="Copy the printed output here…"></textarea>
+    </div>
+  </div>
+  <div class="mt3">
+    <div class="clabel a">🤔 Reflect — where were the highest values? Do they match where your numbers changed a lot?</div>
+    <input type="text" class="wline" placeholder="Your answer…" />
+    <input type="text" class="wline" placeholder="" />
+  </div>
+</div>
+
+<hr class="divider page-break">
+
+<!-- ═══ PART 4 ═══ -->
+<div class="section-label">🏗️ Part 4 of 5 — Main Project</div>
+<div class="section-title">Build Your Complete Python Edge Detection System</div>
+
+<div class="card ab mb2">
+  <div class="clabel b">📋 Requirements Checklist — check each box when done</div>
+  <ul class="checklist">
+    <li><input type="checkbox" style="width:17px;height:17px;accent-color:#0b63ce;flex-shrink:0" /> Define an <code>image</code> variable — a list of 5 rows, each with 5 numbers (0–9)</li>
+    <li><input type="checkbox" style="width:17px;height:17px;accent-color:#0b63ce;flex-shrink:0" /> Use a <strong>nested loop</strong> (<code>for y</code> / <code>for x</code>) to visit every inner pixel</li>
+    <li><input type="checkbox" style="width:17px;height:17px;accent-color:#0b63ce;flex-shrink:0" /> Correctly read <code>center</code>, <code>up</code>, <code>down</code>, <code>left</code>, <code>right</code></li>
+    <li><input type="checkbox" style="width:17px;height:17px;accent-color:#0b63ce;flex-shrink:0" /> Calculate <code>value = center*4 - (up + down + left + right)</code></li>
+    <li><input type="checkbox" style="width:17px;height:17px;accent-color:#0b63ce;flex-shrink:0" /> Store results in <code>new_row</code>, append rows to <code>filtered</code></li>
+    <li><input type="checkbox" style="width:17px;height:17px;accent-color:#0b63ce;flex-shrink:0" /> Print the full <code>filtered</code> 3×3 result</li>
+    <li><input type="checkbox" style="width:17px;height:17px;accent-color:#0b63ce;flex-shrink:0" /> Add a second loop: print <code>"EDGE!"</code> next to any value &gt; 10</li>
+    <li><input type="checkbox" style="width:17px;height:17px;accent-color:#0b63ce;flex-shrink:0" /> Add a <code>#</code> comment above each section explaining what it does</li>
+  </ul>
+</div>
+
+<!-- CODE WRITING SPACE -->
+<div class="card mb3">
+  <div class="clabel b">🐍 Write Your Complete Code Here</div>
+  <p class="mb2" style="font-size:.83rem">Write all three parts below. <strong>Predict the output first</strong>, then run!</p>
+  <textarea class="warea" style="min-height:340px;font-family:var(--fc);font-size:.82rem;background:#1e293b;color:#e2e8f0;border-color:#334155;border-radius:12px;padding:14px 18px;line-height:1.65" placeholder="# ── Your Python Edge Detection System ────────────────────────────────&#10;&#10;# Part A: Define the image&#10;image = [&#10;    [0, 0, 0, 0, 0],&#10;    ...&#10;]&#10;&#10;# Part B: Apply the filter&#10;filtered = []&#10;for y in range(   ,   ):&#10;    new_row = []&#10;    for x in range(1, 4):&#10;        center = image[y][x]&#10;        up     = image[   ][x]&#10;        ...&#10;&#10;# Part C: Print results&#10;print(filtered)&#10;&#10;# Part C+: Label edges&#10;for row in filtered:&#10;    for v in row:&#10;        if v > 10:&#10;            print('EDGE!', v)"></textarea>
+  <div class="g2 mt3">
+    <div>
+      <p style="font-size:.75rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:#0b63ce;margin-bottom:4px">💭 My predicted output:</p>
+      <textarea class="warea" placeholder="What do you think Python will print?"></textarea>
+    </div>
+    <div>
+      <p style="font-size:.75rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:#047857;margin-bottom:4px">✅ Actual output:</p>
+      <textarea class="warea" placeholder="Copy the real output from Python here…"></textarea>
+    </div>
+  </div>
+</div>
+
+<!-- DEBUGGING TABLE -->
+<div class="card ar mb3">
+  <div class="clabel r">🐛 If Your Code Has Errors — Debug It!</div>
+  <table class="rub">
+    <tr><th>Error You See</th><th>What It Means</th><th>How to Fix It</th></tr>
+    <tr>
+      <td><code>IndexError: list index out of range</code></td>
+      <td>Your loop is going outside the grid</td>
+      <td>Check <code>range()</code> — starts at 1, ends at 4 (not 5)</td>
+    </tr>
+    <tr>
+      <td><code>SyntaxError</code></td>
+      <td>Typo in your code</td>
+      <td>Check the line Python highlights. Look for missing <code>:</code> or <code>]</code></td>
+    </tr>
+    <tr>
+      <td><code>NameError: … not defined</code></td>
+      <td>Used a variable before creating it</td>
+      <td>Make sure <code>filtered = []</code> is before the loop</td>
+    </tr>
+    <tr>
+      <td>Output is all zeros</td>
+      <td>Your image may have the same value everywhere</td>
+      <td>Make sure your image has <em>different numbers</em></td>
+    </tr>
+  </table>
+  <p style="font-size:.8rem;color:#374151;margin-top:10px">Error I got (if any) and how I fixed it:</p>
+  <input type="text" class="wline mt2" placeholder="Describe the error…" />
+  <input type="text" class="wline" placeholder="How I fixed it…" />
+</div>
+
+<hr class="divider page-break">
+
+<!-- ═══ PART 5 BONUS ═══ -->
+<div class="section-label">⭐ Part 5 of 5 — Bonus</div>
+<div class="section-title">Extension Challenges: Go Further!</div>
+
+<!-- Challenge A -->
+<div class="card mb2">
+  <span class="cbadge">⭐ Challenge A — Threshold &amp; Label</span>
+  <div class="g2">
+    <div>
+      <div class="clabel b">📋 What to do</div>
+      <p class="mb2">After computing <code>filtered</code>, loop through each value and print a label:</p>
+      <ul style="list-style:disc;padding-left:18px;font-size:.83rem;color:#374151;line-height:1.7">
+        <li>value &gt; 15 → print <code>"STRONG EDGE"</code></li>
+        <li>value 5–15 → print <code>"WEAK EDGE"</code></li>
+        <li>value &lt; 5 → print <code>"flat"</code></li>
       </ul>
+      <div class="tip b mt2">💡 You need an <code>if / elif / else</code> block inside a nested loop!</div>
+    </div>
+    <div>
+      <div class="clabel g">🐍 Your Challenge A code:</div>
+      <textarea class="warea" style="min-height:130px;font-family:var(--fc);font-size:.78rem;background:#1e293b;color:#e2e8f0;border-color:#334155;border-radius:10px;padding:12px 14px" placeholder="# Challenge A — threshold loop&#10;for row in filtered:&#10;    for v in row:&#10;        if v > 15:&#10;            ..."></textarea>
     </div>
   </div>
+</div>
 
-  <h2 style="margin-top:14px;">🧠 Vocabulary Check</h2>
-  <p class="note">Choose the meaning that fits each term.</p>
-  <table class="kv-table">
-    <thead><tr><th style="width:24%;">Term</th><th>Meaning</th></tr></thead>
-    <tbody>
-      <tr><td class="label">Recommender</td>
-        <td style="text-align:left;"><select class="tinput full" data-key="match-recommender">
-          <option value="">— choose —</option>
-          <option>Code whose only job is to pick what to show next</option>
-          <option>A list ordered from best to worst</option>
-          <option>A number describing how much someone liked an item</option>
-          <option>A summary of what most people thought</option>
-          <option>Showing each person a different ranking</option>
-          <option>The new-item / new-user "no data yet" issue</option>
-        </select></td></tr>
-      <tr><td class="label">Rating</td>
-        <td style="text-align:left;"><select class="tinput full" data-key="match-rating">
-          <option value="">— choose —</option>
-          <option>Code whose only job is to pick what to show next</option>
-          <option>A list ordered from best to worst</option>
-          <option>A number describing how much someone liked an item</option>
-          <option>A summary of what most people thought</option>
-          <option>Showing each person a different ranking</option>
-          <option>The new-item / new-user "no data yet" issue</option>
-        </select></td></tr>
-      <tr><td class="label">Average</td>
-        <td style="text-align:left;"><select class="tinput full" data-key="match-average">
-          <option value="">— choose —</option>
-          <option>Code whose only job is to pick what to show next</option>
-          <option>A list ordered from best to worst</option>
-          <option>A number describing how much someone liked an item</option>
-          <option>A summary of what most people thought</option>
-          <option>Showing each person a different ranking</option>
-          <option>The new-item / new-user "no data yet" issue</option>
-        </select></td></tr>
-      <tr><td class="label">Ranking</td>
-        <td style="text-align:left;"><select class="tinput full" data-key="match-ranking">
-          <option value="">— choose —</option>
-          <option>Code whose only job is to pick what to show next</option>
-          <option>A list ordered from best to worst</option>
-          <option>A number describing how much someone liked an item</option>
-          <option>A summary of what most people thought</option>
-          <option>Showing each person a different ranking</option>
-          <option>The new-item / new-user "no data yet" issue</option>
-        </select></td></tr>
-      <tr><td class="label">Personalization</td>
-        <td style="text-align:left;"><select class="tinput full" data-key="match-personalization">
-          <option value="">— choose —</option>
-          <option>Code whose only job is to pick what to show next</option>
-          <option>A list ordered from best to worst</option>
-          <option>A number describing how much someone liked an item</option>
-          <option>A summary of what most people thought</option>
-          <option>Showing each person a different ranking</option>
-          <option>The new-item / new-user "no data yet" issue</option>
-        </select></td></tr>
-      <tr><td class="label">Cold start</td>
-        <td style="text-align:left;"><select class="tinput full" data-key="match-coldstart">
-          <option value="">— choose —</option>
-          <option>Code whose only job is to pick what to show next</option>
-          <option>A list ordered from best to worst</option>
-          <option>A number describing how much someone liked an item</option>
-          <option>A summary of what most people thought</option>
-          <option>Showing each person a different ranking</option>
-          <option>The new-item / new-user "no data yet" issue</option>
-        </select></td></tr>
-    </tbody>
+<!-- Challenge B -->
+<div class="card mb2">
+  <span class="cbadge" style="background:linear-gradient(135deg,#f59e0b,#0b63ce)">⭐⭐ Challenge B — Bigger Grid (7×7)</span>
+  <div class="g2">
+    <div>
+      <div class="clabel a">📋 What to do</div>
+      <p class="mb2">Upgrade your program to work on a <strong>7×7 image</strong>. Fill in the new range values:</p>
+      <div class="codeblock" style="font-size:.74rem">image = [ <span class="cm"># 7 rows of 7 numbers</span>
+    [<input class="blankinput wide" placeholder="0,0,0,0,0,0,0"/>],
+    [<input class="blankinput wide" placeholder="0,0,0,0,0,0,0"/>],
+    [<input class="blankinput wide" placeholder="0,8,8,8,8,8,0"/>],
+    [<input class="blankinput wide" placeholder="0,8,8,8,8,8,0"/>],
+    [<input class="blankinput wide" placeholder="0,8,8,8,8,8,0"/>],
+    [<input class="blankinput wide" placeholder="0,0,0,0,0,0,0"/>],
+    [<input class="blankinput wide" placeholder="0,0,0,0,0,0,0"/>],
+]
+<span class="kw">for</span> y <span class="kw">in</span> range(<input class="blankinput" style="width:35px" placeholder="?"/>, <input class="blankinput" style="width:35px" placeholder="?"/>): <span class="cm"># what goes here?</span>
+    <span class="kw">for</span> x <span class="kw">in</span> range(<input class="blankinput" style="width:35px" placeholder="?"/>, <input class="blankinput" style="width:35px" placeholder="?"/>):</div>
+      <p style="font-size:.78rem;color:#374151;margin-top:6px"><strong>Hint:</strong> For an N×N image, loop from 1 to N-1, producing (N-2)×(N-2) output.</p>
+    </div>
+    <div>
+      <div class="clabel g">✅ Output after running (should be 5×5):</div>
+      <textarea class="warea" placeholder="Paste output here…"></textarea>
+    </div>
+  </div>
+</div>
+
+<!-- Challenge C -->
+<div class="card ag mb3">
+  <span class="cbadge" style="background:linear-gradient(135deg,#10b981,#0b63ce)">⭐⭐⭐ Challenge C — Real Image with Pillow!</span>
+  <div class="g2">
+    <div>
+      <div class="clabel g">📋 Steps:</div>
+      <div class="timeline">
+        <div class="tstep"><div class="tdot g"></div><p>Install Pillow: <code>pip install Pillow</code></p></div>
+        <div class="tstep"><div class="tdot g"></div><p>Open a small image, convert to grayscale, resize to 10×10</p></div>
+        <div class="tstep"><div class="tdot g"></div><p>Convert pixel data to a Python 2D list</p></div>
+        <div class="tstep"><div class="tdot g"></div><p>Run your edge detection loop on the new grid</p></div>
+        <div class="tstep" style="margin-bottom:0"><div class="tdot g"></div><p>Count how many cells are <code>"EDGE!"</code></p></div>
+      </div>
+    </div>
+    <div>
+      <div class="clabel b">🐍 Starter code:</div>
+      <div class="codeblock" style="font-size:.72rem"><span class="kw">from</span> PIL <span class="kw">import</span> Image
+
+img = Image.open(<span class="st">"photo.jpg"</span>)
+img = img.convert(<span class="st">"L"</span>)      <span class="cm"># grayscale</span>
+img = img.resize((10, 10))  <span class="cm"># shrink!</span>
+
+pixels = list(img.getdata())
+image = []
+<span class="kw">for</span> row <span class="kw">in</span> range(10):
+    start = row * 10
+    image.append(pixels[start:start+10])
+
+<span class="cm"># Your edge filter code goes below:</span></div>
+      <div class="tip g" style="font-size:.75rem">💡 Try <code>resize((20,20))</code> once it works!</div>
+    </div>
+  </div>
+  <div class="mt3">
+    <div class="clabel b">✍️ What did you notice about the real image's edges?</div>
+    <input type="text" class="wline" placeholder="Your observation…" />
+    <input type="text" class="wline" placeholder="" />
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ═══ REFLECTION ═══ -->
+<div class="section-label">💬 Reflect</div>
+<div class="section-title">Thinking About Your Work</div>
+
+<div class="card mb3">
+  <div class="g2">
+    <div>
+      <div class="clabel b">🧠 Exit Ticket</div>
+      <p style="font-size:.8rem;font-weight:700;color:#374151;margin:8px 0 3px">1. What does the Laplacian formula <em>measure</em> in your own words?</p>
+      <input type="text" class="wline" placeholder="Your answer…" />
+      <input type="text" class="wline" placeholder="" />
+      <p style="font-size:.8rem;font-weight:700;color:#374151;margin:8px 0 3px">2. Why do we skip row 0 and the last row?</p>
+      <input type="text" class="wline" placeholder="Your answer…" />
+      <input type="text" class="wline" placeholder="" />
+      <p style="font-size:.8rem;font-weight:700;color:#374151;margin:8px 0 3px">3. Name one real AI system that uses edge detection and explain how.</p>
+      <input type="text" class="wline" placeholder="Your answer…" />
+      <input type="text" class="wline" placeholder="" />
+    </div>
+    <div>
+      <div class="clabel g">🌱 Growth Mindset Check</div>
+      <p style="font-size:.8rem;color:#374151;margin-bottom:8px">Select the one that describes how you felt today:</p>
+      <div style="display:flex;flex-direction:column;gap:7px;font-size:.83rem;color:#374151">
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="radio" name="mood" style="accent-color:#0b63ce"> 😤 I got stuck but kept trying</label>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="radio" name="mood" style="accent-color:#0b63ce"> 💡 I figured something out on my own</label>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="radio" name="mood" style="accent-color:#0b63ce"> 🤝 I helped a classmate understand</label>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="radio" name="mood" style="accent-color:#0b63ce"> 🚀 I finished early and tackled a bonus!</label>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="radio" name="mood" style="accent-color:#0b63ce"> 🌀 I'm still confused about…</label>
+      </div>
+      <p style="font-size:.78rem;font-weight:700;color:#0b63ce;margin:12px 0 4px">One thing I still want to learn:</p>
+      <input type="text" class="wline" placeholder="…" />
+      <p style="font-size:.78rem;font-weight:700;color:#047857;margin:8px 0 4px">One thing I did really well today:</p>
+      <input type="text" class="wline" placeholder="…" />
+    </div>
+  </div>
+</div>
+
+<!-- ═══ RUBRIC ═══ -->
+<div class="section-label">📊 For Teachers</div>
+<div class="section-title">Grading Rubric (20 Points Total)</div>
+<div class="card mb3">
+  <table class="rub">
+    <tr><th>Section</th><th>What to Look For</th><th class="pts">Points</th></tr>
+    <tr><td>Part 1 — Vocab &amp; Calculate</td><td>Correct matching; True/False; both calculations with working shown</td><td class="pts">4 pts</td></tr>
+    <tr><td>Part 2 — Fix the Code</td><td>All 5 blanks correct; prediction written; actual output recorded</td><td class="pts">4 pts</td></tr>
+    <tr><td>Part 3 — Own Image</td><td>5×5 image designed with edge; prediction attempted; output recorded; reflection written</td><td class="pts">3 pts</td></tr>
+    <tr><td>Part 4 — Complete System</td><td>Working nested loop; correct formula; "EDGE!" labels; comments; prediction &amp; actual both filled</td><td class="pts">7 pts</td></tr>
+    <tr><td>Reflection / Exit Ticket</td><td>Thoughtful written responses to all 3 questions</td><td class="pts">2 pts</td></tr>
+    <tr style="background:rgba(11,99,206,.06)"><td><strong>⭐ Bonus</strong></td><td>Challenge A (+2), Challenge B (+2), Challenge C with Pillow (+3)</td><td class="pts">+7 max</td></tr>
   </table>
-
-  <h2 style="margin-top:14px;">✋ Warm-Up · Predict the Averages</h2>
-  <p>Compute by hand, then check with code on Page 2.</p>
-  <table>
-    <thead><tr><th>Game</th><th>Votes</th><th>Sum</th><th>Count</th><th>Average</th></tr></thead>
-    <tbody>
-      <tr><td class="label">🏁 Racing</td><td>[1, 1, 0, 1, 1]</td>
-        <td><input class="tcell" data-key="racing-sum" value="4"></td>
-        <td><input class="tcell" data-key="racing-n" value="5"></td>
-        <td><input class="tcell" data-key="racing-avg" value="0.8"></td></tr>
-      <tr><td class="label">🧩 Puzzle</td><td>[1, 0, 0, 1, 0]</td>
-        <td><input class="tcell" data-key="puzzle-sum"></td>
-        <td><input class="tcell" data-key="puzzle-n"></td>
-        <td><input class="tcell" data-key="puzzle-avg"></td></tr>
-      <tr><td class="label">🎯 Shooter</td><td>[0, 0, 1, 0, 0]</td>
-        <td><input class="tcell" data-key="shooter-sum"></td>
-        <td><input class="tcell" data-key="shooter-n"></td>
-        <td><input class="tcell" data-key="shooter-avg"></td></tr>
-      <tr><td class="label">⚽ Sports</td><td>[1, 1, 1, 1, 1]</td>
-        <td><input class="tcell" data-key="sports-sum"></td>
-        <td><input class="tcell" data-key="sports-n"></td>
-        <td><input class="tcell" data-key="sports-avg"></td></tr>
-    </tbody>
-  </table>
-  <div class="card amber tinted-amber">
-    <p class="row-tight"><strong>🥇 Predicted top game:</strong> <input class="tinput long" data-key="predicted-top" placeholder="Type the winner"></p>
-    <p class="row-tight"><strong>📐 Edge case:</strong> If a game has zero votes, what should the algorithm do? (Be specific.)</p>
-    <input class="tinput full" data-key="zero-vote-edge" placeholder="Type your answer">
-  </div>
-</section>
-
-<!-- =================== PAGE 2 =================== -->
-<section class="page">
-  <header class="title-bar">
-    <div>
-      <span class="pill">Part 1 · v1 · Average-Rating Recommender</span>
-      <h1 class="grad-text" style="font-size:1.55rem;">Code &amp; verify 💻</h1>
+  <div class="g2 mt3">
+    <div class="tip b">
+      <strong>Score: _____ / 20</strong><br>
+      Teacher Comments:<br>
+      <input type="text" class="wline mt2" placeholder="…" />
+      <input type="text" class="wline" placeholder="…" />
     </div>
-    <div class="namebox"><p class="note">Save the file as <code>recommender_v1.py</code></p></div>
-  </header>
-
-  <div class="card blue">
-    <h2><span class="tag">Build it</span> Type this exactly</h2>
-    <div class="code">
-<span class="nb">ratings</span> = {
-    <span class="st">'Racing'</span>:  [<span class="kw">1</span>, <span class="kw">1</span>, <span class="kw">0</span>, <span class="kw">1</span>, <span class="kw">1</span>],
-    <span class="st">'Puzzle'</span>:  [<span class="kw">1</span>, <span class="kw">0</span>, <span class="kw">0</span>, <span class="kw">1</span>, <span class="kw">0</span>],
-    <span class="st">'Shooter'</span>: [<span class="kw">0</span>, <span class="kw">0</span>, <span class="kw">1</span>, <span class="kw">0</span>, <span class="kw">0</span>],
-    <span class="st">'Sports'</span>:  [<span class="kw">1</span>, <span class="kw">1</span>, <span class="kw">1</span>, <span class="kw">1</span>, <span class="kw">1</span>],
-}
-
-<span class="nb">averages</span> = {}
-<span class="kw">for</span> game, votes <span class="kw">in</span> ratings.items():
-    averages[game] = <span class="nb">sum</span>(votes) / <span class="nb">len</span>(votes)
-
-<span class="kw">for</span> game, score <span class="kw">in</span> averages.items():
-    <span class="nb">print</span>(game, <span class="st">'->'</span>, <span class="nb">round</span>(score, <span class="kw">2</span>))
-
-best_game = <span class="nb">max</span>(averages, key=averages.get)
-<span class="nb">print</span>(<span class="st">'Recommended first:'</span>, best_game)
-    </div>
-    <p class="row-tight" style="margin-top:8px;">
-      <label class="cb-label"><input type="checkbox" class="cb" data-key="v1-runs"> It runs without errors.</label>
-      <label class="cb-label"><input type="checkbox" class="cb" data-key="v1-matches"> Output matches my Page-1 predictions.</label>
-    </p>
-    <p class="row-tight"><strong>Paste your full output:</strong></p>
-    <textarea class="ttextarea code-area" data-key="v1-output" placeholder="Racing -> 0.8&#10;Puzzle -> 0.4&#10;..."></textarea>
-  </div>
-
-  <h2 style="margin-top:10px;">🔍 Code Detective — answer in your own words</h2>
-  <div class="card blue tinted-blue">
-    <div class="q"><div class="num">1</div><div class="body">
-      What does <code style="background:#fff;padding:1px 5px;border-radius:4px;font-family:monospace;">.items()</code> hand back to us each loop iteration?
-      <input class="tinput line" data-key="q-items" placeholder="Your answer">
-    </div></div>
-    <div class="q"><div class="num">2</div><div class="body">
-      Why divide by <code style="background:#fff;padding:1px 5px;border-radius:4px;font-family:monospace;">len(votes)</code> rather than literally by <code>5</code>?
-      <input class="tinput line" data-key="q-len" placeholder="Your answer">
-    </div></div>
-    <div class="q"><div class="num">3</div><div class="body">
-      What does <code style="background:#fff;padding:1px 5px;border-radius:4px;font-family:monospace;">key=averages.get</code> tell <code>max()</code> to compare?
-      <textarea class="ttextarea" data-key="q-key" placeholder="Your answer"></textarea>
-    </div></div>
-    <div class="q"><div class="num">4</div><div class="body">
-      Big-O thinking: if I had <strong>1,000,000</strong> games and <strong>100</strong> votes each, roughly how many additions would the loop perform? Show your reasoning.
-      <input class="tinput line" data-key="q-bigo" placeholder="e.g. 100,000,000 because...">
-    </div></div>
-  </div>
-
-  <h2 style="margin-top:10px;">🧪 Failure Hunt — push the algorithm until it breaks</h2>
-  <div class="card amber">
-    <p class="row-tight"><strong>Mod A.</strong> Add a 5th game <code>'Coding'</code> with votes <code>[1,1,1,1,0]</code>. Does it dethrone Sports? <strong>Why?</strong></p>
-    <input class="tinput full" data-key="modA" placeholder="Your answer">
-  </div>
-  <div class="card red">
-    <p class="row-tight"><strong>Mod B.</strong> Add a brand-new game <code>'Indie'</code> with an <em>empty</em> list <code>[]</code>. What does Python do? Defend the design choice you'd make.</p>
-    <textarea class="ttextarea" data-key="modB" placeholder="Your answer"></textarea>
-  </div>
-  <div class="card amber">
-    <p class="row-tight"><strong>Mod C.</strong> A game has just <strong>one</strong> vote: <code>[1]</code>. Its average is <code>1.0</code> — beating Sports' <code>1.0</code> on a tiebreak. Is that fair? What's a smarter rule?</p>
-    <textarea class="ttextarea" data-key="modC" placeholder="Your answer"></textarea>
-  </div>
-</section>
-
-<!-- =================== PAGE 3 =================== -->
-<section class="page">
-  <header class="title-bar">
-    <div>
-      <span class="pill green">Part 2 · v2 · Personalized Recommender</span>
-      <h1 class="grad-text" style="font-size:1.55rem;">One ranking per user 🧍🧍</h1>
-    </div>
-    <div class="namebox"><p class="note">Save as <code>recommender_v2.py</code></p></div>
-  </header>
-
-  <div class="card green">
-    <h2><span class="tag g">Build it</span> Nested dictionaries + sorted ranking</h2>
-    <div class="code">
-<span class="nb">player_ratings</span> = {
-    <span class="st">'Alex'</span>:   {<span class="st">'Racing'</span>:[<span class="kw">1</span>,<span class="kw">1</span>,<span class="kw">1</span>],
-                <span class="st">'Puzzle'</span>:[<span class="kw">1</span>,<span class="kw">1</span>,<span class="kw">0</span>],
-                <span class="st">'Shooter'</span>:[<span class="kw">0</span>,<span class="kw">0</span>,<span class="kw">0</span>]},
-    <span class="st">'Jordan'</span>: {<span class="st">'Racing'</span>:[<span class="kw">0</span>,<span class="kw">1</span>,<span class="kw">0</span>],
-                <span class="st">'Puzzle'</span>:[<span class="kw">1</span>,<span class="kw">1</span>,<span class="kw">1</span>],
-                <span class="st">'Shooter'</span>:[<span class="kw">1</span>,<span class="kw">1</span>,<span class="kw">0</span>]},
-}
-
-<span class="kw">for</span> name, games <span class="kw">in</span> player_ratings.items():
-    <span class="nb">print</span>(<span class="st">'\nRecommendations for'</span>, name)
-    averages = {g: <span class="nb">sum</span>(v)/<span class="nb">len</span>(v) <span class="kw">for</span> g,v <span class="kw">in</span> games.items()}
-    ranked = <span class="nb">sorted</span>(averages.items(),
-        key=<span class="kw">lambda</span> item: item[<span class="kw">1</span>],
-        reverse=<span class="kw">True</span>)
-    <span class="kw">for</span> game, score <span class="kw">in</span> ranked:
-        <span class="nb">print</span>(<span class="st">' '</span>, game, <span class="st">'->'</span>, <span class="nb">round</span>(score, <span class="kw">2</span>))
-    </div>
-    <p class="row-tight" style="margin-top:8px;">
-      <label class="cb-label"><input type="checkbox" class="cb" data-key="v2-runs"> Runs without errors.</label>
-      <label class="cb-label"><input type="checkbox" class="cb" data-key="v2-two-rankings"> I see <strong>two</strong> separate rankings printed.</label>
-    </p>
-  </div>
-
-  <h2 style="margin-top:10px;">📋 Trace each user's ranking</h2>
-  <div class="two-col">
-    <div class="card blue">
-      <h3>Alex's ranking (top → bottom)</h3>
-      <ol>
-        <li><input class="tinput full" data-key="alex-rank-1" placeholder="game and score"></li>
-        <li><input class="tinput full" data-key="alex-rank-2" placeholder="game and score"></li>
-        <li><input class="tinput full" data-key="alex-rank-3" placeholder="game and score"></li>
-      </ol>
-    </div>
-    <div class="card green">
-      <h3>Jordan's ranking (top → bottom)</h3>
-      <ol>
-        <li><input class="tinput full" data-key="jordan-rank-1" placeholder="game and score"></li>
-        <li><input class="tinput full" data-key="jordan-rank-2" placeholder="game and score"></li>
-        <li><input class="tinput full" data-key="jordan-rank-3" placeholder="game and score"></li>
-      </ol>
+    <div class="tip g">
+      <strong>Next Steps / Encouragement:</strong><br>
+      <input type="text" class="wline mt2" placeholder="…" />
+      <input type="text" class="wline" placeholder="…" />
+      <input type="text" class="wline" placeholder="…" />
     </div>
   </div>
+</div>
 
-  <h2 style="margin-top:10px;">🔬 Reason about the changes</h2>
-  <div class="card green tinted-green">
-    <div class="q"><div class="num">1</div><div class="body">
-      The outer loop runs <strong><input class="tinput short" data-key="outer-loops"></strong> times — why?
-      The inner part runs <strong><input class="tinput short" data-key="inner-loops"></strong> times per user — why?
-    </div></div>
-    <div class="q"><div class="num">2</div><div class="body">
-      What does <code style="background:#fff;padding:1px 5px;border-radius:4px;font-family:monospace;">lambda item: item[1]</code> do — and why <code>item[1]</code> instead of <code>item[0]</code>?
-      <input class="tinput line" data-key="q-lambda" placeholder="Your answer">
-    </div></div>
-    <div class="q"><div class="num">3</div><div class="body">
-      What does <code style="background:#fff;padding:1px 5px;border-radius:4px;font-family:monospace;">reverse=True</code> change about the output? What if we left it off?
-      <input class="tinput line" data-key="q-reverse" placeholder="Your answer">
-    </div></div>
-    <div class="q"><div class="num">4</div><div class="body">
-      The inner part uses a <em>dictionary comprehension</em>: <code style="background:#fff;padding:1px 5px;border-radius:4px;font-family:monospace;">{g: sum(v)/len(v) for g,v in games.items()}</code>. Rewrite that as a regular for-loop in plain Python.
-      <textarea class="ttextarea code-area" data-key="q-rewrite" placeholder="averages = {}&#10;for g, v in games.items():&#10;    ..."></textarea>
-    </div></div>
-  </div>
-</section>
+<!-- ═══ ANSWER KEY ═══ -->
+<div class="section-label">📌 Teacher Reference</div>
+<div class="section-title">Complete Correct Solution — Part 4</div>
+<div class="card mb3">
+  <div class="clabel b">🔑 Only share after students have submitted!</div>
+  <div class="codeblock"><span class="cm"># Part A: Define a 5×5 grayscale image</span>
+image = [
+    [<span class="nb">0</span>, <span class="nb">0</span>, <span class="nb">0</span>, <span class="nb">0</span>, <span class="nb">0</span>],
+    [<span class="nb">0</span>, <span class="nb">8</span>, <span class="nb">8</span>, <span class="nb">8</span>, <span class="nb">0</span>],
+    [<span class="nb">0</span>, <span class="nb">8</span>, <span class="nb">8</span>, <span class="nb">8</span>, <span class="nb">0</span>],
+    [<span class="nb">0</span>, <span class="nb">8</span>, <span class="nb">8</span>, <span class="nb">8</span>, <span class="nb">0</span>],
+    [<span class="nb">0</span>, <span class="nb">0</span>, <span class="nb">0</span>, <span class="nb">0</span>, <span class="nb">0</span>],
+]
 
-<!-- =================== PAGE 4 =================== -->
-<section class="page">
-  <header class="title-bar">
-    <div>
-      <span class="pill amber">Part 3 · Make It Yours</span>
-      <h1 class="grad-text" style="font-size:1.55rem;">Design a real recommender 🎨</h1>
-    </div>
-    <div class="namebox"><p class="note">Pick a domain &amp; collect realistic data.</p></div>
-  </header>
+<span class="cm"># Part B: Apply the Laplacian edge filter</span>
+filtered = []
+<span class="kw">for</span> y <span class="kw">in</span> range(<span class="nb">1</span>, <span class="nb">4</span>):         <span class="cm"># skip row 0 (no above) and row 4 (no below)</span>
+    new_row = []
+    <span class="kw">for</span> x <span class="kw">in</span> range(<span class="nb">1</span>, <span class="nb">4</span>):     <span class="cm"># skip col 0 and col 4</span>
+        center = image[y][x]
+        up     = image[y<span class="op">-1</span>][x]   <span class="cm"># one row above</span>
+        down   = image[y<span class="op">+1</span>][x]   <span class="cm"># one row below</span>
+        left   = image[y][x<span class="op">-1</span>]   <span class="cm"># one column left</span>
+        right  = image[y][x<span class="op">+1</span>]   <span class="cm"># one column right</span>
+        value  = center<span class="op">*</span><span class="nb">4</span> <span class="op">-</span> (up <span class="op">+</span> down <span class="op">+</span> left <span class="op">+</span> right)
+        new_row.append(value)
+    filtered.append(new_row)
 
-  <div class="card blue tinted-blue">
-    <p class="row-tight"><strong>Step 1 · Domain.</strong></p>
-    <p class="row-tight">
-      <label class="cb-label"><input type="radio" name="domain" class="rb" data-key="domain-music"> 🎵 Songs</label>
-      <label class="cb-label"><input type="radio" name="domain" class="rb" data-key="domain-tv"> 📺 TV / Movies</label>
-      <label class="cb-label"><input type="radio" name="domain" class="rb" data-key="domain-books"> 📚 Books</label>
-      <label class="cb-label"><input type="radio" name="domain" class="rb" data-key="domain-snack"> 🍫 Snacks</label>
-      <label class="cb-label"><input type="radio" name="domain" class="rb" data-key="domain-other"> Other:</label>
-      <input class="tinput med" data-key="domain-other-text" placeholder="your domain">
-    </p>
-    <p class="row-tight"><strong>Step 2 · Why this domain?</strong> What makes it interesting for personalization?</p>
-    <input class="tinput full" data-key="domain-why" placeholder="Your answer">
-  </div>
+<span class="cm"># Part C: Print results</span>
+<span class="kw">print</span>(<span class="st">"Filtered grid:"</span>, filtered)
 
-  <p style="margin-top:8px;"><strong>Step 3 · Survey 3 friends.</strong> Fill the matrix (1 = liked, 0 = didn't, blank = unknown).</p>
-  <table>
-    <thead>
-      <tr>
-        <th>User ↓ / Item →</th>
-        <th><input class="tcell" data-key="item-A" placeholder="Item A"></th>
-        <th><input class="tcell" data-key="item-B" placeholder="Item B"></th>
-        <th><input class="tcell" data-key="item-C" placeholder="Item C"></th>
-        <th><input class="tcell" data-key="item-D" placeholder="Item D"></th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td class="label"><input class="tcell" style="text-align:left;" data-key="user-1" placeholder="User 1"></td>
-        <td><input class="tcell" data-key="u1-A"></td><td><input class="tcell" data-key="u1-B"></td>
-        <td><input class="tcell" data-key="u1-C"></td><td><input class="tcell" data-key="u1-D"></td>
-      </tr>
-      <tr>
-        <td class="label"><input class="tcell" style="text-align:left;" data-key="user-2" placeholder="User 2"></td>
-        <td><input class="tcell" data-key="u2-A"></td><td><input class="tcell" data-key="u2-B"></td>
-        <td><input class="tcell" data-key="u2-C"></td><td><input class="tcell" data-key="u2-D"></td>
-      </tr>
-      <tr>
-        <td class="label"><input class="tcell" style="text-align:left;" data-key="user-3" placeholder="User 3"></td>
-        <td><input class="tcell" data-key="u3-A"></td><td><input class="tcell" data-key="u3-B"></td>
-        <td><input class="tcell" data-key="u3-C"></td><td><input class="tcell" data-key="u3-D"></td>
-      </tr>
-    </tbody>
-  </table>
+<span class="cm"># Part C+: Label edges</span>
+<span class="kw">for</span> row <span class="kw">in</span> filtered:
+    <span class="kw">for</span> v <span class="kw">in</span> row:
+        <span class="kw">if</span> v <span class="op">&gt;</span> <span class="nb">10</span>:
+            <span class="kw">print</span>(<span class="st">"EDGE!"</span>, v)
+        <span class="kw">else</span>:
+            <span class="kw">print</span>(<span class="st">"flat"</span>, v)</div>
+</div>
 
-  <p style="margin-top:6px;"><strong>Step 4 · Type your finished Python program here.</strong> (Use the v1 or v2 structure — your call.)</p>
-  <textarea class="ttextarea code-area huge" data-key="my-code" placeholder="ratings = {
-    'Item A': [1, 0, 1],
-    ...
-}
+<!-- FOOTER -->
+<div class="sheet-footer">
+  <div><strong>Day 16 · AI for Images · Activity Sheet</strong> — Python Image Edge Detection System<br>Ages 11–12 · Laplacian Filter · Nested Loops · Computer Vision</div>
+  <div style="text-align:right">Spring 2026 · Mr. Hsiao / Hue Weng</div>
+</div>
 
-# your loop here..."></textarea>
-
-  <p style="margin-top:6px;"><strong>Step 5 · Run &amp; reflect.</strong></p>
-  <div class="card amber tinted-amber">
-    <p class="row-tight">My program recommended: <input class="tinput long" data-key="my-rec"></p>
-    <p class="row-tight">Did it match what each user would pick for themselves?
-      <label class="cb-label"><input type="radio" name="agree" class="rb" data-key="agree-yes"> Yes for all</label>
-      <label class="cb-label"><input type="radio" name="agree" class="rb" data-key="agree-some"> Yes for some</label>
-      <label class="cb-label"><input type="radio" name="agree" class="rb" data-key="agree-no"> No</label>
-    </p>
-    <p class="row-tight"><strong>Where it failed and why:</strong></p>
-    <textarea class="ttextarea" data-key="my-fail" placeholder="Type your reflection"></textarea>
-  </div>
-</section>
-
-<!-- =================== PAGE 5 =================== -->
-<section class="page">
-  <header class="title-bar">
-    <div>
-      <span class="pill purple">Part 4 · Stretch · Look-Alike Recommender</span>
-      <h1 class="grad-text" style="font-size:1.55rem;">The Netflix Prize idea 🥇</h1>
-    </div>
-    <div class="namebox"><p class="note">Optional but powerful. ~10 min.</p></div>
-  </header>
-
-  <div class="card purple tinted-purple">
-    <p class="row-tight"><strong>The challenge:</strong> Find Alex's <em>most similar</em> user, then recommend the one game Alex hasn't tried that the look-alike loved.</p>
-    <ol>
-      <li>Pick a similarity score. Easiest: count how many items two users <em>agreed on</em> (same 1 or same 0).</li>
-      <li>Run the score for every other user.</li>
-      <li>Pick the user with the highest similarity → that's the "look-alike".</li>
-      <li>Recommend the look-alike's top item that Alex hasn't rated.</li>
-    </ol>
-    <p class="row-tight"><strong>Pseudocode plan</strong> (write your version before coding):</p>
-    <textarea class="ttextarea code-area" data-key="lookalike-plan" placeholder="for other in users:&#10;    score = ...&#10;..."></textarea>
-  </div>
-
-  <div class="card purple">
-    <p class="row-tight"><strong>Your similarity function</strong> — paste the Python:</p>
-    <textarea class="ttextarea code-area tall" data-key="lookalike-code" placeholder="def similarity(a, b):&#10;    ..."></textarea>
-    <p class="row-tight"><strong>Result:</strong> Alex's look-alike is <input class="tinput long" data-key="lookalike-name" placeholder="user name"> with a similarity score of <input class="tinput short" data-key="lookalike-score">.</p>
-    <p class="row-tight"><strong>Recommendation for Alex:</strong> <input class="tinput long" data-key="lookalike-rec" placeholder="game name"></p>
-  </div>
-
-  <h2 style="margin-top:10px;">⚖️ Ethics &amp; Trade-offs</h2>
-  <div class="card red">
-    <div class="q"><div class="num">1</div><div class="body">
-      <strong>Filter bubble:</strong> If the algorithm only shows you what users like you already enjoyed, what kinds of content might you <em>never</em> discover?
-      <textarea class="ttextarea" data-key="ethics-bubble" placeholder="Your answer"></textarea>
-    </div></div>
-    <div class="q"><div class="num">2</div><div class="body">
-      <strong>Cold start:</strong> Suggest <em>two</em> different strategies a real app could use when a brand-new user signs up with zero ratings.
-      <input class="tinput line" data-key="ethics-coldA" placeholder="Strategy 1">
-      <input class="tinput line" data-key="ethics-coldB" placeholder="Strategy 2">
-    </div></div>
-    <div class="q"><div class="num">3</div><div class="body">
-      <strong>Whose interests?</strong> A platform's recommender can be tuned to maximize <em>your</em> happiness or the <em>company's</em> profit. Give one example where these goals could disagree.
-      <textarea class="ttextarea" data-key="ethics-interests" placeholder="Your answer"></textarea>
-    </div></div>
-  </div>
-
-  <h2 style="margin-top:10px;">🎟️ Exit Ticket — choose one prompt</h2>
-  <div class="card green tinted-green">
-    <p class="row-tight"><label class="cb-label"><input type="radio" name="exit" class="rb" data-key="exit-1"> When is average-rating the <em>right</em> tool for the job?</label></p>
-    <p class="row-tight"><label class="cb-label"><input type="radio" name="exit" class="rb" data-key="exit-2"> When does it fail a user, and what would you change?</label></p>
-    <p class="row-tight"><label class="cb-label"><input type="radio" name="exit" class="rb" data-key="exit-3"> What new question about algorithms are you walking out with?</label></p>
-    <textarea class="ttextarea tall" data-key="exit-answer" placeholder="2–3 sentences..."></textarea>
-  </div>
-
-  <hr>
-  <p class="note" style="text-align:center;">📬 Email a screenshot of all three programs + this exit ticket to <strong>hue.weng.88@gmail.com</strong> · Day 15 · Spring 2026 · Advanced</p>
-</section>
+</div><!-- .page -->
 
 <script>
-const STORE_KEY = "day15-activity-adv-v1";
-const fields = document.querySelectorAll('[data-key]');
-const stateEl = document.getElementById('savestate');
-let saveTimer = null;
-function loadAll(){
-  let data = {};
-  try { data = JSON.parse(localStorage.getItem(STORE_KEY) || "{}"); } catch(e){ data = {}; }
-  fields.forEach(el => {
-    const key = el.dataset.key;
-    if (!(key in data)) return;
-    if (el.type === "checkbox" || el.type === "radio") el.checked = !!data[key];
-    else el.value = data[key];
-  });
-}
-function collect(){
-  const data = {};
-  fields.forEach(el => {
-    const key = el.dataset.key;
-    if (el.type === "checkbox" || el.type === "radio") data[key] = el.checked;
-    else data[key] = el.value;
-  });
-  return data;
-}
-function saveAll(showToast = false){
-  localStorage.setItem(STORE_KEY, JSON.stringify(collect()));
-  if (showToast) showSaved();
-}
-function showSaved(){
-  stateEl.classList.add('show');
-  clearTimeout(saveTimer);
-  saveTimer = setTimeout(() => stateEl.classList.remove('show'), 1400);
-}
-function saveNow(){ saveAll(true); }
-function resetAll(){
-  if (!confirm('Erase all answers on this worksheet? This cannot be undone.')) return;
-  localStorage.removeItem(STORE_KEY);
-  fields.forEach(el => {
-    if (el.type === "checkbox" || el.type === "radio") el.checked = false;
-    else if (el.tagName === "SELECT") el.selectedIndex = 0;
-    else el.value = "";
-  });
-  const defaults = { "racing-sum":"4", "racing-n":"5", "racing-avg":"0.8" };
-  for (const k in defaults){
-    const el = document.querySelector(`[data-key="${k}"]`);
-    if (el) el.value = defaults[k];
-  }
-}
-fields.forEach(el => {
-  const evt = (el.type === "checkbox" || el.type === "radio" || el.tagName === "SELECT") ? "change" : "input";
-  el.addEventListener(evt, () => {
-    clearTimeout(saveTimer);
-    saveTimer = setTimeout(() => saveAll(true), 350);
+// Live-color the pixel design grid cells based on value 0-9
+document.querySelectorAll('.pxinput').forEach(inp => {
+  inp.addEventListener('input', function() {
+    const v = parseInt(this.value);
+    if (isNaN(v) || v < 0 || v > 9) {
+      this.style.background = '#f8fafc';
+      this.style.color = '#374151';
+      return;
+    }
+    const t = v / 9;
+    const light = Math.round(248 - t * 220);
+    this.style.background = `rgb(${light}, ${Math.round(light * (1 - t * 0.5))}, ${Math.round(light * (1 - t * 0.8))})`;
+    this.style.color = t > 0.5 ? '#fff' : '#1e293b';
+    this.style.borderColor = t > 0.3 ? '#0b63ce' : '#cbd5e1';
   });
 });
-loadAll();
 </script>
 </body>
 </html>
