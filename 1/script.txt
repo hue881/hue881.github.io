@@ -1,7 +1,5 @@
-
-DAY 15 · SPRING 2026
-AI & Coding for Beginners
-"How Apps Pick What's Next" — Recommendation Systems
+Day 16 · AI for Images
+"How Computers Learn to See Edges" — Introduction to Image Processing & Edge Detection
 Expert Teaching Script (PhD-Level Explanations, Beginner-Friendly Delivery)
 Instructor: Mr. Hsiao "Hue" Weng
 Total Time: ~60 minutes
@@ -18,794 +16,924 @@ HOW TO USE THIS SCRIPT
 
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-SLIDE 1 — TITLE SLIDE & LEARNING OBJECTIVES
+SLIDE 1 — TITLE SLIDE & WELCOME
 [Duration: ~3 minutes]
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-[As students settle in, display the slide. Begin speaking with genuine enthusiasm.]
+[As students settle in, display the title slide: "Day 16 · AI for Images —
+How Computers Learn to See Edges." Begin with genuine curiosity and warmth.
+Hold up your phone or point to a picture on screen.]
 
-"Good morning everyone — welcome to Day 15! Today's lesson is one of my
-absolute favorites, because we're going to solve a mystery that affects
-every single one of you, probably every single day."
+"Good morning / afternoon, everyone! Quick question before we even
+start — have you ever looked really, REALLY closely at a photo on your
+phone? Like, zoomed in so far that it just looks like... squares? Tiny,
+colored squares?"
 
-"Here's the mystery: How does YouTube know what video to play next? How
-does Spotify know which song you might want to hear after the one you just
-listened to? How does Netflix decide which show pops up first on your
-screen?"
+[Pause. Let students nod or respond.]
 
-"The answer is something called a RECOMMENDATION SYSTEM — and today,
-by the end of this class, you are going to BUILD one. From scratch. In
-real Python code."
+"Those squares. That's the entire secret of how computers see. Every
+single photo your phone takes, every frame of every video you've ever
+watched, every image used by a self-driving car or a face-unlock system —
+it's all just millions of those tiny squares, each one storing a number."
 
-💡 [DEEP CONTEXT — say in plain terms]:
-"Recommendation systems are one of the most impactful inventions in the
-history of computing. They are a branch of machine learning — which is
-a type of artificial intelligence — where a computer learns from data
-to make predictions. The 'prediction' here is: 'What will this person
-want to see, hear, or buy next?' Companies like Netflix have said that
-their recommendation engine saves them over a BILLION dollars per year
-in customer retention, because people keep watching instead of leaving."
+"Today we are going to discover how AI uses those numbers to do something
+remarkable: it learns to see the EDGES of things. Outlines. Shapes.
+Where one thing ends and another begins."
 
-"But here's the amazing thing — the core idea is actually very simple
-math that you already know. You already know what a list looks like in
-Python. You already know how to find an average. That's all we need."
+"And by the end of today, you will have written the actual math and code
+that powers face unlock on phones, helps self-driving cars find lane lines,
+and helps doctors spot tumors in medical scans. That is not an exaggeration.
+Let's get into it."
 
-[Point to the 'You already know' section of the slide]
+💡 [DEEP CONTEXT — deliver this slowly and deliberately]:
+"Here is the big picture. When we look at a cat sitting on a white sofa,
+our brain instantly knows where the cat is. We see edges — the outline of
+the fur, the shape of the ears, the curve of the tail. We do this
+effortlessly because evolution spent millions of years training our visual
+system.
 
-"Look at what's already in your toolkit:
-  - Lists like [1, 0, 1] — you know those
-  - How to find an average — you know that too
-
-By the end of today, you'll add two more tools: a loop and a dictionary.
-And together, those four ingredients become a recommender. The same kind
-of code that runs YouTube."
-
-[Point to 'Today you'll be able to…']
-"Two goals today — write a tiny picker program, and explain it to a
-friend in your own words. If you can explain it, you truly understand it.
-Let's go."
+A computer has no built-in visual sense. It can only do arithmetic. So
+for decades, the hardest challenge in AI was: how do you take a grid of
+numbers and teach a machine to understand what's IN the image? The
+breakthrough answer — still used in every modern AI vision system — is
+edge detection. Find where numbers change sharply, and you find the
+outlines of objects. Find the outlines, and you can understand the scene.
+Today, you will learn exactly how that works."
 
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-SLIDE 2 — WARM-UP: THE ICE CREAM TRUCK PROBLEM
-[Duration: ~5 minutes]
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-[Read the scenario with some drama]
-
-"Picture this. An ice cream truck pulls up outside school. Four flavors:
-chocolate, vanilla, strawberry, and mint chip. Twenty kids are in line.
-One kid is new to the neighborhood, looks at the menu, and says: 'I can't
-decide — just pick one for me.'"
-
-"So — what do YOU do? How do you pick?"
-
-✋ [Give students 60 seconds to turn & talk to a partner. Then call on a few.]
-
-"Let's look at the three strategies on the slide:"
-
-"Strategy 1: Pick the flavor MOST kids love.
-→ This is called a POPULARITY-BASED recommendation. You count up which
-  flavor the majority of people prefer, and suggest that one. Simple,
-  fast, and works pretty well for a crowd.
-  In the real world: YouTube's 'Trending' page does exactly this.
-  Whatever has the most views and likes rises to the top."
-
-"Strategy 2: Pick a DIFFERENT one for each kid.
-→ This is called a PERSONALIZED recommendation. Instead of asking 'what
-  does the group like?', you ask 'what does THIS specific person like?'
-  This requires knowing something about each person.
-  In the real world: Spotify's Discover Weekly playlist is built for you
-  specifically — nobody else has the exact same playlist."
-
-"Strategy 3: Pick the NEWEST flavor.
-→ This is called a NOVELTY or RECENCY-BASED approach. You recommend
-  whatever is fresh and new, regardless of whether people like it yet.
-  In the real world: TikTok sometimes does this — pushing new creators
-  into your feed to give them a chance."
-
-💡 [DEEP INSIGHT — say this part slowly]:
-"Here's what's mind-blowing: every single recommendation system you have
-ever used is essentially a combination of these three strategies. Netflix
-uses popularity (trending shows), personalization (based on your history),
-AND novelty (new releases). Computer scientists spend their entire careers
-figuring out how to BLEND these three ideas in the smartest way possible."
-
-"Today we start with Strategy 1 — popularity. It's the foundation.
-Once you understand this, everything else builds on top of it."
-
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-SLIDE 3 — TODAY'S PLAN
-[Duration: ~2 minutes]
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-[Use this as a roadmap moment — a brief overview so students know what's coming]
-
-"Alright, here's our adventure map for today. Five stops:"
-
-"Stop 1: We'll watch a short video about what an algorithm is.
-Stop 2: We'll learn just four new vocabulary words — and I mean JUST four.
-Stop 3: We'll write real Python code together, step by step.
-Stop 4: You'll remix the code with your OWN favorite things.
-Stop 5: We close with a quick recap and an exit ticket."
-
-"I want you to hold onto this sentence — we're going to BUILD up to it
-together:
-
-  'My computer picks the top game by adding all the thumbs-ups and
-   dividing by how many kids voted.'
-
-That one sentence IS the algorithm. Say it with me."
-
-✋ [Have students say the sentence out loud together once]
-
-💡 [CONNECT TO BIG PICTURE]:
-"That sentence describes what's called a 'mean-based collaborative filter.'
-Spotify's very first recommendation engine, before they had deep learning,
-worked almost exactly like what you're going to write today. You are not
-learning a toy version of computer science — you are learning the REAL
-foundation."
-
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-SLIDE 4 — VIDEO 1: WHAT'S AN ALGORITHM?
-[Duration: ~5 minutes + video ~5 min = ~10 min total]
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-[Before pressing play]
-
-"Before we write any code, we need to understand the word 'algorithm.'
-This is one of the most important words in all of computer science.
-We're going to watch a TED-Ed video — about 5 minutes — and I want you
-to listen for three specific things."
-
-[Point to the three questions on the slide:]
-"ONE: What IS an algorithm in simple words?
-TWO: Can you name one algorithm you used today — before school even started?
-THREE: Does an algorithm have to be on a computer?"
-
-[Play the video]
-
-[AFTER video — debrief for ~2 minutes]
-
-"Okay — what is an algorithm in simple words?"
-✋ [Take 2-3 student responses]
-
-💡 [SYNTHESIZE their answers with this explanation]:
-"Here's the way I want you to think about it: an algorithm is a RECIPE.
-A recipe tells you, step by step, exactly what to do to get a specific
-result. And just like a recipe, an algorithm has three properties:
-
-  1. It has a clear INPUT — what you start with (ingredients / data)
-  2. It has defined STEPS — the process (the cooking instructions)
-  3. It produces an OUTPUT — a result (the finished dish / a recommendation)
-
-And just like recipes, algorithms can be simple — like 'make toast' — or
-enormously complex — like the algorithm that lands a spacecraft on Mars."
-
-"Did an algorithm run before you got to school today?"
-✋ [Take responses — likely: alarm clock, GPS directions, traffic apps, etc.]
-
-"Absolutely. When Google Maps tells you the fastest route, that is an
-algorithm called 'shortest path.' When your phone's alarm picks a gentle
-sound to wake you up, that's an algorithm. We live inside algorithms.
-Today you're going to write one."
-
-"And the answer to question 3 — does an algorithm have to be on a
-computer? NO. A recipe is an algorithm. Tying your shoelaces is an
-algorithm. A doctor's checklist is an algorithm. The computer just runs
-algorithms incredibly fast — millions of steps per second."
-
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-SLIDE 5 — JUST 4 WORDS TO REMEMBER
-[Duration: ~3 minutes]
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-"Now — our entire vocabulary for today. Four words. That's it. Let's go
-through each one carefully."
-
-"WORD 1: VOTE — A thumbs-up (1) or thumbs-down (0) from ONE person about
-ONE thing.
-
-  💡 Why do we use 1s and 0s? Because computers understand numbers, not
-  feelings. When you say 'I like this game,' a computer needs to store that
-  as a number. 1 means 'yes, I liked it,' 0 means 'no, I didn't.' This is
-  called BINARY ENCODING — turning real-world information into numbers.
-  Every piece of data your computer processes — photos, videos, songs,
-  text — is ultimately stored as 1s and 0s. Today we're doing that at the
-  simplest possible level."
-
-"WORD 2: AVERAGE — Add all the votes, then divide by how many people voted.
-
-  💡 The average is also called the ARITHMETIC MEAN in mathematics, and
-  it represents the 'central tendency' of a group of numbers — basically,
-  what's typical. In machine learning, averages are absolutely everywhere.
-  When a neural network — the kind used in ChatGPT and image recognition —
-  learns from data, it is constantly computing weighted averages. The
-  humble average you learned in 3rd grade is the conceptual ancestor of
-  the most powerful AI systems in the world."
-
-"WORD 3: PICKER — The program that does the picking for us. Fancy term:
-RECOMMENDER.
-
-  💡 In professional computer science, this is called a 'recommendation
-  engine' or 'recommender system.' It's an entire subfield of AI. There
-  are academic conferences, research papers, and billion-dollar companies
-  built around improving pickers. Amazon's recommendation system (the
-  'customers also bought' section) reportedly generates 35% of their total
-  revenue. That's the power of a good picker."
-
-"WORD 4: TOP — The item with the highest average score. The one the picker
-shows first.
-
-  💡 In software, 'top' sounds simple, but choosing the right ranking
-  criterion is one of the hardest problems in all of AI. What does 'top'
-  even mean? Most liked? Most relevant? Most likely to keep the user
-  engaged? These choices have enormous social consequences — what rises to
-  'top' on social media shapes what millions of people think and believe.
-  Today we rank by average score. That's our definition of 'top.'"
-
-"Quick mental check — if 5 friends all thumbs-up a snack: [1,1,1,1,1],
-what's the average?"
-✋ [Students: 5/5 = 1.0]
-"Right — perfect score, 1.0. What about [1,0,0,0,0]?"
-✋ [Students: 1/5 = 0.2]
-"Exactly. Now you have all the vocabulary you need to write real AI code."
-
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-SLIDE 6 — PENCIL & PAPER: FIND THE AVERAGE BY HAND
-[Duration: ~5 minutes]
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-"Before we touch code, we do it by HAND. This is important. When you
-understand the math manually, you'll understand exactly what your code is
-doing — and when something goes wrong, you'll be able to debug it."
-
-"Let's walk through the worked example. Five friends voted on 'Racing':
-  Votes: [1, 1, 0, 1, 1]
-
-  Step 1 — Add the thumbs-ups: 1+1+0+1+1 = 4
-  Step 2 — Count the voters: 5
-  Step 3 — Divide: 4 ÷ 5 = 0.8
-
-  80% thumbs-up score. Four out of five friends liked it."
-
-💡 [CONNECT MATH TO CODE]:
-"Here's what's beautiful: in Python, Step 1 is the built-in function
-sum(), and Step 2 is the built-in function len(). So sum([1,1,0,1,1])
-gives you 4, and len([1,1,0,1,1]) gives you 5. Python does the adding
-and counting for you. Your job — your algorithm — is telling Python WHEN
-to do those steps and WHAT to do with the result."
-
-"Now you try the three puzzles. Pencils out."
-
-  Puzzle:  [1, 0, 0, 1, 0] → answer: 2/5 = 0.4
-  Shooter: [0, 0, 1, 0, 0] → answer: 1/5 = 0.2
-  Sports:  [1, 1, 1, 1, 1] → answer: 5/5 = 1.0
-
-✋ [Give 90 seconds, then go over answers. Have students hold up fingers to show their answer — 1 finger for Puzzle winning, 2 for Shooter, 3 for Sports]
-
-"Sports wins with a perfect 1.0. Everyone loved it. That's what our
-picker will figure out — automatically — when we write the code."
-
-"Notice something: we just created what's called a RANKING. We put all
-four options in order from best to worst: Sports (1.0), Racing (0.8),
-Puzzle (0.4), Shooter (0.2). Ranking by average score is one of the
-foundational operations in search engines, recommendation systems, and
-basically all of modern AI."
-
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-SLIDE 7 — CODE STEP 1 OF 3: THE DICTIONARY
-[Duration: ~4 minutes]
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-[Have students open their Python editor / Replit / IDLE]
-
-"Code time! We build in three steps — do NOT skip ahead. Type exactly
-what you see on the slide. After each step we'll run it and check."
-
-"Step 1: We store our data in a DICTIONARY."
-
-[Walk around the room as students type. Dictate slowly:]
-
-  ratings = {
-    'Racing':  [1, 1, 0, 1, 1],
-    'Puzzle':  [1, 0, 0, 1, 0],
-    'Shooter': [0, 0, 1, 0, 0],
-    'Sports':  [1, 1, 1, 1, 1],
-  }
-  print(ratings)
-
-"Now run it."
-
-✋ [Wait for students to run, help those with errors]
-
-💡 [EXPLAIN THE DICTIONARY IN DEPTH — this is a critical concept]:
-"Let's talk about what a dictionary IS. In Python, a dictionary is a
-data structure that pairs a LABEL — called a KEY — with a piece of DATA
-— called a VALUE. Think of it like a physical dictionary: you look up a
-WORD (the key) and find its DEFINITION (the value).
-
-In our code:
-  - 'Racing' is a KEY — the label for one game
-  - [1, 1, 0, 1, 1] is the VALUE — the votes for that game
-
-Why use a dictionary instead of separate variables? Because now we can
-write code that works on ALL games at once, without knowing in advance
-how many games there are. That's scalability — the ability to handle
-bigger and bigger datasets with the same code. Netflix has 17,000 titles.
-They don't write a separate line for each one. They use data structures
-exactly like this dictionary."
-
-"The key-value pair structure of a dictionary shows up EVERYWHERE in
-computer science:
-  - A phone contact list: name → phone number
-  - A login system: username → password hash
-  - A shopping cart: item name → price
-  - A word counter: word → count
-
-It is one of the most important data structures you will ever use."
-
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-SLIDE 8 — CODE STEP 2 OF 3: THE LOOP & AVERAGE
-[Duration: ~5 minutes]
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-"Step 2: We loop through all the games and compute the average score for
-each one. Type this BELOW your Step 1 code:"
-
-  averages = {}
-  for game, votes in ratings.items():
-      score = sum(votes) / len(votes)
-      averages[game] = score
-
-  for game, score in averages.items():
-      print(game, '->', round(score, 2))
-
-"Run it. Did Sports come out as 1.0?"
-
-✋ [Wait — help students troubleshoot indentation errors, which are the most common issue here]
-
-💡 [LINE BY LINE EXPLANATION — go slowly, this is the heart of the lesson]:
-
-"Let's read this code like a story. Every line has a job:
-
-  LINE 1: averages = {}
-  → We create a new, EMPTY dictionary called 'averages.' Think of it as
-    an empty scoreboard. No scores yet — we're about to fill it in.
-
-  LINE 2: for game, votes in ratings.items():
-  → This is a FOR LOOP. In Python, a for loop says: 'Go through every
-    item in this collection, one at a time, and do something with each.'
-
-    ratings.items() gives us each key-value pair. So on the FIRST pass,
-    game = 'Racing' and votes = [1, 1, 0, 1, 1]. On the SECOND pass,
-    game = 'Puzzle' and votes = [1, 0, 0, 1, 0]. And so on.
-
-    💡 DEEP INSIGHT: This is called ITERATION — visiting each element in
-    a collection exactly once. Iteration is the mechanism behind almost
-    every algorithm in computer science. When Google indexes the web,
-    it iterates over billions of pages. When a face recognition system
-    scans a photo, it iterates over millions of pixels. The FOR loop is
-    the basic unit of that process.
-
-  LINE 3: score = sum(votes) / len(votes)
-  → This is our average formula — the same math you did by hand.
-    sum(votes) adds all the 1s and 0s. len(votes) counts how many voters
-    there were. Divide: you get the score.
-
-    💡 In machine learning, this exact operation has a formal name:
-    it's computing a MEAN RATING. The entire field of 'collaborative
-    filtering' — used by Amazon, Netflix, and Spotify — extends this
-    simple mean to consider patterns across thousands of users and items.
-    The foundation is this one line of code.
-
-  LINE 4: averages[game] = score
-  → We write the score onto our scoreboard. We're saying: 'In the
-    averages dictionary, the entry for THIS game equals THIS score.'
-    After the loop finishes, averages contains a score for every game.
-
-  LINES 5-6: The print loop
-  → We loop through averages and print each game's score, rounded to
-    2 decimal places. round(..., 2) is just cosmetic — it keeps our
-    output clean and readable. In a real app, this would be the data
-    sent to a display or a database."
-
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-SLIDE 9 — CODE STEP 3 OF 3: PICK THE WINNER
-[Duration: ~3 minutes]
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-"Final line of code. Add this at the very bottom:"
-
-  best_game = max(averages, key=averages.get)
-  print('Recommended first:', best_game)
-
-"Run the full program. You should see:"
-
-  Racing -> 0.8
-  Puzzle -> 0.4
-  Shooter -> 0.2
-  Sports -> 1.0
-  Recommended first: Sports
-
-✋ [Make sure everyone sees the correct output before moving on. High-five your neighbor!]
-
-💡 [DEEP EXPLANATION OF max() WITH A KEY FUNCTION — this is subtle]:
-
-"Let's break down that one line:
-
-  max(averages, key=averages.get)
-
-  max() normally finds the biggest NUMBER in a list. But averages is a
-  DICTIONARY — it contains key-value pairs, not just numbers. So we need
-  to tell max() a rule: 'When comparing items, compare them BY their
-  score, not by their name.'
-
-  The argument key=averages.get does exactly that. averages.get is a
-  function that, given a game name, returns its score. So we're saying:
-  'Find the game whose score, as reported by averages.get, is the maximum.'
-
-  💡 This pattern — max(collection, key=some_function) — is one of the
-  most powerful one-liners in Python. In professional code you'll see it
-  everywhere. When ranking search results, finding the fastest route,
-  picking the highest-paying job offer, selecting the most statistically
-  significant result in an experiment — all of these use this same pattern.
-
-  The technical term for what we just built is an ARGMAX operation:
-  'Find the ARGUMENT (input) that produces the MAXIMUM output.' It's a
-  fundamental operation in calculus, optimization theory, machine learning
-  training, and game theory. You just wrote argmax. In 8 lines."
-
-"Let's zoom out. We have:
-  1. Stored structured data → dictionary
-  2. Processed it with a loop → iteration
-  3. Applied a mathematical operation → mean
-  4. Selected the best result → argmax
-
-That is not a toy exercise. That is a complete data pipeline. The only
-difference between this and Netflix's system is scale: they have 200
-million users, you have 5. The logic is identical."
-
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-SLIDE 10 — VIDEO 2: REAL APPS DO THIS — BUT BIGGER
-[Duration: ~5 minutes + video ~3 min = ~8 min total]
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-[Before pressing play]
-
-"You just wrote a recommendation system. Now let's see what one looks
-like in the wild. This is a CBC Kids News video about how YouTube and
-apps track you — and how that connects to what you just built."
-
-"Three things to notice:
-  1. What does an app TRACK when you scroll?
-  2. Why does the next video sometimes feel spooky — like it already knows?
-  3. How is YouTube's picker the same as ours? How is it bigger?"
-
-[Play video]
-
-[AFTER video — ~2 min debrief]
-
-"What did the app track?"
-✋ [Students: watch time, likes, what you skip, search history, etc.]
-
-💡 [CONNECT THEIR ANSWERS TO THE CODE]:
-"Exactly. Every one of those is a VOTE — but a more sophisticated one than
-our 1s and 0s. Instead of just thumbs-up or thumbs-down, YouTube tracks:
-  - Did you watch 100% of the video? That's a STRONG thumbs-up.
-  - Did you watch 10% and skip? That's a thumbs-DOWN.
-  - Did you re-watch a section? That's a strong thumbs-up on that moment.
-  - Did you subscribe after watching? Extremely strong signal.
-
-In machine learning, these are called IMPLICIT RATINGS — signals the
-user gives without explicitly clicking a star rating. They're actually
-MORE reliable than explicit ratings, because people forget to rate things
-but they never forget to stop watching something they hate."
-
-"And the 'spooky' feeling? That's because the algorithm has seen the
-votes of millions of other people who watched the same video as you,
-and noticed a pattern: 'People who watch Video A almost always want to
-watch Video B next.' That pattern — learned from millions of users — is
-what makes a recommendation feel eerie. The algorithm isn't reading
-your mind. It's reading a very, very large dataset."
-
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-SLIDE 11 — TALK TIME: WHEN DOES "MOST POPULAR" GO WRONG?
-[Duration: ~4 minutes]
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-"Our picker is smart — but it has real problems. Every algorithm does.
-Let's be critical thinkers. There are three specific failure modes on the
-slide."
-
-"PROBLEM 1: Tastes are different.
-If 19 kids love chocolate but YOU love mint, the popular pick is wrong —
-for you. In AI, this is called the MAJORITY BIAS or POPULARITY BIAS. The
-algorithm unfairly favors items that already have lots of votes, which
-tends to be things that mainstream, majority groups prefer. For minority
-tastes, popular-based recommendations fail."
-
-"PROBLEM 2: Brand new things get zero votes.
-A new game or song starts with ZERO data. Our algorithm can't possibly
-recommend it — it has no score. In the tech world this is called the
-COLD START PROBLEM. It's one of the hardest problems in recommendation
-systems. How do you recommend something you've never seen data on? This
-is why apps often ask new users to rate a bunch of things immediately
-after signing up — they need data to warm the system up."
-
-"PROBLEM 3: You only see what you already like.
-If the algorithm always recommends things similar to what's already
-popular with you, you end up in what researchers call a FILTER BUBBLE
-or ECHO CHAMBER. You only see one type of content, one type of opinion,
-one type of music — forever. This has real social consequences. It's one
-reason why social media can feel so divided — everyone is in their own
-recommendation bubble."
-
-💡 [CRITICAL THINKING MOMENT]:
-"Here's what makes this philosophically interesting: these are not just
-technical bugs. They're ETHICAL questions. Who should decide what 'top'
-means? Who is responsible when an algorithm amplifies harmful content?
-When recommendation systems make mistakes at scale — with millions of
-users — the consequences are enormous. This is why AI Ethics is now
-a major field in computer science. The code you wrote in 8 lines raises
-real questions that the biggest tech companies in the world are still
-trying to answer."
-
-✋ [Class chat — have students share experiences with repetitive app recommendations]
-
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-SLIDE 12 — BONUS TWIST: ONE PICKER PER PERSON (PERSONALIZATION)
-[Duration: ~5 minutes]
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-"Now we fix Problem 1. We give every person their OWN picker."
-
-[Have students open a FRESH Python file — separate from their Step 1-3 code]
-
-  player_ratings = {
-    'Alex':   {'Racing':[1,1,1], 'Puzzle':[1,1,0], 'Shooter':[0,0,0]},
-    'Jordan': {'Racing':[0,1,0], 'Puzzle':[1,1,1], 'Shooter':[1,1,0]},
-  }
-
-  for name, games in player_ratings.items():
-      print('
-For', name)
-      for game, votes in games.items():
-          score = sum(votes) / len(votes)
-          print(' ', game, '->', round(score, 2))
-
-"Before you run it — PREDICT: who likes Racing more, Alex or Jordan?"
-✋ [Let students guess — Alex has [1,1,1]=1.0 vs Jordan's [0,1,0]=0.33]
-
-"Run it. Does each person get their own list?"
-
-💡 [DEEP EXPLANATION — introduce collaborative filtering]:
-"Look at the structure of player_ratings. It's a dictionary of
-dictionaries — or in computer science terms, a NESTED DATA STRUCTURE.
-The outer dictionary maps person names to their data. The inner
-dictionary maps game names to votes. Two levels of organization.
-
-This data structure, if you scaled it up, becomes what's called a
-USER-ITEM MATRIX — the foundational data structure of collaborative
-filtering. Imagine a giant table:
-
-              Racing  Puzzle  Shooter  Sports
-  Alex:         1.0    0.67     0.0     ???
-  Jordan:       0.33   1.0      0.67    ???
-
-Each row is a USER. Each column is an ITEM. The values are average
-ratings. Notice the question marks — Alex hasn't rated Sports yet.
-How do we fill in that blank?
-
-That's exactly what Netflix's recommendation engine does. It looks at
-your row, finds users whose rows look SIMILAR to yours, and predicts
-what YOU would rate the items you haven't seen yet — based on what
-SIMILAR users rated. This technique is called USER-BASED COLLABORATIVE
-FILTERING, and it was the winning algorithm in the famous Netflix Prize —
-a $1 million competition in 2009 that transformed the field of AI.
-
-What you just coded — two levels of nested loops, two levels of nested
-dictionaries — is the SKELETON of that $1 million algorithm."
-
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-SLIDE 13 — MAKE IT YOURS: PERSONALIZE YOUR PICKER
+SLIDE 2 — WARM-UP: LET'S THINK TOGETHER 🔥
 [Duration: ~6 minutes]
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-"This is your creative time. You have three idea prompts — pick one:"
+[Read each warm-up question with energy. Give genuine wait time. This
+is NOT a quiz — it's brain activation. Wrong answers are perfect here.]
 
-"IDEA 1: Four lunch foods. Pretend you surveyed 5 friends. Which food wins?
-IDEA 2: Four songs you like. Make up five votes. Predict the winner first —
-  before you run the code. Does the picker agree with you?
-IDEA 3: Four TV shows. Make up the votes."
+"Two warm-up questions. Write one sentence for each in your notebook —
+and I promise, there are ZERO wrong answers here. I just want your
+honest best guess."
 
-"Here are your four steps:
-  1. Copy your code from Step 3 (Slide 9)
-  2. Replace the four game names with your own items
-  3. Replace the vote lists with your own data
-  4. Run it and show a partner"
+"QUESTION 1: If you zoom in really close on a photo on a phone screen,
+what do you see? Tiny squares? What color are those tiny squares?"
 
-[Walk the room, help with any syntax errors, encourage creativity]
+[Give 60 seconds to write.]
 
-✋ [After 4-5 minutes, ask 2-3 students to share their picker and results]
+"QUESTION 2: Look at a photo of a cat on a white background. Where does
+the cat END and the background BEGIN? What do we call that line?"
 
-💡 [REFLECTION PROMPT — ask this while circulating]:
-"When you predicted the winner before running the code — were you right?
-If you were wrong, why? Was the data misleading? Did you accidentally
-give one item better votes without realizing it?
+[Give another 60 seconds to write.]
 
-This is what data scientists call VALIDATING A MODEL — checking whether
-the algorithm's answer matches what you expected, and if not, figuring
-out whether the algorithm is wrong or whether YOUR assumptions were wrong.
-That detective process is a huge part of real AI work."
+✋ [Call on 3–4 students. Listen for words like: squares, pixels, dots,
+   outline, edge, border. Affirm ALL of them warmly.]
+
+"I'm hearing incredible things. 'Squares' — yes, those are called pixels,
+and you just said the most important word in today's lesson. 'Outline' and
+'edge' — those are exactly the mathematical features that AI is trained to
+find. You already have the intuition. Today we give that intuition a
+precise mathematical meaning."
+
+→ "Let's look at those tiny squares up close."
 
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-SLIDE 14 — HOMEWORK
+SLIDE 3 — STEP 1: PICTURES = NUMBERS 📸
+[Duration: ~5 minutes]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+[Display the 5×5 grid on screen. Point to each section deliberately
+as you explain. Write the core idea on the board before speaking.]
+
+"Here is the most important idea of the entire lesson. Write this down:
+A picture is just a grid of numbers."
+
+"Every digital image — whether it is on your Instagram, in a NASA
+satellite photo, or in a hospital MRI machine — is stored as a table
+of numbers. Each number tells the computer one thing: how bright is
+this tiny spot?"
+
+"In our simple grayscale examples today, those numbers go from 0 to 9.
+Zero means completely dark — black. Nine means completely bright —
+white. Everything in between is a shade of gray."
+
+[Point to the 5×5 grid on the slide]
+
+"Look at our tiny 5×5 picture. The outer ring is all zeros — dark.
+The inner square has 5s — medium bright. The very center has a 9 —
+the brightest spot of all. The blue numbers are the bright inner square.
+The gray zeros are the dark border."
+
+"Even on this tiny 5×5 grid — can you already SEE a shape? A bright
+square floating on a dark background? That's a picture. That IS a
+computer image. Just 25 numbers arranged in a grid."
+
+💡 [DEEP CONCEPT — say this slowly]:
+"In a real color photo, each pixel actually stores THREE numbers: one
+for Red brightness, one for Green brightness, one for Blue brightness.
+That is called RGB — Red, Green, Blue. Every color you have ever seen
+on a screen is just a combination of those three numbers. Your phone's
+camera captures millions of them every second.
+
+But today, to keep the math clean, we work with a single brightness
+number per pixel. This is called a grayscale image. Everything we
+learn today applies exactly the same way to color images — the computer
+just runs the same operations on each of the three color layers
+separately."
+
+✋ "Quick question: in our 5×5 grid, what does the number 0 represent?
+   What does 9 represent?"
+   [Expected: 0 = dark/black, 9 = bright/white. Affirm warmly.]
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SLIDE 4 — STEP 2: WHAT IS AN EDGE? 🔍
+[Duration: ~5 minutes]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+[Display the edge concept slide with the photo example and the number
+sequence. Point to each section as you transition between them.]
+
+"So now we know: images are grids of numbers. Here comes the key
+question: what IS an edge, really? Let's define it precisely —
+because once we have a definition, we can write code to find it."
+
+"IN A PHOTO: Imagine a city skyline. Dark sky at the top. Bright,
+sunlit building below it. Where the dark sky meets the bright building —
+that's an edge. Your eye sees a sharp line there, a boundary where one
+region ends and another begins."
+
+"IN NUMBERS: Look at this sequence across a row of pixels:
+
+   0  →  0  →  5  →  5
+
+The number is staying the same — 0, 0 — and then it suddenly jumps to 5.
+That BIG jump? That IS the edge. An edge is not a line drawn on a picture.
+An edge is a place in the grid where the numbers change a lot, very quickly."
+
+💡 [MATHEMATICAL DEPTH — deliver this conversationally]:
+"In higher mathematics, the idea of 'big change' is formalized using
+something called a derivative — the rate of change. In calculus, if a
+function changes slowly, its derivative is small. If it changes suddenly —
+like jumping from 0 to 255 in a single pixel — its derivative is huge.
+
+Edge detection is mathematically equivalent to computing the derivative
+of an image. We won't use calculus notation today, but the formula you
+are about to learn is doing exactly that: measuring how fast the numbers
+change from one pixel to the next. You are, right now, about to do
+computational calculus on an image. Using Python. Before lunch."
+
+"Why does AI NEED edges? Because edges give you shapes. Shapes give
+you meaning. If an AI system can find all the edges in a photo, it can
+reconstruct the outlines of everything in the scene — a face, a stop sign,
+a parked car. From there, it can recognize and label objects. No edges
+→ no shapes → no understanding. That is why every AI vision system on
+Earth starts here."
+
+✋ [Point to the 5×5 grid on screen]
+"Point to our grid. Can you find where the number jumps from 0 to 5?
+Put your finger on it — on your screen, on paper, anywhere. That exact
+location is where an edge lives. 👆"
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SLIDE 5 — VIDEO 1: HOW COMPUTERS SEE 🎬
+[Duration: ~6 minutes — video + brief discussion]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+[Before playing, prime students with three specific things to watch for.
+Write them on the board or display them on the slide.]
+
+"Before we build the formula ourselves, let's watch a short video:
+'How Computers See: Edge Detection.' As you watch, I want you
+actively hunting for three specific things:"
+
+"1. How does the video describe what a pixel is?
+ 2. What happens visually at the edges of objects in the output?
+ 3. How is the computer 'deciding' where an edge is?"
+
+[Play the embedded video — approximately 3–4 minutes.]
+
+[After the video ends — do NOT immediately talk. Give 5 seconds of silence.]
+
+"Give the video a thumbs up 👍 or thumbs down 👎 in your mind — then
+say ONE word out loud to describe what you just saw. Any word at all."
+
+✋ [Listen for: "filters," "contrast," "math," "bright," "sharp,"
+   "patterns." Affirm each one and briefly connect it to today's lesson:
+   'Contrast — yes, that is exactly what our formula measures.']
+
+"Every word you said is exactly right. 'Filter,' 'contrast,' 'math' —
+those are the ingredients. Now let's combine them into the formula
+and see how the whole thing works together."
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SLIDE 6 — STEP 3: THE EDGE FORMULA 🧮
+[Duration: ~6 minutes]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+[Display the 5-neighbor diagram: ⭐ at center, four arrows pointing
+to up, down, left, right neighbors. Write the formula on the board
+as you say it aloud.]
+
+"Here is the big idea of the entire lesson, in one sentence:"
+
+"For every pixel — ask: 'Are you very different from your neighbors?'
+  If YES → you are on an edge. Mark you bright.
+  If NO  → you are in a smooth region. Mark you dark."
+
+"That's it. Everything else is just the math that makes that question
+precise. Let's look at the diagram."
+
+"The center pixel — our star ⭐ — is the one we are examining. It has
+exactly four immediate neighbors: directly above, below, to the left,
+and to the right. Now here is the formula. Write it down:"
+
+"   value = center × 4  −  (up + down + left + right)"
+
+"In plain English: multiply the center pixel by 4, then subtract all
+four neighbors added together. The result tells you how different the
+center is from its surroundings."
+
+💡 [DEEP EXPLANATION — the most important conceptual moment of the lesson]:
+"Why does this formula work? Think through the logic carefully.
+
+If the center pixel is exactly average — the same brightness as all
+four neighbors — then center × 4 would equal up + down + left + right
+exactly, and the result would be ZERO. Zero means: 'nothing special
+here, smooth region, no edge.'
+
+But if the center pixel is much brighter or darker than its neighbors,
+the subtraction produces a BIG number. A big result means: 'this pixel
+stands out from its surroundings.' And a pixel that stands out from its
+surroundings is, by definition, on an edge.
+
+This specific formula has a name: the Laplacian filter. It is named after
+the French mathematician Pierre-Simon Laplace, who did his foundational
+work in the 1700s. The operation has been used in image processing since
+the 1960s and is still at the core of every modern computer vision system —
+including the convolutional neural networks that power face recognition
+in your phone. Today you are learning the original version, by hand,
+from first principles. That is not a small thing."
+
+✋ "Does the formula make sense so far? Let's immediately test it with
+   real numbers from our grid."
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SLIDE 7 — KEY VOCABULARY 🔑
+[Duration: ~4 minutes]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+"Before we write the code, let's own the four key vocabulary words
+for today. These four words let you talk about AI vision like a pro.
+Say each one after me."
+
+[Point to each card on the slide as you explain it.]
+
+"WORD 1: PIXEL 🖼️
+The tiniest dot in a digital picture. Each pixel stores one number —
+its brightness. Zoom in on any photo and you will literally see the squares.
+
+💡 The word 'pixel' comes from 'picture element.' A standard smartphone
+photo might be 4000 × 3000 pixels — that's 12 MILLION individual numbers
+stored and processed every time you take a photo."
+
+"WORD 2: EDGE 📐
+A place in an image where the numbers change a lot, very quickly.
+The mathematical version of an outline — where light meets dark, where
+one object ends and another begins.
+
+💡 In computer vision, an edge is never drawn — it is detected. The
+computer never literally 'sees' a line. It computes numerical differences
+and labels the high-difference locations as edges."
+
+"WORD 3: FILTER 🌀
+A math operation that slides over every pixel and checks its neighbors.
+Our edge formula IS a filter. A blur filter averages a pixel with its
+neighbors. A sharpen filter amplifies differences. Our edge filter flags
+pixels that differ a lot from their surroundings.
+
+💡 In modern deep learning, the weights of filters are no longer
+hand-designed — they are LEARNED automatically from millions of images.
+That is what a convolutional neural network does: it finds the best filter
+values on its own. But the mechanism is identical to what we build today."
+
+"WORD 4: NESTED LOOP 🔁
+A loop inside another loop. The outer loop moves through rows; the inner
+loop moves through columns. Together, they visit every single pixel in
+the image — left to right, top to bottom.
+
+💡 On a real 4000×3000 image, a nested loop visits 12 million pixels.
+Modern AI hardware runs this in parallel across thousands of computing
+cores simultaneously. That's why GPUs — graphics processing units —
+are the engine of AI: they were designed for exactly this kind of
+massive parallel pixel-level arithmetic."
+
+✋ [Quick check — point to random students and ask:
+   'What is a pixel?' 'What does a filter do?'
+   'What makes a nested loop different from a regular loop?'
+   Keep it fast, fun, and affirming.]
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SLIDE 8 — THE CODE: LINE BY LINE 🐍
+[Duration: ~8 minutes]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+[Display the full code on screen. Do NOT read it straight through.
+Build it section by section. Explain the WHY behind each part.]
+
+"Let's walk through the Python code line by line. Every single line
+has a reason. I will explain not just what it does but WHY it has to
+be that way."
+
+─────────────────────────────────────────────
+PART 1 — THE IMAGE
+─────────────────────────────────────────────
+"First, we define our image as a list of lists — a grid:
+
+    image = [
+        [0, 0, 0, 0, 0],
+        [0, 5, 5, 5, 0],
+        [0, 5, 9, 5, 0],
+        [0, 5, 5, 5, 0],
+        [0, 0, 0, 0, 0],
+    ]
+
+Each inner list is one row of the image. image[0] is the top row —
+all zeros, dark border. image[2] is the middle row. image[2][2] is
+the center pixel — the value 9, the brightest point.
+
+💡 We access any pixel with two indices: image[row][column].
+image[1][3] means row 1, column 3 — that value is 5. This two-index
+system is how ALL two-dimensional data is accessed in programming:
+images, spreadsheets, maps, game grids, matrices in math. Master
+this and you can work with almost any structured data."
+
+─────────────────────────────────────────────
+PART 2 — THE OUTPUT CONTAINER
+─────────────────────────────────────────────
+"Next:
+
+    filtered = []
+
+This empty list will hold our results. After the filter runs,
+every interior pixel will have a new number — its 'edginess score.'"
+
+─────────────────────────────────────────────
+PART 3 — THE NESTED LOOP
+─────────────────────────────────────────────
+"Here is the heart of the program:
+
+    for y in range(1, 4):       # rows 1, 2, 3
+        new_row = []
+        for x in range(1, 4):   # columns 1, 2, 3
+
+We use y for the row index and x for the column index. We loop through
+rows 1, 2, and 3 — and columns 1, 2, and 3.
+
+💡 CRITICAL QUESTION: Why do we start at 1 and not 0? This is the
+boundary problem — one of the most important concepts in image processing.
+
+Our formula needs image[y-1][x] — the pixel one row UP. If y = 0,
+then y-1 = -1. There is no row -1. We would fall off the edge of the
+grid and get an error — or worse, a wrong answer.
+
+The same is true for the last row, the leftmost column, and the rightmost
+column. We can only process pixels that have ALL four neighbors present.
+That means the interior pixels only: rows 1, 2, 3 and columns 1, 2, 3.
+The outermost border of the image cannot be filtered this way.
+
+In professional image processing, this is solved using 'padding' — adding
+a ring of zeros around the border of the image before filtering, so that
+every pixel (including the real border pixels) has four neighbors.
+Deep learning frameworks like TensorFlow and PyTorch do this automatically.
+Today we solve it the simpler way: just skip the border."
+
+─────────────────────────────────────────────
+PART 4 — READING THE NEIGHBORS
+─────────────────────────────────────────────
+"Inside the loop, for each pixel at position (y, x):
+
+    center = image[y][x]
+    up     = image[y-1][x]
+    down   = image[y+1][x]
+    left   = image[y][x-1]
+    right  = image[y][x+1]
+
+Five lines. Five values. The center pixel and its four immediate neighbors.
+We give each one a clear name so the formula that follows is readable."
+
+─────────────────────────────────────────────
+PART 5 — THE FORMULA AND STORAGE
+─────────────────────────────────────────────
+"Now the math:
+
+    value = center*4 - (up + down + left + right)
+    new_row.append(value)
+
+filtered.append(new_row)
+
+This is our Laplacian. We store each result in new_row as we cross the
+columns, then append the completed row to filtered after each row is done."
+
+─────────────────────────────────────────────
+PART 6 — OUTPUT
+─────────────────────────────────────────────
+"    print(filtered)
+
+This shows the result grid — our edge map. High numbers mean strong edges.
+Numbers near zero mean smooth, flat regions. Let's verify that with actual
+arithmetic right now."
+
+✋ "Any questions about the structure before we put numbers through it?"
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SLIDE 9 — LET'S CALCULATE TOGETHER! 🔢
+[Duration: ~5 minutes]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+[Work through the first example live on the board or slide.
+Write every number out as you say it. Be theatrical — make the
+arithmetic feel like a reveal.]
+
+"Let's put real numbers through the formula. We'll do pixel [1][1]
+together — then you will do pixel [2][2] on your own."
+
+"PIXEL [1][1] — row 1, column 1:
+  center = image[1][1] = 5
+  up     = image[0][1] = 0   ← row 0 is all zeros, dark border
+  down   = image[2][1] = 5
+  left   = image[1][0] = 0   ← column 0 is all zeros
+  right  = image[1][2] = 5
+
+  value = 5 × 4  −  (0 + 5 + 0 + 5)
+        = 20     −  10
+        = 10"
+
+"Ten! That is a big number. This pixel IS on an edge — it sits exactly
+at the corner where the dark outer border meets the bright inner square.
+The formula caught it perfectly."
+
+"YOUR TURN — Pixel [2][2] — row 2, column 2:
+  center = image[2][2] = 9
+  up     = image[1][2] = 5
+  down   = image[3][2] = 5
+  left   = image[2][1] = 5
+  right  = image[2][3] = 5
+
+  value = 9 × 4  −  (5 + 5 + 5 + 5)
+        = 36     −  20
+        = ?"
+
+✋ [Give 60 seconds for students to calculate in notebooks.
+   Then reveal: the answer is 16. Ask:
+   'Is this pixel on an edge, or in a smooth region? And why is 16
+   even bigger than 10?']
+
+"The answer is 16 — bigger than 10! The center at value 9 is
+noticeably brighter than all four neighbors at value 5. That brightness
+spike is detectable even though this is the CENTER of the shape — the
+formula senses the local brightness peak."
+
+💡 "Now here is the key intuition check. What if the center and ALL
+four neighbors were equal — say, all five values are 5?
+
+   5 × 4  −  (5 + 5 + 5 + 5) = 20 − 20 = 0.
+
+Zero. Flat region. No edge. The formula is mathematically guaranteed
+to produce zero wherever the image is perfectly uniform. Only CHANGES
+produce a non-zero response. Flat regions are invisible to this filter.
+Only boundaries speak."
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SLIDE 10 — VIDEO 2: HOW EDGES ARE DETECTED 🎬
+[Duration: ~6 minutes — video + pair discussion]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+"Second video — 'How Algorithms Detect Edges in Images.' Watch for
+just two things this time:"
+
+"1. What does the filter DO to edge pixels — does it make them bright
+   or dark in the output image?
+ 2. What happens to pixels that are in a completely smooth, flat region?"
+
+[Play the video — approximately 3–4 minutes.]
+
+[After the video ends]
+
+"Turn to a neighbor. Fill in this sentence together. You have 2 minutes:
+'The filter makes ___ bright because ___.'"
+
+✋ [Circulate and listen. Expected answer:
+   'The filter makes EDGE pixels bright because they are very different
+   from their neighbors.'
+   Affirm variations. Gently clarify if needed.]
+
+💡 "Notice something subtle from the video: the filter responds to
+CHANGE, not to overall brightness. A dark image can still have strong
+edges. A very bright image can have completely flat, edge-free regions.
+What matters is local contrast — how different THIS pixel is from
+its immediate neighbors.
+
+This is why a security camera can detect a person moving in a dim
+hallway: the edges of that person are present even in low light. And
+it's why a very uniformly lit white wall produces no edge signal at all,
+even though it's extremely bright. Brightness and edginess are two
+completely separate properties."
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SLIDE 11 — EXERCISE A: COPY & EXPLORE 💻
+[Duration: ~8 minutes]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+[Make sure every student has a Python environment open — repl.it,
+trinket.io, or a local Python install. Walk the room actively.]
+
+"Time to code. Exercise A — Copy and Explore. Two steps."
+
+"STEP 1: Type this code in exactly as shown. Type it — do not paste it.
+Typing forces you to read every single character:
+
+    image = [
+        [0, 0, 0, 0, 0],
+        [0, 5, 5, 5, 0],
+        [0, 5, 9, 5, 0],
+        [0, 5, 5, 5, 0],
+        [0, 0, 0, 0, 0],
+    ]
+
+    filtered = []
+    for y in range(1, 4):
+        new_row = []
+        for x in range(1, 4):
+            center = image[y][x]
+            up     = image[y-1][x]
+            down   = image[y+1][x]
+            left   = image[y][x-1]
+            right  = image[y][x+1]
+            value  = center*4 - (up + down + left + right)
+            new_row.append(value)
+        filtered.append(new_row)
+    print(filtered)
+
+Run it. Write down what filtered contains."
+
+[Wait 2–3 minutes. Circulate. Help with indentation and typos.]
+
+"STEP 2 — Answer these questions in your notebook:
+
+QUESTION 1: How many rows and columns does filtered have? Why is it
+3×3 when the original image is 5×5?
+
+QUESTION 2: Change image[2][2] from 9 to 1, and run again. What
+changed in the output? Did the edge signal at the center get stronger
+or weaker? Why?
+
+🏅 BONUS: Can you change the image so that ALL filtered values equal 0?
+(Hint: think about what the formula gives when every single pixel has
+the same value.)"
+
+✋ [Circulate actively. Ask students: 'What did you get? What changed
+   when you lowered the center value? Why is filtered smaller than image?']
+
+💡 [KEY INSIGHT — deliver when students ask about the 3×3 output size]:
+"The output is 3×3 because we can only process pixels with all four
+neighbors present. In a 5×5 grid, which pixels have a neighbor above,
+below, left, AND right? Only the interior 3×3 block: rows 1, 2, 3
+and columns 1, 2, 3. The outer border can't be processed.
+
+This 'shrinking effect' is a genuine engineering problem in deep learning.
+When a neural network applies 20 filter layers in sequence, the image
+would shrink at every single layer. That's why engineers use 'padding' —
+wrapping the image in a border of zeros — to keep the size stable.
+You have just discovered one of the real design challenges of AI systems."
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SLIDE 12 — EXERCISE B: FILL IN THE BLANKS 💻
+[Duration: ~5 minutes]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+[Display the Exercise B code with the three blanks on screen.]
+
+"Exercise B is a fill-in-the-blanks challenge. New image — all 7s in
+the center — and three blanks inside the neighbor lookups:
+
+    image = [
+        [0, 0, 0, 0, 0],
+        [0, 7, 7, 7, 0],
+        [0, 7, 7, 7, 0],
+        [0, 7, 7, 7, 0],
+        [0, 0, 0, 0, 0],
+    ]
+
+    ...
+    up   = image[y - __][x]    # Blank 1
+    down = image[y + __][x]    # Blank 2
+    left = image[y][x - __]    # Blank 3
+    right = image[y][x + 1]
+
+The Word Bank says: all three blanks use the same number.
+Think carefully — to get the pixel ONE row ABOVE the current row,
+what number do you subtract from y?"
+
+✋ [Give 60–90 seconds. Let students think or discuss with a neighbor.
+   Call on someone before revealing the answer.]
+
+"All three blanks are 1. Moving one row up is y−1. One row down is y+1.
+One column left is x−1. Simple."
+
+"Now — BEFORE you run the code — here is the real challenge question.
+This new image has all 7s in the center, every inner pixel surrounded
+by other 7s. What will the filter output be? Big numbers? Small numbers?
+Discuss with a neighbor for 30 seconds."
+
+✋ [Reveal: the inner 7s produce a filter value of 0. Only the border
+   pixels that touch the outer zeros produce a non-zero output.]
+
+💡 "This is the most important intuition check of the day. Uniform
+regions — pixels that are all the same value — produce ZERO filter
+output. The filter is silent in smooth areas. It only speaks at
+boundaries. No change in numbers → no edge detected.
+
+In a real photo, this means a clear blue sky or a painted white wall
+produces no edge signal at all, while the outline of a building against
+that sky lights up brightly. The filter is a silence-detector for
+visual change. It ignores everything constant and screams at everything
+that suddenly shifts."
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SLIDE 13 — COOL STUFF: WHERE IS THIS USED? 🌍
+[Duration: ~4 minutes]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+[Display the three real-world application cards. Build genuine excitement
+and give each application its own dramatic beat.]
+
+"Now let's step back and understand what you actually just built.
+The formula you coded — center × 4 minus four neighbors — is not a
+classroom toy. It is the mathematical core of AI systems running
+in the real world right now. Three examples."
+
+"APPLICATION 1: FACE UNLOCK 🔑
+When you unlock your phone with your face, the camera captures a grid
+of numbers — your face as pixels. The system applies edge filters to find
+the outlines of your eyes, your nose, your jawline. It then compares this
+edge map to a pattern saved when you set up Face ID. If the patterns match
+closely enough — unlock. The code you wrote today is the foundation of
+that entire system."
+
+"APPLICATION 2: SELF-DRIVING CARS 🛣️
+Companies like Tesla and Waymo run edge detection filters on every single
+camera frame — 30 times per second — to find lane markings on the road,
+outlines of pedestrians, and edges of other vehicles. Without edge detection,
+the car literally cannot understand what it is looking at. It would be like
+driving with your eyes completely blurred. The same nested loop you wrote
+today runs millions of times per second in those vehicles."
+
+"APPLICATION 3: MEDICAL SCANS 🩺
+Radiologists use AI tools to analyze X-rays and MRI images. The AI applies
+edge filters to a 1000×1000 or larger grid of pixel values to highlight the
+boundaries of organs and potential tumors. The doctor reviews the highlighted
+regions instead of scanning the entire image manually. Same algorithm — much
+bigger grid — and potentially life-saving results."
+
+✋ [Pause. Let the weight of this land before speaking again.]
+
+"You just wrote the same kind of code that powers face unlock,
+guides self-driving cars, and helps doctors find cancer. Take ten
+seconds to actually sit with that. That is not nothing."
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SLIDE 14 — QUICK CHECK ✅
 [Duration: ~3 minutes]
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-"Tonight's homework has two parts — a CODE part and a WRITING part."
+"Four fast questions. Answer in your head, with a partner, or raise
+your hand. Let's see what landed."
 
-"PART A — CODE:
-Pick four things you love — snacks, books, video games, movies, whatever.
-Make up 4 to 5 votes for each one. Run the picker. Look at the winner —
-is it what YOU would have chosen? If not, why not? Does the data reflect
-your real preferences, or did you accidentally bias it?"
+"QUESTION 1: What does a pixel store?
+ → Expected: a brightness number — how bright that tiny dot is."
 
-💡 [EXPLAIN THE DEEPER PURPOSE]:
-"This is called GROUND TRUTH CHECKING. In machine learning, the 'ground
-truth' is what you know to be true from the real world. A good algorithm
-should match ground truth. If your picker chose vanilla but you KNOW you
-love chocolate more, something is off — either the votes don't reflect
-reality, or the algorithm is too simple. This tension between algorithm
-output and real-world truth is what AI researchers spend careers on."
+"QUESTION 2: In our formula — center × 4 minus neighbors — what does
+it mean when the result is close to zero?
+ → Expected: the pixel is in a flat, smooth region — not on an edge."
 
-"PART B — WRITE 3 SENTENCES:
-Think of a time an app suggested something GREAT. Then think of a time
-it suggested something WEIRD. What was different? Why do you think the
-algorithm got one right and the other wrong?"
+"QUESTION 3: Why does our loop start at range(1, 4) instead of range(0, 5)?
+ → Expected: because row 0 has no neighbor above it — we'd fall off
+   the grid trying to access image[-1][x]."
 
-"Take a screenshot of your code's output and email BOTH parts —
-the screenshot and your 3 sentences — to hue.weng.88@gmail.com
-before next class."
+"QUESTION 4: Name one real-world technology that uses edge detection.
+ → Expected: any of — face unlock, self-driving cars, medical imaging."
 
-💡 [EXPLAIN WHY THE WRITING MATTERS]:
-"The writing part is not just a writing exercise. It is training you to
-think about algorithms as things that have EFFECTS on the real world.
-Computer scientists who cannot communicate about their algorithms — who
-cannot explain when they work and when they fail — build systems that
-cause real harm. Writing clearly about code is as important as writing
-the code."
+✋ [Call on students for each. Affirm creative phrasing. Gently redirect
+   any misconceptions: 'Almost — let's think about it this way...']
+
+💡 "Notice the chain connecting all four questions: pixels store numbers,
+numbers change at edges, the formula detects those changes, and that
+detection powers real technology. That is the complete story of today's
+lesson — from a 5×5 grid of numbers all the way to self-driving cars.
+You built that bridge today, from scratch."
 
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-SLIDE 15 — RECAP & EXIT TICKET
-[Duration: ~3 minutes]
+SLIDE 15 — HOMEWORK: TWO FUN TASKS 📝
+[Duration: ~2 minutes]
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-[Display the summary statistics on the slide with genuine pride]
+"Two tasks before next class. Both are creative. Neither is busywork."
 
-"Look at what you did today:"
+"TASK 1 — DRAW YOUR OWN 5×5 PICTURE 🎨
+In your notebook, design your own 5×5 grid using numbers from 0 to 9.
+Make a letter, a shape, a face — anything you can imagine in 25 squares.
 
-  4    New vocabulary words: Vote · Average · Picker · Top
-  8    Lines of code — a real, working recommender system
-  ∞    Things you can now apply it to: songs, snacks, shows, anything
+Then predict: where will the edges be? Which pixels will produce the
+highest filter values? Mark them with a circle before you calculate.
 
-"That infinity symbol is real. The structure of what you built today —
-data in, loop, average, pick the top — applies to any set of items and
-any group of voters. The code scales."
+For a challenge: compute the filter by hand for at least one pixel in
+your design. Check your prediction against the formula."
 
-"Before you go — sticky note exit ticket. Answer ONE of these two
-questions:"
+"TASK 2 — ANSWER IN 3 SENTENCES ✍️
+The question is: 'Why are edges important for a computer to understand
+a picture?'
 
-"QUESTION 1: What does the picker actually DO, in your own words?
+Your three sentences should each cover one idea:
+  Sentence 1 → What pixels are and how images store brightness as numbers
+  Sentence 2 → What an edge is, defined in terms of number changes
+  Sentence 3 → One real-world example of AI using edge detection
 
-  💡 A great answer sounds like: 'It takes a list of thumbs-up and
-  thumbs-down votes for each item, calculates the percentage of people
-  who liked each one, and prints the item with the highest percentage.'
-  If a student can say that unprompted, they have genuine understanding."
-
-"QUESTION 2: Name one thing the picker CAN'T figure out on its own.
-
-  💡 Great answers: It can't recommend things with no votes (cold start).
-  It can't tell the difference between you liking something for one reason
-  vs another reason. It doesn't know if your taste changed. It can't
-  understand emotions. It can't recommend things based on the CONTENT of
-  an item — it only knows what people voted on, not why.
-
-  That 'why' problem — teaching an algorithm to understand the CONTENT and
-  MEANING of items — is exactly what deep learning and large language
-  models like ChatGPT are designed to solve. And it's where we're headed
-  next in this course."
-
-✋ [Collect sticky notes as students leave — use them to guide next class]
+Look back at your warm-up answers from the beginning of class.
+Did today change how you see photographs? 📸"
 
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-SLIDE 16 — CLOSING SLIDE
-[Duration: ~1 minute]
+SLIDE 16 — CLOSING
+[Duration: ~2 minutes]
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-"I'll leave you with this: today you wrote a recommender system.
-The same fundamental logic sits inside some of the most profitable and
-influential software ever created. You didn't just learn ABOUT AI today —
-you MADE AI."
+[With genuine warmth and pride]
 
-"Any questions? Great work today. I am genuinely proud of every one of you."
+"Give yourselves a round of applause. Seriously."
 
-[Display contact info]
-  Email:   hue.weng.88@gmail.com
-  Website: hue881.github.io
-  Phone:   646-280-7089
+"You started this class seeing photos as pictures. You are leaving
+seeing photos as grids of numbers — and knowing exactly how to write
+the math that finds the edges inside them."
 
+"You learned what a pixel is. You understood that images are just
+arithmetic. You discovered the Laplacian filter, named after an
+18th-century mathematician, and you wrote it in Python. You computed
+it by hand on real numbers. And you traced it all the way to face
+unlock, self-driving cars, and medical AI."
 
-================================================================================
-APPENDIX A — COMMON ERRORS & HOW TO FIX THEM
-================================================================================
+"The path forward from here is clear: grayscale images lead to color
+images — three number grids instead of one. Color images lead to video —
+30 frames per second. Video leads to neural networks — where the
+computer learns which filters to use by itself, from millions of examples.
+Every step of that journey is built on the foundation you laid today."
 
-ERROR: IndentationError
-  Cause: Python uses indentation to define code blocks. One extra or
-         missing space breaks everything.
-  Fix:   Make sure every line inside a `for` loop is indented exactly
-         4 spaces (or one tab consistently). Use the TAB key, not spacebar.
+"If any part of this excited you, go further on your own. Search for
+'OpenCV edge detection Python' or 'Canny edge detector.' These are
+the professional tools built on exactly the math you now understand."
 
-ERROR: KeyError or TypeError
-  Cause: Mistyped a game name, or tried to use a string where a number
-         was expected.
-  Fix:   Check that your dictionary keys match EXACTLY — including
-         capitalization and quotes.
+"And the next time your phone unlocks when it sees your face — think
+about those 12 million numbers, and the quiet formula doing its work
+at every single edge."
 
-ERROR: ZeroDivisionError
-  Cause: An empty vote list [] causes len(votes) = 0, and division by 0
-         crashes Python.
-  Fix:   Make sure every game has at least one vote in its list.
+"See you next time."
 
-ERROR: Output is wrong / not what expected
-  Cause: Data entry error — a 1 typed where a 0 should be, etc.
-  Fix:   Manually compute the average on paper, then check whether the
-         code matches. This is debugging by verification.
+[Display any contact or resource info. Let students leave with the
+genuine feeling that they touched something real.]
 
 
 ================================================================================
-APPENDIX B — EXTENSION QUESTIONS FOR ADVANCED STUDENTS
+APPENDIX A — COMMON PITFALLS & HOW TO HANDLE THEM
 ================================================================================
 
-1. What would happen if we allowed votes of 0, 1, AND 2 (love it)?
-   [Answer: The average still works — just the scale changes. This is how
-   5-star ratings work — they're averages of scores 1-5.]
+PITFALL: Student gets an IndexError when running the code.
+  Handle: "That almost always means the loop went off the grid.
+          Check your range values. Are you starting at 1 and ending
+          before the last row? range(1, 4) gives 1, 2, 3 — not 4.
+          Also check that your image has exactly 5 rows and 5 columns.
+          Count the inner lists. Debugging this kind of boundary error
+          is a skill every real programmer uses daily — you're practicing
+          exactly what pros practice."
 
-2. What if 1000 people vote on one game, but only 3 on another?
-   Should those count equally?
-   [Answer: No — small samples are less reliable. This introduces the
-   concept of CONFIDENCE INTERVALS and BAYESIAN AVERAGING, which
-   Reddit and IMDB use to make their rankings more fair.]
+PITFALL: Student asks why range(1, 4) gives 1, 2, 3 and not 1, 2, 3, 4.
+  Handle: "Great catch. Python ranges are exclusive at the end —
+          range(1, 4) means 'start at 1, stop BEFORE 4.' It's a Python
+          convention. You'll get used to it fast. The good news is it
+          means range(0, len(image)) always gives exactly the right indices
+          without overshooting."
 
-3. How would you find not just the #1 game, but the TOP 3?
-   [Answer: sorted(averages, key=averages.get, reverse=True)[:3] —
-   introduce the sorted() function and list slicing.]
+PITFALL: Student's filtered output has unexpectedly large numbers.
+  Handle: "That is actually a success — your filter found strong edges!
+          Let's identify which pixel produced the big number. What are
+          its coordinates? Now look at those coordinates in the original
+          image. Is there a big brightness jump there? Large output = large
+          local contrast = edge detected. Your formula is working perfectly.
+          Large numbers are the filter saying: 'HERE — this is a boundary!'"
 
-4. What if different people have different tastes? How would you pick
-   differently for each person?
-   [Answer: This is collaborative filtering — tease Slide 12's nested
-   dict structure and the Netflix Prize story.]
+PITFALL: Student doesn't understand why the output grid is 3×3.
+  Handle: "Let's draw it out. In a 5×5 grid, put a dot on every pixel that
+          has a neighbor above, below, left, AND right. You'll find it's
+          a 3×3 square of interior pixels — rows 1, 2, 3 and columns 1, 2, 3.
+          Row 0 has no neighbor above it. Row 4 has no neighbor below it.
+          Column 0 has no neighbor to its left. Column 4 has none to its right.
+          Only the interior can be safely filtered. The output is smaller
+          than the input because we're being careful, not careless."
 
-5. What's a situation where 'most popular' could be HARMFUL to recommend?
-   [Answer: Misinformation, extreme content, addictive content — this
-   leads to a discussion of algorithmic amplification and AI ethics.]
+PITFALL: Student asks 'isn't this just subtraction? What makes it AI?'
+  Handle: "You're absolutely right that the individual step is just arithmetic.
+          Here is what makes it AI: scale and learning. A real image is 4000
+          × 3000 pixels — 12 million arithmetic operations per frame, running
+          at 30 frames per second. And in deep learning, the computer runs
+          hundreds of these filters simultaneously and LEARNS which filter
+          values work best from millions of training images. The math is simple.
+          The scale and the learning make it AI. You have the math. That is
+          step one."
+
+PITFALL: Student finishes both exercises early and needs extension.
+  Handle: "Perfect — here is your extension challenge. Try designing a
+          gradient image: a row that goes [0, 2, 4, 6, 8]. What does the
+          filter output for a smooth gradient that increases uniformly?
+          (Answer: near zero, because the rate of change is constant, not
+          sudden.) Then try a sharp jump: [0, 0, 8, 8, 8]. The filter
+          will produce a very large value at the jump. Can you predict
+          exactly where and exactly how large before you calculate?"
+
+PITFALL: Student is confused about how image[y-1][x] gives the row above.
+  Handle: "Think of row 0 as the TOP of the image. Row 1 is below it.
+          Row 2 is below that. So if we are at row y, the row ABOVE us is
+          y-1. Moving UP in the picture means moving to a LOWER row number.
+          This trips everyone up at first. Draw a small grid and label the
+          row numbers. The visual makes it click instantly."
 
 
 ================================================================================
-END OF SCRIPT — Day 15 · Spring 2026 · Mr. Hsiao "Hue" Weng
+APPENDIX B — EXTENSION QUESTIONS FOR CURIOUS MINDS
+================================================================================
+
+1. Why do we multiply the center by 4 specifically? Why not 2 or 10?
+   Answer: Because we are subtracting exactly 4 neighbors. We multiply
+   center by 4 so that when the center equals all its neighbors, the
+   formula produces exactly zero. 4 × 5 − (5+5+5+5) = 20 − 20 = 0.
+   If we used a coefficient of 2, a perfectly uniform region would give
+   2×5 − (5+5+5+5) = 10 − 20 = −10, not zero — and the filter would
+   falsely report edges everywhere. The coefficient 4 is mathematically
+   required to make the formula zero in uniform regions. This requirement
+   is called the "zero DC response" property of edge filters.
+
+2. What is the Canny edge detector, and how does it improve on what we built?
+   Answer: The Canny detector, developed by John Canny in 1986 and still
+   widely used today, adds four improvements over our basic Laplacian:
+   (1) It applies a Gaussian blur first to reduce noise amplification.
+   (2) It uses a gradient operator that also detects the DIRECTION of edges,
+   not just their magnitude. (3) It applies "non-maximum suppression" to thin
+   edges to exactly one pixel wide, so outlines are crisp lines rather than
+   broad blurry regions. (4) It uses hysteresis thresholding — keeping only
+   strong edges and edges connected to strong edges, discarding isolated weak
+   noise responses. Our Laplacian is the conceptual ancestor of Canny.
+   The core insight is identical; Canny adds robustness and precision.
+
+3. How does what we built relate to convolutional neural networks (CNNs)?
+   Answer: A CNN is essentially a stack of many learned filter layers.
+   The first layer of a CNN almost always learns filters that closely
+   resemble our Laplacian — they detect edges, brightness changes, and
+   simple oriented lines. Deeper layers learn filters that detect combinations
+   of edges (corners, curves, textures), and even deeper layers detect whole
+   object parts (eyes, ears, wheels, letters). The entire power of modern
+   image AI — from Google Lens to medical diagnosis AI to autonomous vehicles
+   — is built on this hierarchy of learned filters. What you built today IS
+   the first layer of a neural network, hand-designed instead of learned.
+   Understanding it from first principles is the best possible foundation for
+   understanding deep learning.
+
+4. Could you run the same edge-detection idea on sound instead of images?
+   Answer: Yes — and it is done constantly. In audio, a sudden change in
+   volume or frequency is an "edge." Speech recognition systems use this
+   idea to detect the sharp transitions between silence and phonemes —
+   identifying where words begin and end. This is called onset detection.
+   Music analysis software uses the same principle to detect beat onsets
+   and chord changes. Any signal that varies over time can be analyzed for
+   sudden changes using the same mathematical idea we used today.
+
+5. What happens when an image has a lot of noise (random pixel values)?
+   Answer: The Laplacian filter amplifies noise severely, because noise is,
+   by definition, rapid random pixel-to-pixel changes — it looks like edges
+   everywhere. This is the fundamental tension in edge detection: sensitivity
+   to real edges versus sensitivity to noise. The engineering solution is to
+   apply a blurring (Gaussian smoothing) filter first to suppress noise, and
+   then apply the edge filter. This blur-then-edge pipeline is the Laplacian
+   of Gaussian (LoG) filter — one of the most important algorithms in the
+   history of computer vision, developed by Marr and Hildreth in 1980.
+   It remains a foundational concept in every AI vision course.
+
+================================================================================
+END OF SCRIPT — Day 16 · AI for Images · How Computers Learn to See Edges
 ================================================================================
