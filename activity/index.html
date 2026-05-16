@@ -148,6 +148,17 @@
   .score-table td:first-child { font-weight:700; color:var(--color-text); }
   .dark-code-write { background:#1e293b; border-radius:12px; padding:14px 18px; width:100%; font-family:var(--font-code); font-size:clamp(0.7rem,1.1vw,0.84rem); line-height:1.7; border:1px solid rgba(255,255,255,0.06); resize:vertical; display:block; outline:none; color:#e2e8f0; box-sizing:border-box; }
   .dark-code-write:focus { outline:2px solid rgba(124,58,237,0.4); }
+
+  .draw-wrap { position:relative; margin-bottom:6px; }
+  .draw-toolbar { display:flex; align-items:center; gap:8px; margin-bottom:4px; flex-wrap:wrap; }
+  .draw-toolbar label { font-size:0.7rem; font-weight:700; color:#64748b; }
+  .draw-color { width:28px; height:28px; border:none; border-radius:6px; cursor:pointer; padding:0; background:transparent; }
+  .draw-size { width:70px; accent-color:#7c3aed; cursor:pointer; }
+  .draw-clear { background:#fee2e2; color:#b91c1c; border:none; border-radius:6px; padding:3px 10px; font-size:0.72rem; font-weight:800; cursor:pointer; letter-spacing:0.05em; }
+  .draw-clear:hover { background:#fecaca; }
+  canvas.draw-canvas { display:block; width:100%; border-radius:8px; cursor:crosshair; touch-action:none; background:#faf5ff; }
+  canvas.draw-canvas.white-bg { background:#fff; }
+
 </style>
 </head>
 <body>
@@ -241,13 +252,31 @@
   <div class="grid-2">
     <div>
       <p style="font-size:0.8rem;font-weight:700;color:#6d28d9;margin-bottom:6px;">🌳 Interpretation A — draw here:</p>
-      <div style="border:2px dashed #c4b5fd;border-radius:10px;min-height:100px;background:#faf5ff;padding:10px;"></div>
+      <div class="draw-wrap" style="border:2px dashed #c4b5fd;border-radius:10px;padding:8px;background:#faf5ff;">
+      <div class="draw-toolbar">
+        <label>✏️ Draw:</label>
+        <input type="color" class="draw-color" value="#1f2a37" title="Pen color" />
+        <label>Size:</label>
+        <input type="range" class="draw-size" min="1" max="12" value="2" />
+        <button class="draw-clear" type="button">🗑 Clear</button>
+      </div>
+      <canvas class="draw-canvas" height="110"></canvas>
+    </div>
       <p class="text-muted mt-2">Who has the telescope?</p>
       <input class="write-line" type="text" placeholder="Answer..." />
     </div>
     <div>
       <p style="font-size:0.8rem;font-weight:700;color:#6d28d9;margin-bottom:6px;">🌳 Interpretation B — draw here:</p>
-      <div style="border:2px dashed #c4b5fd;border-radius:10px;min-height:100px;background:#faf5ff;padding:10px;"></div>
+      <div class="draw-wrap" style="border:2px dashed #c4b5fd;border-radius:10px;padding:8px;background:#faf5ff;">
+      <div class="draw-toolbar">
+        <label>✏️ Draw:</label>
+        <input type="color" class="draw-color" value="#1f2a37" title="Pen color" />
+        <label>Size:</label>
+        <input type="range" class="draw-size" min="1" max="12" value="2" />
+        <button class="draw-clear" type="button">🗑 Clear</button>
+      </div>
+      <canvas class="draw-canvas" height="110"></canvas>
+    </div>
       <p class="text-muted mt-2">Who has the telescope?</p>
       <input class="write-line" type="text" placeholder="Answer..." />
     </div>
@@ -576,7 +605,8 @@ tokens = tokenize(<span class="st">"I'm NOT sad!"</span>)
         <li><strong>Extension:</strong> if mood score is negative → transition to a <code>support</code> state that suggests talking to a teacher</li>
       </ul>
       <p style="font-size:0.8rem;font-weight:700;color:#6d28d9;margin:10px 0 6px;">📐 Draw the FSM transition diagram below:</p>
-      <div style="border:2px dashed #c4b5fd;border-radius:10px;min-height:90px;background:#faf5ff;padding:10px;">
+      <div style="border:2px dashed #c4b5fd;border-radius:10px;padding:8px;background:#faf5ff;">
+      
         <div class="fsm-diagram">
           <div class="fsm-state start">start</div>
           <div class="fsm-arrow">──greeting──▶</div>
@@ -587,8 +617,19 @@ tokens = tokenize(<span class="st">"I'm NOT sad!"</span>)
           <div class="fsm-state">chat</div>
           <div class="fsm-arrow">──bye──▶</div>
           <div class="fsm-state end">END</div>
+        
+      <div class="draw-wrap" style="margin-top:8px;">
+        <div class="draw-toolbar">
+          <label>✏️ Add states/arrows:</label>
+          <input type="color" class="draw-color" value="#7c3aed" title="Pen color" />
+          <label>Size:</label>
+          <input type="range" class="draw-size" min="1" max="12" value="2" />
+          <button class="draw-clear" type="button">🗑 Clear</button>
         </div>
-        <p class="text-muted text-center" style="margin-top:4px;">Add your "support" state and transitions below or on paper</p>
+        <canvas class="draw-canvas" height="80"></canvas>
+      </div>
+    </div>
+    <p class="text-muted text-center" style="margin-top:4px;">Add your "support" state and transitions below or on paper</p>
       </div>
       <p style="font-size:0.78rem;font-weight:700;color:#6d28d9;margin:8px 0 2px;">Formal notation: FSM = (Q, Σ, δ, q₀, F)</p>
       <input class="write-line" type="text" placeholder="Q (states) = { start, ask_name, ... }" />
@@ -762,5 +803,75 @@ tokens = tokenize(<span class="st">"I'm NOT sad!"</span>)
 </div>
 
 </div><!-- end .page -->
+
+<script>
+(function() {
+  function initCanvas(canvas) {
+    var ctx = canvas.getContext('2d');
+    var drawing = false;
+    var lastX = 0, lastY = 0;
+    var tool = canvas.dataset.tool || 'pen';
+    var color = '#1f2a37';
+    var lineWidth = 2;
+
+    function getPos(e) {
+      var r = canvas.getBoundingClientRect();
+      var src = e.touches ? e.touches[0] : e;
+      return { x: src.clientX - r.left, y: src.clientY - r.top };
+    }
+
+    function startDraw(e) {
+      drawing = true;
+      var p = getPos(e);
+      lastX = p.x; lastY = p.y;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, lineWidth/2, 0, Math.PI*2);
+      ctx.fillStyle = color;
+      ctx.fill();
+      e.preventDefault();
+    }
+    function draw(e) {
+      if (!drawing) return;
+      var p = getPos(e);
+      ctx.beginPath();
+      ctx.moveTo(lastX, lastY);
+      ctx.lineTo(p.x, p.y);
+      ctx.strokeStyle = color;
+      ctx.lineWidth = lineWidth;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      ctx.stroke();
+      lastX = p.x; lastY = p.y;
+      e.preventDefault();
+    }
+    function stopDraw() { drawing = false; }
+
+    canvas.addEventListener('mousedown', startDraw);
+    canvas.addEventListener('mousemove', draw);
+    canvas.addEventListener('mouseup', stopDraw);
+    canvas.addEventListener('mouseleave', stopDraw);
+    canvas.addEventListener('touchstart', startDraw, {passive:false});
+    canvas.addEventListener('touchmove', draw, {passive:false});
+    canvas.addEventListener('touchend', stopDraw);
+
+    // Clear button
+    var btn = canvas.parentElement.querySelector('.draw-clear');
+    if (btn) btn.addEventListener('click', function() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    });
+
+    // Color/size controls
+    var colorPick = canvas.parentElement.querySelector('.draw-color');
+    if (colorPick) colorPick.addEventListener('input', function(e) { color = e.target.value; });
+    var sizePick = canvas.parentElement.querySelector('.draw-size');
+    if (sizePick) sizePick.addEventListener('input', function(e) { lineWidth = +e.target.value; });
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('canvas.draw-canvas').forEach(initCanvas);
+  });
+})();
+</script>
+
 </body>
 </html>
