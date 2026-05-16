@@ -1,1 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Activity Sheet · Day 17 · Chatbots &amp; Language AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --color-bg: #f4fbff;
+    --color-surface: rgba(255,255,255,0.97);
+    --color-text: #1f2a37;
+    --color-text-secondary: #374151;
+    --color-text-muted: #5b6b7e;
+    --color-accent-1: #0b63ce;
+    --color-accent-2: #10b981;
+    --color-accent-3: #f59e0b;
+    --color-accent-red: #ef4444;
+    --font-display: 'Fredoka', 'Trebuchet MS', sans-serif;
+    --font-body: 'Nunito', Arial, sans-serif;
+    --font-code: 'Fira Code', Consolas, monospace;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  @media print {
+    body { background: #fff !important; }
+    .no-print { display: none !important; }
+    .page-break { page-break-before: always; }
+    .card { box-shadow: none !important; border: 1.5px solid #d1d5db !important; }
+    .code-block { border: 1.5px solid #cbd5e1 !important; }
+  }
+  body { font-family: var(--font-body); color: var(--color-text); background: var(--color-bg); min-height: 100vh; }
+  .print-bar {
+    background: rgba(255,255,255,0.92); backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(148,163,184,0.3);
+    padding: 10px 24px; display: flex; align-items: center;
+    justify-content: space-between; position: sticky; top: 0; z-index: 100; gap: 12px; flex-wrap: wrap;
+  }
+  .print-bar .bar-title { font-family: var(--font-display); font-size: 1.05rem; font-weight: 700; color: var(--color-accent-1); }
+  .print-bar .bar-sub { font-size: 0.78rem; color: var(--color-text-muted); }
+  .btn-print { background: var(--color-accent-1); color: #fff; border: none; padding: 8px 20px; border-radius: 999px; font-family: var(--font-body); font-size: 0.82rem; font-weight: 800; cursor: pointer; letter-spacing: 0.06em; transition: background 0.2s, transform 0.15s; }
+  .btn-print:hover { background: #0952b0; transform: translateY(-1px); }
+  .page { max-width: 920px; margin: 0 auto; padding: 32px 24px 60px; }
+  .sheet-header {
+    background: linear-gradient(135deg, #7c3aed 0%, #0b63ce 50%, #10b981 100%);
+    border-radius: 20px; padding: 28px 32px 24px; color: #fff; margin-bottom: 28px; position: relative; overflow: hidden;
+  }
+  .sheet-header::before { content: ''; position: absolute; top: -60px; right: -60px; width: 200px; height: 200px; background: rgba(255,255,255,0.08); border-radius: 50%; }
+  .sheet-header::after { content: ''; position: absolute; bottom: -40px; left: -40px; width: 140px; height: 140px; background: rgba(255,255,255,0.06); border-radius: 50%; }
+  .header-emoji { font-size: 2.8rem; margin-bottom: 6px; }
+  .header-day { font-size: 0.75rem; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; opacity: 0.85; margin-bottom: 4px; }
+  .header-title { font-family: var(--font-display); font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 700; line-height: 1.1; margin-bottom: 6px; }
+  .header-sub { font-size: 0.88rem; opacity: 0.85; margin-bottom: 14px; }
+  .header-pills { display: flex; gap: 8px; flex-wrap: wrap; }
+  .header-pill { background: rgba(255,255,255,0.22); border: 1px solid rgba(255,255,255,0.35); border-radius: 999px; padding: 4px 14px; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
+  .student-info { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 28px; }
+  @media (max-width: 600px) { .student-info { grid-template-columns: 1fr; } }
+  .info-field { background: var(--color-surface); border-radius: 12px; padding: 12px 14px; border: 1.5px solid rgba(11,99,206,0.14); box-shadow: 0 2px 8px rgba(15,23,42,0.05); }
+  .info-label { font-size: 0.65rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-accent-1); margin-bottom: 6px; }
+  .info-line { border: none; border-bottom: 1.5px solid #cbd5e1; width: 100%; font-family: var(--font-body); font-size: 0.9rem; color: var(--color-text); background: transparent; outline: none; padding: 2px 0; }
+  .info-line:focus { border-bottom-color: #0b63ce; }
+  .section-label { display: inline-flex; align-items: center; gap: 8px; padding: 5px 16px; border-radius: 999px; border: 1px solid rgba(148,163,184,0.4); background: rgba(255,255,255,0.9); font-size: 0.72rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-accent-1); margin-bottom: 10px; }
+  .section-title { font-family: var(--font-display); font-size: clamp(1.3rem, 2.5vw, 1.8rem); font-weight: 700; margin-bottom: 16px; color: var(--color-text); line-height: 1.2; }
+  .card { background: var(--color-surface); border-radius: 16px; padding: 18px 20px; box-shadow: 0 4px 18px rgba(15,23,42,0.07); border: 1px solid rgba(255,255,255,0.7); margin-bottom: 16px; }
+  .card.accent-blue { border-left: 4px solid var(--color-accent-1); }
+  .card.accent-green { border-left: 4px solid var(--color-accent-2); }
+  .card.accent-amber { border-left: 4px solid var(--color-accent-3); }
+  .card.accent-red { border-left: 4px solid var(--color-accent-red); }
+  .card.accent-purple { border-left: 4px solid #7c3aed; }
+  .card-label { font-size: 0.68rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 8px; }
+  .card-label.blue { color: var(--color-accent-1); }
+  .card-label.green { color: #047857; }
+  .card-label.amber { color: #b45309; }
+  .card-label.red { color: #b91c1c; }
+  .card-label.purple { color: #6d28d9; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  @media (max-width: 680px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+  .code-block { background: #1e293b; color: #e2e8f0; border-radius: 12px; padding: 14px 18px; font-family: var(--font-code); font-size: clamp(0.68rem, 1.1vw, 0.83rem); line-height: 1.6; overflow-x: auto; border: 1px solid rgba(255,255,255,0.06); margin-bottom: 12px; white-space: pre; }
+  .kw { color: #93c5fd; }
+  .nb { color: #fcd34d; }
+  .st { color: #86efac; }
+  .cm { color: #64748b; font-style: italic; }
+  .hl { color: #fcd34d; font-weight: 700; }
+  .bug { color: #f87171; font-weight: 700; }
+  .write-lines { margin: 8px 0; }
+  input.write-line { border: none; border-bottom: 1.5px solid #cbd5e1; width: 100%; margin-bottom: 10px; height: 28px; display: block; background: transparent; font-family: var(--font-body); font-size: 0.88rem; color: var(--color-text); outline: none; padding: 2px 4px; }
+  input.write-line:focus { border-bottom-color: #0b63ce; }
+  input.write-line::placeholder { color: #bdc5d1; font-style: italic; }
+  textarea.write-area { border: 1.5px solid #cbd5e1; border-radius: 8px; width: 100%; min-height: 70px; padding: 8px; font-family: var(--font-body); font-size: 0.85rem; color: var(--color-text); resize: vertical; background: #f8fafc; outline: none; display: block; }
+  textarea.write-area:focus { outline: 2px solid rgba(11,99,206,0.3); }
+  textarea.write-area::placeholder { color: #bdc5d1; font-style: italic; }
+  input.blank-input { display: inline-block; background: rgba(251,191,36,0.18); border: none; border-bottom: 2px solid #f59e0b; min-width: 60px; width: 60px; height: 1.1em; border-radius: 3px; vertical-align: middle; margin: 0 2px; font-family: var(--font-code); font-size: inherit; color: #fcd34d; text-align: center; outline: none; padding: 0 2px; }
+  input.blank-input:focus { background: rgba(251,191,36,0.32); }
+  input.blank-input.wide { min-width: 110px; width: 110px; }
+  input.blank-input.narrow { min-width: 36px; width: 36px; }
+  .timeline { position: relative; padding-left: 22px; }
+  .timeline::before { content: ''; position: absolute; left: 8px; top: 4px; bottom: 4px; width: 3px; border-radius: 999px; background: linear-gradient(to bottom, #7c3aed, #0b63ce, #10b981); }
+  .timeline-step { position: relative; margin-bottom: 12px; }
+  .timeline-dot { position: absolute; left: -15px; top: 4px; width: 12px; height: 12px; border-radius: 999px; border: 2px solid #f4fbff; background: #0b63ce; box-shadow: 0 0 0 3px rgba(11,99,206,0.2); }
+  .timeline-dot.green { background: #10b981; }
+  .timeline-dot.purple { background: #7c3aed; }
+  .timeline-dot.amber { background: #f59e0b; }
+  .tip-box { border-radius: 10px; padding: 10px 14px; font-size: 0.8rem; line-height: 1.5; margin-top: 10px; }
+  .tip-box.blue { background: rgba(11,99,206,0.07); color: #1e40af; }
+  .tip-box.green { background: rgba(16,185,129,0.07); color: #065f46; }
+  .tip-box.amber { background: rgba(245,158,11,0.07); color: #92400e; }
+  .tip-box.purple { background: rgba(124,58,237,0.07); color: #5b21b6; }
+  .formula-box { background: #1e293b; color: #e2e8f0; border-radius: 10px; padding: 10px 16px; font-family: var(--font-code); font-size: 0.88rem; text-align: center; margin-bottom: 10px; }
+  .divider { border: none; border-top: 2px dashed #dde6f0; margin: 28px 0; }
+  .check-list { list-style: none; padding: 0; }
+  .check-list li { display: flex; align-items: flex-start; gap: 8px; font-size: 0.85rem; color: var(--color-text-secondary); margin-bottom: 8px; line-height: 1.45; }
+  .check-list li .box { flex-shrink: 0; width: 17px; height: 17px; border: 2px solid #94a3b8; border-radius: 4px; margin-top: 1px; background: #fff; display: inline-block; }
+  .level-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 14px; border-radius: 999px; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 8px; }
+  .level-1 { background: linear-gradient(135deg,#0b63ce,#10b981); color:#fff; }
+  .level-2 { background: linear-gradient(135deg,#f59e0b,#ef4444); color:#fff; }
+  .level-3 { background: linear-gradient(135deg,#7c3aed,#ef4444); color:#fff; }
+  .challenge-badge { display: inline-flex; align-items: center; gap: 6px; background: linear-gradient(135deg, #f59e0b, #ef4444); color: #fff; padding: 4px 14px; border-radius: 999px; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 8px; }
+  table.rubric { width: 100%; border-collapse: collapse; font-size: 0.82rem; margin-top: 8px; }
+  table.rubric th { background: #1e293b; color: #e2e8f0; padding: 8px 10px; text-align: left; font-weight: 700; letter-spacing: 0.05em; }
+  table.rubric td { padding: 8px 10px; border-bottom: 1px solid #e2e8f0; vertical-align: top; color: var(--color-text-secondary); }
+  table.rubric tr:nth-child(even) td { background: rgba(241,245,249,0.6); }
+  table.rubric td:first-child { font-weight: 700; color: var(--color-text); }
+  table.rubric .pts { font-family: var(--font-code); font-size: 0.75rem; font-weight: 800; color: var(--color-accent-1); white-space: nowrap; }
+  .sheet-footer { margin-top: 40px; padding: 16px 20px; border-radius: 12px; background: rgba(124,58,237,0.05); border: 1px solid rgba(124,58,237,0.12); display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; font-size: 0.76rem; color: var(--color-text-muted); }
+  .sheet-footer strong { color: var(--color-text); }
+  p, li { font-size: 0.88rem; color: var(--color-text-secondary); line-height: 1.55; }
+  strong { color: var(--color-text); }
+  code { background: #e0f2ff; padding: 1px 6px; border-radius: 4px; font-family: var(--font-code); font-size: 0.82em; color: #0b63ce; }
+  .mb-1 { margin-bottom: 6px; }
+  .mb-2 { margin-bottom: 10px; }
+  .mb-3 { margin-bottom: 14px; }
+  .mt-2 { margin-top: 10px; }
+  .mt-3 { margin-top: 14px; }
+  .text-center { text-align: center; }
+  .text-muted { color: var(--color-text-muted); font-size: 0.78rem; }
+  .grad-text { background: linear-gradient(135deg,#7c3aed,#0b63ce,#10b981); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  .fsm-diagram { display: flex; align-items: center; justify-content: center; gap: 6px; flex-wrap: wrap; padding: 10px; }
+  .fsm-state { background: #e0f2ff; border: 2px solid #0b63ce; border-radius: 50px; padding: 6px 16px; font-family: var(--font-code); font-size: 0.78rem; font-weight: 700; color: #0b63ce; white-space: nowrap; }
+  .fsm-state.start { background: #ede9fe; border-color: #7c3aed; color: #6d28d9; }
+  .fsm-state.end { background: #d1fae5; border-color: #10b981; color: #047857; }
+  .fsm-arrow { font-size: 0.75rem; color: #64748b; text-align: center; white-space: nowrap; }
+  .score-table { width:100%; border-collapse:collapse; font-size:0.82rem; }
+  .score-table th { background:#1e293b; color:#e2e8f0; padding:7px 10px; text-align:left; }
+  .score-table td { padding:7px 10px; border-bottom:1px solid #e2e8f0; color:var(--color-text-secondary); vertical-align:top; }
+  .score-table tr:nth-child(even) td { background:rgba(241,245,249,0.6); }
+  .score-table td:first-child { font-weight:700; color:var(--color-text); }
+  .dark-code-write { background:#1e293b; border-radius:12px; padding:14px 18px; width:100%; font-family:var(--font-code); font-size:clamp(0.7rem,1.1vw,0.84rem); line-height:1.7; border:1px solid rgba(255,255,255,0.06); resize:vertical; display:block; outline:none; color:#e2e8f0; box-sizing:border-box; }
+  .dark-code-write:focus { outline:2px solid rgba(124,58,237,0.4); }
+</style>
+</head>
+<body>
 
+<!-- PRINT BAR -->
+<div class="print-bar no-print">
+  <div>
+    <div class="bar-title">🤖💬 Day 17 · Activity Sheet</div>
+    <div class="bar-sub">Chatbots &amp; Language AI — Differentiated · Ages 11–12</div>
+  </div>
+  <button class="btn-print" onclick="window.print()">🖨️ Print / Save as PDF</button>
+</div>
+
+<div class="page">
+
+<!-- ══════════ HEADER ══════════ -->
+<div class="sheet-header">
+  <div class="header-emoji">🤖💬</div>
+  <div class="header-day">Day 17 · Chatbots &amp; Language AI · Differentiated Activity Sheet</div>
+  <div class="header-title">Build TinyBot: Python Chatbots<br>&amp; Language AI</div>
+  <div class="header-sub">From tokens and bag-of-words → bug hunting → a Finite State Machine that remembers</div>
+  <div class="header-pills">
+    <span class="header-pill">⏱ ~60 min</span>
+    <span class="header-pill">🐍 Python</span>
+    <span class="header-pill">Ages 11–12</span>
+    <span class="header-pill">3 Levels</span>
+    <span class="header-pill">NLP · FSM · Big-O</span>
+  </div>
+</div>
+
+<!-- ══════════ STUDENT INFO ══════════ -->
+<div class="student-info">
+  <div class="info-field">
+    <div class="info-label">👤 Your Name</div>
+    <input class="info-line" type="text" placeholder="First Last" />
+  </div>
+  <div class="info-field">
+    <div class="info-label">📅 Date</div>
+    <input class="info-line" type="text" placeholder="Month Day, Year" />
+  </div>
+  <div class="info-field">
+    <div class="info-label">🏫 Class / Period</div>
+    <input class="info-line" type="text" placeholder="Period ___" />
+  </div>
+</div>
+
+<!-- ══════════ BEFORE YOU BEGIN ══════════ -->
+<div class="section-label">🎯 Before You Begin</div>
+<div class="section-title">What This Sheet Asks You to Do</div>
+
+<div class="grid-2 mb-3">
+  <div class="card accent-purple">
+    <div class="card-label purple">🎯 Your Mission</div>
+    <p class="mb-2">You will trace, fix, and build Python chatbot programs — step by step, from warm-up puzzles to your own working TinyBot.</p>
+    <div class="timeline">
+      <div class="timeline-step"><div class="timeline-dot purple"></div>
+        <p><strong>Part 1</strong> — Warm-Up: Algorithmic Thinking Puzzles</p></div>
+      <div class="timeline-step"><div class="timeline-dot"></div>
+        <p><strong>Part 2</strong> — Vocabulary &amp; Concept Check</p></div>
+      <div class="timeline-step"><div class="timeline-dot"></div>
+        <p><strong>Part 3</strong> — Trace &amp; Bug Hunt (TinyBot v1)</p></div>
+      <div class="timeline-step"><div class="timeline-dot amber"></div>
+        <p><strong>Part 4</strong> — Tiered Coding Challenge (choose your level)</p></div>
+      <div class="timeline-step" style="margin-bottom:0"><div class="timeline-dot green"></div>
+        <p><strong>⭐ Part 5</strong> — Bonus: FSM Dialogue &amp; Negation Fix</p></div>
+    </div>
+  </div>
+  <div class="card accent-blue">
+    <div class="card-label blue">🔑 Key Ideas for Today</div>
+    <ul style="list-style:disc;padding-left:18px;line-height:1.9;">
+      <li><strong>Tokenization</strong> — splitting text into small units before any AI reads it</li>
+      <li><strong>Bag-of-Words</strong> — scoring intents using keyword weights</li>
+      <li><strong>Deterministic</strong> — same input always gives same output</li>
+      <li><strong>FSM</strong> — a bot that <em>remembers</em> which state it is in</li>
+      <li><strong>Big-O</strong> — measuring how fast (or slow) an algorithm grows</li>
+    </ul>
+    <div class="tip-box purple mt-2">💡 <strong>Predict before you run</strong> — if you can predict output, you truly understand the code.</div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ══════════ PART 1 · WARM-UP PUZZLES ══════════ -->
+<div class="section-label">🧮 Part 1 of 5</div>
+<div class="section-title">Warm-Up: Think Like a Computer</div>
+
+<!-- Puzzle 1 -->
+<div class="card accent-purple mb-2">
+  <div class="card-label purple">🌳 Puzzle 1 — Syntactic Ambiguity</div>
+  <p class="mb-2">The sentence <em>"I saw the man with the telescope"</em> has <strong>two</strong> different meanings. Draw both interpretations as a simple tree diagram below — label who has the telescope in each version.</p>
+  <div class="grid-2">
+    <div>
+      <p style="font-size:0.8rem;font-weight:700;color:#6d28d9;margin-bottom:6px;">🌳 Interpretation A — draw here:</p>
+      <div style="border:2px dashed #c4b5fd;border-radius:10px;min-height:100px;background:#faf5ff;padding:10px;"></div>
+      <p class="text-muted mt-2">Who has the telescope?</p>
+      <input class="write-line" type="text" placeholder="Answer..." />
+    </div>
+    <div>
+      <p style="font-size:0.8rem;font-weight:700;color:#6d28d9;margin-bottom:6px;">🌳 Interpretation B — draw here:</p>
+      <div style="border:2px dashed #c4b5fd;border-radius:10px;min-height:100px;background:#faf5ff;padding:10px;"></div>
+      <p class="text-muted mt-2">Who has the telescope?</p>
+      <input class="write-line" type="text" placeholder="Answer..." />
+    </div>
+  </div>
+  <p class="mt-2" style="font-size:0.8rem;color:#374151;">A computer sees only one string of characters. How would <em>you</em> choose which meaning to use? (1–2 sentences)</p>
+  <div class="write-lines mt-2">
+    <input class="write-line" type="text" placeholder="My answer..." />
+    <input class="write-line" type="text" placeholder="..." />
+  </div>
+  <div class="tip-box purple">🔍 This is the <strong>syntactic ambiguity</strong> problem — one of the hardest challenges in NLP.</div>
+</div>
+
+<!-- Puzzle 2 -->
+<div class="card accent-blue mb-2">
+  <div class="card-label blue">🐍 Puzzle 2 — Negation in Python</div>
+  <p class="mb-2">Write a <strong>one-line Python expression</strong> (no <code>import</code>) that returns <code>True</code> only when <code>"sad"</code> appears in the variable <code>msg</code> but <code>"not"</code> does <strong>NOT</strong>.</p>
+  <div class="code-block"><span class="cm"># Fill in the blank — one expression only:</span>
+result = <input class="blank-input wide" type="text" placeholder="..." /></div>
+  <p class="mb-1">Why do real NLP systems need <strong>more</strong> than just this one-line check? Give one example of when it would still go wrong.</p>
+  <div class="write-lines">
+    <input class="write-line" type="text" placeholder="Example of when it fails..." />
+    <input class="write-line" type="text" placeholder="..." />
+  </div>
+</div>
+
+<!-- Puzzle 3 -->
+<div class="card accent-amber mb-3">
+  <div class="card-label amber">⏱ Puzzle 3 — Big-O Complexity</div>
+  <p class="mb-2">TinyBot v1 has <strong>6 intent rules</strong>. Each rule adds one <code>elif</code> check that takes constant time.</p>
+  <div class="grid-2">
+    <div>
+      <p style="font-size:0.83rem;color:#374151;margin-bottom:8px;"><strong>What is the Big-O time complexity</strong> of classifying one message?</p>
+      <p>O( <input class="blank-input narrow" type="text" placeholder="?" /> ) &nbsp; where the variable means: <input class="blank-input wide" type="text" placeholder="..." /></p>
+      <div class="write-lines mt-2">
+        <input class="write-line" type="text" placeholder="Explain in your own words..." />
+      </div>
+    </div>
+    <div>
+      <p style="font-size:0.83rem;color:#374151;margin-bottom:8px;"><strong>Bottleneck question:</strong> Could this slow down at 10 million messages/day?</p>
+      <div style="display:flex;gap:12px;margin-bottom:8px;">
+        <label style="font-size:0.85rem;display:flex;align-items:center;gap:6px;cursor:pointer;"><input type="radio" name="bigO" style="accent-color:#f59e0b;"> Yes, because...</label>
+        <label style="font-size:0.85rem;display:flex;align-items:center;gap:6px;cursor:pointer;"><input type="radio" name="bigO" style="accent-color:#f59e0b;"> No, because...</label>
+      </div>
+      <input class="write-line" type="text" placeholder="My reasoning..." />
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ══════════ PART 2 · VOCABULARY ══════════ -->
+<div class="section-label">📖 Part 2 of 5</div>
+<div class="section-title">Vocabulary &amp; Concept Check</div>
+
+<div class="grid-2 mb-3">
+  <!-- Matching -->
+  <div class="card">
+    <div class="card-label blue">🔤 Match the Term (write the letter)</div>
+    <p class="mb-2">Write the correct letter next to each definition.</p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px;">
+      <span style="background:#e0f2ff;color:#0b63ce;border-radius:6px;padding:3px 10px;font-weight:700;font-size:0.8rem;">A. Token</span>
+      <span style="background:#e0f2ff;color:#0b63ce;border-radius:6px;padding:3px 10px;font-weight:700;font-size:0.8rem;">B. Tokenization</span>
+      <span style="background:#e0f2ff;color:#0b63ce;border-radius:6px;padding:3px 10px;font-weight:700;font-size:0.8rem;">C. Bag-of-Words</span>
+      <span style="background:#e0f2ff;color:#0b63ce;border-radius:6px;padding:3px 10px;font-weight:700;font-size:0.8rem;">D. Intent</span>
+      <span style="background:#e0f2ff;color:#0b63ce;border-radius:6px;padding:3px 10px;font-weight:700;font-size:0.8rem;">E. Deterministic</span>
+      <span style="background:#e0f2ff;color:#0b63ce;border-radius:6px;padding:3px 10px;font-weight:700;font-size:0.8rem;">F. FSM</span>
+      <span style="background:#e0f2ff;color:#0b63ce;border-radius:6px;padding:3px 10px;font-weight:700;font-size:0.8rem;">G. Hallucination</span>
+    </div>
+    <table style="width:100%;font-size:0.82rem;border-collapse:collapse;">
+      <tr><td style="padding:5px 0;border-bottom:1px solid #f1f5f9;color:#374151;width:85%;">The goal or purpose behind a message ("greeting", "negative")</td><td><input type="text" style="width:36px;border:none;border-bottom:2px solid #0b63ce;text-align:center;font-weight:800;font-size:0.9rem;color:#0b63ce;background:transparent;outline:none;" placeholder="_" /></td></tr>
+      <tr><td style="padding:5px 0;border-bottom:1px solid #f1f5f9;color:#374151;">Splitting a sentence into small units before any AI analysis</td><td><input type="text" style="width:36px;border:none;border-bottom:2px solid #0b63ce;text-align:center;font-weight:800;font-size:0.9rem;color:#0b63ce;background:transparent;outline:none;" placeholder="_" /></td></tr>
+      <tr><td style="padding:5px 0;border-bottom:1px solid #f1f5f9;color:#374151;">Same input always produces the same output — no randomness</td><td><input type="text" style="width:36px;border:none;border-bottom:2px solid #0b63ce;text-align:center;font-weight:800;font-size:0.9rem;color:#0b63ce;background:transparent;outline:none;" placeholder="_" /></td></tr>
+      <tr><td style="padding:5px 0;border-bottom:1px solid #f1f5f9;color:#374151;">Scoring text by counting keyword weights, ignoring word order</td><td><input type="text" style="width:36px;border:none;border-bottom:2px solid #0b63ce;text-align:center;font-weight:800;font-size:0.9rem;color:#0b63ce;background:transparent;outline:none;" placeholder="_" /></td></tr>
+      <tr><td style="padding:5px 0;border-bottom:1px solid #f1f5f9;color:#374151;">The smallest unit of text a program processes (word or character)</td><td><input type="text" style="width:36px;border:none;border-bottom:2px solid #0b63ce;text-align:center;font-weight:800;font-size:0.9rem;color:#0b63ce;background:transparent;outline:none;" placeholder="_" /></td></tr>
+      <tr><td style="padding:5px 0;border-bottom:1px solid #f1f5f9;color:#374151;">A model with a fixed set of states and rules to move between them</td><td><input type="text" style="width:36px;border:none;border-bottom:2px solid #0b63ce;text-align:center;font-weight:800;font-size:0.9rem;color:#0b63ce;background:transparent;outline:none;" placeholder="_" /></td></tr>
+      <tr><td style="padding:5px 0;color:#374151;">When an AI confidently says something that is completely false</td><td><input type="text" style="width:36px;border:none;border-bottom:2px solid #0b63ce;text-align:center;font-weight:800;font-size:0.9rem;color:#0b63ce;background:transparent;outline:none;" placeholder="_" /></td></tr>
+    </table>
+  </div>
+
+  <!-- True/False -->
+  <div class="card">
+    <div class="card-label amber">✏️ True or False — Circle T or F</div>
+    <p class="mb-2">Circle <strong>T</strong> (True) or <strong>F</strong> (False) for each statement.</p>
+    <table style="width:100%;font-size:0.82rem;border-collapse:collapse;">
+      <tr><td style="padding:6px 0;border-bottom:1px solid #f1f5f9;color:#374151;width:85%">TinyBot v1 is deterministic — the same input always gives the same reply.</td><td style="padding:6px 0;border-bottom:1px solid #f1f5f9;font-weight:800;color:#0b63ce;">T &nbsp; F</td></tr>
+      <tr><td style="padding:6px 0;border-bottom:1px solid #f1f5f9;color:#374151;">The substring check <code>'hi' in msg</code> will also match the word "this".</td><td style="padding:6px 0;border-bottom:1px solid #f1f5f9;font-weight:800;color:#0b63ce;">T &nbsp; F</td></tr>
+      <tr><td style="padding:6px 0;border-bottom:1px solid #f1f5f9;color:#374151;">A bag-of-words scorer considers the order that words appear in a sentence.</td><td style="padding:6px 0;border-bottom:1px solid #f1f5f9;font-weight:800;color:#0b63ce;">T &nbsp; F</td></tr>
+      <tr><td style="padding:6px 0;border-bottom:1px solid #f1f5f9;color:#374151;">An FSM stores a <code>state</code> variable that changes as the conversation moves forward.</td><td style="padding:6px 0;border-bottom:1px solid #f1f5f9;font-weight:800;color:#0b63ce;">T &nbsp; F</td></tr>
+      <tr><td style="padding:6px 0;color:#374151;">GPT-4 was trained on roughly 13 trillion tokens.</td><td style="padding:6px 0;font-weight:800;color:#0b63ce;">T &nbsp; F</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- Tokenization trace -->
+<div class="card accent-blue mb-3">
+  <div class="card-label blue">🔍 Trace the Tokenizer</div>
+  <p class="mb-2">Here is the <code>tokenize()</code> function from the lesson. Run it in your head for the input below, then answer the questions.</p>
+  <div class="code-block"><span class="kw">def</span> tokenize(sentence):
+    <span class="kw">import</span> re
+    clean = re.sub(<span class="st">r'[^a-z\s]'</span>, <span class="st">''</span>, sentence.lower())
+    <span class="kw">return</span> clean.split()
+
+tokens = tokenize(<span class="st">"I'm NOT sad!"</span>)
+<span class="cm"># What does this return? →</span></div>
+  <div class="grid-2">
+    <div>
+      <p style="font-size:0.8rem;font-weight:700;color:#0b63ce;margin-bottom:6px;">💭 Predict the output (write the list):</p>
+      <input class="write-line" type="text" placeholder="tokens = [ ... ]" />
+      <p class="mt-2" style="font-size:0.8rem;color:#374151;">The regex removes apostrophes, so <code>"I'm"</code> becomes <code>"im"</code>. Are <code>"im"</code> and <code>"I'm"</code> the same meaning? What is lost?</p>
+      <div class="write-lines mt-2">
+        <input class="write-line" type="text" placeholder="What meaning is lost..." />
+        <input class="write-line" type="text" placeholder="..." />
+      </div>
+    </div>
+    <div>
+      <p style="font-size:0.8rem;font-weight:700;color:#047857;margin-bottom:6px;">🔧 How would <em>you</em> fix the tokenizer to keep apostrophes?</p>
+      <textarea class="write-area" placeholder="Describe your fix or write new code..."></textarea>
+      <div class="tip-box blue mt-2">🌍 <strong>GPT-4 scale:</strong> Trained on ~13 trillion tokens. Each ≈ ¾ of a word. That is roughly 10 trillion words — every Wikipedia article ~50,000 times over.</div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ══════════ PART 3 · TRACE & BUG HUNT ══════════ -->
+<div class="section-label">🐛 Part 3 of 5</div>
+<div class="section-title">Trace TinyBot v1 &amp; Hunt the Bugs</div>
+
+<!-- Bag-of-words trace -->
+<div class="card accent-amber mb-2">
+  <div class="card-label amber">🧮 Trace the Bag-of-Words Scorer</div>
+  <p class="mb-2">The scorer below assigns numerical weights to keywords. Trace it for the input <strong>"I feel a bit sad and tired"</strong> and fill in the score table.</p>
+  <div class="code-block"><span class="nb">INTENTS</span> = {
+    <span class="st">'greeting'</span>: {<span class="st">'hello'</span>: <span class="nb">3</span>, <span class="st">'hi'</span>: <span class="nb">3</span>, <span class="st">'hey'</span>: <span class="nb">2</span>},
+    <span class="st">'negative'</span>: {<span class="st">'sad'</span>: <span class="nb">3</span>, <span class="st">'tired'</span>: <span class="nb">2</span>, <span class="st">'upset'</span>: <span class="nb">3</span>},
+    <span class="st">'positive'</span>: {<span class="st">'happy'</span>: <span class="nb">3</span>, <span class="st">'great'</span>: <span class="nb">2</span>, <span class="st">'excited'</span>: <span class="nb">3</span>},
+}</div>
+  <div class="grid-2">
+    <div>
+      <p style="font-size:0.8rem;font-weight:700;color:#b45309;margin-bottom:6px;">📊 Fill in the score table for: <em>"I feel a bit sad and tired"</em></p>
+      <table style="width:100%;font-size:0.83rem;border-collapse:collapse;border:1px solid #e2e8f0;">
+        <thead><tr><th style="background:#1e293b;color:#e2e8f0;padding:7px 10px;text-align:left;">Intent</th><th style="background:#1e293b;color:#e2e8f0;padding:7px 10px;text-align:left;">Score</th><th style="background:#1e293b;color:#e2e8f0;padding:7px 10px;text-align:left;">Matched Keywords</th></tr></thead>
+        <tbody>
+          <tr><td style="padding:7px 10px;border-bottom:1px solid #f1f5f9;">greeting</td><td style="padding:7px 10px;border-bottom:1px solid #f1f5f9;"><input type="text" style="width:50px;border:none;border-bottom:2px solid #f59e0b;text-align:center;font-family:var(--font-code);font-weight:700;color:#374151;background:transparent;outline:none;" placeholder="?" /></td><td style="padding:7px 10px;border-bottom:1px solid #f1f5f9;"><input type="text" style="width:130px;border:none;border-bottom:1.5px solid #cbd5e1;background:transparent;outline:none;font-size:0.8rem;" placeholder="none" /></td></tr>
+          <tr><td style="padding:7px 10px;border-bottom:1px solid #f1f5f9;">negative</td><td style="padding:7px 10px;border-bottom:1px solid #f1f5f9;"><input type="text" style="width:50px;border:none;border-bottom:2px solid #f59e0b;text-align:center;font-family:var(--font-code);font-weight:700;color:#374151;background:transparent;outline:none;" placeholder="?" /></td><td style="padding:7px 10px;border-bottom:1px solid #f1f5f9;"><input type="text" style="width:130px;border:none;border-bottom:1.5px solid #cbd5e1;background:transparent;outline:none;font-size:0.8rem;" placeholder="..." /></td></tr>
+          <tr><td style="padding:7px 10px;">positive</td><td style="padding:7px 10px;"><input type="text" style="width:50px;border:none;border-bottom:2px solid #f59e0b;text-align:center;font-family:var(--font-code);font-weight:700;color:#374151;background:transparent;outline:none;" placeholder="?" /></td><td style="padding:7px 10px;"><input type="text" style="width:130px;border:none;border-bottom:1.5px solid #cbd5e1;background:transparent;outline:none;font-size:0.8rem;" placeholder="none" /></td></tr>
+        </tbody>
+      </table>
+      <p style="margin-top:8px;font-size:0.83rem;color:#374151;"><strong>Winner →</strong> <input type="text" style="border:none;border-bottom:2px solid #0b63ce;font-weight:800;color:#0b63ce;font-family:var(--font-code);background:transparent;outline:none;width:100px;" placeholder="intent" /></p>
+    </div>
+    <div>
+      <p style="font-size:0.8rem;font-weight:700;color:#b91c1c;margin-bottom:6px;">🐛 Still broken! Try this input: <em>"I'm not sad at all, I feel great!"</em></p>
+      <p class="mb-2" style="font-size:0.83rem;color:#374151;">This scores <code>negative=3</code> but should return <code>positive</code>. What linguistic feature would fix this?</p>
+      <p style="font-size:0.8rem;color:#64748b;margin-bottom:4px;font-style:italic;">Hint: look 1 token to the <em>left</em> of each keyword.</p>
+      <textarea class="write-area" placeholder="The feature that would fix this is... because..."></textarea>
+    </div>
+  </div>
+</div>
+
+<!-- TinyBot v1 Bug Hunt -->
+<div class="card accent-red mb-3">
+  <div class="card-label red">🐛 Bug Hunt — Label Each Bug in TinyBot v1</div>
+  <p class="mb-2">TinyBot v1 is shown below. Three bugs are marked with 🐛. For each one: write what input triggers it, and explain in your own words why it fails.</p>
+  <div class="code-block"><span class="cm"># TinyBot v1 — DETERMINISTIC: same input → same output. Always.</span>
+<span class="kw">while</span> True:
+    msg = <span class="kw">input</span>(<span class="st">'You: '</span>).lower().strip()
+
+    <span class="kw">if</span> msg == <span class="st">'bye'</span>:
+        <span class="kw">print</span>(<span class="st">'Bot: Goodbye!'</span>); <span class="kw">break</span>
+    <span class="kw">elif</span> <span class="st">'hello'</span> <span class="kw">in</span> msg <span class="kw">or</span> <span class="st">'hi'</span> <span class="kw">in</span> msg:  <span class="bug"># 🐛 BUG 1</span>
+        <span class="kw">print</span>(<span class="st">'Bot: Hi there!'</span>)
+    <span class="kw">elif</span> <span class="st">'name'</span> <span class="kw">in</span> msg:
+        <span class="kw">print</span>(<span class="st">'Bot: I am TinyBot.'</span>)
+    <span class="kw">elif</span> <span class="st">'sad'</span> <span class="kw">in</span> msg <span class="kw">or</span> <span class="st">'tired'</span> <span class="kw">in</span> msg:  <span class="bug"># 🐛 BUG 2</span>
+        <span class="kw">print</span>(<span class="st">'Bot: Breaks and friends can really help.'</span>)
+    <span class="kw">elif</span> <span class="st">'happy'</span> <span class="kw">in</span> msg <span class="kw">or</span> <span class="st">'excited'</span> <span class="kw">in</span> msg:
+        <span class="kw">print</span>(<span class="st">'Bot: That is awesome news!'</span>)
+    <span class="kw">else</span>:
+        <span class="kw">print</span>(<span class="st">'Bot: I do not understand yet.'</span>)  <span class="bug"># 🐛 BUG 3</span></div>
+
+  <table style="width:100%;font-size:0.82rem;border-collapse:collapse;margin-top:4px;">
+    <thead><tr>
+      <th style="background:#1e293b;color:#e2e8f0;padding:7px 10px;text-align:left;">Bug</th>
+      <th style="background:#1e293b;color:#e2e8f0;padding:7px 10px;text-align:left;">What input triggers it?</th>
+      <th style="background:#1e293b;color:#e2e8f0;padding:7px 10px;text-align:left;">Why it fails</th>
+    </tr></thead>
+    <tbody>
+      <tr>
+        <td style="padding:7px 10px;border-bottom:1px solid #fee2e2;color:#b91c1c;font-weight:700;">🐛 Bug 1<br><small style="font-weight:400;color:#64748b;">substring match</small></td>
+        <td style="padding:7px 10px;border-bottom:1px solid #fee2e2;"><input type="text" style="width:100%;border:none;border-bottom:1.5px solid #fca5a5;background:transparent;outline:none;font-size:0.83rem;" placeholder='e.g. "this" or "white"' /></td>
+        <td style="padding:7px 10px;border-bottom:1px solid #fee2e2;"><input type="text" style="width:100%;border:none;border-bottom:1.5px solid #fca5a5;background:transparent;outline:none;font-size:0.83rem;" placeholder="Because..." /></td>
+      </tr>
+      <tr>
+        <td style="padding:7px 10px;border-bottom:1px solid #fee2e2;color:#b91c1c;font-weight:700;">🐛 Bug 2<br><small style="font-weight:400;color:#64748b;">negation ignored</small></td>
+        <td style="padding:7px 10px;border-bottom:1px solid #fee2e2;"><input type="text" style="width:100%;border:none;border-bottom:1.5px solid #fca5a5;background:transparent;outline:none;font-size:0.83rem;" placeholder='e.g. "I am not sad"' /></td>
+        <td style="padding:7px 10px;border-bottom:1px solid #fee2e2;"><input type="text" style="width:100%;border:none;border-bottom:1.5px solid #fca5a5;background:transparent;outline:none;font-size:0.83rem;" placeholder="Because..." /></td>
+      </tr>
+      <tr>
+        <td style="padding:7px 10px;color:#b91c1c;font-weight:700;">🐛 Bug 3<br><small style="font-weight:400;color:#64748b;">no memory between turns</small></td>
+        <td style="padding:7px 10px;"><input type="text" style="width:100%;border:none;border-bottom:1.5px solid #fca5a5;background:transparent;outline:none;font-size:0.83rem;" placeholder="Describe a multi-turn conversation..." /></td>
+        <td style="padding:7px 10px;"><input type="text" style="width:100%;border:none;border-bottom:1.5px solid #fca5a5;background:transparent;outline:none;font-size:0.83rem;" placeholder="Because TinyBot always..." /></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<hr class="divider page-break">
+
+<!-- ══════════ PART 4 · TIERED CODING ══════════ -->
+<div class="section-label">💻 Part 4 of 5 — Choose Your Level</div>
+<div class="section-title">Tiered Coding Challenges</div>
+
+<div class="card accent-blue mb-2">
+  <div class="card-label blue">📋 Instructions — Pick ONE level</div>
+  <div class="grid-3">
+    <div style="text-align:center;padding:8px;">
+      <div style="font-size:1.8rem;margin-bottom:4px;">🔵</div>
+      <span class="level-badge level-1">Level 1 — Approaching</span>
+      <p style="font-size:0.82rem;color:#374151;margin-top:4px;">Convert TinyBot v1's if/elif chain to the data-driven dict structure</p>
+    </div>
+    <div style="text-align:center;padding:8px;">
+      <div style="font-size:1.8rem;margin-bottom:4px;">🟡</div>
+      <span class="level-badge level-2">Level 2 — On Grade Level</span>
+      <p style="font-size:0.82rem;color:#374151;margin-top:4px;">Implement the bag-of-words scorer and add the negation window fix</p>
+    </div>
+    <div style="text-align:center;padding:8px;">
+      <div style="font-size:1.8rem;margin-bottom:4px;">🟣</div>
+      <span class="level-badge level-3">Level 3 — Extended</span>
+      <p style="font-size:0.82rem;color:#374151;margin-top:4px;">Build a 4-state FSM dialogue bot with your weighted scorer</p>
+    </div>
+  </div>
+  <p style="font-size:0.8rem;color:#374151;margin-top:8px;text-align:center;">Circle your level: &nbsp; <strong>Level 1</strong> &nbsp;/&nbsp; <strong>Level 2</strong> &nbsp;/&nbsp; <strong>Level 3</strong></p>
+</div>
+
+<!-- LEVEL 1 -->
+<div class="card mb-2">
+  <div style="margin-bottom:8px;"><span class="level-badge level-1">🔵 Level 1 — Refactor to Dict Architecture</span></div>
+  <div class="grid-2">
+    <div>
+      <div class="card-label blue">📋 What to do</div>
+      <p class="mb-2">Convert TinyBot v1's <code>if/elif</code> chain to the <strong>data-driven dict structure</strong>. Every reply must still work. Adding a new intent should only require a new dict entry — no new code logic.</p>
+      <ul style="list-style:disc;padding-left:18px;font-size:0.83rem;color:#374151;line-height:1.8;">
+        <li>Fill in the <code>RULES</code> dict with at least 4 intents</li>
+        <li>Fill in the <code>REPLIES</code> dict with matching responses</li>
+        <li>Complete <code>get_intent()</code> using set intersection</li>
+      </ul>
+      <div class="check-list mt-2">
+        <li><span class="box"></span> 4 intents in RULES (greeting, farewell, negative, positive)</li>
+        <li><span class="box"></span> Matching REPLIES for each intent + "unknown"</li>
+        <li><span class="box"></span> get_intent() uses <code>set()</code> — not <code>in</code> substring check</li>
+        <li><span class="box"></span> Adding "weather" intent takes under 60 seconds ✓</li>
+      </div>
+      <div class="tip-box blue mt-2">💡 <strong>Why sets beat lists:</strong> List intersection = O(n×m). Set intersection = O(min(n,m)). At 1,000 keywords, sets are ~50× faster.</div>
+    </div>
+    <div>
+      <div class="card-label amber">🧩 Starter — fill in the blanks</div>
+      <div class="code-block" style="font-size:0.72rem;"><span class="nb">RULES</span> = {
+    <span class="st">'greeting'</span>: [<span class="st">'hi'</span>, <span class="st">'hello'</span>, <span class="st">'hey'</span>],
+    <input class="blank-input wide" type="text" placeholder="intent" />: [<input class="blank-input wide" type="text" placeholder="keywords" />],
+    <input class="blank-input wide" type="text" placeholder="intent" />: [<input class="blank-input wide" type="text" placeholder="keywords" />],
+    <input class="blank-input wide" type="text" placeholder="intent" />: [<input class="blank-input wide" type="text" placeholder="keywords" />],
+}
+<span class="nb">REPLIES</span> = {
+    <span class="st">'greeting'</span>: <span class="st">'Hi there!'</span>,
+    <input class="blank-input wide" type="text" placeholder="intent" />: <input class="blank-input wide" type="text" placeholder="'reply'" />,
+    <input class="blank-input wide" type="text" placeholder="intent" />: <input class="blank-input wide" type="text" placeholder="'reply'" />,
+    <span class="st">'unknown'</span>: <span class="st">'I do not understand yet.'</span>,
+}
+<span class="kw">def</span> get_intent(msg):
+    tokens = <input class="blank-input wide" type="text" placeholder="set(...)" />
+    <span class="kw">for</span> intent, kws <span class="kw">in</span> RULES.items():
+        <span class="kw">if</span> <input class="blank-input wide" type="text" placeholder="tokens & ..." />:
+            <span class="kw">return</span> intent
+    <span class="kw">return</span> <span class="st">'unknown'</span></div>
+      <p class="mt-2" style="font-size:0.8rem;color:#374151;"><strong>Test it:</strong> Add a <code>'weather'</code> intent with keywords <code>['rain', 'sunny', 'weather']</code>. How long did it take?</p>
+      <input class="write-line" type="text" placeholder="Time taken and what you changed..." />
+    </div>
+  </div>
+</div>
+
+<!-- LEVEL 2 -->
+<div class="card mb-2">
+  <div style="margin-bottom:8px;"><span class="level-badge level-2">🟡 Level 2 — Weighted Scorer + Negation Fix</span></div>
+  <div class="grid-2">
+    <div>
+      <div class="card-label amber">📋 What to do</div>
+      <p class="mb-2">Implement the <strong>bag-of-words classifier</strong> from the lesson, then add the <strong>negation window fix</strong> so "not sad" no longer scores as negative.</p>
+      <ul style="list-style:disc;padding-left:18px;font-size:0.83rem;color:#374151;line-height:1.8;">
+        <li>Implement <code>classify(msg)</code> using <code>INTENTS</code> weights dict</li>
+        <li>Add negation window: check if previous token is <code>"not"</code>, <code>"n't"</code>, or <code>"never"</code> → multiply score by −1</li>
+        <li>Test both inputs below and record actual vs expected</li>
+      </ul>
+      <p style="font-size:0.8rem;font-weight:700;color:#b45309;margin:10px 0 6px;">🧪 Test inputs:</p>
+      <table style="width:100%;font-size:0.8rem;border-collapse:collapse;">
+        <tr><td style="padding:5px 0;border-bottom:1px solid #f1f5f9;color:#374151;">"I'm not sad at all"</td><td style="padding:5px 0;border-bottom:1px solid #f1f5f9;"><input type="text" style="width:100%;border:none;border-bottom:1.5px solid #f59e0b;background:transparent;outline:none;font-size:0.8rem;" placeholder="expected: unknown/positive → actual: ?" /></td></tr>
+        <tr><td style="padding:5px 0;color:#374151;">"I feel a little excited and kind of sad"</td><td style="padding:5px 0;"><input type="text" style="width:100%;border:none;border-bottom:1.5px solid #f59e0b;background:transparent;outline:none;font-size:0.8rem;" placeholder="which intent wins? →" /></td></tr>
+      </table>
+      <p style="font-size:0.8rem;font-weight:700;color:#374151;margin:10px 0 4px;">In 1 sentence — why does <code>dict.get(key, 0)</code> matter?</p>
+      <input class="write-line" type="text" placeholder="Because if the key is missing..." />
+    </div>
+    <div>
+      <div class="card-label green">🐍 Negation window extension — fill in blanks:</div>
+      <div class="code-block" style="font-size:0.72rem;"><span class="kw">for</span> i, token <span class="kw">in</span> enumerate(tokens):
+    neg = (i > <input class="blank-input narrow" type="text" placeholder="?" />
+           <span class="kw">and</span> tokens[i-<input class="blank-input narrow" type="text" placeholder="?" />]
+           <span class="kw">in</span> [<span class="st">'not'</span>, <span class="st">"n't"</span>, <span class="st">'never'</span>])
+    sign = <input class="blank-input narrow" type="text" placeholder="?" /> <span class="kw">if</span> neg <span class="kw">else</span> <input class="blank-input narrow" type="text" placeholder="?" />
+    <span class="kw">for</span> intent, weights <span class="kw">in</span> INTENTS.items():
+        scores[intent] += <input class="blank-input wide" type="text" placeholder="sign * ..." /></div>
+      <div class="card-label blue mt-2 mb-1">🐍 Write your full classify() here:</div>
+      <textarea class="dark-code-write" style="min-height:160px;" spellcheck="false" placeholder="# Level 2 — bag-of-words classifier with negation fix&#10;INTENTS = {&#10;    'greeting': {'hello': 3, 'hi': 3},&#10;    'negative': {'sad': 3, 'tired': 2},&#10;    'positive': {'happy': 3, 'great': 2},&#10;}&#10;&#10;def classify(msg):&#10;    tokens = msg.lower().split()&#10;    scores = ...&#10;    ...&#10;    return ..."></textarea>
+    </div>
+  </div>
+</div>
+
+<!-- LEVEL 3 -->
+<div class="card accent-purple mb-3">
+  <div style="margin-bottom:8px;"><span class="level-badge level-3">🟣 Level 3 — 4-State FSM Dialogue Bot</span></div>
+  <div class="grid-2">
+    <div>
+      <div class="card-label purple">📋 What to build</div>
+      <p class="mb-2">Build a <strong>4-state FSM</strong> chatbot: <code>start → ask_name → ask_mood → chat</code>.</p>
+      <ul style="list-style:disc;padding-left:18px;font-size:0.83rem;color:#374151;line-height:1.8;">
+        <li>In <code>chat</code> state, use your weighted scorer from Level 2</li>
+        <li>Personalize every reply using the stored <code>name</code> variable</li>
+        <li><strong>Extension:</strong> if mood score is negative → transition to a <code>support</code> state that suggests talking to a teacher</li>
+      </ul>
+      <p style="font-size:0.8rem;font-weight:700;color:#6d28d9;margin:10px 0 6px;">📐 Draw the FSM transition diagram below:</p>
+      <div style="border:2px dashed #c4b5fd;border-radius:10px;min-height:90px;background:#faf5ff;padding:10px;">
+        <div class="fsm-diagram">
+          <div class="fsm-state start">start</div>
+          <div class="fsm-arrow">──greeting──▶</div>
+          <div class="fsm-state">ask_name</div>
+          <div class="fsm-arrow">──name given──▶</div>
+          <div class="fsm-state">ask_mood</div>
+          <div class="fsm-arrow">──mood──▶</div>
+          <div class="fsm-state">chat</div>
+          <div class="fsm-arrow">──bye──▶</div>
+          <div class="fsm-state end">END</div>
+        </div>
+        <p class="text-muted text-center" style="margin-top:4px;">Add your "support" state and transitions below or on paper</p>
+      </div>
+      <p style="font-size:0.78rem;font-weight:700;color:#6d28d9;margin:8px 0 2px;">Formal notation: FSM = (Q, Σ, δ, q₀, F)</p>
+      <input class="write-line" type="text" placeholder="Q (states) = { start, ask_name, ... }" />
+      <input class="write-line" type="text" placeholder="F (accepting states) = { ... }" />
+    </div>
+    <div>
+      <div class="card-label purple">🐍 Write your FSM code here:</div>
+      <textarea class="dark-code-write" style="min-height:280px;" spellcheck="false" placeholder="# Level 3 — 4-state FSM dialogue bot&#10;state = 'start'&#10;name = None&#10;&#10;while True:&#10;    msg = input('You: ').lower().strip()&#10;&#10;    if state == 'start':&#10;        ...  # greet and transition&#10;&#10;    elif state == 'ask_name':&#10;        name = ...&#10;        ...  # transition to ask_mood&#10;&#10;    elif state == 'ask_mood':&#10;        ...  # use classify()&#10;&#10;    elif state == 'chat':&#10;        if msg == 'bye':&#10;            print(f'Bot: Goodbye, {name}!')&#10;            break&#10;        else:&#10;            ...  # personalised reply"></textarea>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ══════════ PART 5 · BONUS ══════════ -->
+<div class="section-label">⭐ Part 5 of 5 — Bonus</div>
+<div class="section-title">Extension Challenges</div>
+
+<!-- Bonus A -->
+<div class="card mb-2">
+  <div style="margin-bottom:8px;"><span class="challenge-badge">⭐ Bonus A — Add a test() Function</span></div>
+  <div class="grid-2">
+    <div>
+      <div class="card-label blue">📋 What to do</div>
+      <p class="mb-2">Add a <code>test()</code> function that runs <strong>8 test messages automatically</strong> and prints <code>PASS</code> or <code>FAIL</code> for each. Include at least <strong>2 tests designed to break your bot</strong>.</p>
+      <ul style="list-style:disc;padding-left:18px;font-size:0.83rem;color:#374151;line-height:1.8;">
+        <li>All 8 test cases in a <code>cases</code> list of <code>(msg, expected)</code> tuples</li>
+        <li>At least 2 adversarial tests (inputs you expect to fail)</li>
+        <li>Clear PASS/FAIL output for each test</li>
+      </ul>
+      <p style="font-size:0.8rem;font-weight:700;color:#374151;margin:8px 0 4px;">Write 3 of your test cases here:</p>
+      <input class="write-line" type="text" placeholder='("hi there", "greeting")' />
+      <input class="write-line" type="text" placeholder='("I'm not sad", "unknown")  ← adversarial' />
+      <input class="write-line" type="text" placeholder='Add your own...' />
+    </div>
+    <div>
+      <div class="card-label green">🐍 Write your test() function here:</div>
+      <textarea class="dark-code-write" style="min-height:170px;" spellcheck="false" placeholder="def test():&#10;    cases = [&#10;        ('hi there', 'greeting'),&#10;        (&quot;I'm not sad&quot;, 'unknown'),  # adversarial&#10;        # add 6 more...&#10;    ]&#10;    for msg, expected in cases:&#10;        result = get_intent(msg)&#10;        status = '✓ PASS' if result == expected else '✗ FAIL'&#10;        print(f'{status} | {msg!r} → {result}')&#10;&#10;test()"></textarea>
+    </div>
+  </div>
+</div>
+
+<!-- Bonus B -->
+<div class="card mb-2">
+  <div style="margin-bottom:8px;"><span class="challenge-badge">⭐⭐ Bonus B — Chinese Room Analysis</span></div>
+  <div class="card-label blue">✍️ Required Analysis (5–7 sentences)</div>
+  <p class="mb-2">Use the <strong>Chinese Room argument</strong> and the <strong>grounding problem</strong> to answer: Does TinyBot <em>understand</em> language? Does GPT-4? What would a machine need to do to genuinely understand?</p>
+  <div class="grid-2">
+    <div>
+      <p style="font-size:0.8rem;font-weight:700;color:#0b63ce;margin-bottom:4px;">Does TinyBot understand? Why or why not?</p>
+      <textarea class="write-area" style="min-height:80px;" placeholder="TinyBot..."></textarea>
+      <p style="font-size:0.8rem;font-weight:700;color:#0b63ce;margin:8px 0 4px;">Does GPT-4 understand? How is it different?</p>
+      <textarea class="write-area" style="min-height:80px;" placeholder="GPT-4..."></textarea>
+    </div>
+    <div>
+      <p style="font-size:0.8rem;font-weight:700;color:#047857;margin-bottom:4px;">What would a machine need to <em>genuinely</em> understand?</p>
+      <textarea class="write-area" style="min-height:80px;" placeholder="A machine would genuinely understand if..."></textarea>
+      <div class="tip-box purple mt-2">🔍 <strong>Grounding:</strong> Connecting a word's meaning to real-world sensory experience. TinyBot knows the <em>string</em> "sad" but has never felt sad. Does that matter?</div>
+    </div>
+  </div>
+</div>
+
+<!-- Bonus C -->
+<div class="card accent-green mb-3">
+  <div style="margin-bottom:8px;"><span class="challenge-badge" style="background:linear-gradient(135deg,#10b981,#0b63ce);">⭐⭐⭐ Bonus C — Naive Bayes Research</span></div>
+  <div class="card-label green">🔬 Research Extension</div>
+  <p class="mb-2">Look up <strong>Naive Bayes classification</strong> — the algorithm behind early spam filters. Write pseudocode for training it on 10 labelled chatbot messages. How does it differ from your weighted scorer?</p>
+  <div class="grid-2">
+    <div>
+      <p style="font-size:0.8rem;font-weight:700;color:#047857;margin-bottom:4px;">📝 Pseudocode for training on 10 labelled messages:</p>
+      <textarea class="dark-code-write" style="min-height:130px;" spellcheck="false" placeholder="# Naive Bayes training pseudocode&#10;# for each labelled message (text, intent):&#10;#   tokenize text&#10;#   count each word per intent class&#10;# to classify new msg:&#10;#   ..."></textarea>
+    </div>
+    <div>
+      <p style="font-size:0.8rem;font-weight:700;color:#047857;margin-bottom:4px;">📊 How does Naive Bayes differ from your weighted scorer?</p>
+      <textarea class="write-area" style="min-height:130px;" placeholder="My weighted scorer uses fixed hand-crafted weights, while Naive Bayes..."></textarea>
+    </div>
+  </div>
+  <p class="mt-2 text-muted">📧 <strong>Submit to:</strong> hue.weng.88@gmail.com · Subject: <em>Day 17 HW · [Your Name] · Level [1/2/3]</em></p>
+</div>
+
+<hr class="divider">
+
+<!-- ══════════ REAL-WORLD CONNECTIONS ══════════ -->
+<div class="section-label">🌍 Real World</div>
+<div class="section-title">Where Is This Code Used Today?</div>
+
+<div class="card mb-3">
+  <table class="score-table">
+    <thead><tr>
+      <th>Your Code Today</th>
+      <th>Real System</th>
+      <th>Scale</th>
+    </tr></thead>
+    <tbody>
+      <tr><td><code>tokenize()</code></td><td>GPT-4 BPE tokenizer</td><td>100K vocabulary tokens</td></tr>
+      <tr><td><code>classify()</code> scorer</td><td>Gmail spam filter</td><td>~15B emails/day</td></tr>
+      <tr><td><code>get_intent()</code> dict lookup</td><td>Alexa NLU pipeline</td><td>Millions of queries/hour</td></tr>
+      <tr><td>FSM <code>state</code> variable</td><td>Game AI behavior trees</td><td>1,200+ behavior nodes</td></tr>
+      <tr><td><code>test()</code> bug testing</td><td>Adversarial ML red-teaming</td><td>Dedicated safety teams</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ══════════ REFLECTION ══════════ -->
+<div class="section-label">💬 Reflect</div>
+<div class="section-title">Exit Ticket &amp; Growth Check</div>
+
+<div class="card mb-3">
+  <div class="grid-2">
+    <div>
+      <div class="card-label blue">🧠 Exit Ticket — 1–2 sentences each</div>
+      <p style="font-size:0.8rem;font-weight:700;color:#374151;margin:8px 0 3px;">1. What is tokenization, and why does it happen <em>before</em> any AI analysis?</p>
+      <div class="write-lines"><input class="write-line" type="text" placeholder="Tokenization is..." /><input class="write-line" type="text" placeholder="..." /></div>
+      <p style="font-size:0.8rem;font-weight:700;color:#374151;margin:8px 0 3px;">2. Why does an FSM improve on TinyBot v1?</p>
+      <div class="write-lines"><input class="write-line" type="text" placeholder="FSM adds..." /><input class="write-line" type="text" placeholder="..." /></div>
+      <p style="font-size:0.8rem;font-weight:700;color:#374151;margin:8px 0 3px;">3. Name one real AI system that uses intent classification and explain how.</p>
+      <div class="write-lines"><input class="write-line" type="text" placeholder="..." /><input class="write-line" type="text" placeholder="..." /></div>
+    </div>
+    <div>
+      <div class="card-label green">🌱 Growth Mindset Check</div>
+      <p style="font-size:0.8rem;color:#374151;margin-bottom:8px;">Circle the one that describes you today:</p>
+      <div style="display:flex;flex-direction:column;gap:7px;font-size:0.83rem;color:#374151;">
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;"><input type="radio" name="mood" style="accent-color:#7c3aed;"> 😤 I got stuck but kept trying</label>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;"><input type="radio" name="mood" style="accent-color:#7c3aed;"> 💡 I figured something out by myself</label>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;"><input type="radio" name="mood" style="accent-color:#7c3aed;"> 🤝 I helped a classmate understand</label>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;"><input type="radio" name="mood" style="accent-color:#7c3aed;"> 🚀 I finished early and tackled a bonus!</label>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;"><input type="radio" name="mood" style="accent-color:#7c3aed;"> 🤯 The FSM / Big-O concept finally clicked</label>
+      </div>
+      <p style="font-size:0.8rem;font-weight:700;color:#6d28d9;margin:12px 0 4px;">One thing I still want to learn:</p>
+      <input class="write-line" type="text" placeholder="..." />
+      <p style="font-size:0.8rem;font-weight:700;color:#047857;margin:8px 0 4px;">One thing I did really well today:</p>
+      <input class="write-line" type="text" placeholder="..." />
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ RUBRIC ══════════ -->
+<div class="section-label">📊 Scoring</div>
+<div class="section-title">Rubric &amp; Points</div>
+
+<div class="card mb-3">
+  <table class="rubric">
+    <thead><tr><th>Section</th><th>What to Look For</th><th>Points</th></tr></thead>
+    <tbody>
+      <tr><td>Part 1 — Warm-Up Puzzles</td><td>Both tree diagrams attempted; negation expression correct; Big-O answer with explanation</td><td class="pts">4 pts</td></tr>
+      <tr><td>Part 2 — Vocab &amp; Trace</td><td>Matching correct; True/False circled; tokenizer output predicted; investigation answered</td><td class="pts">4 pts</td></tr>
+      <tr><td>Part 3 — Trace &amp; Bug Hunt</td><td>Score table filled with working shown; all 3 bugs correctly identified with trigger input and explanation</td><td class="pts">4 pts</td></tr>
+      <tr><td>Part 4 — Coding Challenge</td><td>Chosen level fully completed; blanks filled; code written with comments; tests recorded</td><td class="pts">7 pts</td></tr>
+      <tr><td>Reflection / Exit Ticket</td><td>Thoughtful written responses to all 3 exit ticket questions</td><td class="pts">2 pts</td></tr>
+      <tr><td>⭐ Bonus A — test()</td><td>8 test cases; 2 adversarial; PASS/FAIL output works</td><td class="pts">+2</td></tr>
+      <tr><td>⭐⭐ Bonus B — Analysis</td><td>5–7 sentences using Chinese Room + grounding vocabulary correctly</td><td class="pts">+3</td></tr>
+      <tr><td>⭐⭐⭐ Bonus C — Naive Bayes</td><td>Pseudocode written; meaningful comparison to weighted scorer</td><td class="pts">+3</td></tr>
+    </tbody>
+  </table>
+  <div style="display:flex;justify-content:flex-end;margin-top:10px;gap:24px;font-size:0.82rem;color:#374151;">
+    <span>Total (without bonus): <strong style="font-family:var(--font-code);color:#0b63ce;">____ / 21</strong></span>
+    <span>Total (with bonus): <strong style="font-family:var(--font-code);color:#10b981;">____ / 29</strong></span>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="sheet-footer">
+  <div>
+    <strong>Day 17 · Chatbots &amp; Language AI</strong> · Differentiated Activity Sheet · Mr. Hsiao "Hue" Weng · Spring 2026<br>
+    <span class="grad-text" style="font-weight:800;">Tokenization · Bag-of-Words · TinyBot · FSM · Big-O · NLP</span>
+  </div>
+  <div style="text-align:right;">
+    Ages 11–12 · Grades 5–6<br>
+    <span style="font-size:0.7rem;">🤖 Every chatbot today starts with ideas like these!</span>
+  </div>
+</div>
+
+</div><!-- end .page -->
+</body>
+</html>
