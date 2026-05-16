@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="slides-format" content="viewport">
+    <title>Day 17 · Chatbots &amp; Language AI — Advanced</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style type="text/tailwindcss">
+        @theme {
+            --color-bg: #f4fbff;
+            --color-bg-deep: #e0f2ff;
+            --color-surface: rgba(255,255,255,0.95);
+            --color-text: #1f2a37;
+            --color-text-secondary: #374151;
+            --color-text-muted: #5b6b7e;
+            --color-accent-1: #0b63ce;
+            --color-accent-2: #10b981;
+            --color-accent-3: #f59e0b;
+            --color-glass-bg: rgba(255,255,255,0.88);
+            --color-glass-border: rgba(11,99,206,0.16);
+            --color-vignette: rgba(15,23,42,0.07);
+            --font-display: "Fredoka","Trebuchet MS",sans-serif;
+            --font-body: "Nunito",Arial,sans-serif;
+        }
+    </style>
+    <style>
+        :root{--color-bg:#f4fbff;--color-text:#1f2a37;--glow-color-rgb:11,99,206;}
+        *,*::before,*::after{box-sizing:border-box;}
+        html,body{background:var(--color-bg);margin:0;}
+        body{font-family:"Nunito",Arial,sans-serif;color:var(--color-text);overflow:hidden;height:100vh;width:100vw;}
+        .deck{width:100vw;height:100vh;position:relative;}
+        .slide{position:absolute;top:0;left:0;width:100%;height:100%;background:radial-gradient(circle at top left,rgba(56,189,248,0.13),transparent 40%),radial-gradient(circle at bottom right,rgba(16,185,129,0.09),transparent 40%),var(--color-bg);display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;transform:scale(0.96);transition:opacity 0.55s ease,transform 0.55s ease;pointer-events:none;overflow:hidden;}
+        .slide.active{opacity:1;transform:scale(1);pointer-events:all;}
+        .slide>.content{position:relative;z-index:2;width:100%;max-width:1060px;padding:clamp(1rem,3vw,2.6rem);}
+        .nav-controls{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:13px;z-index:100;background:rgba(255,255,255,0.93);backdrop-filter:blur(12px);padding:8px 20px;border-radius:999px;border:1px solid rgba(148,163,184,0.38);box-shadow:0 8px 28px rgba(15,23,42,0.12);}
+        .nav-btn{width:34px;height:34px;border:none;background:rgba(15,23,42,0.06);color:#0b63ce;border-radius:999px;font-size:1.05rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s,transform .15s;}
+        .nav-btn:hover{background:rgba(15,23,42,0.12);transform:translateY(-1px);}
+        .slide-dots{display:flex;gap:6px;}
+        .slide-dots .dot{width:7px;height:7px;border-radius:50%;background:rgba(148,163,184,0.55);cursor:pointer;transition:background .25s,transform .25s;}
+        .slide-dots .dot.active{background:#0b63ce;transform:scale(1.45);}
+        .slide-counter{font-size:0.76rem;color:#64748b;min-width:44px;text-align:center;font-weight:800;}
+        .reveal{opacity:0;transform:translateY(14px);}
+        .mouse-spotlight{position:fixed;inset:0;z-index:1;pointer-events:none;}
+        /* Cards */
+        .card{background:var(--color-surface);border-radius:16px;padding:14px 18px;box-shadow:0 6px 22px rgba(15,23,42,0.07);border:1px solid rgba(255,255,255,0.7);}
+        .pill{display:inline-flex;align-items:center;gap:6px;padding:4px 13px;border-radius:999px;border:1px solid rgba(148,163,184,0.45);background:rgba(255,255,255,0.9);font-size:0.73rem;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;color:#0b63ce;}
+        /* Accent borders */
+        .ab-blue{border-left:4px solid #0b63ce;}
+        .ab-green{border-left:4px solid #10b981;}
+        .ab-amber{border-left:4px solid #f59e0b;}
+        .ab-red{border-left:4px solid #ef4444;}
+        .ab-purple{border-left:4px solid #8b5cf6;}
+        .ab-teal{border-left:4px solid #06b6d4;}
+        /* Code */
+        .cb{background:#0f172a;color:#e2e8f0;border-radius:11px;padding:11px 15px;font-family:"Fira Code",Consolas,monospace;font-size:clamp(0.57rem,0.9vw,0.72rem);line-height:1.58;overflow-x:auto;border:1px solid rgba(255,255,255,0.05);}
+        .cb .kw{color:#93c5fd;}.cb .cm{color:#475569;font-style:italic;}.cb .st{color:#86efac;}.cb .nb{color:#fcd34d;}.cb .tp{color:#f0abfc;}.cb .op{color:#f9a8d4;}.cb .num{color:#fb923c;}
+        .cs{max-height:clamp(100px,18vh,170px);overflow-y:auto;}
+        .cs::-webkit-scrollbar{width:4px;}.cs::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.18);border-radius:3px;}
+        /* Grid */
+        .gc{display:grid;gap:14px;}
+        @media(min-width:800px){.g2{grid-template-columns:repeat(2,minmax(0,1fr));}.g3{grid-template-columns:repeat(3,minmax(0,1fr));}.g4{grid-template-columns:repeat(4,minmax(0,1fr));}}
+        /* Gradient text */
+        .gt{background:linear-gradient(135deg,#0b63ce 0%,#10b981 50%,#f59e0b 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+        /* Timeline */
+        .tl{position:relative;padding-left:22px;}
+        .tl::before{content:"";position:absolute;left:8px;top:4px;bottom:4px;width:3px;border-radius:999px;background:linear-gradient(to bottom,#0b63ce,#10b981);}
+        .tl-step{position:relative;margin-bottom:10px;}
+        .tl-dot{position:absolute;left:-1px;top:5px;width:12px;height:12px;border-radius:999px;border:2px solid #f4fbff;background:#0b63ce;box-shadow:0 0 0 3px rgba(59,130,246,0.2);}
+        /* Blobs */
+        .gm{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none;}
+        .blob{position:absolute;border-radius:50%;filter:blur(70px);animation:fs 12s ease-in-out infinite;}
+        .blob:nth-child(2){animation:fd 16s ease-in-out infinite;}
+        .blob:nth-child(3){animation:fs 20s ease-in-out infinite reverse;}
+        @keyframes fs{0%{transform:translate(0,0) scale(1);}25%{transform:translate(50px,-40px) scale(1.1);}50%{transform:translate(-30px,35px) scale(.92);}75%{transform:translate(45px,18px) scale(1.07);}100%{transform:translate(0,0) scale(1);}}
+        @keyframes fd{0%{transform:translate(0,0) scale(1) rotate(0deg);}33%{transform:translate(-45px,-55px) scale(1.13) rotate(3deg);}66%{transform:translate(38px,28px) scale(.9) rotate(-2deg);}100%{transform:translate(0,0) scale(1) rotate(0deg);}}
+        @keyframes flt{0%,100%{transform:translateY(0);}50%{transform:translateY(-13px);}}
+        .slide::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:radial-gradient(ellipse at center,transparent 55%,rgba(15,23,42,0.055) 100%);}
+        .pc{position:absolute;inset:0;z-index:1;}
+        /* Token diagram */
+        .tok{display:inline-flex;align-items:center;justify-content:center;padding:3px 9px;border-radius:7px;font-family:"Fira Code",Consolas,monospace;font-size:0.72rem;font-weight:700;margin:2px;border:1px solid rgba(0,0,0,0.08);}
+        /* Bar fill */
+        .bar-track{background:rgba(148,163,184,0.18);border-radius:999px;height:10px;overflow:hidden;width:100%;}
+        .bar-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,#0b63ce,#10b981);width:0%;transition:width 0.8s ease;}
+        @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.2s!important;}}
+    </style>
+</head>
+<body>
+<div class="mouse-spotlight"></div>
+<div class="deck">
+
+<!-- ======= SLIDE 1: TITLE ======= -->
+<div class="slide active" data-slide="1">
+    <div class="gm">
+        <div class="blob" style="width:500px;height:500px;top:-120px;right:-100px;background:#0b63ce;opacity:.11;"></div>
+        <div class="blob" style="width:320px;height:320px;bottom:-80px;left:-60px;background:#10b981;opacity:.09;"></div>
+        <div class="blob" style="width:200px;height:200px;top:42%;left:14%;background:#f59e0b;opacity:.08;"></div>
+    </div>
+    <canvas class="pc" id="pc1"></canvas>
+    <div class="content text-center" style="z-index:2;position:relative;">
+        <div class="flex flex-wrap justify-center gap-3 mb-4">
+            <span class="pill">Advanced AI &amp; CS · Grades 5–6</span>
+            <span class="pill" style="color:#047857;background:rgba(16,185,129,0.08);">~60 min · 18 slides</span>
+            <span class="pill" style="color:#b45309;background:rgba(245,158,11,0.08);">Day 17 · Spring 2026</span>
+        </div>
+        <div class="mb-4 flex justify-center reveal">
+            <div class="card flex items-center gap-4" style="display:inline-flex;">
+                <span style="font-size:2.6rem;">🤖</span>
+                <div class="text-left">
+                    <p style="font-size:0.68rem;font-weight:800;letter-spacing:.15em;text-transform:uppercase;color:#0b63ce;" class="mb-1">Mr. Hsiao "Hue" Weng · hue881.github.io </p>
+                    <p style="font-size:0.8rem;font-weight:600;color:#374151;">hue.weng.88@gmail.com · 646-280-7089</p>
+                </div>
+            </div>
+        </div>
+        <h1 class="font-display gt tracking-tight reveal" style="font-size:clamp(2rem,4.5vw,3.5rem);font-weight:700;margin-bottom:.6rem;line-height:1.15;">Day 17: Language, Bots &amp; the Limits of Pattern Matching</h1>
+        <p class="reveal" style="font-size:clamp(0.88rem,1.4vw,1.12rem);color:#5b6b7e;max-width:700px;margin:0 auto 1rem;">
+            What does it mean for a machine to <em>understand</em> language — and why is that question harder than it sounds?
+        </p>
+        <div class="max-w-2xl mx-auto gc g2 mt-2">
+            <div class="card text-left reveal ab-blue">
+                <p style="font-size:0.68rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#0b63ce;" class="mb-1">You already know</p>
+                <ul class="list-disc pl-4 text-sm text-slate-700 space-y-1">
+                    <li><code style="font-size:.73rem;background:#f1f5f9;padding:1px 4px;border-radius:3px;">input()</code>, <code style="font-size:.73rem;background:#f1f5f9;padding:1px 4px;border-radius:3px;">print()</code>, string methods</li>
+                    <li><code style="font-size:.73rem;background:#f1f5f9;padding:1px 4px;border-radius:3px;">if/elif/else</code>, <code style="font-size:.73rem;background:#f1f5f9;padding:1px 4px;border-radius:3px;">while</code> loops, lists</li>
+                </ul>
+            </div>
+            <div class="card text-left reveal ab-green">
+                <p style="font-size:0.68rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#047857;" class="mb-1">Today's new territory</p>
+                <ul class="list-disc pl-4 text-sm text-slate-700 space-y-1">
+                    <li>Tokenization, bag-of-words, scoring</li>
+                    <li>Determinism vs. probabilistic AI</li>
+                    <li>State machines &amp; context memory</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ======= SLIDE 2: COMPUTATIONAL WARM-UP ======= -->
+<div class="slide" data-slide="2">
+    <div class="gm">
+        <div class="blob" style="width:360px;height:360px;top:-80px;right:-80px;background:#0b63ce;opacity:.07;"></div>
+        <div class="blob" style="width:240px;height:240px;bottom:-60px;left:-40px;background:#10b981;opacity:.06;"></div>
+    </div>
+    <div class="content" style="z-index:2;position:relative;">
+        <p class="pill mb-3 reveal">Warm-Up · Algorithmic Thinking</p>
+        <h2 class="font-display reveal" style="font-size:clamp(1.6rem,2.8vw,2.3rem);font-weight:700;margin-bottom:.9rem;">Think like a computer first 🧮</h2>
+        <div class="gc g3 reveal">
+            <div class="card ab-blue">
+                <p style="font-size:.72rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#0b63ce;" class="mb-2">Puzzle 1 · Ambiguity</p>
+                <p class="text-sm text-slate-700 mb-2">The sentence <em>"I saw the man with the telescope"</em> has <strong>two</strong> different meanings. Draw both as a tree. A computer sees only one string of characters — which meaning would <em>you</em> choose and how?</p>
+                <p class="text-xs text-slate-500">→ This is the <strong>syntactic ambiguity</strong> problem at the heart of NLP.</p>
+            </div>
+            <div class="card ab-green">
+                <p style="font-size:.72rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#047857;" class="mb-2">Puzzle 2 · Negation</p>
+                <p class="text-sm text-slate-700 mb-2">Write a Python expression (one line, no <code style="font-size:.73rem;background:#f1f5f9;padding:1px 4px;border-radius:3px;">import</code>) that returns <code style="font-size:.73rem;background:#f1f5f9;padding:1px 4px;border-radius:3px;">True</code> only when <code style="font-size:.73rem;background:#f1f5f9;padding:1px 4px;border-radius:3px;">"sad"</code> appears but <code style="font-size:.73rem;background:#f1f5f9;padding:1px 4px;border-radius:3px;">"not"</code> does NOT. Why do real NLP systems need more than this?</p>
+                <div class="cb" style="font-size:.68rem;">(<span class="st">"sad"</span> <span class="kw">in</span> msg) <span class="op">and</span> (<span class="st">"not"</span> <span class="kw">not in</span> msg)</div>
+            </div>
+            <div class="card ab-amber">
+                <p style="font-size:.72rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#b45309;" class="mb-2">Puzzle 3 · Complexity</p>
+                <p class="text-sm text-slate-700 mb-2">TinyBot has 6 intent rules. If each rule adds one <code style="font-size:.73rem;background:#f1f5f9;padding:1px 4px;border-radius:3px;">elif</code> check, and checking takes constant time — what is the <strong>Big-O</strong> time complexity of intent classification?</p>
+                <p class="text-xs font-mono text-slate-600">O(R × W) where R = rules, W = words per rule</p>
+                <p class="text-xs text-slate-500 mt-1">→ Could this become a bottleneck at 10 million messages/day?</p>
+            </div>
+        </div>
+        <div class="card mt-3 reveal" style="background:rgba(11,99,206,.06);border:1px solid rgba(11,99,206,.18);">
+            <p class="text-sm text-slate-700">✏️ Notebook: spend 2 minutes on each puzzle. We'll compare answers — there is no single right answer to Puzzle 1.</p>
+        </div>
+    </div>
+</div>
+
+<!-- ======= SLIDE 3: TOKENIZATION ======= -->
+<div class="slide" data-slide="3">
+    <div class="gm">
+        <div class="blob" style="width:380px;height:380px;top:-70px;right:-70px;background:#0b63ce;opacity:.07;"></div>
+        <div class="blob" style="width:250px;height:250px;bottom:-60px;left:-50px;background:#f59e0b;opacity:.07;"></div>
+    </div>
+    <div class="content" style="z-index:2;position:relative;">
+        <p class="pill mb-3 reveal">NLP Foundation · Step 1</p>
+        <h2 class="font-display reveal" style="font-size:clamp(1.5rem,2.7vw,2.2rem);font-weight:700;margin-bottom:.8rem;">Tokenization: breaking language into atoms ✂️</h2>
+        <div class="gc g2 reveal">
+            <div>
+                <p class="text-sm text-slate-700 mb-2">Before any AI reads a sentence, it <strong>tokenizes</strong> it — splits it into small units called <em>tokens</em>. GPT-4 uses ~100,000 possible tokens; TinyBot uses whole words.</p>
+                <div class="card ab-blue mb-2">
+                    <p style="font-size:.68rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#0b63ce;" class="mb-2">Sentence → tokens (word-level)</p>
+                    <p class="text-xs text-slate-500 mb-1 font-mono">"I am feeling really excited today!"</p>
+                    <div>
+                        <span class="tok" style="background:#dbeafe;color:#1e40af;">"I"</span>
+                        <span class="tok" style="background:#dcfce7;color:#14532d;">"am"</span>
+                        <span class="tok" style="background:#fef9c3;color:#713f12;">"feeling"</span>
+                        <span class="tok" style="background:#ede9fe;color:#4c1d95;">"really"</span>
+                        <span class="tok" style="background:#fee2e2;color:#7f1d1d;">"excited"</span>
+                        <span class="tok" style="background:#f0fdf4;color:#14532d;">"today"</span>
+                        <span class="tok" style="background:#f1f5f9;color:#334155;">"!"</span>
+                    </div>
+                </div>
+                <div class="card ab-teal mb-2">
+                    <p style="font-size:.68rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#0e7490;" class="mb-2">GPT-style subword tokens (BPE)</p>
+                    <p class="text-xs text-slate-500 mb-1 font-mono">"I am feeling really excited today!"</p>
+                    <div>
+                        <span class="tok" style="background:#e0f2fe;color:#0c4a6e;">"I"</span>
+                        <span class="tok" style="background:#e0f2fe;color:#0c4a6e;">"am"</span>
+                        <span class="tok" style="background:#e0f2fe;color:#0c4a6e;">"feel"</span>
+                        <span class="tok" style="background:#ccfbf1;color:#134e4a;">"ing"</span>
+                        <span class="tok" style="background:#e0f2fe;color:#0c4a6e;">"really"</span>
+                        <span class="tok" style="background:#e0f2fe;color:#0c4a6e;">"ex"</span>
+                        <span class="tok" style="background:#ccfbf1;color:#134e4a;">"cit"</span>
+                        <span class="tok" style="background:#ccfbf1;color:#134e4a;">"ed"</span>
+                        <span class="tok" style="background:#e0f2fe;color:#0c4a6e;">"today"</span>
+                        <span class="tok" style="background:#e0f2fe;color:#0c4a6e;">"!"</span>
+                    </div>
+                    <p class="text-xs text-slate-500 mt-1">BPE = Byte-Pair Encoding. Splits rare words into common sub-pieces so nothing is "unknown".</p>
+                </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:10px;">
+                <div class="card ab-purple">
+                    <p style="font-size:.68rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#6d28d9;" class="mb-2">Python tokenizer (word-level)</p>
+                    <div class="cb" style="font-size:.67rem;">
+<span class="kw">def</span> <span class="nb">tokenize</span>(sentence):
+    <span class="cm"># lowercase, strip punctuation, split</span>
+    <span class="kw">import</span> re
+    clean = re.<span class="nb">sub</span>(<span class="st">r'[^a-z\s]'</span>, <span class="st">''</span>,
+                sentence.<span class="nb">lower</span>())
+    <span class="kw">return</span> clean.<span class="nb">split</span>()
+
+tokens = <span class="nb">tokenize</span>(<span class="st">"I'm NOT sad!"</span>)
+<span class="cm"># → ['im', 'not', 'sad']</span>
+                    </div>
+                </div>
+                <div class="card" style="background:rgba(11,99,206,.06);border:1px dashed rgba(11,99,206,.25);">
+                    <p style="font-size:.68rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#1e40af;" class="mb-2">🤔 Investigation</p>
+                    <p class="text-sm text-slate-700">The regex removes apostrophes, turning "I'm" into "im" and "not" into "not" — are those the same token semantically? What's lost? How would you fix it?</p>
+                </div>
+                <div class="card ab-amber">
+                    <p style="font-size:.68rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#b45309;" class="mb-2">📊 GPT-4 scale</p>
+                    <p class="text-sm text-slate-700">GPT-4 was trained on ~13 trillion tokens. Each token = ~¾ of a word. That's roughly <strong>10 trillion words</strong> — every Wikipedia article ~50,000 times over.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ======= SLIDE 4: BAG OF WORDS + SCORING ======= -->
+<div class="slide" data-slide="4">
+    <div class="gm">
+        <div class="blob" style="width:380px;height:380px;top:-70px;right:-60px;background:#10b981;opacity:.08;"></div>
+        <div class="blob" style="width:240px;height:240px;bottom:-55px;left:-45px;background:#0b63ce;opacity:.07;"></div>
+    </div>
+    <div class="content" style="z-index:2;position:relative;">
+        <p class="pill mb-3 reveal">NLP Model · Bag-of-Words Scoring</p>
+        <h2 class="font-display reveal" style="font-size:clamp(1.5rem,2.7vw,2.2rem);font-weight:700;margin-bottom:.8rem;">A smarter intent detector: scoring instead of matching 📊</h2>
+        <div class="gc g2 reveal">
+            <div>
+                <p class="text-sm text-slate-700 mb-2">Instead of a brittle <code style="font-size:.73rem;background:#f1f5f9;padding:1px 4px;border-radius:3px;">if "sad" in msg</code> check, assign <strong>numerical weights</strong> to each keyword and compute an intent <em>score</em>. The highest score wins.</p>
+                <div class="cb cs" style="font-size:.64rem;">
+<span class="cm"># Intent weight dictionary</span>
+INTENTS = {
+  <span class="st">'greeting'</span>: {<span class="st">'hello'</span>:<span class="num">3</span>, <span class="st">'hi'</span>:<span class="num">3</span>, <span class="st">'hey'</span>:<span class="num">2</span>, <span class="st">'greetings'</span>:<span class="num">2</span>},
+  <span class="st">'negative'</span>: {<span class="st">'sad'</span>:<span class="num">3</span>, <span class="st">'tired'</span>:<span class="num">2</span>, <span class="st">'upset'</span>:<span class="num">3</span>,
+                <span class="st">'unhappy'</span>:<span class="num">3</span>, <span class="st">'awful'</span>:<span class="num">3</span>, <span class="st">'depressed'</span>:<span class="num">4</span>},
+  <span class="st">'positive'</span>: {<span class="st">'happy'</span>:<span class="num">3</span>, <span class="st">'great'</span>:<span class="num">2</span>, <span class="st">'excited'</span>:<span class="num">3</span>,
+                <span class="st">'awesome'</span>:<span class="num">3</span>, <span class="st">'fantastic'</span>:<span class="num">3</span>},
+}
+
+<span class="kw">def</span> <span class="nb">classify</span>(msg):
+    tokens = msg.<span class="nb">lower</span>().<span class="nb">split</span>()
+    scores = {intent: <span class="num">0</span> <span class="kw">for</span> intent <span class="kw">in</span> INTENTS}
+    <span class="kw">for</span> token <span class="kw">in</span> tokens:
+        <span class="kw">for</span> intent, weights <span class="kw">in</span> INTENTS.<span class="nb">items</span>():
+            scores[intent] += weights.<span class="nb">get</span>(token, <span class="num">0</span>)
+    best = <span class="nb">max</span>(scores, key=scores.<span class="nb">get</span>)
+    <span class="kw">return</span> best <span class="kw">if</span> scores[best] > <span class="num">0</span> <span class="kw">else</span> <span class="st">'unknown'</span>
+                </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:10px;">
+                <div class="card ab-blue">
+                    <p style="font-size:.68rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#0b63ce;" class="mb-1">Trace: "I feel a bit sad and tired"</p>
+                    <table style="width:100%;font-size:.73rem;border-collapse:collapse;">
+                        <tr style="background:rgba(11,99,206,.06);"><th style="padding:3px 7px;text-align:left;">Intent</th><th style="padding:3px 7px;text-align:center;">Score</th><th style="padding:3px 7px;">Match</th></tr>
+                        <tr style="border-bottom:1px solid rgba(148,163,184,.15);"><td style="padding:3px 7px;color:#374151;">greeting</td><td style="padding:3px 7px;text-align:center;font-weight:700;color:#94a3b8;">0</td><td style="padding:3px 7px;">—</td></tr>
+                        <tr style="background:rgba(16,185,129,.05);border-bottom:1px solid rgba(148,163,184,.15);"><td style="padding:3px 7px;color:#374151;font-weight:700;">negative</td><td style="padding:3px 7px;text-align:center;font-weight:800;color:#047857;">5</td><td style="padding:3px 7px;font-mono;font-size:.68rem;">sad(3)+tired(2)</td></tr>
+                        <tr><td style="padding:3px 7px;color:#374151;">positive</td><td style="padding:3px 7px;text-align:center;font-weight:700;color:#94a3b8;">0</td><td style="padding:3px 7px;">—</td></tr>
+                    </table>
+                    <p class="text-xs text-slate-500 mt-1">→ Winner: <strong>negative</strong> (score 5)</p>
+                </div>
+                <div class="card ab-amber">
+                    <p style="font-size:.68rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#b45309;" class="mb-1">🤔 Still broken: "I'm not sad at all, I feel great!"</p>
+                    <p class="text-sm text-slate-700">Score: negative=3 (sad), positive=2 (great). <strong>negative wins</strong> — wrong! What linguistic feature would fix this? <em>Hint: look 1 token to the left of each keyword.</em></p>
+                </div>
+                <div class="card ab-purple">
+                    <p style="font-size:.68rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#6d28d9;" class="mb-1">Extension: negation window</p>
+                    <div class="cb" style="font-size:.64rem;">
+<span class="kw">for</span> i, token <span class="kw">in</span> <span class="nb">enumerate</span>(tokens):
+    neg = (i > <span class="num">0</span> <span class="kw">and</span> tokens[i-<span class="num">1</span>] <span class="kw">in</span>
+           [<span class="st">'not'</span>,<span class="st">"n't"</span>,<span class="st">'never'</span>])
+    sign = -<span class="num">1</span> <span class="kw">if</span> neg <span class="kw">else</span> <span class="num">1</span>
+    scores[intent] += sign * weights.<span class="nb">get</span>(token,<span class="num">0</span>)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ======= SLIDE 5: TINYBOT CODE — FULL ANNOTATED ======= -->
+<div class="slide" data-slide="5">
+    <div class="gm">
+        <div class="blob" style="width:360px;height:360px;top:-60px;right:-60px;background:#0b63ce;opacity:.08;"></div>
+        <div class="blob" style="width:240px;height:240px;bottom:-50px;left:-40px;background:#f59e0b;opacity:.07;"></div>
+    </div>
+    <div class="content" style="z-index:2;position:relative;">
+        <p class="pill mb-3 reveal">Code · TinyBot Fully Annotated</p>
+        <h2 class="font-display reveal" style="font-size:clamp(1.4rem,2.4vw,2rem);font-weight:700;margin-bottom:.7rem;">TinyBot: every line dissected 🔬</h2>
+        <div class="gc g2 reveal">
+            <div class="cb cs" style="font-size:clamp(.57rem,.88vw,.7rem);">
+<span class="cm"># === TinyBot v1 — Original Day 17 Code ===</span>
+<span class="cm"># DETERMINISTIC: same input → same output. Always.</span>
+
+<span class="nb">print</span>(<span class="st">'Welcome to TinyBot! Type "bye" to quit.'</span>)
+
+<span class="kw">while</span> <span class="tp">True</span>:             <span class="cm"># infinite event loop</span>
+    msg = <span class="nb">input</span>(<span class="st">'You: '</span>) \
+              .<span class="nb">lower</span>()  <span class="cm"># normalise case O(n)</span>
+              .<span class="nb">strip</span>()  <span class="cm"># remove whitespace
+
+    # === INTENT DISPATCH: O(k) where k = # elif branches ===</span>
+    <span class="kw">if</span> msg == <span class="st">'bye'</span>:         <span class="cm"># exact match sentinel</span>
+        <span class="nb">print</span>(<span class="st">'Bot: Goodbye!'</span>)
+        <span class="kw">break</span>               <span class="cm"># exits while loop</span>
+
+    <span class="kw">elif</span> <span class="st">'hello'</span> <span class="kw">in</span> msg <span class="kw">or</span> <span class="st">'hi'</span> <span class="kw">in</span> msg:
+        <span class="nb">print</span>(<span class="st">'Bot: Hi there!'</span>)
+        <span class="cm"># BUG: 'hi' matches 'this', 'white', 'hi-five'</span>
+
+    <span class="kw">elif</span> <span class="st">'name'</span> <span class="kw">in</span> msg:
+        <span class="nb">print</span>(<span class="st">'Bot: I am TinyBot, a simple Python chatbot.'</span>)
+
+    <span class="kw">elif</span> <span class="st">'help'</span> <span class="kw">in</span> msg:
+        <span class="nb">print</span>(<span class="st">'Bot: Ask about my name or say hello.'</span>)
+
+    <span class="kw">elif</span> <span class="st">'sad'</span> <span class="kw">in</span> msg <span class="kw">or</span> <span class="st">'tired'</span> <span class="kw">in</span> msg:
+        <span class="nb">print</span>(<span class="st">'Bot: Breaks and friends can really help.'</span>)
+        <span class="cm"># BUG: 'not sad' → still triggers this branch</span>
+
+    <span class="kw">elif</span> <span class="st">'happy'</span> <span class="kw">in</span> msg <span class="kw">or</span> <span class="st">'excited'</span> <span class="kw">in</span> msg:
+        <span class="nb">print</span>(<span class="st">'Bot: That is awesome news!'</span>)
+
+    <span class="kw">else</span>:                   <span class="cm"># fallback — covers ~∞ inputs</span>
+        <span class="nb">print</span>(<span class="st">'Bot: I do not understand yet.'</span>)
+            </div>
+            <div style="display:flex;flex-direction:column;gap:9px;">
+                <div class="card ab-red">
+                    <p style="font-size:.68rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#b91c1c;" class="mb-1">Substring bug — <code style="font-weight:400;font-size:.7rem;">'hi' in "this"</code></p>
+                    <p class="text-sm text-slate-700">Fix with word-boundary tokenization: <code style="font-size:.68rem;background:#f1f5f9;padding:1px 4px;border-radius:3px;">'hi' in msg.split()</code> checks whole words only.</p>
+                </div>
+                <div class="card ab-amber">
+                    <p style="font-size:.68rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#b45309;" class="mb-1">First-match bias</p>
+                    <p class="text-sm text-slate-700">Python evaluates <code style="font-size:.68rem;background:#f1f5f9;padding:1px 4px;border-radius:3px;">elif</code> top-to-bottom. <em>"Hi, I'm sad"</em> triggers <code>greeting</code> never <code>negative</code>. Ordering = policy decision.</p>
+                </div>
+                <div class="card ab-blue">
+                    <p style="font-size:.68rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#0b63ce;" class="mb-1">Statelessness</p>
+                    <p class="text-sm text-slate-700">No variables persist between loop iterations. The bot has <strong>zero memory</strong>. A <em>finite state machine</em> (FSM) is the minimal fix — see Slide 8.</p>
+                </div>
+                <div class="card" style="background:rgba(11,99,206,.05);border:1px dashed rgba(11,99,206,.22);">
+                    <p style="font-size:.68rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#1e40af;" class="mb-1">Challenge: count the failure modes</p>
+                    <p class="text-sm text-slate-700">How many distinct inputs make TinyBot give an incorrect reply? Is it finite or infinite? Prove your answer.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ======= SLIDE 6: VIDEO 1 ======= -->
+<div class="slide" data-slide="6">
+    <div class="gm">
+        <div class="blob" style="width:360px;height:360px;top:-70px;right:-70px;background:#0b63ce;opacity:.07;"></div>
+        <div class="blob" style="width:220px;height:220px;bottom:-50px;left:-40px;background:#10b981;opacity:.06;"></div>
+    </div>
+    <div class="content" style="z-index:2;position:relative;">
+        <p class="pill mb-3 reveal">Video 1 · Technical Foundation</p>
+        <h2 class="font-display reveal" style="font-size:clamp(1.5rem,2.7vw,2.2rem);font-weight:700;margin-bottom:.9rem;">See a chatbot coded from scratch 🎬</h2>
+        <div class="gc g2 reveal">
+            <div class="card">
+                <p style="font-size:.68rem;font-weight:800;letter-spacing:.13em;text-transform:uppercase;color:#0b63ce;" class="mb-2">Watch · Python Chatbot for Absolute Beginners</p>
+                <a href="https://www.youtube.com/watch?v=c7VeJkd8Ntg" target="_blank" rel="noopener" style="display:block;border-radius:12px;overflow:hidden;text-decoration:none;">
+                    <div style="position:relative;padding-top:56.25%;">
+                        <img src="https://img.youtube.com/vi/c7VeJkd8Ntg/hqdefault.jpg" alt="Create Chatbot Python Tutorial" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" />
+                        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.18);">
+                            <div style="width:56px;height:56px;background:rgba(220,38,38,.92);border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 18px rgba(0,0,0,.36);">
+                                <div style="width:0;height:0;border-top:10px solid transparent;border-bottom:10px solid transparent;border-left:18px solid #fff;margin-left:4px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+                <a href="https://www.youtube.com/watch?v=c7VeJkd8Ntg" target="_blank" rel="noopener" style="font-size:.67rem;color:#0b63ce;font-weight:700;letter-spacing:.06em;text-transform:uppercase;display:flex;align-items:center;gap:4px;text-decoration:none;margin-top:5px;">▶ youtube.com · ~12 min · Create &amp; Learn</a>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:10px;">
+                <div class="card ab-blue">
+                    <p style="font-size:.68rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#0b63ce;" class="mb-1">Watch for — technical lens</p>
+                    <ul class="list-disc pl-4 text-sm text-slate-700 space-y-1">
+                        <li>What data structure stores the responses — dict, list, or hardcoded?</li>
+                        <li>How does the instructor handle the fallback case? What are its limits?</li>
+                        <li>Identify one place where a dictionary (O(1) lookup) would outperform the if/elif chain (O(n))</li>
+                    </ul>
+                </div>
+                <div class="card ab-green">
+                    <p style="font-size:.68rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#047857;" class="mb-1">Pause challenge at ~5 min</p>
+                    <p class="text-sm text-slate-700">Before the instructor reveals the next rule, predict: what edge-case message will break the bot right now? Test your prediction in your head, then see if you were right.</p>
+                </div>
+                <div class="card ab-amber">
+                    <p style="font-size:.68rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#b45309;" class="mb-1">After watching: refactor plan</p>
+                    <p class="text-sm text-slate-700">If you were to rewrite the bot using a <code style="font-size:.72rem;background:#f1f5f9;padding:1px 4px;border-radius:3px;">dict</code> of keywords → responses instead of <code style="font-size:.72rem;background:#f1f5f9;padding:1px 4px;border-radius:3px;">elif</code> chains, what would the structure look like? Sketch the pseudocode.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ======= SLIDE 7: INTENT CLASSIFICATION CODE ======= -->
+<div class="slide" data-slide="7">
+    <div class="gm">
+        <div class="blob" style="width:380px;height:380px;top:-70px;right:-60px;background:#10b981;opacity:.08;"></div>
+        <div class="blob" style="width:240px;height:240px;bottom:-55px;left:-45px;background:#0b63ce;opacity:.07;"></div>
+    </div>
+    <div class="content" style="z-index:2;position:relative;">
+        <p class="pill mb-3 reveal">Code · Intent Classifier v2</p>
+        <h2 class="font-display reveal" style="font-size:clamp(1.5rem,2.5vw,2rem);font-weight:700;margin-bottom:.8rem;">Data-driven classification with dictionaries 🗂️</h2>
+        <div class="gc g2 reveal">
+            <div>
+                <div class="cb cs" style="font-size:clamp(.56rem,.87vw,.69rem);">
+<span class="cm"># v2: dict-driven — easy to extend, no new elif needed</span>
+RULES = {
+  <span class="st">'greeting'</span>  : [<span class="st">'hi'</span>, <span class="st">'hello'</span>, <span class="st">'hey'</span>, <span class="st">'greetings'</span>],
+  <span class="st">'farewell'</span>  : [<span class="st">'bye'</span>, <span class="st">'goodbye'</span>, <span class="st">'see you'</span>],
+  <span class="st">'ask_name'</span>  : [<span class="st">'name'</span>, <span class="st">'who are you'</span>, <span class="st">'what are you'</span>],
+  <span class="st">'negative'</span>  : [<span class="st">'sad'</span>, <span class="st">'tired'</span>, <span class="st">'upset'</span>, <span class="st">'unhappy'</span>],
+  <span class="st">'positive'</span>  : [<span class="st">'happy'</span>, <span class="st">'excited'</span>, <span class="st">'great'</span>, <span class="st">'awesome'</span>],
+}
+
+REPLIES = {
+  <span class="st">'greeting'</span>  : <span class="st">'Hi there!'</span>,
+  <span class="st">'farewell'</span>  : <span class="st">'Goodbye!'</span>,
+  <span class="st">'ask_name'</span>  : <span class="st">'I am TinyBot v2.'</span>,
+  <span class="st">'negative'</span>  : <span class="st">'Sorry to hear that. Want help?'</span>,
+  <span class="st">'positive'</span>  : <span class="st">'Awesome!'</span>,
+  <span class="st">'unknown'</span>   : <span class="st">'I do not understand yet.'</span>,
+}
+
+<span class="kw">def</span> <span class="nb">get_intent</span>(msg):
+    tokens = <span class="nb">set</span>(msg.<span class="nb">lower</span>().<span class="nb">split</span>())  <span class="cm"># O(n) once</span>
+    <span class="kw">for</span> intent, kws <span class="kw">in</span> RULES.<span class="nb">items</span>():
+        <span class="kw">if</span> tokens & <span class="nb">set</span>(kws):           <span class="cm"># set intersection O(min)</span>
+            <span class="kw">return</span> intent
+    <span class="kw">return</span> <span class="st">'unknown'</span>
+
+<span class="cm"># classify a batch</span>
+msgs = [<span class="st">'hey there'</span>, <span class="st">'I am so unhappy'</span>, <span class="st">'goodbye!'</span>]
+<span class="kw">for</span> m <span class="kw">in</span> msgs:
+    intent = <span class="nb">get_intent</span>(m)
+    <span class="nb">print</span>(<span class="nb">f</span><span class="st">'{m!r:25} → {intent} | {REPLIES[intent]}'</span>)
+                </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:10px;">
+                <div class="card ab-blue">
+                    <p style="font-size:.68rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#0b63ce;" class="mb-1">Why sets beat lists here</p>
+                    <p class="text-sm text-slate-700">List intersection: O(n×m). Set intersection: O(min(n,m)). At 1,000 keywords, sets are ~50× faster. This is why Python's <code style="font-size:.72rem;background:#f1f5f9;padding:1px 4px;border-radius:3px;">&amp;</code> operator exists.</p>
+                </div>
+                <div class="card ab-green">
+                    <p style="font-size:.68rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#047857;" class="mb-1">Separation of concerns</p>
+                    <p class="text-sm text-slate-700"><code style="font-size:.72rem;background:#f1f5f9;padding:1px 4px;border-radius:3px;">RULES</code>, <code style="font-size:.72rem;background:#f1f5f9;padding:1px 4px;border-radius:3px;">REPLIES</code>, and <code style="font-size:.72rem;background:#f1f5f9;padding:1px 4px;border-radius:3px;">get_intent()</code> are independent. A content editor can update replies without touching logic. This is a real software design principle: <strong>MVC</strong>.</p>
+                </div>
+                <div class="card ab-amber">
+                    <p style="font-size:.68rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#b45309;" class="mb-1">🤔 Still first-match biased</p>
+                    <p class="text-sm text-slate-700">The <code style="font-size:.72rem;background:#f1f5f9;padding:1px 4px;border-radius:3px;">for</code> loop stops at first match. How would you modify this to return <em>all</em> matching intents ranked by score? Sketch the algorithm.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ======= SLIDE 8: FINITE STATE MACHINE ======= -->
+<div class="slide" data-slide="8">
+    <div class="gm">
+        <div class="blob" style="width:400px;height:400px;top:-80px;right:-80px;background:#8b5cf6;opacity:.07;"></div>
+        <div class="blob" style="width:260px;height:260px;bottom:-60px;left:-50px;background:#0b63ce;opacity:.07;"></div>
+    </div>
+    <div class="content" style="z-index:2;position:relative;">
+        <p class="pill mb-3 reveal">CS Theory · Finite State Machines</p>
+        <h2 class="font-display reveal" style="font-size:clamp(1.5rem,2.7vw,2.2rem);font-weight:700;margin-bottom:.8rem;">Adding memory: the Finite State Machine (FSM) 🔄</h2>
+        <div class="gc g2 reveal">
+            <div style="display:flex;flex-direction:column;gap:10px;">
+                <p class="text-sm text-slate-700">TinyBot is <em>stateless</em> — it forgets every turn. A <strong>Finite State Machine</strong> stores a <code style="font-size:.73rem;background:#f1f5f9;padding:1px 4px;border-radius:3px;">state</code> variable that persists across turns, enabling multi-turn dialogue.</p>
+                <!-- FSM Diagram (CSS art) -->
+                <div class="card" style="padding:12px;">
+                    <p style="font-size:.67rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#6d28d9;" class="mb-2">FSM Diagram · Name-Collection Dialogue</p>
+                    <div style="display:flex;align-items:center;justify-content:space-around;flex-wrap:wrap;gap:8px;">
+                        <div style="text-align:center;">
+                            <div style="width:68px;height:68px;border-radius:50%;background:linear-gradient(135deg,#dbeafe,#ede9fe);border:2px solid #6d28d9;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:800;color:#4c1d95;">START</div>
+                        </div>
+                        <div style="font-size:.9rem;color:#64748b;">→ greeting →</div>
+                        <div style="text-align:center;">
+                            <div style="width:68px;height:68px;border-radius:50%;background:linear-gradient(135deg,#dcfce7,#d1fae5);border:2px solid #10b981;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:800;color:#065f46;text-align:center;">ASK<br>NAME</div>
+                        </div>
+                        <div style="font-size:.9rem;color:#64748b;">→ name given →</div>
+                        <div style="text-align:center;">
+                            <div style="width:68px;height:68px;border-radius:50%;background:linear-gradient(135deg,#fef9c3,#fde68a);border:2px solid #f59e0b;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:800;color:#78350f;text-align:center;">KNOW<br>NAME</div>
+                        </div>
+                        <div style="font-size:.9rem;color:#64748b;">→ bye →</div>
+                        <div style="text-align:center;">
+                            <div style="width:68px;height:68px;border-radius:50%;background:linear-gradient(135deg,#fee2e2,#fecaca);border:2px solid #ef4444;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:800;color:#7f1d1d;">END</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card ab-purple">
+                    <p style="font-size:.68rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#6d28d9;" class="mb-1">Formal definition</p>
+                    <p class="text-sm text-slate-700">FSM = (Q, Σ, δ, q₀, F) where Q = states, Σ = inputs (tokens), δ = transition function, q₀ = start, F = accepting states. TinyBot has Q={one state}.</p>
+                </div>
+            </div>
+            <div>
+                <div class="cb cs" style="font-size:clamp(.56rem,.87vw,.69rem);">
+<span class="cm"># FSM chatbot: state persists between turns</span>
+state = <span class="st">'start'</span>
+name  = <span class="tp">None</span>
+
+<span class="kw">while</span> <span class="tp">True</span>:
+    msg = <span class="nb">input</span>(<span class="st">'You: '</span>).<span class="nb">lower</span>().<span class="nb">strip</span>()
+
+    <span class="kw">if</span> state == <span class="st">'start'</span>:
+        <span class="kw">if</span> <span class="nb">any</span>(w <span class="kw">in</span> msg.<span class="nb">split</span>()
+               <span class="kw">for</span> w <span class="kw">in</span> [<span class="st">'hi'</span>,<span class="st">'hello'</span>,<span class="st">'hey'</span>]):
+            <span class="nb">print</span>(<span class="st">"Bot: Hi! What's your name?"</span>)
+            state = <span class="st">'ask_name'</span>   <span class="cm"># transition</span>
+        <span class="kw">else</span>:
+            <span class="nb">print</span>(<span class="st">'Bot: Say hello first!'</span>)
+
+    <span class="kw">elif</span> state == <span class="st">'ask_name'</span>:
+        name = msg.<span class="nb">title</span>()        <span class="cm"># capitalise</span>
+        <span class="nb">print</span>(<span class="nb">f</span><span class="st">'Bot: Nice to meet you, {name}!'</span>)
+        state = <span class="st">'know_name'</span>
+
+    <span class="kw">elif</span> state == <span class="st">'know_name'</span>:
+        <span class="kw">if</span> msg == <span class="st">'bye'</span>:
+            <span class="nb">print</span>(<span class="nb">f</span><span class="st">'Bot: Goodbye, {name}!'</span>)
+            <span class="kw">break</span>
+        <span class="kw">else</span>:
+            <span class="nb">print</span>(<span class="nb">f</span><span class="st">'Bot: What else, {name}?'</span>)
+                </div>
+                <div class="card ab-amber mt-2">
+                    <p style="font-size:.68rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#b45309;" class="mb-1">🤔 Challenge</p>
+                    <p class="text-sm text-slate-700">Add a 4th state <code style="font-size:.72rem;background:#f1f5f9;padding:1px 4px;border-radius:3px;">'ask_mood'</code> that asks "How are you today?" after learning the name. Draw the updated FSM transition diagram first.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ======= SLIDE 9: IMAGES + REAL NLP PIPELINE ======= -->
+<div class="slide" data-slide="9">
+    <div class="gm">
+        <div class="blob" style="width:400px;height:400px;top:-80px;right:-80px;background:#0b63ce;opacity:.08;"></div>
+        <div class="blob" style="width:260px;height:260px;bottom:-60px;left:-50px;background:#10b981;opacity:.08;"></div>
+    </div>
+    <div class="content" style="z-index:2;position:relative;">
+        <p class="pill mb-3 reveal">NLP Pipeline · Industry Scale</p>
+        <h2 class="font-display reveal" style="font-size:clamp(1.5rem,2.7vw,2.2rem);font-weight:700;margin-bottom:.8rem;">From TinyBot to production NLP 🏭</h2>
+        <div class="gc g2 reveal" style="align-items:start;">
+            <div style="border-radius:14px;overflow:hidden;box-shadow:0 8px 28px rgba(15,23,42,0.11);">
+                <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/590edada9feea42ac9bf62f2747173866b72c231.jpg"
+                     alt="Intent recognition — context awareness, training data, algorithms, continuous learning"
+                     style="width:100%;height:190px;object-fit:cover;display:block;" />
+                <div style="background:#f8fafc;padding:8px 13px;border-top:1px solid rgba(148,163,184,.15);">
+                    <p class="text-xs text-slate-500">A real intent system needs <strong>4 pillars</strong>: context awareness, quality training data, advanced algorithms, and continuous learning — none of which TinyBot has.</p>
+                </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:9px;">
+                <div style="overflow-x:auto;">
+                    <table style="width:100%;border-collapse:collapse;font-size:.72rem;">
+                        <thead>
+                            <tr style="background:rgba(11,99,206,.08);">
+                                <th style="padding:6px 10px;text-align:left;font-weight:800;font-size:.67rem;letter-spacing:.1em;text-transform:uppercase;color:#374151;border-bottom:2px solid rgba(11,99,206,.2);">NLP Stage</th>
+                                <th style="padding:6px 10px;text-align:left;font-weight:800;font-size:.67rem;letter-spacing:.1em;text-transform:uppercase;color:#0b63ce;border-bottom:2px solid rgba(11,99,206,.2);">TinyBot</th>
+                                <th style="padding:6px 10px;text-align:left;font-weight:800;font-size:.67rem;letter-spacing:.1em;text-transform:uppercase;color:#047857;border-bottom:2px solid rgba(16,185,129,.2);">Production (e.g., Alexa)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="border-bottom:1px solid rgba(148,163,184,.14);"><td style="padding:5px 10px;font-weight:700;">Tokenizer</td><td style="padding:5px 10px;color:#475569;"><code style="font-size:.68rem;background:#f1f5f9;padding:1px 3px;border-radius:2px;">.split()</code></td><td style="padding:5px 10px;color:#047857;">SentencePiece / BPE, 32K vocab</td></tr>
+                            <tr style="background:rgba(248,250,252,.5);border-bottom:1px solid rgba(148,163,184,.14);"><td style="padding:5px 10px;font-weight:700;">Feature extraction</td><td style="padding:5px 10px;color:#475569;">Keyword present/absent</td><td style="padding:5px 10px;color:#047857;">768-dim embedding vectors</td></tr>
+                            <tr style="border-bottom:1px solid rgba(148,163,184,.14);"><td style="padding:5px 10px;font-weight:700;">Classification</td><td style="padding:5px 10px;color:#475569;">Hardcoded if/elif</td><td style="padding:5px 10px;color:#047857;">Transformer + softmax, 100+ intents</td></tr>
+                            <tr style="background:rgba(248,250,252,.5);border-bottom:1px solid rgba(148,163,184,.14);"><td style="padding:5px 10px;font-weight:700;">Context memory</td><td style="padding:5px 10px;color:#b91c1c;">None</td><td style="padding:5px 10px;color:#047857;">128K token context window</td></tr>
+                            <tr><td style="padding:5px 10px;font-weight:700;">Learning</td><td style="padding:5px 10px;color:#b91c1c;">Never updates</td><td style="padding:5px 10px;color:#047857;">Fine-tuned quarterly on new data</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="card ab-amber">
+                    <p style="font-size:.68rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#b45309;" class="mb-1">🤔 The jump is massive</p>
+                    <p class="text-sm text-slate-700">TinyBot uses ~20 bytes of "knowledge". Alexa's NLU model uses ~gigabytes. What does that difference actually buy? Name 3 capabilities that emerge <em>only</em> at scale.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ======= SLIDE 10: VIDEO 2 ======= -->
+<div class="slide" data-slide="10">
+    <div class="gm">
+        <div class="blob" style="width:360px;height:360px;top:-70px;right:-70px;background:#10b981;opacity:.07;"></div>
+        <div class="blob" style="width:240px;height:240px;bottom:-50px;left:-50px;background:#0b63ce;opacity:.07;"></div>
+    </div>
+    <div class="content" style="z-index:2;position:relative;">
+        <p class="pill mb-3 reveal">Video 2 · Architecture Deep-Dive</p>
+        <h2 class="font-display reveal" style="font-size:clamp(1.5rem,2.7vw,2.2rem);font-weight:700;margin-bottom:.9rem;">Generative vs. rule-based — IBM Technology 🎬</h2>
+        <div class="gc g2 reveal">
+            <div class="card">
+                <p style="font-size:.68rem;font-weight:800;letter-spacing:.13em;text-transform:uppercase;color:#0b63ce;" class="mb-2">Watch · IBM Technology — Generative vs Rules-Based Chatbots</p>
+                <a href="https://www.youtube.com/watch?v=lZjUS_8btEo" target="_blank" rel="noopener" style="display:block;border-radius:12px;overflow:hidden;text-decoration:none;">
+                    <div style="position:relative;padding-top:56.25%;">
+                        <img src="https://img.youtube.com/vi/lZjUS_8btEo/hqdefault.jpg" alt="Generative vs Rules-Based Chatbots IBM Technology" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" />
+                        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.18);">
+                            <div style="width:56px;height:56px;background:rgba(220,38,38,.92);border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 18px rgba(0,0,0,.36);">
+                                <div style="width:0;height:0;border-top:10px solid transparent;border-bottom:10px solid transparent;border-left:18px solid #fff;margin-left:4px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+                <a href="https://www.youtube.com/watch?v=lZjUS_8btEo" target="_blank" rel="noopener" style="font-size:.67rem;color:#0b63ce;font-weight:700;letter-spacing:.06em;text-transform:uppercase;display:flex;align-items:center;gap:4px;text-decoration:none;margin-top:5px;">▶ youtube.com · IBM Technology · 7 min</a>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:10px;">
+                <div class="card ab-blue">
+                    <p style="font-size:.68rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#0b63ce;" class="mb-1">Technical watch questions</p>
+                    <ul class="list-disc pl-4 text-sm text-slate-700 space-y-1">
+                        <li>IBM identifies 3 components of any chatbot system — name them and map them to our code (<code style="font-size:.7rem;background:#f1f5f9;padding:1px 3px;border-radius:2px;">RULES</code>, <code style="font-size:.7rem;background:#f1f5f9;padding:1px 3px;border-radius:2px;">REPLIES</code>, loop)</li>
+                        <li>What is a <strong>language model</strong> — and how does it differ from a lookup table?</li>
+                        <li>The video mentions "confidence score" — how does that relate to our weighted scoring on Slide 4?</li>
+                    </ul>
+                </div>
+                <div class="card ab-green">
+                    <p style="font-size:.68rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#047857;" class="mb-1">Hallucination analysis</p>
+                    <p class="text-sm text-slate-700">Can TinyBot hallucinate? Formally: a hallucination = a confident, false, generated claim. TinyBot only returns pre-written strings. Does that make it safer — or just limited?</p>
+                </div>
+                <div class="card ab-amber">
+                    <p style="font-size:.68rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#b45309;" class="mb-1">Probabilistic vs. deterministic</p>
+                    <p class="text-sm text-slate-700">GPT generates output by sampling from a <em>probability distribution</em>. TinyBot is deterministic (same input = same output). Which is more predictable? Which is more capable? Can you have both?</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ======= SLIDE 11: TRANSFORMER OVERVIEW ======= -->
+<div class="slide" data-slide="11">
+    <div class="gm">
+        <div class="blob" style="width:400px;height:400px;top:-80px;right:-80px;background:#6d28d9;opacity:.07;"></div>
+        <div class="blob" style="width:260px;height:260px;bottom:-60px;left:-50px;background:#0b63ce;opacity:.07;"></div>
+    </div>
+    <div class="content" style="z-index:2;position:relative;">
+        <p class="pill mb-3 reveal">CS Theory · Why GPT Is Different</p>
+        <h2 class="font-display reveal" style="font-size:clamp(1.5rem,2.7vw,2.2rem);font-weight:700;margin-bottom:.8rem;">Inside a transformer: attention &amp; weights 🔭</h2>
+        <div class="gc g2 reveal">
+            <div style="display:flex;flex-direction:column;gap:10px;">
+                <div class="card ab-purple">
+                    <p style="font-size:.68rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#6d28d9;" class="mb-1">The core idea: attention</p>
+                    <p class="text-sm text-slate-700">A transformer reads all tokens at once and computes <strong>attention scores</strong> — how much each word should "look at" every other word. In "The bank was steep" vs "The bank closed early" — the word <em>bank</em> attends differently to <em>steep</em> vs <em>closed</em>.</p>
+                </div>
+                <div class="card ab-blue">
+                    <p style="font-size:.68rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#0b63ce;" class="mb-1">Scale comparison</p>
+                    <div style="display:flex;flex-direction:column;gap:6px;margin-top:4px;">
+                        <div>
+                            <div style="display:flex;justify-content:space-between;font-size:.71rem;font-weight:700;margin-bottom:2px;"><span>TinyBot rules</span><span style="color:#0b63ce;">~20 B</span></div>
+                            <div class="bar-track"><div class="bar-fill" data-w="0.0001" style="width:.0001%;background:linear-gradient(90deg,#0b63ce,#10b981);"></div></div>
+                        </div>
+                        <div>
+                            <div style="display:flex;justify-content:space-between;font-size:.71rem;font-weight:700;margin-bottom:2px;"><span>BERT-base (2018)</span><span style="color:#0b63ce;">110 M params</span></div>
+                            <div class="bar-track"><div class="bar-fill" style="width:6%;background:linear-gradient(90deg,#10b981,#06b6d4);"></div></div>
+                        </div>
+                        <div>
+                            <div style="display:flex;justify-content:space-between;font-size:.71rem;font-weight:700;margin-bottom:2px;"><span>GPT-3 (2020)</span><span style="color:#0b63ce;">175 B params</span></div>
+                            <div class="bar-track"><div class="bar-fill" style="width:52%;background:linear-gradient(90deg,#f59e0b,#ef4444);"></div></div>
+                        </div>
+                        <div>
+                            <div style="display:flex;justify-content:space-between;font-size:.71rem;font-weight:700;margin-bottom:2px;"><span>GPT-4 (est. 2024)</span><span style="color:#0b63ce;">~1.8 T params</span></div>
+                            <div class="bar-track"><div class="bar-fill" style="width:100%;background:linear-gradient(90deg,#ef4444,#8b5cf6);"></div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:10px;">
+                <div class="card ab-green">
+                    <p style="font-size:.68rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#047857;" class="mb-1">What a "parameter" actually is</p>
+                    <p class="text-sm text-slate-700">Each parameter = a single floating-point number (e.g., 0.3741). During training, billions of these numbers are nudged tiny amounts — using <strong>gradient descent</strong> — until the model predicts text accurately. TinyBot's "parameters" are just the strings in your <code style="font-size:.72rem;background:#f1f5f9;padding:1px 3px;border-radius:2px;">REPLIES</code> dict.</p>
+                </div>
+                <div class="card ab-amber">
+                    <p style="font-size:.68rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#b45309;" class="mb-1">🤔 Emergent behaviour</p>
+                    <p class="text-sm text-slate-700">GPT-3 was never explicitly taught to do arithmetic — yet it can. At ~100B parameters, capabilities appear that no one designed. This is called <em>emergence</em>. Is it intelligent, or statistical? Defend a position.</p>
+                </div>
+                <div class="card ab-red">
+                    <p style="font-size:.68rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#b91c1c;" class="mb-1">Training cost</p>
+                    <p class="text-sm text-slate-700">GPT-3 training: ~$4.6 million in compute, ~1,300 MWh of electricity, ~552 tCO₂e. TinyBot: your laptop, 10 minutes. The gap is real and has consequences for who controls AI.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ======= SLIDE 12: LIMITATIONS — TURING TEST ======= -->
+<div class="slide" data-slide="12">
+    <div class="gm">
+        <div class="blob" style="width:380px;height:380px;top:-70px;left:-70px;background:#ef4444;opacity:.07;"></div>
+        <div class="blob" style="width:260px;height:260px;bottom:-60px;right:-50px;background:#0b63ce;opacity:.07;"></div>
+    </div>
+    <div class="content" style="z-index:2;position:relative;">
+        <p class="pill mb-3 reveal" style="color:#b91c1c;background:rgba(239,68,68,.07);border-color:rgba(239,68,68,.28);">Critical Analysis · Where All Bots Fail</p>
+        <h2 class="font-display reveal" style="font-size:clamp(1.5rem,2.7vw,2.2rem);font-weight:700;margin-bottom:.8rem;">Does any chatbot truly <em>understand</em>? 🧠</h2>
+        <div class="gc g3 reveal">
+            <div class="card ab-red">
+                <div style="font-size:1.6rem;margin-bottom:6px;">🤖</div>
+                <p style="font-size:.73rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#b91c1c;" class="mb-1">The Chinese Room (Searle, 1980)</p>
+                <p class="text-sm text-slate-700">A person in a room follows rules to respond in Chinese without understanding it. They pass a "language test" — but do they understand Chinese? Is a chatbot in the same position?</p>
+            </div>
+            <div class="card ab-purple">
+                <div style="font-size:1.6rem;margin-bottom:6px;">🎲</div>
+                <p style="font-size:.73rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#6d28d9;" class="mb-1">The Turing Test (1950)</p>
+                <p class="text-sm text-slate-700">If a judge can't distinguish a machine from a human in text conversation, the machine is "intelligent" (Turing). Modern LLMs pass informal versions. Does that mean they understand — or just imitate?</p>
+            </div>
+            <div class="card ab-amber">
+                <div style="font-size:1.6rem;margin-bottom:6px;">📐</div>
+                <p style="font-size:.73rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#b45309;" class="mb-1">Syntax vs. Semantics</p>
+                <p class="text-sm text-slate-700">A bot operates on <em>syntax</em> (patterns of symbols). Humans operate on <em>semantics</em> (meaning grounded in physical experience). Can meaning exist without a body? This is still an open question in AI.</p>
+            </div>
+            <div class="card ab-blue">
+                <div style="font-size:1.6rem;margin-bottom:6px;">🔢</div>
+                <p style="font-size:.73rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#1e40af;" class="mb-1">Stochastic parrots (Bender, 2021)</p>
+                <p class="text-sm text-slate-700">LLMs are "stochastic parrots" — statistically plausible text generators, not thinkers. GPT-4 has no model of the world, no goals, no beliefs. It predicts the next token — nothing more.</p>
+            </div>
+            <div class="card ab-green">
+                <div style="font-size:1.6rem;margin-bottom:6px;">🌍</div>
+                <p style="font-size:.73rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#047857;" class="mb-1">Grounding problem</p>
+                <p class="text-sm text-slate-700">GPT knows the word "apple" from billions of text co-occurrences — but has never tasted one. Humans learn language grounded in sensory experience. What does a word <em>mean</em> without that?</p>
+            </div>
+            <div class="card" style="background:rgba(11,99,206,.06);border:1px dashed rgba(11,99,206,.25);">
+                <p style="font-size:.68rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#1e40af;" class="mb-2">📝 Essay question</p>
+                <p class="text-sm text-slate-700">Use the Turing Test, Chinese Room, and grounding problem to argue: <em>should</em> we trust a chatbot with medical advice? Structure your answer with evidence from all three perspectives.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ======= SLIDE 13: ETHICS & AI SAFETY ENGINEERING ======= -->
+<div class="slide" data-slide="13">
+    <div class="gm">
+        <div class="blob" style="width:400px;height:400px;top:-80px;left:-80px;background:#ef4444;opacity:.07;"></div>
+        <div class="blob" style="width:260px;height:260px;bottom:-60px;right:-50px;background:#0b63ce;opacity:.07;"></div>
+    </div>
+    <div class="content" style="z-index:2;position:relative;">
+        <p class="pill mb-3 reveal" style="color:#b91c1c;background:rgba(239,68,68,.07);border-color:rgba(239,68,68,.28);">AI Safety Engineering · Not Just Ethics</p>
+        <h2 class="font-display reveal" style="font-size:clamp(1.5rem,2.7vw,2.2rem);font-weight:700;margin-bottom:.8rem;">Building safe AI requires engineering, not just rules 🛡️</h2>
+        <div class="gc g2 reveal">
+            <div style="display:flex;flex-direction:column;gap:10px;">
+                <div class="card ab-red">
+                    <p style="font-size:.68rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#b91c1c;" class="mb-1">RLHF: Reinforcement Learning from Human Feedback</p>
+                    <p class="text-sm text-slate-700">GPT is fine-tuned so a human rates outputs as helpful/harmful, then the model is trained to prefer helpful outputs. This is how ChatGPT avoids the worst responses — but can still be "jailbroken" with clever prompts.</p>
+                </div>
+                <div class="card ab-amber">
+                    <p style="font-size:.68rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#b45309;" class="mb-1">TinyBot safety = predictability</p>
+                    <p class="text-sm text-slate-700">Because every reply is hardcoded, TinyBot is fully auditable: you can read every possible output in 30 seconds. This is a form of <em>formal verification</em> — impossible for any LLM.</p>
+                </div>
+                <div class="card ab-blue">
+                    <p style="font-size:.68rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#0b63ce;" class="mb-1">The guardrail engineering problem</p>
+                    <div class="cb" style="font-size:.65rem;margin-top:4px;">
+<span class="cm"># Safety filter: check before replying</span>
+BLOCKED = [<span class="st">'password'</span>, <span class="st">'address'</span>,
+           <span class="st">'hurt'</span>, <span class="st">'kill'</span>]
+<span class="kw">def</span> <span class="nb">is_safe</span>(msg):
+    tokens = <span class="nb">set</span>(msg.<span class="nb">lower</span>().<span class="nb">split</span>())
+    <span class="kw">return</span> <span class="kw">not</span> (tokens & <span class="nb">set</span>(BLOCKED))
+                    </div>
+                </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:10px;">
+                <div class="card ab-purple">
+                    <p style="font-size:.68rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#6d28d9;" class="mb-1">Challenge: adversarial inputs</p>
+                    <p class="text-sm text-slate-700">An adversarial user types: <em>"h.u.r.t"</em>, <em>"h u r t"</em>, or <em>"hURT"</em>. Would <code style="font-size:.72rem;background:#f1f5f9;padding:1px 3px;border-radius:2px;">is_safe()</code> catch these? Write a more robust version using <code style="font-size:.72rem;background:#f1f5f9;padding:1px 3px;border-radius:2px;">re.sub(r'\W','',word)</code> to strip non-letters before checking.</p>
+                </div>
+                <div class="card ab-green">
+                    <p style="font-size:.68rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#047857;" class="mb-1">False positive problem</p>
+                    <p class="text-sm text-slate-700">A safety filter that blocks <em>"hurt"</em> also blocks <em>"my knee hurts"</em> (a student asking for help). Every safety decision is a trade-off between false positives and false negatives. There is no perfect filter.</p>
+                </div>
+                <div class="card" style="background:rgba(11,99,206,.05);border:1px dashed rgba(11,99,206,.22);">
+                    <p style="font-size:.68rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#1e40af;" class="mb-1">🤔 The policy question</p>
+                    <p class="text-sm text-slate-700">Who should decide what a school chatbot blocks — the programmer, the teacher, the school board, or the student? What are the stakes if the wrong group decides?</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ======= SLIDE 14: HANDS-ON CHALLENGES ======= -->
+<div class="slide" data-slide="14">
+    <div class="gm">
+        <div class="blob" style="width:380px;height:380px;top:-70px;right:-70px;background:#10b981;opacity:.08;"></div>
+        <div class="blob" style="width:250px;height:250px;bottom:-60px;left:-50px;background:#f59e0b;opacity:.07;"></div>
+    </div>
+    <div class="content" style="z-index:2;position:relative;">
+        <p class="pill mb-3 reveal">Hands-On · 3 Tiered Challenges</p>
+        <h2 class="font-display reveal" style="font-size:clamp(1.5rem,2.7vw,2.2rem);font-weight:700;margin-bottom:.9rem;">Code now: upgrade TinyBot 🛠️</h2>
+        <div class="gc g3 reveal">
+            <div class="card ab-blue">
+                <div style="font-size:1.7rem;margin-bottom:6px;">🟦</div>
+                <p style="font-size:.73rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:#1e40af;" class="mb-1">Level 1 · Refactor</p>
+                <p class="text-sm text-slate-700 mb-2">Convert TinyBot's <code style="font-size:.72rem;background:#f1f5f9;padding:1px 3px;border-radius:2px;">if/elif</code> chain to the data-driven dict structure from Slide 7. Every reply must still work — but adding a new intent should require only a new dict entry, not new code.</p>
+                <p class="text-xs text-slate-500">Success metric: add a <code style="font-size:.7rem;background:#f1f5f9;padding:1px 3px;border-radius:2px;">'weather'</code> intent in under 60 seconds.</p>
+            </div>
+            <div class="card ab-green">
+                <div style="font-size:1.7rem;margin-bottom:6px;">🟩</div>
+                <p style="font-size:.73rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:#047857;" class="mb-1">Level 2 · Weighted Scorer</p>
+                <p class="text-sm text-slate-700 mb-2">Implement the weighted bag-of-words classifier from Slide 4. Then add the negation window fix. Test on: <em>"I'm not sad at all"</em> and <em>"I feel a little bit excited and kind of sad"</em>. Which intent wins and why?</p>
+                <p class="text-xs text-slate-500">Hint: <code style="font-size:.7rem;background:#f1f5f9;padding:1px 3px;border-radius:2px;">dict.get(key, 0)</code> returns 0 for missing keys.</p>
+            </div>
+            <div class="card ab-amber">
+                <div style="font-size:1.7rem;margin-bottom:6px;">🟨</div>
+                <p style="font-size:.73rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:#b45309;" class="mb-1">Level 3 · FSM Dialogue</p>
+                <p class="text-sm text-slate-700 mb-2">Build a 4-state FSM (<code style="font-size:.7rem;background:#f1f5f9;padding:1px 3px;border-radius:2px;">start→ask_name→ask_mood→chat</code>). In <code style="font-size:.7rem;background:#f1f5f9;padding:1px 3px;border-radius:2px;">chat</code> state, use your weighted scorer. Personalize every reply using the stored name variable.</p>
+                <p class="text-xs text-slate-500">Extension: if mood is <em>negative</em>, transition to a <code style="font-size:.7rem;background:#f1f5f9;padding:1px 3px;border-radius:2px;">support</code> state that always suggests talking to a teacher.</p>
+            </div>
+        </div>
+        <div class="card mt-3 reveal" style="background:rgba(11,99,206,.06);border:1px solid rgba(11,99,206,.18);">
+            <p class="text-sm text-slate-700">⏱️ <strong>15 minutes</strong> — choose your level. Then: (1) demo to a partner, (2) partner must find an input that breaks your bot, (3) you explain <em>why</em> it breaks using the correct CS vocabulary.</p>
+        </div>
+    </div>
+</div>
+
+<!-- ======= SLIDE 15: TINYBOT vs GPT TABLE ======= -->
+<div class="slide" data-slide="15">
+    <div class="gm">
+        <div class="blob" style="width:380px;height:380px;top:-70px;right:-70px;background:#0b63ce;opacity:.08;"></div>
+        <div class="blob" style="width:250px;height:250px;bottom:-50px;left:-40px;background:#10b981;opacity:.07;"></div>
+    </div>
+    <div class="content" style="z-index:2;position:relative;">
+        <p class="pill mb-3 reveal">Comparative Analysis</p>
+        <h2 class="font-display reveal" style="font-size:clamp(1.5rem,2.7vw,2.2rem);font-weight:700;margin-bottom:.8rem;">TinyBot → GPT-4: a seven-dimension comparison 🥊</h2>
+        <div class="reveal" style="overflow-x:auto;">
+            <table style="width:100%;border-collapse:collapse;font-size:.72rem;">
+                <thead>
+                    <tr style="background:linear-gradient(135deg,rgba(11,99,206,.1),rgba(16,185,129,.07));">
+                        <th style="padding:7px 11px;text-align:left;font-weight:800;font-size:.67rem;letter-spacing:.1em;text-transform:uppercase;color:#374151;border-bottom:2px solid rgba(11,99,206,.2);">Dimension</th>
+                        <th style="padding:7px 11px;text-align:left;font-weight:800;font-size:.67rem;text-transform:uppercase;color:#0b63ce;border-bottom:2px solid rgba(11,99,206,.2);">TinyBot</th>
+                        <th style="padding:7px 11px;text-align:left;font-weight:800;font-size:.67rem;text-transform:uppercase;color:#047857;border-bottom:2px solid rgba(16,185,129,.2);">GPT-4</th>
+                        <th style="padding:7px 11px;text-align:left;font-weight:800;font-size:.67rem;text-transform:uppercase;color:#6d28d9;border-bottom:2px solid rgba(139,92,246,.2);">Key Concept</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="border-bottom:1px solid rgba(148,163,184,.13);"><td style="padding:6px 11px;font-weight:700;">Knowledge repr.</td><td style="padding:6px 11px;font-family:Consolas,monospace;font-size:.68rem;color:#475569;">~20 bytes (strings)</td><td style="padding:6px 11px;font-family:Consolas,monospace;font-size:.68rem;color:#047857;">~1.8T parameters (floats)</td><td style="padding:6px 11px;color:#6d28d9;font-size:.68rem;">Symbolic vs. distributed</td></tr>
+                    <tr style="background:rgba(248,250,252,.5);border-bottom:1px solid rgba(148,163,184,.13);"><td style="padding:6px 11px;font-weight:700;">Inference type</td><td style="padding:6px 11px;font-family:Consolas,monospace;font-size:.68rem;color:#475569;">Deterministic O(k)</td><td style="padding:6px 11px;font-family:Consolas,monospace;font-size:.68rem;color:#047857;">Probabilistic O(n²) attention</td><td style="padding:6px 11px;color:#6d28d9;font-size:.68rem;">Big-O / complexity</td></tr>
+                    <tr style="border-bottom:1px solid rgba(148,163,184,.13);"><td style="padding:6px 11px;font-weight:700;">Training</td><td style="padding:6px 11px;color:#b91c1c;font-size:.68rem;">None — developer writes rules</td><td style="padding:6px 11px;color:#047857;font-size:.68rem;">SGD on 13T tokens, RLHF</td><td style="padding:6px 11px;color:#6d28d9;font-size:.68rem;">Supervised + RL</td></tr>
+                    <tr style="background:rgba(248,250,252,.5);border-bottom:1px solid rgba(148,163,184,.13);"><td style="padding:6px 11px;font-weight:700;">Context memory</td><td style="padding:6px 11px;color:#b91c1c;font-size:.68rem;">0 tokens</td><td style="padding:6px 11px;color:#047857;font-size:.68rem;">128K tokens (~100K words)</td><td style="padding:6px 11px;color:#6d28d9;font-size:.68rem;">Context window</td></tr>
+                    <tr style="border-bottom:1px solid rgba(148,163,184,.13);"><td style="padding:6px 11px;font-weight:700;">Hallucination risk</td><td style="padding:6px 11px;color:#047857;font-size:.68rem;">0% (hardcoded outputs)</td><td style="padding:6px 11px;color:#b45309;font-size:.68rem;">~3–15% on factual queries</td><td style="padding:6px 11px;color:#6d28d9;font-size:.68rem;">Calibration / reliability</td></tr>
+                    <tr style="background:rgba(248,250,252,.5);border-bottom:1px solid rgba(148,163,184,.13);"><td style="padding:6px 11px;font-weight:700;">Auditability</td><td style="padding:6px 11px;color:#047857;font-size:.68rem;">Full — read all outputs in 30 s</td><td style="padding:6px 11px;color:#b91c1c;font-size:.68rem;">Black box — no formal proof</td><td style="padding:6px 11px;color:#6d28d9;font-size:.68rem;">Explainability (XAI)</td></tr>
+                    <tr><td style="padding:6px 11px;font-weight:700;">Training cost</td><td style="padding:6px 11px;color:#047857;font-size:.68rem;">$0 (dev time only)</td><td style="padding:6px 11px;color:#b91c1c;font-size:.68rem;">~$100M+, 552 tCO₂e</td><td style="padding:6px 11px;color:#6d28d9;font-size:.68rem;">AI equity / access</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="card mt-3 reveal" style="background:rgba(11,99,206,.06);border:1px solid rgba(11,99,206,.18);">
+            <p class="text-sm text-slate-700">🤔 <strong>Debate:</strong> For a middle-school homework helper chatbot, which row in this table matters most? Rank the 7 dimensions by importance and defend your ordering. Can you build a rubric?</p>
+        </div>
+    </div>
+</div>
+
+<!-- ======= SLIDE 16: REAL-WORLD SYSTEMS ======= -->
+<div class="slide" data-slide="16">
+    <div class="gm">
+        <div class="blob" style="width:400px;height:400px;top:-80px;right:-80px;background:#0b63ce;opacity:.08;"></div>
+        <div class="blob" style="width:260px;height:260px;bottom:-60px;left:-50px;background:#10b981;opacity:.08;"></div>
+    </div>
+    <div class="content" style="z-index:2;position:relative;">
+        <p class="pill mb-3 reveal">Applications · Where NLP Lives</p>
+        <h2 class="font-display reveal" style="font-size:clamp(1.5rem,2.7vw,2.2rem);font-weight:700;margin-bottom:.9rem;">Real systems using what you just learned 🌍</h2>
+        <div class="gc g3 reveal">
+            <div class="card ab-blue">
+                <div style="font-size:1.7rem;margin-bottom:6px;">🎮</div>
+                <p style="font-size:.73rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:#1e40af;" class="mb-1">Game AI (Behavior Trees)</p>
+                <p class="text-sm text-slate-700">AAA game NPCs use <em>behavior trees</em> — hierarchical FSMs where states nest inside states. <strong>The Last of Us</strong>'s enemies use 1,200+ behavior nodes. Same FSM logic, 1,000× scale.</p>
+            </div>
+            <div class="card ab-green">
+                <div style="font-size:1.7rem;margin-bottom:6px;">🏥</div>
+                <p style="font-size:.73rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:#047857;" class="mb-1">Clinical NLP (NHS, Mayo)</p>
+                <p class="text-sm text-slate-700">Doctors' notes are unstructured text. NLP models extract diagnoses, medications, and risk scores — same intent classification you built, trained on 1M+ medical records.</p>
+            </div>
+            <div class="card ab-amber">
+                <div style="font-size:1.7rem;margin-bottom:6px;">🔒</div>
+                <p style="font-size:.73rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:#b45309;" class="mb-1">Spam/Phishing Detection</p>
+                <p class="text-sm text-slate-700">Gmail's spam filter uses weighted keyword scoring (your Slide 4) + neural models. It classifies ~15 billion emails/day. Your <code style="font-size:.72rem;background:#f1f5f9;padding:1px 3px;border-radius:2px;">classify()</code> function is the conceptual ancestor.</p>
+            </div>
+            <div class="card ab-purple">
+                <div style="font-size:1.7rem;margin-bottom:6px;">📱</div>
+                <p style="font-size:.73rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:#6d28d9;" class="mb-1">Voice Assistants (Siri, Alexa)</p>
+                <p class="text-sm text-slate-700">Pipeline: audio → ASR (speech-to-text) → NLU (your intent classifier) → dialogue manager (your FSM) → NLG (reply generation) → TTS. You built NLU + dialogue manager today.</p>
+            </div>
+            <div class="card ab-teal">
+                <div style="font-size:1.7rem;margin-bottom:6px;">📚</div>
+                <p style="font-size:.73rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:#0e7490;" class="mb-1">Adaptive Learning (Duolingo)</p>
+                <p class="text-sm text-slate-700">Duolingo's grammar correction uses a Bayesian knowledge model on top of intent classification. Each answer updates a probability distribution over your knowledge state — a smarter FSM.</p>
+            </div>
+            <div class="card" style="background:rgba(11,99,206,.06);border:1px dashed rgba(11,99,206,.24);">
+                <p style="font-size:.68rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#1e40af;" class="mb-1">📊 Market reality</p>
+                <p class="text-sm text-slate-700">Global NLP market: <strong>$29B in 2024</strong>, projected <strong>$158B by 2032</strong> (CAGR 23.7%). The skills you practiced today — classification, state machines, adversarial testing — are entry points to that field.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ======= SLIDE 17: HOMEWORK ======= -->
+<div class="slide" data-slide="17">
+    <div class="gm">
+        <div class="blob" style="width:380px;height:380px;top:-70px;right:-70px;background:#0b63ce;opacity:.08;"></div>
+        <div class="blob" style="width:250px;height:250px;bottom:-50px;left:-40px;background:#f59e0b;opacity:.07;"></div>
+    </div>
+    <div class="content" style="z-index:2;position:relative;">
+        <p class="pill mb-3 reveal">Homework · Due Next Class</p>
+        <h2 class="font-display reveal" style="font-size:clamp(1.5rem,2.7vw,2.2rem);font-weight:700;margin-bottom:.9rem;">Go deeper — your choice of difficulty 📬</h2>
+        <div class="gc g2 reveal">
+            <div style="display:flex;flex-direction:column;gap:11px;">
+                <div class="card ab-blue">
+                    <p style="font-size:.68rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#0b63ce;" class="mb-2">🖥️ Coding (required)</p>
+                    <p class="text-sm text-slate-700 mb-2">Complete Level 1 or Level 2 from Slide 14 (your choice). Add a <code style="font-size:.72rem;background:#f1f5f9;padding:1px 3px;border-radius:2px;">test()</code> function that runs 8 test messages automatically and prints PASS/FAIL for each. Include at least 2 tests designed to <em>break</em> your bot.</p>
+                    <div class="cb" style="font-size:.64rem;margin-top:4px;">
+<span class="kw">def</span> <span class="nb">test</span>():
+    cases = [
+        (<span class="st">"hi there"</span>,   <span class="st">"greeting"</span>),
+        (<span class="st">"I'm not sad"</span>, <span class="st">"unknown"</span>), <span class="cm"># should fail</span>
+        <span class="cm"># add 6 more...</span>
+    ]
+    <span class="kw">for</span> msg, expected <span class="kw">in</span> cases:
+        result = <span class="nb">get_intent</span>(msg)
+        status = <span class="st">"✓ PASS"</span> <span class="kw">if</span> result==expected <span class="kw">else</span> <span class="st">"✗ FAIL"</span>
+        <span class="nb">print</span>(<span class="nb">f</span><span class="st">"{status} | {msg!r} → {result}"</span>)
+                    </div>
+                </div>
+                <div class="card ab-green">
+                    <p style="font-size:.68rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#047857;" class="mb-2">✍️ Analysis (required)</p>
+                    <p class="text-sm text-slate-700">Write 5–7 sentences: use the Chinese Room argument and the grounding problem to answer — does TinyBot <em>understand</em> language? Does GPT-4? What would a machine need to do to <em>genuinely</em> understand?</p>
+                </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:11px;">
+                <div class="card ab-amber">
+                    <p style="font-size:.68rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#b45309;" class="mb-2">⭐ Extension: Level 3 + FSM</p>
+                    <p class="text-sm text-slate-700">Complete Level 3. Draw its FSM transition diagram formally using the notation (Q, Σ, δ, q₀, F) — listing each state, each transition trigger, and each accepting state.</p>
+                </div>
+                <div class="card ab-purple">
+                    <p style="font-size:.68rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#6d28d9;" class="mb-2">⭐⭐ Research extension</p>
+                    <p class="text-sm text-slate-700">Look up <strong>Naive Bayes classification</strong> — the real algorithm behind early spam filters. Write pseudocode for how you'd train it on 10 labelled chatbot messages. How is it different from your weighted scorer?</p>
+                </div>
+                <div class="card" style="background:rgba(11,99,206,.06);border:1px solid rgba(11,99,206,.18);">
+                    <p style="font-size:.68rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#0b63ce;" class="mb-1">📧 Submit</p>
+                    <p class="text-sm font-semibold text-slate-700">hue.weng.88@gmail.com</p>
+                    <p class="text-xs text-slate-500">Subject: <em>Day 17 HW · [Name] · Level [1/2/3]</em></p>
+                    <p class="text-xs text-slate-500">hue881.github.io · 646-280-7089</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ======= SLIDE 18: CLOSING ======= -->
+<div class="slide" data-slide="18">
+    <div class="gm">
+        <div class="blob" style="width:500px;height:500px;top:-120px;right:-100px;background:#0b63ce;opacity:.12;"></div>
+        <div class="blob" style="width:320px;height:320px;bottom:-80px;left:-60px;background:#10b981;opacity:.10;"></div>
+        <div class="blob" style="width:200px;height:200px;top:42%;left:14%;background:#f59e0b;opacity:.09;"></div>
+    </div>
+    <canvas class="pc" id="pc18"></canvas>
+    <div class="content text-center" style="z-index:2;position:relative;">
+        <div style="font-size:3.8rem;margin-bottom:.9rem;animation:flt 3s ease-in-out infinite;" class="reveal">🤖</div>
+        <h2 class="font-display gt tracking-tight reveal" style="font-size:clamp(1.9rem,4vw,3rem);font-weight:700;margin-bottom:.7rem;">You now think like an NLP engineer</h2>
+        <p class="reveal" style="font-size:clamp(.88rem,1.4vw,1.08rem);color:#5b6b7e;max-width:660px;margin:0 auto 1rem;">
+            Return to your warm-up puzzles. Could you answer Puzzle 1 (ambiguity) differently now? What did building TinyBot teach you that reading about it never could?
+        </p>
+        <div class="max-w-3xl mx-auto gc g3 mt-2">
+            <div class="card text-left reveal ab-blue">
+                <p style="font-size:.68rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#0b63ce;" class="mb-1">CS vocabulary you used</p>
+                <ul class="list-disc pl-4 text-xs text-slate-700 space-y-1">
+                    <li>Tokenization, BPE, bag-of-words</li>
+                    <li>FSM, determinism, Big-O</li>
+                    <li>Attention, parameters, RLHF</li>
+                    <li>Hallucination, grounding, XAI</li>
+                </ul>
+            </div>
+            <div class="card text-left reveal ab-green">
+                <p style="font-size:.68rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#047857;" class="mb-1">Next lesson preview</p>
+                <p class="text-sm text-slate-700">We'll train a real Naive Bayes classifier on labelled data — and measure <em>precision</em>, <em>recall</em>, and <em>F1 score</em>. Your test() function from homework is the starting point.</p>
+            </div>
+            <div class="card text-left reveal ab-amber">
+                <p style="font-size:.68rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#b45309;" class="mb-1">Contact</p>
+                <p class="text-sm font-semibold text-slate-700">Mr. Hsiao "Hue" Weng</p>
+                <p class="text-xs text-slate-500 mt-1">hue881.github.io</p>
+                <p class="text-xs text-slate-500">646-280-7089</p>
+                <p class="text-xs text-slate-500">hue.weng.88@gmail.com</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div><!-- end .deck -->
+
+<div class="nav-controls">
+    <button class="nav-btn" onclick="changeSlide(-1)">&#8249;</button>
+    <div class="slide-dots" id="dots"></div>
+    <button class="nav-btn" onclick="changeSlide(1)">&#8250;</button>
+    <span class="slide-counter" id="counter">1 / 18</span>
+</div>
+
+<script>
+    let current = 1;
+    const total = document.querySelectorAll('.slide').length;
+    const dotsContainer = document.getElementById('dots');
+    const counter = document.getElementById('counter');
+    for (let i = 1; i <= total; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'dot' + (i === 1 ? ' active' : '');
+        dot.onclick = () => goToSlide(i);
+        dotsContainer.appendChild(dot);
+    }
+    function goToSlide(n) {
+        const prev = document.querySelector('.slide.active');
+        const next = document.querySelector('.slide[data-slide="' + n + '"]');
+        if (prev) prev.classList.remove('active');
+        if (next) { next.classList.add('active'); animateSlide(next); }
+        current = n; updateNav();
+    }
+    function changeSlide(dir) { let n = current + dir; if (n < 1) n = total; if (n > total) n = 1; goToSlide(n); }
+    function updateNav() {
+        document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i + 1 === current));
+        counter.textContent = current + ' / ' + total;
+    }
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); changeSlide(1); }
+        if (e.key === 'ArrowLeft') { e.preventDefault(); changeSlide(-1); }
+    });
+    let tsx = 0;
+    document.addEventListener('touchstart', (e) => { tsx = e.touches[0].clientX; });
+    document.addEventListener('touchend', (e) => { const d = tsx - e.changedTouches[0].clientX; if (Math.abs(d) > 50) changeSlide(d > 0 ? 1 : -1); });
+    function animateSlide(slide) {
+        slide.querySelectorAll('.reveal').forEach((el, i) => {
+            el.style.transition = 'none'; el.style.opacity = '0'; el.style.transform = 'translateY(14px)';
+            el.offsetHeight;
+            const delay = i * 0.07;
+            el.style.transition = 'opacity .35s ease ' + delay + 's, transform .35s ease ' + delay + 's';
+            el.style.opacity = '1'; el.style.transform = 'translateY(0)';
+        });
+    }
+    document.addEventListener('mousemove', (e) => {
+        const s = document.querySelector('.mouse-spotlight');
+        if (s) s.style.background = 'radial-gradient(600px circle at ' + e.clientX + 'px ' + e.clientY + 'px, rgba(11,99,206,.045), transparent 40%)';
+    });
+    window.initParticles = function(canvas, opts) {
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight;
+        const count = opts.count || 40;
+        let mx = -1000, my = -1000;
+        const ps = Array.from({ length: count }, () => ({
+            x: Math.random() * canvas.width, y: Math.random() * canvas.height,
+            vx: (Math.random() - .5) * .25, vy: (Math.random() - .5) * .25,
+            size: Math.random() * 2.2 + .7, alpha: Math.random() * .28 + .07
+        }));
+        canvas.addEventListener('mousemove', (e) => { const r = canvas.getBoundingClientRect(); mx = e.clientX - r.left; my = e.clientY - r.top; });
+        canvas.addEventListener('mouseleave', () => { mx = -1000; my = -1000; });
+        (function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ps.forEach(p => {
+                const dx = p.x - mx, dy = p.y - my, dist = Math.sqrt(dx*dx + dy*dy);
+                if (dist < 110) { const f = (110-dist)/110*2; p.vx += dx/dist*f*.08; p.vy += dy/dist*f*.08; }
+                p.vx *= .98; p.vy *= .98; p.x += p.vx; p.y += p.vy;
+                if (p.x < 0) p.x = canvas.width; if (p.x > canvas.width) p.x = 0;
+                if (p.y < 0) p.y = canvas.height; if (p.y > canvas.height) p.y = 0;
+                ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2);
+                ctx.fillStyle = 'rgba(11,99,206,' + p.alpha + ')'; ctx.fill();
+            });
+            requestAnimationFrame(animate);
+        })();
+    };
+    ['pc1','pc18'].forEach(id => { const c = document.getElementById(id); if (c) window.initParticles(c, { count: 45 }); });
+    try { animateSlide(document.querySelector('.slide.active')); } catch(e) {}
+</script>
+</body>
+</html>
