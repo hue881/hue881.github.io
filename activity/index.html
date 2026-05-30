@@ -2,163 +2,203 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Activity Sheet · Day 17 · Chatbots &amp; Language AI</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Day 18 · Activity Sheet · Data, Bias & Fairness</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Nunito:wght@400;600;700;800&family=Fira+Code:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --color-bg: #f4fbff;
-    --color-surface: rgba(255,255,255,0.97);
-    --color-text: #1f2a37;
-    --color-text-secondary: #374151;
-    --color-text-muted: #5b6b7e;
-    --color-accent-1: #0b63ce;
-    --color-accent-2: #10b981;
-    --color-accent-3: #f59e0b;
-    --color-accent-red: #ef4444;
-    --font-display: 'Fredoka', 'Trebuchet MS', sans-serif;
-    --font-body: 'Nunito', Arial, sans-serif;
-    --font-code: 'Fira Code', Consolas, monospace;
+  :root{
+    --bg:#f4fbff; --surface:rgba(255,255,255,0.97);
+    --text:#1f2a37; --text2:#374151; --muted:#5b6b7e;
+    --a1:#0b63ce; --a2:#10b981; --a3:#f59e0b; --ar:#ef4444;
+    --fd:'Fredoka','Trebuchet MS',sans-serif;
+    --fb:'Nunito',Arial,sans-serif;
+    --fc:'Fira Code',Consolas,monospace;
   }
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  @media print {
-    body { background: #fff !important; }
-    .no-print { display: none !important; }
-    .page-break { page-break-before: always; }
-    .card { box-shadow: none !important; border: 1.5px solid #d1d5db !important; }
-    .code-block { border: 1.5px solid #cbd5e1 !important; }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  @media print{
+    body{background:#fff!important}
+    .no-print{display:none!important}
+    .card{box-shadow:none!important;border:1.5px solid #d1d5db!important}
+    .page{padding:12px 16px}
   }
-  body { font-family: var(--font-body); color: var(--color-text); background: var(--color-bg); min-height: 100vh; }
-  .print-bar {
-    background: rgba(255,255,255,0.92); backdrop-filter: blur(12px);
-    border-bottom: 1px solid rgba(148,163,184,0.3);
-    padding: 10px 24px; display: flex; align-items: center;
-    justify-content: space-between; position: sticky; top: 0; z-index: 100; gap: 12px; flex-wrap: wrap;
-  }
-  .print-bar .bar-title { font-family: var(--font-display); font-size: 1.05rem; font-weight: 700; color: var(--color-accent-1); }
-  .print-bar .bar-sub { font-size: 0.78rem; color: var(--color-text-muted); }
-  .btn-print { background: var(--color-accent-1); color: #fff; border: none; padding: 8px 20px; border-radius: 999px; font-family: var(--font-body); font-size: 0.82rem; font-weight: 800; cursor: pointer; letter-spacing: 0.06em; transition: background 0.2s, transform 0.15s; }
-  .btn-print:hover { background: #0952b0; transform: translateY(-1px); }
-  .page { max-width: 920px; margin: 0 auto; padding: 32px 24px 60px; }
-  .sheet-header {
-    background: linear-gradient(135deg, #7c3aed 0%, #0b63ce 50%, #10b981 100%);
-    border-radius: 20px; padding: 28px 32px 24px; color: #fff; margin-bottom: 28px; position: relative; overflow: hidden;
-  }
-  .sheet-header::before { content: ''; position: absolute; top: -60px; right: -60px; width: 200px; height: 200px; background: rgba(255,255,255,0.08); border-radius: 50%; }
-  .sheet-header::after { content: ''; position: absolute; bottom: -40px; left: -40px; width: 140px; height: 140px; background: rgba(255,255,255,0.06); border-radius: 50%; }
-  .header-emoji { font-size: 2.8rem; margin-bottom: 6px; }
-  .header-day { font-size: 0.75rem; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; opacity: 0.85; margin-bottom: 4px; }
-  .header-title { font-family: var(--font-display); font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 700; line-height: 1.1; margin-bottom: 6px; }
-  .header-sub { font-size: 0.88rem; opacity: 0.85; margin-bottom: 14px; }
-  .header-pills { display: flex; gap: 8px; flex-wrap: wrap; }
-  .header-pill { background: rgba(255,255,255,0.22); border: 1px solid rgba(255,255,255,0.35); border-radius: 999px; padding: 4px 14px; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
-  .student-info { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 28px; }
-  @media (max-width: 600px) { .student-info { grid-template-columns: 1fr; } }
-  .info-field { background: var(--color-surface); border-radius: 12px; padding: 12px 14px; border: 1.5px solid rgba(11,99,206,0.14); box-shadow: 0 2px 8px rgba(15,23,42,0.05); }
-  .info-label { font-size: 0.65rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-accent-1); margin-bottom: 6px; }
-  .info-line { border: none; border-bottom: 1.5px solid #cbd5e1; width: 100%; font-family: var(--font-body); font-size: 0.9rem; color: var(--color-text); background: transparent; outline: none; padding: 2px 0; }
-  .info-line:focus { border-bottom-color: #0b63ce; }
-  .section-label { display: inline-flex; align-items: center; gap: 8px; padding: 5px 16px; border-radius: 999px; border: 1px solid rgba(148,163,184,0.4); background: rgba(255,255,255,0.9); font-size: 0.72rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-accent-1); margin-bottom: 10px; }
-  .section-title { font-family: var(--font-display); font-size: clamp(1.3rem, 2.5vw, 1.8rem); font-weight: 700; margin-bottom: 16px; color: var(--color-text); line-height: 1.2; }
-  .card { background: var(--color-surface); border-radius: 16px; padding: 18px 20px; box-shadow: 0 4px 18px rgba(15,23,42,0.07); border: 1px solid rgba(255,255,255,0.7); margin-bottom: 16px; }
-  .card.accent-blue { border-left: 4px solid var(--color-accent-1); }
-  .card.accent-green { border-left: 4px solid var(--color-accent-2); }
-  .card.accent-amber { border-left: 4px solid var(--color-accent-3); }
-  .card.accent-red { border-left: 4px solid var(--color-accent-red); }
-  .card.accent-purple { border-left: 4px solid #7c3aed; }
-  .card-label { font-size: 0.68rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 8px; }
-  .card-label.blue { color: var(--color-accent-1); }
-  .card-label.green { color: #047857; }
-  .card-label.amber { color: #b45309; }
-  .card-label.red { color: #b91c1c; }
-  .card-label.purple { color: #6d28d9; }
-  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
-  @media (max-width: 680px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
-  .code-block { background: #1e293b; color: #e2e8f0; border-radius: 12px; padding: 14px 18px; font-family: var(--font-code); font-size: clamp(0.68rem, 1.1vw, 0.83rem); line-height: 1.6; overflow-x: auto; border: 1px solid rgba(255,255,255,0.06); margin-bottom: 12px; white-space: pre; }
-  .kw { color: #93c5fd; }
-  .nb { color: #fcd34d; }
-  .st { color: #86efac; }
-  .cm { color: #64748b; font-style: italic; }
-  .hl { color: #fcd34d; font-weight: 700; }
-  .bug { color: #f87171; font-weight: 700; }
-  .write-lines { margin: 8px 0; }
-  input.write-line { border: none; border-bottom: 1.5px solid #cbd5e1; width: 100%; margin-bottom: 10px; height: 28px; display: block; background: transparent; font-family: var(--font-body); font-size: 0.88rem; color: var(--color-text); outline: none; padding: 2px 4px; }
-  input.write-line:focus { border-bottom-color: #0b63ce; }
-  input.write-line::placeholder { color: #bdc5d1; font-style: italic; }
-  textarea.write-area { border: 1.5px solid #cbd5e1; border-radius: 8px; width: 100%; min-height: 70px; padding: 8px; font-family: var(--font-body); font-size: 0.85rem; color: var(--color-text); resize: vertical; background: #f8fafc; outline: none; display: block; }
-  textarea.write-area:focus { outline: 2px solid rgba(11,99,206,0.3); }
-  textarea.write-area::placeholder { color: #bdc5d1; font-style: italic; }
-  input.blank-input { display: inline-block; background: rgba(251,191,36,0.18); border: none; border-bottom: 2px solid #f59e0b; min-width: 60px; width: 60px; height: 1.1em; border-radius: 3px; vertical-align: middle; margin: 0 2px; font-family: var(--font-code); font-size: inherit; color: #fcd34d; text-align: center; outline: none; padding: 0 2px; }
-  input.blank-input:focus { background: rgba(251,191,36,0.32); }
-  input.blank-input.wide { min-width: 110px; width: 110px; }
-  input.blank-input.narrow { min-width: 36px; width: 36px; }
-  .timeline { position: relative; padding-left: 22px; }
-  .timeline::before { content: ''; position: absolute; left: 8px; top: 4px; bottom: 4px; width: 3px; border-radius: 999px; background: linear-gradient(to bottom, #7c3aed, #0b63ce, #10b981); }
-  .timeline-step { position: relative; margin-bottom: 12px; }
-  .timeline-dot { position: absolute; left: -15px; top: 4px; width: 12px; height: 12px; border-radius: 999px; border: 2px solid #f4fbff; background: #0b63ce; box-shadow: 0 0 0 3px rgba(11,99,206,0.2); }
-  .timeline-dot.green { background: #10b981; }
-  .timeline-dot.purple { background: #7c3aed; }
-  .timeline-dot.amber { background: #f59e0b; }
-  .tip-box { border-radius: 10px; padding: 10px 14px; font-size: 0.8rem; line-height: 1.5; margin-top: 10px; }
-  .tip-box.blue { background: rgba(11,99,206,0.07); color: #1e40af; }
-  .tip-box.green { background: rgba(16,185,129,0.07); color: #065f46; }
-  .tip-box.amber { background: rgba(245,158,11,0.07); color: #92400e; }
-  .tip-box.purple { background: rgba(124,58,237,0.07); color: #5b21b6; }
-  .formula-box { background: #1e293b; color: #e2e8f0; border-radius: 10px; padding: 10px 16px; font-family: var(--font-code); font-size: 0.88rem; text-align: center; margin-bottom: 10px; }
-  .divider { border: none; border-top: 2px dashed #dde6f0; margin: 28px 0; }
-  .check-list { list-style: none; padding: 0; }
-  .check-list li { display: flex; align-items: flex-start; gap: 8px; font-size: 0.85rem; color: var(--color-text-secondary); margin-bottom: 8px; line-height: 1.45; }
-  .check-list li .box { flex-shrink: 0; width: 17px; height: 17px; border: 2px solid #94a3b8; border-radius: 4px; margin-top: 1px; background: #fff; display: inline-block; }
-  .level-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 14px; border-radius: 999px; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 8px; }
-  .level-1 { background: linear-gradient(135deg,#0b63ce,#10b981); color:#fff; }
-  .level-2 { background: linear-gradient(135deg,#f59e0b,#ef4444); color:#fff; }
-  .level-3 { background: linear-gradient(135deg,#7c3aed,#ef4444); color:#fff; }
-  .challenge-badge { display: inline-flex; align-items: center; gap: 6px; background: linear-gradient(135deg, #f59e0b, #ef4444); color: #fff; padding: 4px 14px; border-radius: 999px; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 8px; }
-  table.rubric { width: 100%; border-collapse: collapse; font-size: 0.82rem; margin-top: 8px; }
-  table.rubric th { background: #1e293b; color: #e2e8f0; padding: 8px 10px; text-align: left; font-weight: 700; letter-spacing: 0.05em; }
-  table.rubric td { padding: 8px 10px; border-bottom: 1px solid #e2e8f0; vertical-align: top; color: var(--color-text-secondary); }
-  table.rubric tr:nth-child(even) td { background: rgba(241,245,249,0.6); }
-  table.rubric td:first-child { font-weight: 700; color: var(--color-text); }
-  table.rubric .pts { font-family: var(--font-code); font-size: 0.75rem; font-weight: 800; color: var(--color-accent-1); white-space: nowrap; }
-  .sheet-footer { margin-top: 40px; padding: 16px 20px; border-radius: 12px; background: rgba(124,58,237,0.05); border: 1px solid rgba(124,58,237,0.12); display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; font-size: 0.76rem; color: var(--color-text-muted); }
-  .sheet-footer strong { color: var(--color-text); }
-  p, li { font-size: 0.88rem; color: var(--color-text-secondary); line-height: 1.55; }
-  strong { color: var(--color-text); }
-  code { background: #e0f2ff; padding: 1px 6px; border-radius: 4px; font-family: var(--font-code); font-size: 0.82em; color: #0b63ce; }
-  .mb-1 { margin-bottom: 6px; }
-  .mb-2 { margin-bottom: 10px; }
-  .mb-3 { margin-bottom: 14px; }
-  .mt-2 { margin-top: 10px; }
-  .mt-3 { margin-top: 14px; }
-  .text-center { text-align: center; }
-  .text-muted { color: var(--color-text-muted); font-size: 0.78rem; }
-  .grad-text { background: linear-gradient(135deg,#7c3aed,#0b63ce,#10b981); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
-  .fsm-diagram { display: flex; align-items: center; justify-content: center; gap: 6px; flex-wrap: wrap; padding: 10px; }
-  .fsm-state { background: #e0f2ff; border: 2px solid #0b63ce; border-radius: 50px; padding: 6px 16px; font-family: var(--font-code); font-size: 0.78rem; font-weight: 700; color: #0b63ce; white-space: nowrap; }
-  .fsm-state.start { background: #ede9fe; border-color: #7c3aed; color: #6d28d9; }
-  .fsm-state.end { background: #d1fae5; border-color: #10b981; color: #047857; }
-  .fsm-arrow { font-size: 0.75rem; color: #64748b; text-align: center; white-space: nowrap; }
-  .score-table { width:100%; border-collapse:collapse; font-size:0.82rem; }
-  .score-table th { background:#1e293b; color:#e2e8f0; padding:7px 10px; text-align:left; }
-  .score-table td { padding:7px 10px; border-bottom:1px solid #e2e8f0; color:var(--color-text-secondary); vertical-align:top; }
-  .score-table tr:nth-child(even) td { background:rgba(241,245,249,0.6); }
-  .score-table td:first-child { font-weight:700; color:var(--color-text); }
-  .dark-code-write { background:#1e293b; border-radius:12px; padding:14px 18px; width:100%; font-family:var(--font-code); font-size:clamp(0.7rem,1.1vw,0.84rem); line-height:1.7; border:1px solid rgba(255,255,255,0.06); resize:vertical; display:block; outline:none; color:#e2e8f0; box-sizing:border-box; }
-  .dark-code-write:focus { outline:2px solid rgba(124,58,237,0.4); }
+  body{font-family:var(--fb);color:var(--text);background:var(--bg);min-height:100vh}
 
-  .draw-wrap { position:relative; margin-bottom:6px; }
-  .draw-toolbar { display:flex; align-items:center; gap:8px; margin-bottom:4px; flex-wrap:wrap; }
-  .draw-toolbar label { font-size:0.7rem; font-weight:700; color:#64748b; }
-  .draw-color { width:28px; height:28px; border:none; border-radius:6px; cursor:pointer; padding:0; background:transparent; }
-  .draw-size { width:70px; accent-color:#7c3aed; cursor:pointer; }
-  .draw-clear { background:#fee2e2; color:#b91c1c; border:none; border-radius:6px; padding:3px 10px; font-size:0.72rem; font-weight:800; cursor:pointer; letter-spacing:0.05em; }
-  .draw-clear:hover { background:#fecaca; }
-  canvas.draw-canvas { display:block; width:100%; border-radius:8px; cursor:crosshair; touch-action:none; background:#faf5ff; }
-  canvas.draw-canvas.white-bg { background:#fff; }
+  /* ── Print bar ── */
+  .print-bar{background:rgba(255,255,255,0.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(148,163,184,.3);padding:10px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;gap:12px;flex-wrap:wrap}
+  .bar-title{font-family:var(--fd);font-size:1.05rem;font-weight:700;color:var(--a1)}
+  .bar-sub{font-size:.78rem;color:var(--muted)}
+  .btn-print{background:var(--a1);color:#fff;border:none;padding:8px 20px;border-radius:999px;font-family:var(--fb);font-size:.82rem;font-weight:800;cursor:pointer;letter-spacing:.06em;transition:background .2s,transform .15s}
+  .btn-print:hover{background:#0952b0;transform:translateY(-1px)}
 
+  /* ── Page ── */
+  .page{max-width:920px;margin:0 auto;padding:32px 24px 60px}
+
+  /* ── Header ── */
+  .sheet-header{background:linear-gradient(135deg,#0b63ce 0%,#10b981 60%,#f59e0b 100%);border-radius:20px;padding:28px 32px 24px;color:#fff;margin-bottom:28px;position:relative;overflow:hidden}
+  .sheet-header::before{content:'';position:absolute;top:-60px;right:-60px;width:200px;height:200px;background:rgba(255,255,255,.08);border-radius:50%}
+  .sheet-header::after{content:'';position:absolute;bottom:-40px;left:-40px;width:140px;height:140px;background:rgba(255,255,255,.06);border-radius:50%}
+  .header-emoji{font-size:2.8rem;margin-bottom:6px}
+  .header-day{font-size:.75rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;opacity:.85;margin-bottom:4px}
+  .header-title{font-family:var(--fd);font-size:clamp(1.6rem,4vw,2.4rem);font-weight:700;line-height:1.1;margin-bottom:6px}
+  .header-sub{font-size:.88rem;opacity:.85;margin-bottom:14px}
+  .header-pills{display:flex;flex-wrap:wrap;gap:8px}
+  .header-pill{background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:4px 14px;font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+
+  /* ── Student info ── */
+  .student-info{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:28px}
+  @media(max-width:600px){.student-info{grid-template-columns:1fr}}
+  .info-field{background:var(--surface);border-radius:12px;padding:12px 14px;border:1.5px solid rgba(11,99,206,.14);box-shadow:0 2px 8px rgba(15,23,42,.05)}
+  .info-label{font-size:.65rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--a1);margin-bottom:6px}
+  input.info-line, input.wline{
+    font-family:var(--fb);font-size:.88rem;color:var(--text);background:#fff;
+    border:1.5px solid #cbd5e1;border-radius:7px;outline:none;
+    transition:border-color .2s,box-shadow .2s;
+  }
+  input.info-line:focus, input.wline:focus{
+    border-color:var(--a1);box-shadow:0 0 0 3px rgba(11,99,206,.12);
+  }
+  .info-line{border:none;border-bottom:1.5px solid #cbd5e1;border-radius:0;padding:4px 2px;background:transparent;display:block;width:100%}
+  .info-line:focus{border-bottom-color:var(--a1);box-shadow:none}
+
+  .wline{
+    display:block;width:100%;padding:5px 10px;
+    margin-bottom:9px;
+    border:none;border-bottom:1.5px solid #cbd5e1;border-radius:0;
+    background:transparent;font-family:var(--fb);font-size:.85rem;color:var(--text);
+    outline:none;transition:border-color .2s;
+  }
+  .wline:focus{border-bottom-color:var(--a1)}
+
+  textarea.warea{
+    display:block;width:100%;padding:8px 10px;
+    border:1.5px solid #cbd5e1;
+    background:#f8fafc;border-radius:8px;
+    font-family:var(--fb);font-size:.84rem;color:var(--text);line-height:1.5;
+    outline:none;resize:vertical;transition:border-color .2s;
+    margin-bottom:8px;
+  }
+  textarea.warea:focus{border-color:var(--a1)}
+
+  /* ── Blank fill inputs ── */
+  .blank{
+    display:inline-block;background:rgba(251,191,36,.18);
+    border-bottom:2px solid #f59e0b;border-radius:3px;
+    vertical-align:middle;margin:0 2px;
+  }
+  .blankinput{
+    display:inline-block;vertical-align:middle;margin:0 3px;
+    background:rgba(251,191,36,.13);border:none;border-bottom:2px solid #f59e0b;
+    border-radius:3px;padding:1px 4px;font-family:var(--fc);font-size:.78rem;
+    color:#fcd34d;width:70px;outline:none;text-align:center;
+  }
+  .blankinput:focus{background:rgba(251,191,36,.25);border-bottom-color:#e07c00}
+
+  .pred-input{
+    font-family:var(--fc);font-size:.92rem;font-weight:700;
+    border:2px dashed #cbd5e1;border-radius:8px;background:#f8fafc;
+    color:var(--text);padding:0;
+  }
+  .pred-input:focus{border-color:var(--a1);background:#eff6ff}
+
+  .pxinput{
+    font-family:var(--fc);font-size:.9rem;font-weight:700;
+    border:2px dashed #cbd5e1;border-radius:8px;background:#f8fafc;
+    color:var(--text);padding:0;transition:background .3s,color .3s;
+  }
+  .pxinput:focus{border-color:var(--a1)}
+
+  /* ── Section labels & titles ── */
+  .section-label{display:inline-flex;align-items:center;gap:8px;padding:5px 16px;border-radius:999px;border:1px solid rgba(148,163,184,.4);background:rgba(255,255,255,.9);font-size:.72rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--a1);margin-bottom:10px}
+  .section-title{font-family:var(--fd);font-size:clamp(1.3rem,2.5vw,1.8rem);font-weight:700;margin-bottom:16px;color:var(--text);line-height:1.2}
+
+  /* ── Cards ── */
+  .card{background:var(--surface);border-radius:16px;padding:18px 20px;box-shadow:0 4px 18px rgba(15,23,42,.07);border:1px solid rgba(255,255,255,.7);margin-bottom:16px}
+  .card.ab{border-left:4px solid var(--a1)}
+  .card.ag{border-left:4px solid var(--a2)}
+  .card.aa{border-left:4px solid var(--a3)}
+  .card.ar{border-left:4px solid var(--ar)}
+  .clabel{font-size:.68rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;margin-bottom:8px}
+  .clabel.b{color:var(--a1)}.clabel.g{color:#047857}.clabel.a{color:#b45309}.clabel.r{color:#b91c1c}
+
+  /* ── Grids ── */
+  .g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
+  .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:16px}
+  @media(max-width:680px){.g2,.g3{grid-template-columns:1fr}}
+
+  /* ── Code blocks ── */
+  .codeblock{background:#1e293b;color:#e2e8f0;border-radius:12px;padding:14px 18px;font-family:var(--fc);font-size:clamp(.68rem,1.1vw,.83rem);line-height:1.65;overflow-x:auto;border:1px solid rgba(255,255,255,.06);margin-bottom:12px;white-space:pre}
+  .kw{color:#93c5fd}.nb{color:#fcd34d}.st{color:#86efac}.cm{color:#64748b;font-style:italic}.op{color:#93c5fd}.sp{color:#fb923c}
+
+  /* ── Tip boxes ── */
+  .tip{border-radius:10px;padding:10px 14px;font-size:.8rem;line-height:1.5;margin-top:10px}
+  .tip.b{background:rgba(11,99,206,.07);color:#1e40af}
+  .tip.g{background:rgba(16,185,129,.07);color:#065f46}
+  .tip.a{background:rgba(245,158,11,.07);color:#92400e}
+  .tip.r{background:rgba(239,68,68,.07);color:#991b1b}
+
+  /* ── Rubric table ── */
+  table.rub{width:100%;border-collapse:collapse;font-size:.82rem;margin-top:8px}
+  table.rub th{background:#1e293b;color:#e2e8f0;padding:8px 10px;text-align:left;font-weight:700;letter-spacing:.05em}
+  table.rub td{padding:8px 10px;border-bottom:1px solid #e2e8f0;vertical-align:top;color:var(--text2)}
+  table.rub tr:nth-child(even) td{background:rgba(241,245,249,.6)}
+  table.rub td:first-child{font-weight:700;color:var(--text)}
+  .pts{font-family:var(--fc);font-size:.75rem;font-weight:800;color:var(--a1);white-space:nowrap}
+
+  /* ── Matching table ── */
+  table.match{width:100%;border-collapse:collapse;font-size:.83rem}
+  table.match td{padding:7px 10px;border-bottom:1px solid #e2e8f0;vertical-align:middle;color:var(--text2)}
+  table.match td:first-child{font-family:var(--fc);font-weight:700;color:var(--a1);width:30px;text-align:center}
+  .match-in{width:50px;border:none;border-bottom:2px solid #f59e0b;background:transparent;font-family:var(--fc);font-size:.82rem;color:var(--text);outline:none;text-align:center;padding:2px}
+
+  /* ── TF table ── */
+  table.tf{width:100%;border-collapse:collapse;font-size:.83rem}
+  table.tf td{padding:6px 10px;border-bottom:1px solid #e2e8f0;color:var(--text2)}
+  .tf-in{width:38px;border:none;border-bottom:2px solid #0b63ce;background:transparent;font-family:var(--fc);font-size:.82rem;font-weight:700;color:var(--a1);outline:none;text-align:center;padding:2px}
+
+  /* ── Counter trace table ── */
+  table.trace{width:100%;border-collapse:collapse;font-size:.8rem;margin-top:6px}
+  table.trace th{background:#0b63ce;color:#fff;padding:6px 10px;text-align:left;font-size:.7rem;letter-spacing:.07em;font-weight:700}
+  table.trace td{padding:6px 10px;border-bottom:1px solid #dde6f0;font-family:var(--fc);font-size:.78rem;color:var(--text2)}
+  table.trace tr:nth-child(even) td{background:rgba(11,99,206,.03)}
+  .trace-in{width:90px;border:none;border-bottom:1.5px solid #f59e0b;background:transparent;font-family:var(--fc);font-size:.76rem;color:var(--text);outline:none;text-align:center}
+
+  /* ── Bonus badge ── */
+  .cbadge{display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff;padding:4px 14px;border-radius:999px;font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px}
+
+  /* ── Formula box ── */
+  .fbox{background:#1e293b;color:#e2e8f0;border-radius:10px;padding:10px 16px;font-family:var(--fc);font-size:.9rem;text-align:center;margin-bottom:10px}
+
+  /* ── Divider ── */
+  .divider{border:none;border-top:2px dashed #dde6f0;margin:28px 0}
+
+  /* ── Checklist ── */
+  .checklist{list-style:none;padding:0}
+  .checklist li{display:flex;align-items:flex-start;gap:8px;font-size:.85rem;color:var(--text2);margin-bottom:8px;line-height:1.45}
+  .chkbox{flex-shrink:0;width:17px;height:17px;border:2px solid #94a3b8;border-radius:4px;margin-top:1px;background:#fff;display:inline-block}
+
+  /* ── Gradient text ── */
+  .grad-text{background:linear-gradient(135deg,#0b63ce 0%,#10b981 50%,#f59e0b 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+
+  /* ── Differentiation badges ── */
+  .diff-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 12px;border-radius:999px;font-size:.68rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px}
+  .diff-badge.foundation{background:rgba(16,185,129,.12);color:#065f46;border:1px solid rgba(16,185,129,.3)}
+  .diff-badge.core{background:rgba(11,99,206,.1);color:#1e40af;border:1px solid rgba(11,99,206,.25)}
+  .diff-badge.ext{background:rgba(239,68,68,.1);color:#991b1b;border:1px solid rgba(239,68,68,.25)}
+
+  /* ── Radio / TF circle buttons ── */
+  .tf-row{display:flex;align-items:center;gap:10px;margin-bottom:6px;font-size:.83rem;color:var(--text2)}
+  .tf-row label{cursor:pointer;display:flex;align-items:center;gap:4px;font-weight:700;font-family:var(--fc);color:var(--a1)}
+
+  p,li{font-size:.88rem;color:var(--text2);line-height:1.55}
+  strong{color:var(--text)}
+  code{background:#e0f2ff;padding:1px 6px;border-radius:4px;font-family:var(--fc);font-size:.82em;color:#0b63ce}
+  .mb1{margin-bottom:6px}.mb2{margin-bottom:10px}.mb3{margin-bottom:14px}
+  .mt2{margin-top:10px}.mt3{margin-top:14px}
+  .tc{text-align:center}.tm{color:var(--muted);font-size:.78rem}
+
+  .sheet-footer{margin-top:40px;padding:16px 20px;border-radius:12px;background:rgba(11,99,206,.05);border:1px solid rgba(11,99,206,.12);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:.76rem;color:var(--muted)}
 </style>
 </head>
 <body>
@@ -166,712 +206,550 @@
 <!-- PRINT BAR -->
 <div class="print-bar no-print">
   <div>
-    <div class="bar-title">🤖💬 Day 17 · Activity Sheet</div>
-    <div class="bar-sub">Chatbots &amp; Language AI — Differentiated · Ages 11–12</div>
+    <div class="bar-title">⚖️ Day 18 · Activity Sheet</div>
+    <div class="bar-sub">Data, Bias &amp; Fairness in AI · Ages 11–12</div>
   </div>
   <button class="btn-print" onclick="window.print()">🖨️ Print / Save as PDF</button>
 </div>
 
 <div class="page">
 
-<!-- ══════════ HEADER ══════════ -->
+<!-- ═══ HEADER ═══ -->
 <div class="sheet-header">
-  <div class="header-emoji">🤖💬</div>
-  <div class="header-day">Day 17 · Chatbots &amp; Language AI · Differentiated Activity Sheet</div>
-  <div class="header-title">Build TinyBot: Python Chatbots<br>&amp; Language AI</div>
-  <div class="header-sub">From tokens and bag-of-words → bug hunting → a Finite State Machine that remembers</div>
+  <div class="header-emoji">⚖️</div>
+  <div class="header-day">Day 18 · Advanced STEM · Ages 11–12</div>
+  <div class="header-title">Data, Bias &amp; Fairness in AI</div>
+  <div class="header-sub">Python · Counter · Dict Comprehensions · Real-World Fairness Metrics</div>
   <div class="header-pills">
-    <span class="header-pill">⏱ ~60 min</span>
-    <span class="header-pill">🐍 Python</span>
-    <span class="header-pill">Ages 11–12</span>
-    <span class="header-pill">3 Levels</span>
-    <span class="header-pill">NLP · FSM · Big-O</span>
+    <span class="header-pill">🟢 Foundation → Core → 🔴 Extension</span>
+    <span class="header-pill">⏱ 60 min</span>
+    <span class="header-pill">📄 5 Parts + Bonus</span>
   </div>
 </div>
 
-<!-- ══════════ STUDENT INFO ══════════ -->
+<!-- STUDENT INFO -->
 <div class="student-info">
   <div class="info-field">
-    <div class="info-label">👤 Your Name</div>
-    <input class="info-line" type="text" placeholder="First Last" />
+    <div class="info-label">Name</div>
+    <input class="info-line" type="text" placeholder="Your full name">
   </div>
   <div class="info-field">
-    <div class="info-label">📅 Date</div>
-    <input class="info-line" type="text" placeholder="Month Day, Year" />
+    <div class="info-label">Date</div>
+    <input class="info-line" type="text" placeholder="DD / MM / YYYY">
   </div>
   <div class="info-field">
-    <div class="info-label">🏫 Class / Period</div>
-    <input class="info-line" type="text" placeholder="Period ___" />
+    <div class="info-label">Target Level</div>
+    <input class="info-line" type="text" placeholder="Foundation / Core / Extension">
   </div>
 </div>
 
-<!-- ══════════ BEFORE YOU BEGIN ══════════ -->
-<div class="section-label">🎯 Before You Begin</div>
-<div class="section-title">What This Sheet Asks You to Do</div>
-
-<div class="grid-2 mb-3">
-  <div class="card accent-purple">
-    <div class="card-label purple">🎯 Your Mission</div>
-    <p class="mb-2">You will trace, fix, and build Python chatbot programs — step by step, from warm-up puzzles to your own working TinyBot.</p>
-    <div class="timeline">
-      <div class="timeline-step"><div class="timeline-dot purple"></div>
-        <p><strong>Part 1</strong> — Warm-Up: Algorithmic Thinking Puzzles</p></div>
-      <div class="timeline-step"><div class="timeline-dot"></div>
-        <p><strong>Part 2</strong> — Vocabulary &amp; Concept Check</p></div>
-      <div class="timeline-step"><div class="timeline-dot"></div>
-        <p><strong>Part 3</strong> — Trace &amp; Bug Hunt (TinyBot v1)</p></div>
-      <div class="timeline-step"><div class="timeline-dot amber"></div>
-        <p><strong>Part 4</strong> — Tiered Coding Challenge (choose your level)</p></div>
-      <div class="timeline-step" style="margin-bottom:0"><div class="timeline-dot green"></div>
-        <p><strong>⭐ Part 5</strong> — Bonus: FSM Dialogue &amp; Negation Fix</p></div>
+<!-- OVERVIEW -->
+<div class="card ab mb3">
+  <div class="clabel b">🗺️ What You Will Do Today</div>
+  <div class="g2" style="margin-bottom:0">
+    <div>
+      <p class="mb1"><strong>Part 1</strong> — Vocabulary &amp; True/False check</p>
+      <p class="mb1"><strong>Part 2</strong> — Trace the Counter step by step</p>
+      <p class="mb1"><strong>Part 3</strong> — Fix the broken fairness code</p>
+    </div>
+    <div>
+      <p class="mb1"><strong>Part 4</strong> — Design your own balanced dataset</p>
+      <p class="mb1"><strong>Part 5</strong> — Written fairness argument</p>
+      <p class="mb1"><strong>⭐ Bonus</strong> — Precision, recall &amp; the Impossibility Theorem</p>
     </div>
   </div>
-  <div class="card accent-blue">
-    <div class="card-label blue">🔑 Key Ideas for Today</div>
-    <ul style="list-style:disc;padding-left:18px;line-height:1.9;">
-      <li><strong>Tokenization</strong> — splitting text into small units before any AI reads it</li>
-      <li><strong>Bag-of-Words</strong> — scoring intents using keyword weights</li>
-      <li><strong>Deterministic</strong> — same input always gives same output</li>
-      <li><strong>FSM</strong> — a bot that <em>remembers</em> which state it is in</li>
-      <li><strong>Big-O</strong> — measuring how fast (or slow) an algorithm grows</li>
-    </ul>
-    <div class="tip-box purple mt-2">💡 <strong>Predict before you run</strong> — if you can predict output, you truly understand the code.</div>
-  </div>
+</div>
+
+<!-- KEY FORMULA BOX -->
+<div class="card aa mb3">
+  <div class="clabel a">📐 Key Formula — Class Imbalance Ratio</div>
+  <div class="fbox">imbalance_ratio = count_majority / count_minority</div>
+  <p class="tm tc">Used in every part today. When this ratio is &gt; 2.0 the dataset is considered significantly imbalanced.</p>
 </div>
 
 <hr class="divider">
 
-<!-- ══════════ PART 1 · WARM-UP PUZZLES ══════════ -->
-<div class="section-label">🧮 Part 1 of 5</div>
-<div class="section-title">Warm-Up: Think Like a Computer</div>
+<!-- ════════════════════════════════════════════════════════
+     PART 1 — VOCABULARY & TRUE/FALSE
+     ════════════════════════════════════════════════════════ -->
+<div class="section-label">📖 Part 1</div>
+<div class="section-title">Vocabulary &amp; Concept Check <span style="font-size:.9rem;font-weight:400;color:var(--muted)">— 4 pts</span></div>
 
-<!-- Puzzle 1 -->
-<div class="card accent-purple mb-2">
-  <div class="card-label purple">🌳 Puzzle 1 — Syntactic Ambiguity</div>
-  <p class="mb-2">The sentence <em>"I saw the man with the telescope"</em> has <strong>two</strong> different meanings. Draw both interpretations as a simple tree diagram below — label who has the telescope in each version.</p>
-  <div class="grid-2">
+<!-- 1A Matching -->
+<div class="card ag">
+  <div class="clabel g">1A · Matching — write the correct letter (A–G) next to each definition</div>
+  <div class="g2" style="margin-bottom:0">
     <div>
-      <p style="font-size:0.8rem;font-weight:700;color:#6d28d9;margin-bottom:6px;">🌳 Interpretation A — draw here:</p>
-      <div class="draw-wrap" style="border:2px dashed #c4b5fd;border-radius:10px;padding:8px;background:#faf5ff;">
-      <div class="draw-toolbar">
-        <label>✏️ Draw:</label>
-        <input type="color" class="draw-color" value="#1f2a37" title="Pen color" />
-        <label>Size:</label>
-        <input type="range" class="draw-size" min="1" max="12" value="2" />
-        <button class="draw-clear" type="button">🗑 Clear</button>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:12px">
+        <div class="card" style="padding:8px;text-align:center;margin-bottom:0"><span style="font-family:var(--fc);font-weight:700;color:var(--a1)">A</span><br><small>Training Data</small></div>
+        <div class="card" style="padding:8px;text-align:center;margin-bottom:0"><span style="font-family:var(--fc);font-weight:700;color:var(--a1)">B</span><br><small>Bias</small></div>
+        <div class="card" style="padding:8px;text-align:center;margin-bottom:0"><span style="font-family:var(--fc);font-weight:700;color:var(--a1)">C</span><br><small>Class Imbalance</small></div>
+        <div class="card" style="padding:8px;text-align:center;margin-bottom:0"><span style="font-family:var(--fc);font-weight:700;color:var(--a1)">D</span><br><small>Tuple</small></div>
       </div>
-      <canvas class="draw-canvas" height="110"></canvas>
-    </div>
-      <p class="text-muted mt-2">Who has the telescope?</p>
-      <input class="write-line" type="text" placeholder="Answer..." />
-    </div>
-    <div>
-      <p style="font-size:0.8rem;font-weight:700;color:#6d28d9;margin-bottom:6px;">🌳 Interpretation B — draw here:</p>
-      <div class="draw-wrap" style="border:2px dashed #c4b5fd;border-radius:10px;padding:8px;background:#faf5ff;">
-      <div class="draw-toolbar">
-        <label>✏️ Draw:</label>
-        <input type="color" class="draw-color" value="#1f2a37" title="Pen color" />
-        <label>Size:</label>
-        <input type="range" class="draw-size" min="1" max="12" value="2" />
-        <button class="draw-clear" type="button">🗑 Clear</button>
-      </div>
-      <canvas class="draw-canvas" height="110"></canvas>
-    </div>
-      <p class="text-muted mt-2">Who has the telescope?</p>
-      <input class="write-line" type="text" placeholder="Answer..." />
-    </div>
-  </div>
-  <p class="mt-2" style="font-size:0.8rem;color:#374151;">A computer sees only one string of characters. How would <em>you</em> choose which meaning to use? (1–2 sentences)</p>
-  <div class="write-lines mt-2">
-    <input class="write-line" type="text" placeholder="My answer..." />
-    <input class="write-line" type="text" placeholder="..." />
-  </div>
-  <div class="tip-box purple">🔍 This is the <strong>syntactic ambiguity</strong> problem — one of the hardest challenges in NLP.</div>
-</div>
-
-<!-- Puzzle 2 -->
-<div class="card accent-blue mb-2">
-  <div class="card-label blue">🐍 Puzzle 2 — Negation in Python</div>
-  <p class="mb-2">Write a <strong>one-line Python expression</strong> (no <code>import</code>) that returns <code>True</code> only when <code>"sad"</code> appears in the variable <code>msg</code> but <code>"not"</code> does <strong>NOT</strong>.</p>
-  <div class="code-block"><span class="cm"># Fill in the blank — one expression only:</span>
-result = <input class="blank-input wide" type="text" placeholder="..." /></div>
-  <p class="mb-1">Why do real NLP systems need <strong>more</strong> than just this one-line check? Give one example of when it would still go wrong.</p>
-  <div class="write-lines">
-    <input class="write-line" type="text" placeholder="Example of when it fails..." />
-    <input class="write-line" type="text" placeholder="..." />
-  </div>
-</div>
-
-<!-- Puzzle 3 -->
-<div class="card accent-amber mb-3">
-  <div class="card-label amber">⏱ Puzzle 3 — Big-O Complexity</div>
-  <p class="mb-2">TinyBot v1 has <strong>6 intent rules</strong>. Each rule adds one <code>elif</code> check that takes constant time.</p>
-  <div class="grid-2">
-    <div>
-      <p style="font-size:0.83rem;color:#374151;margin-bottom:8px;"><strong>What is the Big-O time complexity</strong> of classifying one message?</p>
-      <p>O( <input class="blank-input narrow" type="text" placeholder="?" /> ) &nbsp; where the variable means: <input class="blank-input wide" type="text" placeholder="..." /></p>
-      <div class="write-lines mt-2">
-        <input class="write-line" type="text" placeholder="Explain in your own words..." />
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px">
+        <div class="card" style="padding:8px;text-align:center;margin-bottom:0"><span style="font-family:var(--fc);font-weight:700;color:var(--a1)">E</span><br><small>Counter</small></div>
+        <div class="card" style="padding:8px;text-align:center;margin-bottom:0"><span style="font-family:var(--fc);font-weight:700;color:var(--a1)">F</span><br><small>Fairness Metric</small></div>
+        <div class="card" style="padding:8px;text-align:center;margin-bottom:0"><span style="font-family:var(--fc);font-weight:700;color:var(--a1)">G</span><br><small>List Comprehension</small></div>
       </div>
     </div>
     <div>
-      <p style="font-size:0.83rem;color:#374151;margin-bottom:8px;"><strong>Bottleneck question:</strong> Could this slow down at 10 million messages/day?</p>
-      <div style="display:flex;gap:12px;margin-bottom:8px;">
-        <label style="font-size:0.85rem;display:flex;align-items:center;gap:6px;cursor:pointer;"><input type="radio" name="bigO" style="accent-color:#f59e0b;"> Yes, because...</label>
-        <label style="font-size:0.85rem;display:flex;align-items:center;gap:6px;cursor:pointer;"><input type="radio" name="bigO" style="accent-color:#f59e0b;"> No, because...</label>
-      </div>
-      <input class="write-line" type="text" placeholder="My reasoning..." />
-    </div>
-  </div>
-</div>
-
-<hr class="divider">
-
-<!-- ══════════ PART 2 · VOCABULARY ══════════ -->
-<div class="section-label">📖 Part 2 of 5</div>
-<div class="section-title">Vocabulary &amp; Concept Check</div>
-
-<div class="grid-2 mb-3">
-  <!-- Matching -->
-  <div class="card">
-    <div class="card-label blue">🔤 Match the Term (write the letter)</div>
-    <p class="mb-2">Write the correct letter next to each definition.</p>
-    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px;">
-      <span style="background:#e0f2ff;color:#0b63ce;border-radius:6px;padding:3px 10px;font-weight:700;font-size:0.8rem;">A. Token</span>
-      <span style="background:#e0f2ff;color:#0b63ce;border-radius:6px;padding:3px 10px;font-weight:700;font-size:0.8rem;">B. Tokenization</span>
-      <span style="background:#e0f2ff;color:#0b63ce;border-radius:6px;padding:3px 10px;font-weight:700;font-size:0.8rem;">C. Bag-of-Words</span>
-      <span style="background:#e0f2ff;color:#0b63ce;border-radius:6px;padding:3px 10px;font-weight:700;font-size:0.8rem;">D. Intent</span>
-      <span style="background:#e0f2ff;color:#0b63ce;border-radius:6px;padding:3px 10px;font-weight:700;font-size:0.8rem;">E. Deterministic</span>
-      <span style="background:#e0f2ff;color:#0b63ce;border-radius:6px;padding:3px 10px;font-weight:700;font-size:0.8rem;">F. FSM</span>
-      <span style="background:#e0f2ff;color:#0b63ce;border-radius:6px;padding:3px 10px;font-weight:700;font-size:0.8rem;">G. Hallucination</span>
-    </div>
-    <table style="width:100%;font-size:0.82rem;border-collapse:collapse;">
-      <tr><td style="padding:5px 0;border-bottom:1px solid #f1f5f9;color:#374151;width:85%;">The goal or purpose behind a message ("greeting", "negative")</td><td><input type="text" style="width:36px;border:none;border-bottom:2px solid #0b63ce;text-align:center;font-weight:800;font-size:0.9rem;color:#0b63ce;background:transparent;outline:none;" placeholder="_" /></td></tr>
-      <tr><td style="padding:5px 0;border-bottom:1px solid #f1f5f9;color:#374151;">Splitting a sentence into small units before any AI analysis</td><td><input type="text" style="width:36px;border:none;border-bottom:2px solid #0b63ce;text-align:center;font-weight:800;font-size:0.9rem;color:#0b63ce;background:transparent;outline:none;" placeholder="_" /></td></tr>
-      <tr><td style="padding:5px 0;border-bottom:1px solid #f1f5f9;color:#374151;">Same input always produces the same output — no randomness</td><td><input type="text" style="width:36px;border:none;border-bottom:2px solid #0b63ce;text-align:center;font-weight:800;font-size:0.9rem;color:#0b63ce;background:transparent;outline:none;" placeholder="_" /></td></tr>
-      <tr><td style="padding:5px 0;border-bottom:1px solid #f1f5f9;color:#374151;">Scoring text by counting keyword weights, ignoring word order</td><td><input type="text" style="width:36px;border:none;border-bottom:2px solid #0b63ce;text-align:center;font-weight:800;font-size:0.9rem;color:#0b63ce;background:transparent;outline:none;" placeholder="_" /></td></tr>
-      <tr><td style="padding:5px 0;border-bottom:1px solid #f1f5f9;color:#374151;">The smallest unit of text a program processes (word or character)</td><td><input type="text" style="width:36px;border:none;border-bottom:2px solid #0b63ce;text-align:center;font-weight:800;font-size:0.9rem;color:#0b63ce;background:transparent;outline:none;" placeholder="_" /></td></tr>
-      <tr><td style="padding:5px 0;border-bottom:1px solid #f1f5f9;color:#374151;">A model with a fixed set of states and rules to move between them</td><td><input type="text" style="width:36px;border:none;border-bottom:2px solid #0b63ce;text-align:center;font-weight:800;font-size:0.9rem;color:#0b63ce;background:transparent;outline:none;" placeholder="_" /></td></tr>
-      <tr><td style="padding:5px 0;color:#374151;">When an AI confidently says something that is completely false</td><td><input type="text" style="width:36px;border:none;border-bottom:2px solid #0b63ce;text-align:center;font-weight:800;font-size:0.9rem;color:#0b63ce;background:transparent;outline:none;" placeholder="_" /></td></tr>
-    </table>
-  </div>
-
-  <!-- True/False -->
-  <div class="card">
-    <div class="card-label amber">✏️ True or False — Circle T or F</div>
-    <p class="mb-2">Circle <strong>T</strong> (True) or <strong>F</strong> (False) for each statement.</p>
-    <table style="width:100%;font-size:0.82rem;border-collapse:collapse;">
-      <tr><td style="padding:6px 0;border-bottom:1px solid #f1f5f9;color:#374151;width:85%">TinyBot v1 is deterministic — the same input always gives the same reply.</td><td style="padding:6px 0;border-bottom:1px solid #f1f5f9;font-weight:800;color:#0b63ce;">T &nbsp; F</td></tr>
-      <tr><td style="padding:6px 0;border-bottom:1px solid #f1f5f9;color:#374151;">The substring check <code>'hi' in msg</code> will also match the word "this".</td><td style="padding:6px 0;border-bottom:1px solid #f1f5f9;font-weight:800;color:#0b63ce;">T &nbsp; F</td></tr>
-      <tr><td style="padding:6px 0;border-bottom:1px solid #f1f5f9;color:#374151;">A bag-of-words scorer considers the order that words appear in a sentence.</td><td style="padding:6px 0;border-bottom:1px solid #f1f5f9;font-weight:800;color:#0b63ce;">T &nbsp; F</td></tr>
-      <tr><td style="padding:6px 0;border-bottom:1px solid #f1f5f9;color:#374151;">An FSM stores a <code>state</code> variable that changes as the conversation moves forward.</td><td style="padding:6px 0;border-bottom:1px solid #f1f5f9;font-weight:800;color:#0b63ce;">T &nbsp; F</td></tr>
-      <tr><td style="padding:6px 0;color:#374151;">GPT-4 was trained on roughly 13 trillion tokens.</td><td style="padding:6px 0;font-weight:800;color:#0b63ce;">T &nbsp; F</td></tr>
-    </table>
-  </div>
-</div>
-
-<!-- Tokenization trace -->
-<div class="card accent-blue mb-3">
-  <div class="card-label blue">🔍 Trace the Tokenizer</div>
-  <p class="mb-2">Here is the <code>tokenize()</code> function from the lesson. Run it in your head for the input below, then answer the questions.</p>
-  <div class="code-block"><span class="kw">def</span> tokenize(sentence):
-    <span class="kw">import</span> re
-    clean = re.sub(<span class="st">r'[^a-z\s]'</span>, <span class="st">''</span>, sentence.lower())
-    <span class="kw">return</span> clean.split()
-
-tokens = tokenize(<span class="st">"I'm NOT sad!"</span>)
-<span class="cm"># What does this return? →</span></div>
-  <div class="grid-2">
-    <div>
-      <p style="font-size:0.8rem;font-weight:700;color:#0b63ce;margin-bottom:6px;">💭 Predict the output (write the list):</p>
-      <input class="write-line" type="text" placeholder="tokens = [ ... ]" />
-      <p class="mt-2" style="font-size:0.8rem;color:#374151;">The regex removes apostrophes, so <code>"I'm"</code> becomes <code>"im"</code>. Are <code>"im"</code> and <code>"I'm"</code> the same meaning? What is lost?</p>
-      <div class="write-lines mt-2">
-        <input class="write-line" type="text" placeholder="What meaning is lost..." />
-        <input class="write-line" type="text" placeholder="..." />
-      </div>
-    </div>
-    <div>
-      <p style="font-size:0.8rem;font-weight:700;color:#047857;margin-bottom:6px;">🔧 How would <em>you</em> fix the tokenizer to keep apostrophes?</p>
-      <textarea class="write-area" placeholder="Describe your fix or write new code..."></textarea>
-      <div class="tip-box blue mt-2">🌍 <strong>GPT-4 scale:</strong> Trained on ~13 trillion tokens. Each ≈ ¾ of a word. That is roughly 10 trillion words — every Wikipedia article ~50,000 times over.</div>
-    </div>
-  </div>
-</div>
-
-<hr class="divider">
-
-<!-- ══════════ PART 3 · TRACE & BUG HUNT ══════════ -->
-<div class="section-label">🐛 Part 3 of 5</div>
-<div class="section-title">Trace TinyBot v1 &amp; Hunt the Bugs</div>
-
-<!-- Bag-of-words trace -->
-<div class="card accent-amber mb-2">
-  <div class="card-label amber">🧮 Trace the Bag-of-Words Scorer</div>
-  <p class="mb-2">The scorer below assigns numerical weights to keywords. Trace it for the input <strong>"I feel a bit sad and tired"</strong> and fill in the score table.</p>
-  <div class="code-block"><span class="nb">INTENTS</span> = {
-    <span class="st">'greeting'</span>: {<span class="st">'hello'</span>: <span class="nb">3</span>, <span class="st">'hi'</span>: <span class="nb">3</span>, <span class="st">'hey'</span>: <span class="nb">2</span>},
-    <span class="st">'negative'</span>: {<span class="st">'sad'</span>: <span class="nb">3</span>, <span class="st">'tired'</span>: <span class="nb">2</span>, <span class="st">'upset'</span>: <span class="nb">3</span>},
-    <span class="st">'positive'</span>: {<span class="st">'happy'</span>: <span class="nb">3</span>, <span class="st">'great'</span>: <span class="nb">2</span>, <span class="st">'excited'</span>: <span class="nb">3</span>},
-}</div>
-  <div class="grid-2">
-    <div>
-      <p style="font-size:0.8rem;font-weight:700;color:#b45309;margin-bottom:6px;">📊 Fill in the score table for: <em>"I feel a bit sad and tired"</em></p>
-      <table style="width:100%;font-size:0.83rem;border-collapse:collapse;border:1px solid #e2e8f0;">
-        <thead><tr><th style="background:#1e293b;color:#e2e8f0;padding:7px 10px;text-align:left;">Intent</th><th style="background:#1e293b;color:#e2e8f0;padding:7px 10px;text-align:left;">Score</th><th style="background:#1e293b;color:#e2e8f0;padding:7px 10px;text-align:left;">Matched Keywords</th></tr></thead>
-        <tbody>
-          <tr><td style="padding:7px 10px;border-bottom:1px solid #f1f5f9;">greeting</td><td style="padding:7px 10px;border-bottom:1px solid #f1f5f9;"><input type="text" style="width:50px;border:none;border-bottom:2px solid #f59e0b;text-align:center;font-family:var(--font-code);font-weight:700;color:#374151;background:transparent;outline:none;" placeholder="?" /></td><td style="padding:7px 10px;border-bottom:1px solid #f1f5f9;"><input type="text" style="width:130px;border:none;border-bottom:1.5px solid #cbd5e1;background:transparent;outline:none;font-size:0.8rem;" placeholder="none" /></td></tr>
-          <tr><td style="padding:7px 10px;border-bottom:1px solid #f1f5f9;">negative</td><td style="padding:7px 10px;border-bottom:1px solid #f1f5f9;"><input type="text" style="width:50px;border:none;border-bottom:2px solid #f59e0b;text-align:center;font-family:var(--font-code);font-weight:700;color:#374151;background:transparent;outline:none;" placeholder="?" /></td><td style="padding:7px 10px;border-bottom:1px solid #f1f5f9;"><input type="text" style="width:130px;border:none;border-bottom:1.5px solid #cbd5e1;background:transparent;outline:none;font-size:0.8rem;" placeholder="..." /></td></tr>
-          <tr><td style="padding:7px 10px;">positive</td><td style="padding:7px 10px;"><input type="text" style="width:50px;border:none;border-bottom:2px solid #f59e0b;text-align:center;font-family:var(--font-code);font-weight:700;color:#374151;background:transparent;outline:none;" placeholder="?" /></td><td style="padding:7px 10px;"><input type="text" style="width:130px;border:none;border-bottom:1.5px solid #cbd5e1;background:transparent;outline:none;font-size:0.8rem;" placeholder="none" /></td></tr>
-        </tbody>
+      <table class="match">
+        <tr><td><input class="match-in" type="text" maxlength="1" placeholder="?"></td><td>An immutable, ordered pair — ideal for labelled records</td></tr>
+        <tr><td><input class="match-in" type="text" maxlength="1" placeholder="?"></td><td>A number that measures how equally a model treats different groups</td></tr>
+        <tr><td><input class="match-in" type="text" maxlength="1" placeholder="?"></td><td>A dict subclass that automatically tallies occurrences</td></tr>
+        <tr><td><input class="match-in" type="text" maxlength="1" placeholder="?"></td><td>When one category has far more examples than another</td></tr>
+        <tr><td><input class="match-in" type="text" maxlength="1" placeholder="?"></td><td>Labelled examples the model learns patterns from</td></tr>
+        <tr><td><input class="match-in" type="text" maxlength="1" placeholder="?"></td><td>A one-line filter + transform: <code>[x for x in lst if cond]</code></td></tr>
+        <tr><td><input class="match-in" type="text" maxlength="1" placeholder="?"></td><td>Systematic error that unfairly skews predictions toward one group</td></tr>
       </table>
-      <p style="margin-top:8px;font-size:0.83rem;color:#374151;"><strong>Winner →</strong> <input type="text" style="border:none;border-bottom:2px solid #0b63ce;font-weight:800;color:#0b63ce;font-family:var(--font-code);background:transparent;outline:none;width:100px;" placeholder="intent" /></p>
-    </div>
-    <div>
-      <p style="font-size:0.8rem;font-weight:700;color:#b91c1c;margin-bottom:6px;">🐛 Still broken! Try this input: <em>"I'm not sad at all, I feel great!"</em></p>
-      <p class="mb-2" style="font-size:0.83rem;color:#374151;">This scores <code>negative=3</code> but should return <code>positive</code>. What linguistic feature would fix this?</p>
-      <p style="font-size:0.8rem;color:#64748b;margin-bottom:4px;font-style:italic;">Hint: look 1 token to the <em>left</em> of each keyword.</p>
-      <textarea class="write-area" placeholder="The feature that would fix this is... because..."></textarea>
     </div>
   </div>
 </div>
 
-<!-- TinyBot v1 Bug Hunt -->
-<div class="card accent-red mb-3">
-  <div class="card-label red">🐛 Bug Hunt — Label Each Bug in TinyBot v1</div>
-  <p class="mb-2">TinyBot v1 is shown below. Three bugs are marked with 🐛. For each one: write what input triggers it, and explain in your own words why it fails.</p>
-  <div class="code-block"><span class="cm"># TinyBot v1 — DETERMINISTIC: same input → same output. Always.</span>
-<span class="kw">while</span> True:
-    msg = <span class="kw">input</span>(<span class="st">'You: '</span>).lower().strip()
-
-    <span class="kw">if</span> msg == <span class="st">'bye'</span>:
-        <span class="kw">print</span>(<span class="st">'Bot: Goodbye!'</span>); <span class="kw">break</span>
-    <span class="kw">elif</span> <span class="st">'hello'</span> <span class="kw">in</span> msg <span class="kw">or</span> <span class="st">'hi'</span> <span class="kw">in</span> msg:  <span class="bug"># 🐛 BUG 1</span>
-        <span class="kw">print</span>(<span class="st">'Bot: Hi there!'</span>)
-    <span class="kw">elif</span> <span class="st">'name'</span> <span class="kw">in</span> msg:
-        <span class="kw">print</span>(<span class="st">'Bot: I am TinyBot.'</span>)
-    <span class="kw">elif</span> <span class="st">'sad'</span> <span class="kw">in</span> msg <span class="kw">or</span> <span class="st">'tired'</span> <span class="kw">in</span> msg:  <span class="bug"># 🐛 BUG 2</span>
-        <span class="kw">print</span>(<span class="st">'Bot: Breaks and friends can really help.'</span>)
-    <span class="kw">elif</span> <span class="st">'happy'</span> <span class="kw">in</span> msg <span class="kw">or</span> <span class="st">'excited'</span> <span class="kw">in</span> msg:
-        <span class="kw">print</span>(<span class="st">'Bot: That is awesome news!'</span>)
-    <span class="kw">else</span>:
-        <span class="kw">print</span>(<span class="st">'Bot: I do not understand yet.'</span>)  <span class="bug"># 🐛 BUG 3</span></div>
-
-  <table style="width:100%;font-size:0.82rem;border-collapse:collapse;margin-top:4px;">
-    <thead><tr>
-      <th style="background:#1e293b;color:#e2e8f0;padding:7px 10px;text-align:left;">Bug</th>
-      <th style="background:#1e293b;color:#e2e8f0;padding:7px 10px;text-align:left;">What input triggers it?</th>
-      <th style="background:#1e293b;color:#e2e8f0;padding:7px 10px;text-align:left;">Why it fails</th>
-    </tr></thead>
-    <tbody>
-      <tr>
-        <td style="padding:7px 10px;border-bottom:1px solid #fee2e2;color:#b91c1c;font-weight:700;">🐛 Bug 1<br><small style="font-weight:400;color:#64748b;">substring match</small></td>
-        <td style="padding:7px 10px;border-bottom:1px solid #fee2e2;"><input type="text" style="width:100%;border:none;border-bottom:1.5px solid #fca5a5;background:transparent;outline:none;font-size:0.83rem;" placeholder='e.g. "this" or "white"' /></td>
-        <td style="padding:7px 10px;border-bottom:1px solid #fee2e2;"><input type="text" style="width:100%;border:none;border-bottom:1.5px solid #fca5a5;background:transparent;outline:none;font-size:0.83rem;" placeholder="Because..." /></td>
-      </tr>
-      <tr>
-        <td style="padding:7px 10px;border-bottom:1px solid #fee2e2;color:#b91c1c;font-weight:700;">🐛 Bug 2<br><small style="font-weight:400;color:#64748b;">negation ignored</small></td>
-        <td style="padding:7px 10px;border-bottom:1px solid #fee2e2;"><input type="text" style="width:100%;border:none;border-bottom:1.5px solid #fca5a5;background:transparent;outline:none;font-size:0.83rem;" placeholder='e.g. "I am not sad"' /></td>
-        <td style="padding:7px 10px;border-bottom:1px solid #fee2e2;"><input type="text" style="width:100%;border:none;border-bottom:1.5px solid #fca5a5;background:transparent;outline:none;font-size:0.83rem;" placeholder="Because..." /></td>
-      </tr>
-      <tr>
-        <td style="padding:7px 10px;color:#b91c1c;font-weight:700;">🐛 Bug 3<br><small style="font-weight:400;color:#64748b;">no memory between turns</small></td>
-        <td style="padding:7px 10px;"><input type="text" style="width:100%;border:none;border-bottom:1.5px solid #fca5a5;background:transparent;outline:none;font-size:0.83rem;" placeholder="Describe a multi-turn conversation..." /></td>
-        <td style="padding:7px 10px;"><input type="text" style="width:100%;border:none;border-bottom:1.5px solid #fca5a5;background:transparent;outline:none;font-size:0.83rem;" placeholder="Because TinyBot always..." /></td>
-      </tr>
-    </tbody>
+<!-- 1B True/False -->
+<div class="card ab">
+  <div class="clabel b">1B · True or False — write T or F in each box</div>
+  <table class="tf">
+    <tr><td><input class="tf-in" type="text" maxlength="1" placeholder="?"></td><td>A dataset containing only true facts can still produce a biased AI model.</td></tr>
+    <tr><td><input class="tf-in" type="text" maxlength="1" placeholder="?"></td><td><code>Counter({'blue':3,'red':2}).most_common(1)</code> returns <code>[('blue', 3)]</code>.</td></tr>
+    <tr><td><input class="tf-in" type="text" maxlength="1" placeholder="?"></td><td>If a model is 95% accurate overall, it must be fair to all groups.</td></tr>
+    <tr><td><input class="tf-in" type="text" maxlength="1" placeholder="?"></td><td>Undersampling the majority class always improves a model — no trade-offs.</td></tr>
+    <tr><td><input class="tf-in" type="text" maxlength="1" placeholder="?"></td><td>The EU AI Act (2024) requires human review for high-risk automated decisions.</td></tr>
   </table>
 </div>
 
-<hr class="divider page-break">
-
-<!-- ══════════ PART 4 · TIERED CODING ══════════ -->
-<div class="section-label">💻 Part 4 of 5 — Choose Your Level</div>
-<div class="section-title">Tiered Coding Challenges</div>
-
-<div class="card accent-blue mb-2">
-  <div class="card-label blue">📋 Instructions — Pick ONE level</div>
-  <div class="grid-3">
-    <div style="text-align:center;padding:8px;">
-      <div style="font-size:1.8rem;margin-bottom:4px;">🔵</div>
-      <span class="level-badge level-1">Level 1 — Approaching</span>
-      <p style="font-size:0.82rem;color:#374151;margin-top:4px;">Convert TinyBot v1's if/elif chain to the data-driven dict structure</p>
-    </div>
-    <div style="text-align:center;padding:8px;">
-      <div style="font-size:1.8rem;margin-bottom:4px;">🟡</div>
-      <span class="level-badge level-2">Level 2 — On Grade Level</span>
-      <p style="font-size:0.82rem;color:#374151;margin-top:4px;">Implement the bag-of-words scorer and add the negation window fix</p>
-    </div>
-    <div style="text-align:center;padding:8px;">
-      <div style="font-size:1.8rem;margin-bottom:4px;">🟣</div>
-      <span class="level-badge level-3">Level 3 — Extended</span>
-      <p style="font-size:0.82rem;color:#374151;margin-top:4px;">Build a 4-state FSM dialogue bot with your weighted scorer</p>
-    </div>
-  </div>
-  <p style="font-size:0.8rem;color:#374151;margin-top:8px;text-align:center;">Circle your level: &nbsp; <strong>Level 1</strong> &nbsp;/&nbsp; <strong>Level 2</strong> &nbsp;/&nbsp; <strong>Level 3</strong></p>
-</div>
-
-<!-- LEVEL 1 -->
-<div class="card mb-2">
-  <div style="margin-bottom:8px;"><span class="level-badge level-1">🔵 Level 1 — Refactor to Dict Architecture</span></div>
-  <div class="grid-2">
+<!-- 1C Calculate -->
+<div class="card aa">
+  <div class="clabel a">1C · Calculate — show full working</div>
+  <div class="g2" style="margin-bottom:0">
     <div>
-      <div class="card-label blue">📋 What to do</div>
-      <p class="mb-2">Convert TinyBot v1's <code>if/elif</code> chain to the <strong>data-driven dict structure</strong>. Every reply must still work. Adding a new intent should only require a new dict entry — no new code logic.</p>
-      <ul style="list-style:disc;padding-left:18px;font-size:0.83rem;color:#374151;line-height:1.8;">
-        <li>Fill in the <code>RULES</code> dict with at least 4 intents</li>
-        <li>Fill in the <code>REPLIES</code> dict with matching responses</li>
-        <li>Complete <code>get_intent()</code> using set intersection</li>
-      </ul>
-      <div class="check-list mt-2">
-        <li><span class="box"></span> 4 intents in RULES (greeting, farewell, negative, positive)</li>
-        <li><span class="box"></span> Matching REPLIES for each intent + "unknown"</li>
-        <li><span class="box"></span> get_intent() uses <code>set()</code> — not <code>in</code> substring check</li>
-        <li><span class="box"></span> Adding "weather" intent takes under 60 seconds ✓</li>
-      </div>
-      <div class="tip-box blue mt-2">💡 <strong>Why sets beat lists:</strong> List intersection = O(n×m). Set intersection = O(min(n,m)). At 1,000 keywords, sets are ~50× faster.</div>
+      <p class="mb2"><strong>Scenario A</strong> — A dataset has <strong>600 images of dogs</strong> and <strong>150 images of cats</strong>.</p>
+      <p class="mb1">Imbalance ratio =</p>
+      <input class="wline" type="text" placeholder="working...">
+      <input class="wline" type="text" placeholder="ratio = ___">
+      <p class="mb1 mt2">Is this significantly imbalanced? <input class="wline" style="width:60px;display:inline-block" type="text" placeholder="Y/N"></p>
     </div>
     <div>
-      <div class="card-label amber">🧩 Starter — fill in the blanks</div>
-      <div class="code-block" style="font-size:0.72rem;"><span class="nb">RULES</span> = {
-    <span class="st">'greeting'</span>: [<span class="st">'hi'</span>, <span class="st">'hello'</span>, <span class="st">'hey'</span>],
-    <input class="blank-input wide" type="text" placeholder="intent" />: [<input class="blank-input wide" type="text" placeholder="keywords" />],
-    <input class="blank-input wide" type="text" placeholder="intent" />: [<input class="blank-input wide" type="text" placeholder="keywords" />],
-    <input class="blank-input wide" type="text" placeholder="intent" />: [<input class="blank-input wide" type="text" placeholder="keywords" />],
-}
-<span class="nb">REPLIES</span> = {
-    <span class="st">'greeting'</span>: <span class="st">'Hi there!'</span>,
-    <input class="blank-input wide" type="text" placeholder="intent" />: <input class="blank-input wide" type="text" placeholder="'reply'" />,
-    <input class="blank-input wide" type="text" placeholder="intent" />: <input class="blank-input wide" type="text" placeholder="'reply'" />,
-    <span class="st">'unknown'</span>: <span class="st">'I do not understand yet.'</span>,
-}
-<span class="kw">def</span> get_intent(msg):
-    tokens = <input class="blank-input wide" type="text" placeholder="set(...)" />
-    <span class="kw">for</span> intent, kws <span class="kw">in</span> RULES.items():
-        <span class="kw">if</span> <input class="blank-input wide" type="text" placeholder="tokens & ..." />:
-            <span class="kw">return</span> intent
-    <span class="kw">return</span> <span class="st">'unknown'</span></div>
-      <p class="mt-2" style="font-size:0.8rem;color:#374151;"><strong>Test it:</strong> Add a <code>'weather'</code> intent with keywords <code>['rain', 'sunny', 'weather']</code>. How long did it take?</p>
-      <input class="write-line" type="text" placeholder="Time taken and what you changed..." />
-    </div>
-  </div>
-</div>
-
-<!-- LEVEL 2 -->
-<div class="card mb-2">
-  <div style="margin-bottom:8px;"><span class="level-badge level-2">🟡 Level 2 — Weighted Scorer + Negation Fix</span></div>
-  <div class="grid-2">
-    <div>
-      <div class="card-label amber">📋 What to do</div>
-      <p class="mb-2">Implement the <strong>bag-of-words classifier</strong> from the lesson, then add the <strong>negation window fix</strong> so "not sad" no longer scores as negative.</p>
-      <ul style="list-style:disc;padding-left:18px;font-size:0.83rem;color:#374151;line-height:1.8;">
-        <li>Implement <code>classify(msg)</code> using <code>INTENTS</code> weights dict</li>
-        <li>Add negation window: check if previous token is <code>"not"</code>, <code>"n't"</code>, or <code>"never"</code> → multiply score by −1</li>
-        <li>Test both inputs below and record actual vs expected</li>
-      </ul>
-      <p style="font-size:0.8rem;font-weight:700;color:#b45309;margin:10px 0 6px;">🧪 Test inputs:</p>
-      <table style="width:100%;font-size:0.8rem;border-collapse:collapse;">
-        <tr><td style="padding:5px 0;border-bottom:1px solid #f1f5f9;color:#374151;">"I'm not sad at all"</td><td style="padding:5px 0;border-bottom:1px solid #f1f5f9;"><input type="text" style="width:100%;border:none;border-bottom:1.5px solid #f59e0b;background:transparent;outline:none;font-size:0.8rem;" placeholder="expected: unknown/positive → actual: ?" /></td></tr>
-        <tr><td style="padding:5px 0;color:#374151;">"I feel a little excited and kind of sad"</td><td style="padding:5px 0;"><input type="text" style="width:100%;border:none;border-bottom:1.5px solid #f59e0b;background:transparent;outline:none;font-size:0.8rem;" placeholder="which intent wins? →" /></td></tr>
-      </table>
-      <p style="font-size:0.8rem;font-weight:700;color:#374151;margin:10px 0 4px;">In 1 sentence — why does <code>dict.get(key, 0)</code> matter?</p>
-      <input class="write-line" type="text" placeholder="Because if the key is missing..." />
-    </div>
-    <div>
-      <div class="card-label green">🐍 Negation window extension — fill in blanks:</div>
-      <div class="code-block" style="font-size:0.72rem;"><span class="kw">for</span> i, token <span class="kw">in</span> enumerate(tokens):
-    neg = (i > <input class="blank-input narrow" type="text" placeholder="?" />
-           <span class="kw">and</span> tokens[i-<input class="blank-input narrow" type="text" placeholder="?" />]
-           <span class="kw">in</span> [<span class="st">'not'</span>, <span class="st">"n't"</span>, <span class="st">'never'</span>])
-    sign = <input class="blank-input narrow" type="text" placeholder="?" /> <span class="kw">if</span> neg <span class="kw">else</span> <input class="blank-input narrow" type="text" placeholder="?" />
-    <span class="kw">for</span> intent, weights <span class="kw">in</span> INTENTS.items():
-        scores[intent] += <input class="blank-input wide" type="text" placeholder="sign * ..." /></div>
-      <div class="card-label blue mt-2 mb-1">🐍 Write your full classify() here:</div>
-      <textarea class="dark-code-write" style="min-height:160px;" spellcheck="false" placeholder="# Level 2 — bag-of-words classifier with negation fix&#10;INTENTS = {&#10;    'greeting': {'hello': 3, 'hi': 3},&#10;    'negative': {'sad': 3, 'tired': 2},&#10;    'positive': {'happy': 3, 'great': 2},&#10;}&#10;&#10;def classify(msg):&#10;    tokens = msg.lower().split()&#10;    scores = ...&#10;    ...&#10;    return ..."></textarea>
-    </div>
-  </div>
-</div>
-
-<!-- LEVEL 3 -->
-<div class="card accent-purple mb-3">
-  <div style="margin-bottom:8px;"><span class="level-badge level-3">🟣 Level 3 — 4-State FSM Dialogue Bot</span></div>
-  <div class="grid-2">
-    <div>
-      <div class="card-label purple">📋 What to build</div>
-      <p class="mb-2">Build a <strong>4-state FSM</strong> chatbot: <code>start → ask_name → ask_mood → chat</code>.</p>
-      <ul style="list-style:disc;padding-left:18px;font-size:0.83rem;color:#374151;line-height:1.8;">
-        <li>In <code>chat</code> state, use your weighted scorer from Level 2</li>
-        <li>Personalize every reply using the stored <code>name</code> variable</li>
-        <li><strong>Extension:</strong> if mood score is negative → transition to a <code>support</code> state that suggests talking to a teacher</li>
-      </ul>
-      <p style="font-size:0.8rem;font-weight:700;color:#6d28d9;margin:10px 0 6px;">📐 Draw the FSM transition diagram below:</p>
-      <div style="border:2px dashed #c4b5fd;border-radius:10px;padding:8px;background:#faf5ff;">
-      
-        <div class="fsm-diagram">
-          <div class="fsm-state start">start</div>
-          <div class="fsm-arrow">──greeting──▶</div>
-          <div class="fsm-state">ask_name</div>
-          <div class="fsm-arrow">──name given──▶</div>
-          <div class="fsm-state">ask_mood</div>
-          <div class="fsm-arrow">──mood──▶</div>
-          <div class="fsm-state">chat</div>
-          <div class="fsm-arrow">──bye──▶</div>
-          <div class="fsm-state end">END</div>
-        
-      <div class="draw-wrap" style="margin-top:8px;">
-        <div class="draw-toolbar">
-          <label>✏️ Add states/arrows:</label>
-          <input type="color" class="draw-color" value="#7c3aed" title="Pen color" />
-          <label>Size:</label>
-          <input type="range" class="draw-size" min="1" max="12" value="2" />
-          <button class="draw-clear" type="button">🗑 Clear</button>
-        </div>
-        <canvas class="draw-canvas" height="80"></canvas>
-      </div>
-    </div>
-    <p class="text-muted text-center" style="margin-top:4px;">Add your "support" state and transitions below or on paper</p>
-      </div>
-      <p style="font-size:0.78rem;font-weight:700;color:#6d28d9;margin:8px 0 2px;">Formal notation: FSM = (Q, Σ, δ, q₀, F)</p>
-      <input class="write-line" type="text" placeholder="Q (states) = { start, ask_name, ... }" />
-      <input class="write-line" type="text" placeholder="F (accepting states) = { ... }" />
-    </div>
-    <div>
-      <div class="card-label purple">🐍 Write your FSM code here:</div>
-      <textarea class="dark-code-write" style="min-height:280px;" spellcheck="false" placeholder="# Level 3 — 4-state FSM dialogue bot&#10;state = 'start'&#10;name = None&#10;&#10;while True:&#10;    msg = input('You: ').lower().strip()&#10;&#10;    if state == 'start':&#10;        ...  # greet and transition&#10;&#10;    elif state == 'ask_name':&#10;        name = ...&#10;        ...  # transition to ask_mood&#10;&#10;    elif state == 'ask_mood':&#10;        ...  # use classify()&#10;&#10;    elif state == 'chat':&#10;        if msg == 'bye':&#10;            print(f'Bot: Goodbye, {name}!')&#10;            break&#10;        else:&#10;            ...  # personalised reply"></textarea>
+      <p class="mb2"><strong>Scenario B</strong> — After collecting 50 more cat images and removing 50 dog images, recalculate.</p>
+      <p class="mb1">New counts: dogs = <input class="blankinput" type="text" placeholder="?"> &nbsp; cats = <input class="blankinput" type="text" placeholder="?"></p>
+      <p class="mb1">New ratio =</p>
+      <input class="wline" type="text" placeholder="working...">
+      <input class="wline" type="text" placeholder="ratio = ___">
     </div>
   </div>
 </div>
 
 <hr class="divider">
 
-<!-- ══════════ PART 5 · BONUS ══════════ -->
-<div class="section-label">⭐ Part 5 of 5 — Bonus</div>
-<div class="section-title">Extension Challenges</div>
+<!-- ════════════════════════════════════════════════════════
+     PART 2 — TRACE THE COUNTER
+     ════════════════════════════════════════════════════════ -->
+<div class="section-label">🔬 Part 2</div>
+<div class="section-title">Trace the Counter — Step by Step <span style="font-size:.9rem;font-weight:400;color:var(--muted)">— 5 pts</span></div>
 
-<!-- Bonus A -->
-<div class="card mb-2">
-  <div style="margin-bottom:8px;"><span class="challenge-badge">⭐ Bonus A — Add a test() Function</span></div>
-  <div class="grid-2">
-    <div>
-      <div class="card-label blue">📋 What to do</div>
-      <p class="mb-2">Add a <code>test()</code> function that runs <strong>8 test messages automatically</strong> and prints <code>PASS</code> or <code>FAIL</code> for each. Include at least <strong>2 tests designed to break your bot</strong>.</p>
-      <ul style="list-style:disc;padding-left:18px;font-size:0.83rem;color:#374151;line-height:1.8;">
-        <li>All 8 test cases in a <code>cases</code> list of <code>(msg, expected)</code> tuples</li>
-        <li>At least 2 adversarial tests (inputs you expect to fail)</li>
-        <li>Clear PASS/FAIL output for each test</li>
-      </ul>
-      <p style="font-size:0.8rem;font-weight:700;color:#374151;margin:8px 0 4px;">Write 3 of your test cases here:</p>
-      <input class="write-line" type="text" placeholder='("hi there", "greeting")' />
-      <input class="write-line" type="text" placeholder='("I'm not sad", "unknown")  ← adversarial' />
-      <input class="write-line" type="text" placeholder='Add your own...' />
-    </div>
-    <div>
-      <div class="card-label green">🐍 Write your test() function here:</div>
-      <textarea class="dark-code-write" style="min-height:170px;" spellcheck="false" placeholder="def test():&#10;    cases = [&#10;        ('hi there', 'greeting'),&#10;        (&quot;I'm not sad&quot;, 'unknown'),  # adversarial&#10;        # add 6 more...&#10;    ]&#10;    for msg, expected in cases:&#10;        result = get_intent(msg)&#10;        status = '✓ PASS' if result == expected else '✗ FAIL'&#10;        print(f'{status} | {msg!r} → {result}')&#10;&#10;test()"></textarea>
-    </div>
+<div class="card ab">
+  <div class="clabel b">The code below processes a list of player records. Read it carefully — then complete the trace table.</div>
+  <div class="codeblock"><span class="kw">from</span> collections <span class="kw">import</span> Counter
+
+players = [
+    (<span class="st">'Alex'</span>,  <span class="st">'red'</span>),
+    (<span class="st">'Blake'</span>, <span class="st">'blue'</span>),
+    (<span class="st">'Casey'</span>, <span class="st">'blue'</span>),
+    (<span class="st">'Devon'</span>, <span class="st">'blue'</span>),
+    (<span class="st">'Emi'</span>,   <span class="st">'red'</span>),
+    (<span class="st">'Finley'</span>,<span class="st">'red'</span>),
+]
+
+counts = Counter(team <span class="kw">for</span> _, team <span class="kw">in</span> players)
+total  = sum(counts.values())
+ratio  = counts[<span class="st">'blue'</span>] / counts[<span class="st">'red'</span>]
+print(<span class="nb">f</span><span class="st">"blue:red = {ratio:.2f}x"</span>)</div>
+
+  <p class="mb2"><strong>2A</strong> — Fill in the <em>counts so far</em> column after each iteration:</p>
+  <table class="trace">
+    <thead><tr><th>Step</th><th>name variable</th><th>team variable</th><th>counts so far (write as dict)</th></tr></thead>
+    <tbody>
+      <tr><td>Start</td><td>—</td><td>—</td><td><code>{}</code></td></tr>
+      <tr><td>1</td><td>Alex</td><td>red</td><td><input class="trace-in" type="text" placeholder="{ ? }"></td></tr>
+      <tr><td>2</td><td>Blake</td><td>blue</td><td><input class="trace-in" type="text" placeholder="{ ? }"></td></tr>
+      <tr><td>3</td><td>Casey</td><td>blue</td><td><input class="trace-in" type="text" placeholder="{ ? }"></td></tr>
+      <tr><td>4</td><td>Devon</td><td>blue</td><td><input class="trace-in" type="text" placeholder="{ ? }"></td></tr>
+      <tr><td>5</td><td>Emi</td><td>red</td><td><input class="trace-in" type="text" placeholder="{ ? }"></td></tr>
+      <tr><td>6</td><td>Finley</td><td>red</td><td><input class="trace-in" type="text" placeholder="{ ? }"></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="g2">
+  <div class="card ag">
+    <div class="clabel g">2B — Predict the final output</div>
+    <p class="mb2">What does <code>print(f"blue:red = {ratio:.2f}x")</code> print?</p>
+    <div class="codeblock" style="min-height:40px"><input class="pred-input" type="text" style="background:transparent;border:none;outline:none;width:100%;color:#e2e8f0;font-family:var(--fc)" placeholder="blue:red = ___x"></div>
+    <p class="mb1 mt2">What does <code>counts.most_common(1)</code> return?</p>
+    <div class="codeblock" style="min-height:40px"><input class="pred-input" type="text" style="background:transparent;border:none;outline:none;width:100%;color:#e2e8f0;font-family:var(--fc)" placeholder="[( ___ , ___ )]"></div>
+  </div>
+  <div class="card aa">
+    <div class="clabel a">2C — Explain the underscore <code>_</code></div>
+    <p class="mb2">In <code>for _, team in players:</code> why do Python programmers use <code>_</code> for the name variable?</p>
+    <textarea class="warea" rows="4" placeholder="In Python, _ signals that..."></textarea>
+    <div class="tip a">💡 Think: what does it communicate to the next person reading your code?</div>
   </div>
 </div>
 
-<!-- Bonus B -->
-<div class="card mb-2">
-  <div style="margin-bottom:8px;"><span class="challenge-badge">⭐⭐ Bonus B — Chinese Room Analysis</span></div>
-  <div class="card-label blue">✍️ Required Analysis (5–7 sentences)</div>
-  <p class="mb-2">Use the <strong>Chinese Room argument</strong> and the <strong>grounding problem</strong> to answer: Does TinyBot <em>understand</em> language? Does GPT-4? What would a machine need to do to genuinely understand?</p>
-  <div class="grid-2">
-    <div>
-      <p style="font-size:0.8rem;font-weight:700;color:#0b63ce;margin-bottom:4px;">Does TinyBot understand? Why or why not?</p>
-      <textarea class="write-area" style="min-height:80px;" placeholder="TinyBot..."></textarea>
-      <p style="font-size:0.8rem;font-weight:700;color:#0b63ce;margin:8px 0 4px;">Does GPT-4 understand? How is it different?</p>
-      <textarea class="write-area" style="min-height:80px;" placeholder="GPT-4..."></textarea>
-    </div>
-    <div>
-      <p style="font-size:0.8rem;font-weight:700;color:#047857;margin-bottom:4px;">What would a machine need to <em>genuinely</em> understand?</p>
-      <textarea class="write-area" style="min-height:80px;" placeholder="A machine would genuinely understand if..."></textarea>
-      <div class="tip-box purple mt-2">🔍 <strong>Grounding:</strong> Connecting a word's meaning to real-world sensory experience. TinyBot knows the <em>string</em> "sad" but has never felt sad. Does that matter?</div>
-    </div>
-  </div>
-</div>
-
-<!-- Bonus C -->
-<div class="card accent-green mb-3">
-  <div style="margin-bottom:8px;"><span class="challenge-badge" style="background:linear-gradient(135deg,#10b981,#0b63ce);">⭐⭐⭐ Bonus C — Naive Bayes Research</span></div>
-  <div class="card-label green">🔬 Research Extension</div>
-  <p class="mb-2">Look up <strong>Naive Bayes classification</strong> — the algorithm behind early spam filters. Write pseudocode for training it on 10 labelled chatbot messages. How does it differ from your weighted scorer?</p>
-  <div class="grid-2">
-    <div>
-      <p style="font-size:0.8rem;font-weight:700;color:#047857;margin-bottom:4px;">📝 Pseudocode for training on 10 labelled messages:</p>
-      <textarea class="dark-code-write" style="min-height:130px;" spellcheck="false" placeholder="# Naive Bayes training pseudocode&#10;# for each labelled message (text, intent):&#10;#   tokenize text&#10;#   count each word per intent class&#10;# to classify new msg:&#10;#   ..."></textarea>
-    </div>
-    <div>
-      <p style="font-size:0.8rem;font-weight:700;color:#047857;margin-bottom:4px;">📊 How does Naive Bayes differ from your weighted scorer?</p>
-      <textarea class="write-area" style="min-height:130px;" placeholder="My weighted scorer uses fixed hand-crafted weights, while Naive Bayes..."></textarea>
-    </div>
-  </div>
-  <p class="mt-2 text-muted">📧 <strong>Submit to:</strong> hue.weng.88@gmail.com · Subject: <em>Day 17 HW · [Your Name] · Level [1/2/3]</em></p>
+<!-- CORE / EXTENSION extension for 2 -->
+<div class="card" style="border-left:4px solid var(--ar)">
+  <div class="clabel r">2D · Extension — Enumerate Pattern</div>
+  <p class="mb2">Rewrite the loop from 2A using <code>enumerate()</code> so that it also prints the index of each player. Write your new loop below:</p>
+  <textarea class="warea" rows="5" placeholder="for idx, (name, team) in enumerate(players):&#10;    print(...)"></textarea>
+  <p class="mb1 mt2">What is printed for the <strong>3rd player</strong>? (index starts at 0)</p>
+  <input class="wline" type="text" placeholder="→ #_: ____ is ____">
 </div>
 
 <hr class="divider">
 
-<!-- ══════════ REAL-WORLD CONNECTIONS ══════════ -->
-<div class="section-label">🌍 Real World</div>
-<div class="section-title">Where Is This Code Used Today?</div>
+<!-- ════════════════════════════════════════════════════════
+     PART 3 — FIX THE BROKEN CODE
+     ════════════════════════════════════════════════════════ -->
+<div class="section-label">🛠️ Part 3</div>
+<div class="section-title">Fix the Broken Fairness Code <span style="font-size:.9rem;font-weight:400;color:var(--muted)">— 6 pts</span></div>
 
-<div class="card mb-3">
-  <table class="score-table">
-    <thead><tr>
-      <th>Your Code Today</th>
-      <th>Real System</th>
-      <th>Scale</th>
-    </tr></thead>
-    <tbody>
-      <tr><td><code>tokenize()</code></td><td>GPT-4 BPE tokenizer</td><td>100K vocabulary tokens</td></tr>
-      <tr><td><code>classify()</code> scorer</td><td>Gmail spam filter</td><td>~15B emails/day</td></tr>
-      <tr><td><code>get_intent()</code> dict lookup</td><td>Alexa NLU pipeline</td><td>Millions of queries/hour</td></tr>
-      <tr><td>FSM <code>state</code> variable</td><td>Game AI behavior trees</td><td>1,200+ behavior nodes</td></tr>
-      <tr><td><code>test()</code> bug testing</td><td>Adversarial ML red-teaming</td><td>Dedicated safety teams</td></tr>
-    </tbody>
-  </table>
+<div class="card ab mb2">
+  <div class="clabel b">The code below has 6 bugs. Each 🔴 marks a line with an error. Fill each yellow blank with the correction.</div>
+  <div class="codeblock"><span class="kw">from</span> collections <span class="kw">import</span> Counter
+
+results = [
+    (<span class="st">'Alex'</span>,  <span class="st">'red'</span>,  <span class="st">'red'</span>),   <span class="cm"># correct ✓</span>
+    (<span class="st">'Blake'</span>, <span class="st">'blue'</span>, <span class="st">'blue'</span>),  <span class="cm"># correct ✓</span>
+    (<span class="st">'Casey'</span>, <span class="st">'blue'</span>, <span class="st">'blue'</span>),  <span class="cm"># correct ✓</span>
+    (<span class="st">'Devon'</span>, <span class="st">'blue'</span>, <span class="st">'red'</span>),   <span class="cm"># WRONG ✗</span>
+    (<span class="st">'Emi'</span>,   <span class="st">'red'</span>,  <span class="st">'blue'</span>),  <span class="cm"># WRONG ✗</span>
+    (<span class="st">'Finley'</span>,<span class="st">'red'</span>,  <span class="st">'red'</span>),   <span class="cm"># correct ✓</span>
+]
+
+<span class="cm"># Bug 1 🔴 — wrong variable name used</span>
+total_counts = Counter(<span class="nb">t</span> <span class="kw">for</span> _, <span class="nb">t</span>, _ <span class="kw">in</span> result)  <span class="cm"># 🔴</span>
+              <span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><input class="blankinput" type="text" placeholder="fix #1">
+
+<span class="cm"># Bug 2 🔴 — correct dict uses wrong comparison</span>
+correct = {t: sum(<span class="nb">1</span> <span class="kw">for</span> _,team,pred <span class="kw">in</span> results
+                  <span class="kw">if</span> team==t <span class="kw">and</span> pred==<span class="nb">team</span>)  <span class="cm"># 🔴</span>
+                                    <span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><input class="blankinput" type="text" placeholder="fix #2">
+           <span class="kw">for</span> t <span class="kw">in</span> [<span class="st">'red'</span>,<span class="st">'blue'</span>]}
+
+<span class="cm"># Bug 3 🔴 — division uses wrong dict</span>
+<span class="kw">for</span> t <span class="kw">in</span> total_counts:
+    acc = correct[t] / <span class="nb">correct</span>[t] * <span class="nb">100</span>  <span class="cm"># 🔴</span>
+                    <span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><input class="blankinput" type="text" placeholder="fix #3">
+    flag = <span class="st">' ⚠️ BIAS'</span> <span class="kw">if</span> acc &lt; <span class="nb">70</span> <span class="kw">else</span> <span class="st">''</span>
+
+<span class="cm"># Bug 4 🔴 — f-string uses wrong variable</span>
+    print(<span class="nb">f</span><span class="st">"{t}: {correct[t]}/{total_counts[t]} = {<span class="nb">acc</span>:.1f}%{<span class="nb">t</span>}"</span>)  <span class="cm"># 🔴</span>
+           <span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><input class="blankinput" type="text" placeholder="fix #4">
+
+<span class="cm"># Bug 5 🔴 — threshold is backwards</span>
+<span class="kw">if</span> acc &gt; <span class="nb">70</span>:  <span class="cm"># 🔴 — should flag LOW accuracy as a warning</span>
+<span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><input class="blankinput" type="text" placeholder="fix #5">
+    print(<span class="st">"Warning: check this group"</span>)
+
+<span class="cm"># Bug 6 🔴 — missing colon in for-loop header</span>
+<span class="kw">for</span> t <span class="kw">in</span> total_counts  <span class="cm"># 🔴</span>
+         <span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><input class="blankinput" type="text" placeholder="fix #6">
+    print(t)</div>
 </div>
 
-<!-- ══════════ REFLECTION ══════════ -->
-<div class="section-label">💬 Reflect</div>
-<div class="section-title">Exit Ticket &amp; Growth Check</div>
+<div class="g2">
+  <div class="card ag">
+    <div class="clabel g">3A — Predict the correct output</div>
+    <p class="mb2">Once all 6 bugs are fixed, what does the program print? Fill in every blank:</p>
+    <div class="codeblock">red:  <input class="pred-input" type="text" style="background:transparent;border:none;outline:none;width:40px;color:#e2e8f0;font-family:var(--fc)" placeholder="?">/<input class="pred-input" type="text" style="background:transparent;border:none;outline:none;width:20px;color:#e2e8f0;font-family:var(--fc)" placeholder="?"> = <input class="pred-input" type="text" style="background:transparent;border:none;outline:none;width:55px;color:#e2e8f0;font-family:var(--fc)" placeholder="___%">
+blue: <input class="pred-input" type="text" style="background:transparent;border:none;outline:none;width:40px;color:#e2e8f0;font-family:var(--fc)" placeholder="?">/<input class="pred-input" type="text" style="background:transparent;border:none;outline:none;width:20px;color:#e2e8f0;font-family:var(--fc)" placeholder="?"> = <input class="pred-input" type="text" style="background:transparent;border:none;outline:none;width:55px;color:#e2e8f0;font-family:var(--fc)" placeholder="___%"></div>
+    <p class="mb1 mt2">Which group gets the ⚠️ BIAS flag?</p>
+    <input class="wline" type="text" placeholder="→">
+  </div>
+  <div class="card ar">
+    <div class="clabel r">3B — Analyse</div>
+    <p class="mb2">Devon was labelled <code>'blue'</code> but the model predicted <code>'red'</code>. What type of error is this?</p>
+    <input class="wline" type="text" placeholder="This is a ___ error (False Positive / False Negative)">
+    <p class="mb2 mt2">If the model makes this mistake more often for one group than another, which fairness metric is being violated?</p>
+    <input class="wline" type="text" placeholder="→">
+    <textarea class="warea" rows="2" placeholder="Because..."></textarea>
+  </div>
+</div>
 
-<div class="card mb-3">
-  <div class="grid-2">
+<div class="card" style="border-left:4px solid var(--ar)">
+  <div class="diff-badge ext">🔴 Extension</div>
+  <div class="clabel r">3C — Extend the Fairness Report</div>
+  <p class="mb2">Add a <strong>dict comprehension</strong> to the fixed code that computes <em>precision</em> for each group. Precision = (correct predictions for group t) ÷ (all predictions labelled t, whether right or wrong).</p>
+  <textarea class="warea" rows="6" placeholder="# precision: out of all predictions of 'red', how many were actually red?&#10;precision = {&#10;    t: ...&#10;    for t in ['red','blue']&#10;}&#10;print(precision)"></textarea>
+</div>
+
+<hr class="divider">
+
+<!-- ════════════════════════════════════════════════════════
+     PART 4 — DESIGN A BALANCED DATASET
+     ════════════════════════════════════════════════════════ -->
+<div class="section-label">🎨 Part 4</div>
+<div class="section-title">Design Your Own Balanced Dataset <span style="font-size:.9rem;font-weight:400;color:var(--muted)">— 7 pts</span></div>
+
+<div class="card ag mb2">
+  <div class="clabel g">Context: An AI is used to decide which students receive extra maths support. You must create a training dataset that is fair across two schools: Northside (larger) and Southside (smaller).</div>
+</div>
+
+<!-- 4A Imbalanced -->
+<div class="card ab">
+  <div class="clabel b">4A · Start with an Imbalanced Dataset (Foundation)</div>
+  <div class="diff-badge foundation">🟢 Foundation</div>
+  <p class="mb2">Create a Python list of <strong>10 tuples</strong>: <code>(student_name, school, needs_support)</code>. Make it imbalanced — at least 7 from Northside and only 3 from Southside. Use real-sounding names.</p>
+  <textarea class="warea" rows="12" placeholder="students = [&#10;    ('Alice',   'Northside', True),&#10;    ('Bob',     'Northside', False),&#10;    # ... add 8 more rows&#10;]&#10;&#10;# Use Counter to prove the imbalance:&#10;from collections import Counter&#10;school_counts = Counter(...)&#10;print(school_counts)&#10;print('Ratio:', ...)"></textarea>
+  <p class="mb1 mt2">Predicted <code>school_counts</code> output:</p>
+  <div class="codeblock" style="min-height:40px"><input class="pred-input" type="text" style="background:transparent;border:none;outline:none;width:100%;color:#e2e8f0;font-family:var(--fc)" placeholder="Counter({ ... })"></div>
+  <p class="mb1 mt2">Imbalance ratio =</p>
+  <input class="wline" type="text" placeholder="10/3 = ___">
+</div>
+
+<!-- 4B Fix it -->
+<div class="card aa">
+  <div class="clabel a">4B · Balance the Dataset (Core)</div>
+  <div class="diff-badge core">🔵 Core</div>
+  <p class="mb2">Write Python code to balance the dataset using <strong>two different strategies</strong>. Show both approaches.</p>
+  <div class="g2" style="margin-bottom:0">
     <div>
-      <div class="card-label blue">🧠 Exit Ticket — 1–2 sentences each</div>
-      <p style="font-size:0.8rem;font-weight:700;color:#374151;margin:8px 0 3px;">1. What is tokenization, and why does it happen <em>before</em> any AI analysis?</p>
-      <div class="write-lines"><input class="write-line" type="text" placeholder="Tokenization is..." /><input class="write-line" type="text" placeholder="..." /></div>
-      <p style="font-size:0.8rem;font-weight:700;color:#374151;margin:8px 0 3px;">2. Why does an FSM improve on TinyBot v1?</p>
-      <div class="write-lines"><input class="write-line" type="text" placeholder="FSM adds..." /><input class="write-line" type="text" placeholder="..." /></div>
-      <p style="font-size:0.8rem;font-weight:700;color:#374151;margin:8px 0 3px;">3. Name one real AI system that uses intent classification and explain how.</p>
-      <div class="write-lines"><input class="write-line" type="text" placeholder="..." /><input class="write-line" type="text" placeholder="..." /></div>
+      <p class="mb1"><strong>Strategy 1 — List comprehension + random.sample (undersample):</strong></p>
+      <textarea class="warea" rows="7" placeholder="import random&#10;northside = [s for s in students&#10;             if s[1] == 'Northside']&#10;southside = [s for s in students&#10;             if s[1] == 'Southside']&#10;n = min(len(northside), len(southside))&#10;balanced = random.sample(northside, n) + southside"></textarea>
+      <p class="mb1 mt2">New ratio after undersampling:</p>
+      <input class="wline" type="text" placeholder="→ ___:___ = ___ (ratio)">
     </div>
     <div>
-      <div class="card-label green">🌱 Growth Mindset Check</div>
-      <p style="font-size:0.8rem;color:#374151;margin-bottom:8px;">Circle the one that describes you today:</p>
-      <div style="display:flex;flex-direction:column;gap:7px;font-size:0.83rem;color:#374151;">
-        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;"><input type="radio" name="mood" style="accent-color:#7c3aed;"> 😤 I got stuck but kept trying</label>
-        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;"><input type="radio" name="mood" style="accent-color:#7c3aed;"> 💡 I figured something out by myself</label>
-        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;"><input type="radio" name="mood" style="accent-color:#7c3aed;"> 🤝 I helped a classmate understand</label>
-        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;"><input type="radio" name="mood" style="accent-color:#7c3aed;"> 🚀 I finished early and tackled a bonus!</label>
-        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;"><input type="radio" name="mood" style="accent-color:#7c3aed;"> 🤯 The FSM / Big-O concept finally clicked</label>
+      <p class="mb1"><strong>Strategy 2 — Dict comprehension class weights:</strong></p>
+      <textarea class="warea" rows="7" placeholder="total = sum(school_counts.values())&#10;weights = {&#10;    school: total / count&#10;    for school, count in school_counts.items()&#10;}&#10;print(weights)&#10;# e.g. {'Northside': 1.43, 'Southside': 3.33}"></textarea>
+      <p class="mb1 mt2">Which school gets the higher weight? Why?</p>
+      <textarea class="warea" rows="2" placeholder="Southside gets weight ___ because..."></textarea>
+    </div>
+  </div>
+</div>
+
+<!-- 4C Apply fairness metric -->
+<div class="card" style="border-left:4px solid var(--ar)">
+  <div class="clabel r">4C · Apply a Fairness Metric (Extension)</div>
+  <div class="diff-badge ext">🔴 Extension</div>
+  <p class="mb2">Imagine after training, the model recommends support to <strong>80% of Northside students who need it</strong>, but only <strong>50% of Southside students who need it</strong>. Which of the three fairness definitions is violated?</p>
+  <div class="g3" style="margin-bottom:10px">
+    <div class="card" style="padding:12px;margin-bottom:0;text-align:center">
+      <div style="font-size:1.4rem">📊</div>
+      <strong>Demographic Parity</strong>
+      <p style="font-size:.75rem;color:var(--muted);margin-top:4px">Equal proportion of positive outcomes per group</p>
+    </div>
+    <div class="card" style="padding:12px;margin-bottom:0;text-align:center">
+      <div style="font-size:1.4rem">✅</div>
+      <strong>Equal Opportunity</strong>
+      <p style="font-size:.75rem;color:var(--muted);margin-top:4px">Equal true-positive rate per group</p>
+    </div>
+    <div class="card" style="padding:12px;margin-bottom:0;text-align:center">
+      <div style="font-size:1.4rem">🎯</div>
+      <strong>Calibration</strong>
+      <p style="font-size:.75rem;color:var(--muted);margin-top:4px">Confidence scores match actual accuracy per group</p>
+    </div>
+  </div>
+  <p class="mb1">The violated metric is: <input class="wline" style="display:inline-block;width:200px" type="text" placeholder="___"></p>
+  <textarea class="warea" rows="3" placeholder="Explanation: The model fails Equal Opportunity because...&#10;(Use the numbers 80% and 50% in your answer)"></textarea>
+</div>
+
+<hr class="divider">
+
+<!-- ════════════════════════════════════════════════════════
+     PART 5 — WRITTEN FAIRNESS ARGUMENT
+     ════════════════════════════════════════════════════════ -->
+<div class="section-label">✍️ Part 5</div>
+<div class="section-title">Fairness Argument — Written Response <span style="font-size:.9rem;font-weight:400;color:var(--muted)">— 4 pts</span></div>
+
+<div class="card ag mb2">
+  <div class="clabel g">📜 Scenario</div>
+  <p>A large hospital uses an AI tool to decide which patients receive priority follow-up calls after surgery. An audit finds the model contacts <strong>patients from one postcode area 42% less often</strong> than equally at-risk patients from wealthier postcodes. The hospital's developers say: <em>"The model is 91% accurate — it's working fine."</em></p>
+</div>
+
+<div class="card ab">
+  <div class="clabel b">5A · Foundation — Checklist Argument (min. 80 words)</div>
+  <div class="diff-badge foundation">🟢 Foundation</div>
+  <ul class="checklist" style="margin-bottom:10px">
+    <li><span class="chkbox"></span>State clearly whether you agree or disagree with the developers</li>
+    <li><span class="chkbox"></span>Name the fairness metric the hospital is violating</li>
+    <li><span class="chkbox"></span>Explain what "91% accurate overall" hides</li>
+    <li><span class="chkbox"></span>Suggest one concrete fix</li>
+  </ul>
+  <textarea class="warea" rows="7" placeholder="I disagree with the developers because...&#10;The fairness metric being violated is...&#10;91% accuracy hides the fact that...&#10;One fix would be to..."></textarea>
+  <div style="display:flex;justify-content:flex-end"><span class="tm">Word count: ___</span></div>
+</div>
+
+<div class="card aa mt2">
+  <div class="clabel a">5B · Core / Extension — Who Is Responsible? (min. 130 words)</div>
+  <div class="diff-badge core" style="margin-right:6px">🔵 Core</div>
+  <div class="diff-badge ext">🔴 Extension</div>
+  <p class="mb2">For <strong>each stakeholder below</strong>, write one sentence about their specific responsibility in preventing or fixing this bias. Then write a final paragraph arguing which stakeholder bears the <em>greatest</em> responsibility and why.</p>
+  <div class="g2" style="margin-bottom:10px">
+    <div>
+      <p class="mb1"><strong>🧑‍💻 Data Collectors:</strong></p>
+      <textarea class="warea" rows="2" placeholder="The data collectors are responsible for..."></textarea>
+      <p class="mb1 mt2"><strong>🏷️ Model Builders:</strong></p>
+      <textarea class="warea" rows="2" placeholder="The model builders are responsible for..."></textarea>
+    </div>
+    <div>
+      <p class="mb1"><strong>🏛️ Hospital Deployers &amp; Auditors:</strong></p>
+      <textarea class="warea" rows="2" placeholder="The hospital deployers are responsible for..."></textarea>
+      <p class="mb1 mt2"><strong>📋 Government / Regulators (EU AI Act):</strong></p>
+      <textarea class="warea" rows="2" placeholder="Under the EU AI Act 2024, regulators must..."></textarea>
+    </div>
+  </div>
+  <p class="mb1"><strong>Final argument — greatest responsibility:</strong></p>
+  <textarea class="warea" rows="5" placeholder="I believe ___ bears the greatest responsibility because...&#10;This matters because...&#10;If they acted, the 42% disparity could be reduced by..."></textarea>
+  <div style="display:flex;justify-content:flex-end"><span class="tm">Word count: ___</span></div>
+</div>
+
+<hr class="divider">
+
+<!-- ════════════════════════════════════════════════════════
+     ⭐ BONUS — PRECISION, RECALL & IMPOSSIBILITY THEOREM
+     ════════════════════════════════════════════════════════ -->
+<div class="cbadge">⭐ Bonus Challenge</div>
+<div class="section-title">Precision, Recall &amp; the Impossibility Theorem <span style="font-size:.9rem;font-weight:400;color:var(--muted)">— up to +7 pts</span></div>
+
+<div class="card" style="border-left:4px solid #f59e0b;margin-bottom:12px">
+  <div class="clabel a">⭐ Bonus A (+2) — Define the metrics</div>
+  <p class="mb2">In your own words (no copying from notes), define:</p>
+  <div class="g2" style="margin-bottom:0">
+    <div>
+      <p class="mb1"><strong>Precision:</strong></p>
+      <textarea class="warea" rows="3" placeholder="Precision measures...&#10;Formula: TP / (TP + ___)"></textarea>
+    </div>
+    <div>
+      <p class="mb1"><strong>Recall (= True Positive Rate):</strong></p>
+      <textarea class="warea" rows="3" placeholder="Recall measures...&#10;Formula: TP / (TP + ___)"></textarea>
+    </div>
+  </div>
+  <p class="mb1 mt2">If a model has <strong>high recall but low precision</strong>, what does that mean in plain language?</p>
+  <textarea class="warea" rows="2" placeholder="It catches most real positives but also..."></textarea>
+</div>
+
+<div class="card" style="border-left:4px solid #f59e0b;margin-bottom:12px">
+  <div class="clabel a">⭐ Bonus B (+2) — Write <code>fairness_report()</code></div>
+  <p class="mb2">Complete the function below that computes <strong>accuracy, precision, and recall</strong> for a given group from the <code>results</code> list in Part 3.</p>
+  <textarea class="warea" rows="12" placeholder="from collections import Counter&#10;&#10;def fairness_report(results, group):&#10;    '''&#10;    Returns accuracy, precision, recall for a given group label.&#10;    results: list of (name, true_label, predicted_label) tuples&#10;    group: e.g. 'red' or 'blue'&#10;    '''&#10;    group_results = [(t, p) for _, t, p in results if t == group]&#10;    tp = sum(1 for t, p in group_results if t == p)&#10;    total = len(group_results)&#10;    # Precision: how many 'group' predictions were correct?&#10;    all_predicted_as_group = ...&#10;    precision = ...&#10;    recall = ...&#10;    accuracy = ...&#10;    return {'accuracy': accuracy, 'precision': precision, 'recall': recall}&#10;&#10;print(fairness_report(results, 'red'))&#10;print(fairness_report(results, 'blue'))"></textarea>
+  <p class="mb1 mt2">Expected output (fill in):</p>
+  <div class="codeblock"><input class="pred-input" type="text" style="background:transparent;border:none;outline:none;width:100%;color:#e2e8f0;font-family:var(--fc)" placeholder="{'accuracy': ___, 'precision': ___, 'recall': ___}"></div>
+</div>
+
+<div class="card" style="border-left:4px solid #ef4444">
+  <div class="clabel r">⭐ Bonus C (+3) — The Impossibility Theorem</div>
+  <p class="mb2">Chouldechova (2017) proved that you <em>cannot simultaneously satisfy all three fairness metrics</em> when the base rate (proportion needing support) differs between groups. Use the hospital scenario from Part 5 to explain why this creates a dilemma.</p>
+  <div class="g2" style="margin-bottom:10px">
+    <div>
+      <p class="mb1">Northside base rate (proportion needing follow-up):</p>
+      <input class="wline" type="text" placeholder="___ %">
+      <p class="mb1 mt2">Southside base rate:</p>
+      <input class="wline" type="text" placeholder="___ % (must differ from above)">
+      <p class="mb1 mt2">If the hospital forces <strong>equal call rates</strong> (Demographic Parity), what happens to accuracy?</p>
+      <textarea class="warea" rows="3" placeholder="Accuracy drops because..."></textarea>
+    </div>
+    <div>
+      <p class="mb1">If the hospital forces <strong>Equal Opportunity</strong>, what sacrifice is made?</p>
+      <textarea class="warea" rows="4" placeholder="The sacrifice is..."></textarea>
+      <p class="mb1 mt2">Is there a "correct" choice? Argue your position:</p>
+      <textarea class="warea" rows="4" placeholder="My position is that the hospital should choose ___ because...&#10;This is an ethical choice, not just a technical one, because..."></textarea>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- REFLECTION -->
+<div class="section-label">🧠 Reflection &amp; Exit Ticket</div>
+<div class="section-title">Before You Go</div>
+
+<div class="g3">
+  <div class="card ab" style="margin-bottom:0">
+    <div class="clabel b">Python Check</div>
+    <p class="mb2">What does <code>Counter('banana').most_common(2)</code> return? Work it out without running it.</p>
+    <textarea class="warea" rows="3" placeholder="→ [(___, ___), (___, ___)]"></textarea>
+  </div>
+  <div class="card ag" style="margin-bottom:0">
+    <div class="clabel g">Concept Check</div>
+    <p class="mb2">Name the three fairness metrics. Write one real-world situation where each is the <em>most appropriate</em> choice.</p>
+    <textarea class="warea" rows="3" placeholder="1. Demographic Parity → best when...&#10;2. Equal Opportunity → best when...&#10;3. Calibration → best when..."></textarea>
+  </div>
+  <div class="card aa" style="margin-bottom:0">
+    <div class="clabel a">Real-World Check</div>
+    <p class="mb2">Amazon's 2018 hiring AI was trained on 96% male CVs. In <em>two sentences</em> using the words <strong>generalise</strong> and <strong>pattern</strong>, explain why this caused bias.</p>
+    <textarea class="warea" rows="3" placeholder="The model learned to generalise...&#10;Because the dominant pattern in the data was..."></textarea>
+  </div>
+</div>
+
+<div class="card" style="margin-top:16px">
+  <div class="clabel b">🔄 Warm-Up Revisit — Go back to your notebook answers from the start of the lesson.</div>
+  <div class="g2" style="margin-bottom:0">
+    <div>
+      <p class="mb1">Was your answer to Question 3 (<em>"Can a dataset of only true facts still be biased?"</em>) correct?</p>
+      <div style="display:flex;gap:16px;margin-bottom:8px">
+        <label style="font-size:.85rem;display:flex;align-items:center;gap:6px;cursor:pointer"><input type="radio" name="q3"> Yes, I was right</label>
+        <label style="font-size:.85rem;display:flex;align-items:center;gap:6px;cursor:pointer"><input type="radio" name="q3"> Partially</label>
+        <label style="font-size:.85rem;display:flex;align-items:center;gap:6px;cursor:pointer"><input type="radio" name="q3"> No, I've changed my mind</label>
       </div>
-      <p style="font-size:0.8rem;font-weight:700;color:#6d28d9;margin:12px 0 4px;">One thing I still want to learn:</p>
-      <input class="write-line" type="text" placeholder="..." />
-      <p style="font-size:0.8rem;font-weight:700;color:#047857;margin:8px 0 4px;">One thing I did really well today:</p>
-      <input class="write-line" type="text" placeholder="..." />
+    </div>
+    <div>
+      <p class="mb1">What would you add or change?</p>
+      <textarea class="warea" rows="2" placeholder="I would now add that..."></textarea>
     </div>
   </div>
 </div>
 
-<!-- ══════════ RUBRIC ══════════ -->
-<div class="section-label">📊 Scoring</div>
-<div class="section-title">Rubric &amp; Points</div>
+<!-- MOOD -->
+<div class="card ag mt3" style="margin-bottom:16px">
+  <div class="clabel g">😊 How Do You Feel? — Select one</div>
+  <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px">
+    <label style="cursor:pointer;font-size:.88rem;display:flex;align-items:center;gap:6px"><input type="radio" name="mood"> 🚀 Absolutely got it</label>
+    <label style="cursor:pointer;font-size:.88rem;display:flex;align-items:center;gap:6px"><input type="radio" name="mood"> 🌤 Mostly clear, small gaps</label>
+    <label style="cursor:pointer;font-size:.88rem;display:flex;align-items:center;gap:6px"><input type="radio" name="mood"> 🌧 Need to revisit with teacher</label>
+    <label style="cursor:pointer;font-size:.88rem;display:flex;align-items:center;gap:6px"><input type="radio" name="mood"> 💡 Had a big breakthrough today</label>
+  </div>
+  <div class="g2" style="margin-bottom:0">
+    <div>
+      <p class="mb1"><strong>One thing I want to explore more:</strong></p>
+      <input class="wline" type="text" placeholder="→">
+    </div>
+    <div>
+      <p class="mb1"><strong>One thing I did really well today:</strong></p>
+      <input class="wline" type="text" placeholder="→">
+    </div>
+  </div>
+</div>
 
-<div class="card mb-3">
-  <table class="rubric">
-    <thead><tr><th>Section</th><th>What to Look For</th><th>Points</th></tr></thead>
+<!-- ════════ RUBRIC ════════ -->
+<hr class="divider">
+<div class="section-label no-print">📋 Rubric</div>
+<div class="section-title no-print">Scoring Guide</div>
+<div class="card no-print">
+  <table class="rub">
+    <thead><tr><th>Section</th><th>What to Look For</th><th class="pts">Points</th></tr></thead>
     <tbody>
-      <tr><td>Part 1 — Warm-Up Puzzles</td><td>Both tree diagrams attempted; negation expression correct; Big-O answer with explanation</td><td class="pts">4 pts</td></tr>
-      <tr><td>Part 2 — Vocab &amp; Trace</td><td>Matching correct; True/False circled; tokenizer output predicted; investigation answered</td><td class="pts">4 pts</td></tr>
-      <tr><td>Part 3 — Trace &amp; Bug Hunt</td><td>Score table filled with working shown; all 3 bugs correctly identified with trigger input and explanation</td><td class="pts">4 pts</td></tr>
-      <tr><td>Part 4 — Coding Challenge</td><td>Chosen level fully completed; blanks filled; code written with comments; tests recorded</td><td class="pts">7 pts</td></tr>
-      <tr><td>Reflection / Exit Ticket</td><td>Thoughtful written responses to all 3 exit ticket questions</td><td class="pts">2 pts</td></tr>
-      <tr><td>⭐ Bonus A — test()</td><td>8 test cases; 2 adversarial; PASS/FAIL output works</td><td class="pts">+2</td></tr>
-      <tr><td>⭐⭐ Bonus B — Analysis</td><td>5–7 sentences using Chinese Room + grounding vocabulary correctly</td><td class="pts">+3</td></tr>
-      <tr><td>⭐⭐⭐ Bonus C — Naive Bayes</td><td>Pseudocode written; meaningful comparison to weighted scorer</td><td class="pts">+3</td></tr>
+      <tr><td>Part 1 — Vocab &amp; Calculate</td><td>All 7 matches correct; True/False all 5; both calculations with working shown and ratio labelled</td><td class="pts">4 pts</td></tr>
+      <tr><td>Part 2 — Trace the Counter</td><td>All 6 trace rows filled correctly; output predicted; underscore explained; Extension enumerate loop correct</td><td class="pts">5 pts</td></tr>
+      <tr><td>Part 3 — Fix the Code</td><td>All 6 bugs identified and corrected; output predicted; error type named; metric identified</td><td class="pts">6 pts</td></tr>
+      <tr><td>Part 4 — Design Dataset</td><td>10-tuple list with imbalance proven by Counter; both balance strategies written; fairness metric identified with justification</td><td class="pts">7 pts</td></tr>
+      <tr><td>Part 5 — Written Argument</td><td>Foundation: all 4 checklist points addressed, min. 80 words. Core/Extension: all 4 stakeholders named, final argument with evidence, min. 130 words</td><td class="pts">4 pts</td></tr>
+      <tr><td>Reflection / Exit Ticket</td><td>Thoughtful answers to all 3 checks; warm-up revisited; honest self-assessment</td><td class="pts">2 pts</td></tr>
+      <tr><td>⭐ Bonus A — Define metrics</td><td>Precision and recall defined correctly with formulas; plain-language explanation of trade-off</td><td class="pts">+2</td></tr>
+      <tr><td>⭐ Bonus B — fairness_report()</td><td>Function produces correct accuracy, precision, and recall for both groups</td><td class="pts">+2</td></tr>
+      <tr><td>⭐ Bonus C — Impossibility Theorem</td><td>Trade-off between Demographic Parity and Equal Opportunity explained with the scenario; ethical position argued</td><td class="pts">+3</td></tr>
     </tbody>
   </table>
-  <div style="display:flex;justify-content:flex-end;margin-top:10px;gap:24px;font-size:0.82rem;color:#374151;">
-    <span>Total (without bonus): <strong style="font-family:var(--font-code);color:#0b63ce;">____ / 21</strong></span>
-    <span>Total (with bonus): <strong style="font-family:var(--font-code);color:#10b981;">____ / 29</strong></span>
-  </div>
 </div>
 
 <!-- FOOTER -->
 <div class="sheet-footer">
-  <div>
-    <strong>Day 17 · Chatbots &amp; Language AI</strong> · Differentiated Activity Sheet · Mr. Hsiao "Hue" Weng · Spring 2026<br>
-    <span class="grad-text" style="font-weight:800;">Tokenization · Bag-of-Words · TinyBot · FSM · Big-O · NLP</span>
-  </div>
-  <div style="text-align:right;">
-    Ages 11–12 · Grades 5–6<br>
-    <span style="font-size:0.7rem;">🤖 Every chatbot today starts with ideas like these!</span>
-  </div>
+  <span>⚖️ Day 18 · Data, Bias &amp; Fairness · Advanced STEM · Ages 11–12</span>
+  <span>Python · Counter · Dict Comprehensions · Fairness Metrics</span>
+  <span class="grad-text" style="font-weight:800">Total: 28 pts + 7 bonus</span>
 </div>
 
-</div><!-- end .page -->
-
-<script>
-(function() {
-  function initCanvas(canvas) {
-    var ctx = canvas.getContext('2d');
-    var drawing = false;
-    var lastX = 0, lastY = 0;
-    var tool = canvas.dataset.tool || 'pen';
-    var color = '#1f2a37';
-    var lineWidth = 2;
-
-    function getPos(e) {
-      var r = canvas.getBoundingClientRect();
-      var src = e.touches ? e.touches[0] : e;
-      return { x: src.clientX - r.left, y: src.clientY - r.top };
-    }
-
-    function startDraw(e) {
-      drawing = true;
-      var p = getPos(e);
-      lastX = p.x; lastY = p.y;
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, lineWidth/2, 0, Math.PI*2);
-      ctx.fillStyle = color;
-      ctx.fill();
-      e.preventDefault();
-    }
-    function draw(e) {
-      if (!drawing) return;
-      var p = getPos(e);
-      ctx.beginPath();
-      ctx.moveTo(lastX, lastY);
-      ctx.lineTo(p.x, p.y);
-      ctx.strokeStyle = color;
-      ctx.lineWidth = lineWidth;
-      ctx.lineCap = 'round';
-      ctx.lineJoin = 'round';
-      ctx.stroke();
-      lastX = p.x; lastY = p.y;
-      e.preventDefault();
-    }
-    function stopDraw() { drawing = false; }
-
-    canvas.addEventListener('mousedown', startDraw);
-    canvas.addEventListener('mousemove', draw);
-    canvas.addEventListener('mouseup', stopDraw);
-    canvas.addEventListener('mouseleave', stopDraw);
-    canvas.addEventListener('touchstart', startDraw, {passive:false});
-    canvas.addEventListener('touchmove', draw, {passive:false});
-    canvas.addEventListener('touchend', stopDraw);
-
-    // Clear button
-    var btn = canvas.parentElement.querySelector('.draw-clear');
-    if (btn) btn.addEventListener('click', function() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-    });
-
-    // Color/size controls
-    var colorPick = canvas.parentElement.querySelector('.draw-color');
-    if (colorPick) colorPick.addEventListener('input', function(e) { color = e.target.value; });
-    var sizePick = canvas.parentElement.querySelector('.draw-size');
-    if (sizePick) sizePick.addEventListener('input', function(e) { lineWidth = +e.target.value; });
-  }
-
-  document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('canvas.draw-canvas').forEach(initCanvas);
-  });
-})();
-</script>
+</div><!-- /page -->
 
 </body>
 </html>
