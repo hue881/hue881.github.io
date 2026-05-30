@@ -1,1 +1,890 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="slides-format" content="viewport">
+    <title>Day 15 · Recommendation Systems</title>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+    <style type="text/tailwindcss">
+        @theme {
+            --color-bg: #f4fbff;
+            --color-bg-deep: #e0f2ff;
+            --color-surface: rgba(255,255,255,0.95);
+            --color-text: #1f2a37;
+            --color-text-secondary: #374151;
+            --color-text-muted: #5b6b7e;
+            --color-accent-1: #0b63ce;
+            --color-accent-2: #10b981;
+            --color-accent-3: #f59e0b;
+            --color-glass-bg: rgba(255,255,255,0.88);
+            --color-glass-border: rgba(11,99,206,0.16);
+            --color-vignette: rgba(15,23,42,0.07);
+            --font-display: "Fredoka", "Trebuchet MS", sans-serif;
+            --font-body: "Nunito", Arial, sans-serif;
+        }
+    </style>
+
+    <style>
+        :root { --color-bg:#f4fbff; --color-text:#1f2a37; --glow-color-rgb:11,99,206; }
+        *, *::before, *::after { box-sizing:border-box; }
+        html, body { background:var(--color-bg); margin:0; }
+        body { font-family:"Nunito",Arial,sans-serif; color:var(--color-text); overflow:hidden; height:100vh; width:100vw; }
+        .deck { width:100vw; height:100vh; position:relative; }
+        .slide { position:absolute; top:0; left:0; width:100%; height:100%;
+            background: radial-gradient(circle at top left, rgba(56,189,248,0.14),transparent 40%),
+                        radial-gradient(circle at bottom right, rgba(16,185,129,0.10),transparent 40%),
+                        var(--color-bg);
+            display:flex; flex-direction:column; align-items:center; justify-content:center;
+            opacity:0; transform:scale(0.96); transition:opacity 0.55s ease,transform 0.55s ease;
+            pointer-events:none; overflow:hidden; }
+        .slide.active { opacity:1; transform:scale(1); pointer-events:all; }
+        .slide > .content { position:relative; z-index:2; width:100%; max-width:1060px; padding:clamp(1.2rem,3.5vw,3rem); }
+        .nav-controls { position:fixed; bottom:22px; left:50%; transform:translateX(-50%); display:flex; align-items:center; gap:14px; z-index:100; background:rgba(255,255,255,0.92); backdrop-filter:blur(12px); padding:9px 22px; border-radius:999px; border:1px solid rgba(148,163,184,0.4); box-shadow:0 8px 28px rgba(15,23,42,0.13); }
+        .nav-btn { width:36px; height:36px; border:none; background:rgba(15,23,42,0.06); color:#0b63ce; border-radius:999px; font-size:1.1rem; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:background 0.2s,transform 0.15s; }
+        .nav-btn:hover { background:rgba(15,23,42,0.12); transform:translateY(-1px); }
+        .slide-dots { display:flex; gap:7px; }
+        .slide-dots .dot { width:8px; height:8px; border-radius:50%; background:rgba(148,163,184,0.6); cursor:pointer; transition:background 0.25s,transform 0.25s; }
+        .slide-dots .dot.active { background:#0b63ce; transform:scale(1.4); }
+        .slide-counter { font-size:0.78rem; color:#64748b; min-width:46px; text-align:center; font-weight:700; }
+        .reveal { opacity:0; transform:translateY(16px); }
+        .mouse-spotlight { position:fixed; inset:0; z-index:1; pointer-events:none; }
+
+        /* Cards */
+        .card { background:var(--color-surface); border-radius:18px; padding:16px 20px; box-shadow:0 8px 24px rgba(15,23,42,0.07); border:1px solid rgba(255,255,255,0.7); }
+        .pill { display:inline-flex; align-items:center; gap:7px; padding:5px 14px; border-radius:999px; border:1px solid rgba(148,163,184,0.5); background:rgba(255,255,255,0.9); font-size:0.76rem; font-weight:800; letter-spacing:0.08em; text-transform:uppercase; color:#0b63ce; }
+        .question-chip { display:inline-flex; align-items:center; gap:9px; padding:7px 13px; border-radius:999px; background:rgba(245,158,11,0.09); color:#92400e; font-size:0.8rem; font-weight:700; }
+        .question-chip .icon { display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px; border-radius:999px; background:rgba(245,158,11,0.95); color:#fff; font-size:0.78rem; }
+        .think-chip { display:inline-flex; align-items:center; gap:9px; padding:7px 13px; border-radius:999px; background:rgba(11,99,206,0.08); color:#1e40af; font-size:0.8rem; font-weight:700; }
+
+        /* Media / video thumbnails */
+        .media-embed { position:relative; padding-top:56.25%; border-radius:13px; overflow:hidden; background:#1e293b; cursor:pointer; }
+        .media-embed img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+        .media-embed .play-btn { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; }
+        .media-embed .play-btn div { width:58px; height:58px; background:rgba(255,0,0,0.88); border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 18px rgba(0,0,0,0.38); transition:transform 0.2s; }
+        .media-embed:hover .play-btn div { transform:scale(1.1); }
+        .media-embed iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }
+
+        /* Code blocks */
+        .code-block { background:#1e293b; color:#e2e8f0; border-radius:12px; padding:14px 18px; font-family:"Fira Code",Consolas,monospace; font-size:clamp(0.65rem,1.1vw,0.82rem); line-height:1.55; overflow-x:auto; border:1px solid rgba(255,255,255,0.06); }
+        .code-block .kw { color:#93c5fd; }
+        .code-block .cm { color:#64748b; font-style:italic; }
+        .code-block .st { color:#86efac; }
+        .code-block .nb { color:#fcd34d; }
+
+        /* Timeline */
+        .timeline { position:relative; padding-left:24px; }
+        .timeline::before { content:""; position:absolute; left:9px; top:4px; bottom:4px; width:3px; border-radius:999px; background:linear-gradient(to bottom,#0b63ce,#10b981); }
+        .timeline-step { position:relative; margin-bottom:12px; }
+        .timeline-dot { position:absolute; left:-2px; top:4px; width:13px; height:13px; border-radius:999px; border:2px solid #f4fbff; background:#0b63ce; box-shadow:0 0 0 3px rgba(59,130,246,0.22); }
+
+        /* Grid helpers */
+        .grid-cards { display:grid; gap:16px; }
+        @media(min-width:800px){ .grid-2{grid-template-columns:repeat(2,minmax(0,1fr));} .grid-3{grid-template-columns:repeat(3,minmax(0,1fr));} }
+
+        /* Gradient text */
+        .grad-text { background:linear-gradient(135deg,#0b63ce 0%,#10b981 50%,#f59e0b 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+
+        /* Accent border cards */
+        .accent-card-blue  { border-left:4px solid #0b63ce; }
+        .accent-card-green { border-left:4px solid #10b981; }
+        .accent-card-amber { border-left:4px solid #f59e0b; }
+        .accent-card-red   { border-left:4px solid #ef4444; }
+
+        /* Stat boxes */
+        .stat-box { text-align:center; padding:14px 10px; }
+        .stat-num { font-size:clamp(1.8rem,3.5vw,2.6rem); font-weight:800; line-height:1; }
+
+        /* vocab tag */
+        .vocab-tag { display:inline-flex; align-items:center; padding:4px 11px; border-radius:999px; background:rgba(15,23,42,0.04); font-size:0.8rem; font-weight:700; color:#0b63ce; }
+
+        /* Blob / gradient mesh */
+        .gradient-mesh { position:absolute; inset:0; z-index:0; overflow:hidden; pointer-events:none; }
+        .blob { position:absolute; border-radius:50%; filter:blur(72px); animation:float-slow 12s ease-in-out infinite; }
+        .blob:nth-child(2) { animation:float-drift 16s ease-in-out infinite; }
+        .blob:nth-child(3) { animation:float-slow 20s ease-in-out infinite reverse; }
+        @keyframes float-slow { 0%{transform:translate(0,0) scale(1);} 25%{transform:translate(50px,-40px) scale(1.1);} 50%{transform:translate(-30px,35px) scale(0.92);} 75%{transform:translate(45px,18px) scale(1.07);} 100%{transform:translate(0,0) scale(1);} }
+        @keyframes float-drift { 0%{transform:translate(0,0) scale(1) rotate(0deg);} 33%{transform:translate(-45px,-55px) scale(1.13) rotate(3deg);} 66%{transform:translate(38px,28px) scale(0.9) rotate(-2deg);} 100%{transform:translate(0,0) scale(1) rotate(0deg);} }
+        @keyframes float { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-14px);} }
+
+        .slide::after { content:""; position:absolute; inset:0; z-index:1; pointer-events:none; background:radial-gradient(ellipse at center,transparent 55%,rgba(15,23,42,0.06) 100%); }
+
+        .particle-canvas { position:absolute; inset:0; z-index:1; }
+
+        /* deco shapes */
+        @keyframes spin-slow { to{transform:rotate(360deg);} }
+        .deco-shape { position:absolute; pointer-events:none; opacity:0.06; }
+
+        @media(prefers-reduced-motion:reduce){ *,*::before,*::after{animation-duration:0.01ms!important;transition-duration:0.2s!important;} }
+
+        /* Ensure code scrolls internally without breaking slide layout */
+        .code-scroll { max-height:clamp(120px,26vh,240px); overflow-y:auto; }
+        .code-scroll::-webkit-scrollbar { width:5px; }
+        .code-scroll::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.2); border-radius:4px; }
+
+        .img-frame { border-radius:13px; overflow:hidden; border:1px solid rgba(11,99,206,0.18); box-shadow:0 8px 24px rgba(15,23,42,0.12); background:#fff; }
+        .img-frame img { display:block; width:100%; height:100%; object-fit:cover; }
+    </style>
+</head>
+<body>
+<div class="mouse-spotlight"></div>
+<div class="deck">
+
+<!-- ===================== SLIDE 1: TITLE ===================== -->
+<div class="slide slide-1 active" data-slide="1">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:500px;height:500px;top:-120px;right:-100px;background:#0b63ce;opacity:0.12;"></div>
+        <div class="blob" style="width:320px;height:320px;bottom:-80px;left:-60px;background:#10b981;opacity:0.10;"></div>
+        <div class="blob" style="width:200px;height:200px;top:42%;left:14%;background:#f59e0b;opacity:0.09;"></div>
+    </div>
+    <canvas class="particle-canvas" id="pc1"></canvas>
+    <div class="content text-center" style="z-index:2;position:relative;">
+        <div class="flex flex-wrap justify-center gap-3 mb-5">
+            <span class="pill">AI &amp; Coding · Grades 5–6</span>
+            <span class="pill" style="color:#047857;background:rgba(16,185,129,0.08);">~60 minutes</span>
+            <span class="pill" style="color:#b45309;background:rgba(245,158,11,0.08);">Day 15 · Spring 2026</span>
+        </div>
+        <div class="mb-5 flex justify-center reveal">
+            <div class="rounded-2xl bg-white/90 shadow-lg border border-slate-200 px-7 py-4 flex items-center gap-4">
+                <span style="font-size:3.2rem;">🎯</span>
+                <div class="text-left">
+                    <p style="font-size:0.7rem;font-weight:800;letter-spacing:0.15em;text-transform:uppercase;color:#0b63ce;" class="mb-1">Mr. Hsiao "Hue" Weng</p>
+                    <p style="font-size:0.85rem;font-weight:600;color:#374151;">hue881.github.io · hue.weng.88@gmail.com</p>
+                </div>
+            </div>
+        </div>
+        <h1 class="font-display grad-text tracking-tight reveal" style="font-size:clamp(2rem,4.5vw,3.4rem);font-weight:700;margin-bottom:0.8rem;line-height:1.15;">
+            Day 15: Recommendation Systems
+        </h1>
+        <p class="reveal" style="font-size:clamp(1rem,1.6vw,1.25rem);color:#5b6b7e;max-width:720px;margin:0 auto 1.2rem;">
+            How does YouTube <em>know</em> what to play next — and can we build a tiny version ourselves?
+        </p>
+        <div class="max-w-2xl mx-auto grid-cards grid-2 mt-3">
+            <div class="card text-left reveal">
+                <p style="font-size:0.7rem;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:#0b63ce;" class="mb-1">Prerequisites</p>
+                <ul class="list-disc pl-4 text-sm text-slate-700 space-y-1">
+                    <li>Lists, dictionaries, and loops</li>
+                    <li>Computing averages with <code style="font-size:0.75rem;background:#f1f5f9;padding:1px 5px;border-radius:4px;">sum() / len()</code></li>
+                </ul>
+            </div>
+            <div class="card text-left reveal">
+                <p style="font-size:0.7rem;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:#047857;" class="mb-1">By the end you will</p>
+                <ul class="list-disc pl-4 text-sm text-slate-700 space-y-1">
+                    <li>Code two recommender algorithms</li>
+                    <li>Reason about fairness, bias &amp; filter bubbles</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===================== SLIDE 2: WARM-UP ===================== -->
+<div class="slide slide-2" data-slide="2">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:360px;height:360px;top:-80px;right:-80px;background:#0b63ce;opacity:0.08;"></div>
+        <div class="blob" style="width:240px;height:240px;bottom:-60px;left:-40px;background:#10b981;opacity:0.07;"></div>
+    </div>
+    <div class="content" style="z-index:2;position:relative;">
+        <p class="pill mb-4 reveal">Warm-Up · Think First (5 min)</p>
+        <h2 class="font-display reveal" style="font-size:clamp(1.7rem,3vw,2.4rem);font-weight:700;margin-bottom:1rem;">Before we code — let's wonder 🤔</h2>
+        <div class="grid-cards grid-3 reveal">
+            <div class="card accent-card-blue">
+                <div style="font-size:1.8rem;margin-bottom:8px;">📺</div>
+                <p style="font-size:0.78rem;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:#0b63ce;" class="mb-2">Question 1</p>
+                <p class="text-sm text-slate-700">How does your favorite app decide which video, song, or game to show you <em>next</em>?</p>
+            </div>
+            <div class="card accent-card-green">
+                <div style="font-size:1.8rem;margin-bottom:8px;">⭐</div>
+                <p style="font-size:0.78rem;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:#047857;" class="mb-2">Question 2</p>
+                <p class="text-sm text-slate-700">Is the <strong>most popular</strong> thing always the <strong>best for you</strong>? Can you think of a time it wasn't?</p>
+            </div>
+            <div class="card accent-card-amber">
+                <div style="font-size:1.8rem;margin-bottom:8px;">👀</div>
+                <p style="font-size:0.78rem;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:#b45309;" class="mb-2">Question 3</p>
+                <p class="text-sm text-slate-700">What data do you think the app quietly collects from your <em>clicks, watches, and skips</em>?</p>
+            </div>
+        </div>
+        <div class="card mt-4 reveal" style="background:rgba(11,99,206,0.06);border:1px solid rgba(11,99,206,0.18);">
+            <p class="text-sm text-slate-700">✏️ <strong>Jot</strong> your answers in your notebook — we'll revisit them at the end and see if today's code changed your thinking.</p>
+        </div>
+    </div>
+</div>
+
+<!-- ===================== SLIDE 3: LEARNING TARGETS ===================== -->
+<div class="slide slide-3" data-slide="3">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:380px;height:380px;top:-70px;right:-70px;background:#0b63ce;opacity:0.07;"></div>
+        <div class="blob" style="width:260px;height:260px;bottom:-55px;left:-50px;background:#f59e0b;opacity:0.07;"></div>
+    </div>
+    <div class="content" style="z-index:2;position:relative;">
+        <p class="pill mb-3 reveal">Today's Learning Targets (2 min)</p>
+        <h2 class="font-display reveal" style="font-size:clamp(1.7rem,3vw,2.4rem);font-weight:700;margin-bottom:1rem;">What we are building 🏗️</h2>
+        <div class="grid-cards grid-2">
+            <div class="card reveal">
+                <p style="font-size:0.7rem;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:#0b63ce;" class="mb-2">Knowledge goals</p>
+                <div class="timeline">
+                    <div class="timeline-step"><div class="timeline-dot"></div><p class="text-sm text-slate-800 font-semibold">Define recommender, rating, ranking</p><p class="text-xs text-slate-500">The vocabulary of every streaming app</p></div>
+                    <div class="timeline-step"><div class="timeline-dot"></div><p class="text-sm text-slate-800 font-semibold">Code an average-rating recommender</p><p class="text-xs text-slate-500">score = sum(votes) / len(votes)</p></div>
+                    <div class="timeline-step"><div class="timeline-dot"></div><p class="text-sm text-slate-800 font-semibold">Code a personalized recommender</p><p class="text-xs text-slate-500">One ranking per user</p></div>
+                    <div class="timeline-step" style="margin-bottom:0;"><div class="timeline-dot"></div><p class="text-sm text-slate-800 font-semibold">Compare popularity vs. personalization</p><p class="text-xs text-slate-500">When does each fail?</p></div>
+                </div>
+            </div>
+            <div class="card reveal">
+                <p style="font-size:0.7rem;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:#047857;" class="mb-2">Skill goals</p>
+                <ul class="list-disc pl-4 text-sm text-slate-700 space-y-2">
+                    <li>Read nested dictionaries and loop through them</li>
+                    <li>Sort a dictionary by its values</li>
+                    <li>Predict an algorithm's output before running it</li>
+                    <li>Argue: when do recommendations help vs. trap us?</li>
+                </ul>
+                <div class="mt-3" style="background:rgba(16,185,129,0.07);border-radius:10px;padding:9px 12px;">
+                    <p class="text-xs text-slate-600">🔗 <strong>Connection:</strong> The same logic powers Netflix, Spotify, TikTok, and even Polymarket suggestions.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===================== SLIDE 4: VOCABULARY ===================== -->
+<div class="slide slide-4" data-slide="4">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:340px;height:340px;top:-70px;right:-60px;background:#10b981;opacity:0.08;"></div>
+        <div class="blob" style="width:220px;height:220px;bottom:-50px;left:-40px;background:#0b63ce;opacity:0.07;"></div>
+    </div>
+    <div class="content" style="z-index:2;position:relative;">
+        <p class="pill mb-3 reveal">Vocabulary · Use These Words Today (3 min)</p>
+        <h2 class="font-display reveal" style="font-size:clamp(1.6rem,2.8vw,2.2rem);font-weight:700;margin-bottom:0.9rem;">The 6 key words 🔑</h2>
+        <div class="grid-cards grid-3 reveal">
+            <div class="card">
+                <p class="vocab-tag mb-1">🎯 Recommender</p>
+                <p class="text-sm text-slate-700">A piece of code whose <em>only</em> job is to pick what to show next out of many choices.</p>
+            </div>
+            <div class="card">
+                <p class="vocab-tag mb-1">⭐ Rating</p>
+                <p class="text-sm text-slate-700">A number that describes how much someone liked an item. Today: <code style="background:#e0f2ff;padding:1px 5px;border-radius:4px;font-size:0.78rem;">1</code> = liked, <code style="background:#e0f2ff;padding:1px 5px;border-radius:4px;font-size:0.78rem;">0</code> = didn't.</p>
+            </div>
+            <div class="card">
+                <p class="vocab-tag mb-1">📊 Average</p>
+                <p class="text-sm text-slate-700">Add up all the ratings, divide by how many. A summary of "what most people thought."</p>
+            </div>
+            <div class="card">
+                <p class="vocab-tag mb-1">🥇 Ranking</p>
+                <p class="text-sm text-slate-700">A list ordered from best to worst. The output of every recommender is a <em>ranking</em>.</p>
+            </div>
+            <div class="card">
+                <p class="vocab-tag mb-1">🧍 Personalization</p>
+                <p class="text-sm text-slate-700">Showing each person a <em>different</em> ranking based on their own taste — not the crowd's.</p>
+            </div>
+            <div class="card" style="background:rgba(11,99,206,0.06);border:1px dashed rgba(11,99,206,0.25);">
+                <p class="text-xs font-extrabold tracking-widest text-sky-700 uppercase mb-2">Quick Check</p>
+                <p class="text-sm text-slate-700">If 5 friends each rate "Sports" with <code style="background:#e0f2ff;padding:1px 5px;border-radius:4px;font-size:0.78rem;">1, 1, 1, 1, 1</code>, what is the average — and what does that <em>tell us</em>?</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===================== SLIDE 5: VIDEO 1 — How Algorithms Work ===================== -->
+<div class="slide slide-5" data-slide="5">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:360px;height:360px;top:-70px;right:-70px;background:#0b63ce;opacity:0.07;"></div>
+        <div class="blob" style="width:220px;height:220px;bottom:-50px;left:-40px;background:#10b981;opacity:0.06;"></div>
+    </div>
+    <div class="content" style="z-index:2;position:relative;">
+        <p class="pill mb-3 reveal">Video Introduction (5 min)</p>
+        <h2 class="font-display reveal" style="font-size:clamp(1.6rem,2.8vw,2.2rem);font-weight:700;margin-bottom:1rem;">How do social-media algorithms decide? 🎬</h2>
+        <div class="grid-cards grid-2 reveal">
+            <div class="card">
+                <p style="font-size:0.7rem;font-weight:800;letter-spacing:0.13em;text-transform:uppercase;color:#0b63ce;" class="mb-2">Watch · Algorithms Explained (CBC Kids News, 3:02)</p>
+                <div class="media-embed" id="player-F5tz887wXCY" onclick="playVideo('F5tz887wXCY')">
+                    <img src="https://img.youtube.com/vi/F5tz887wXCY/hqdefault.jpg" alt="Social media algorithms explained thumbnail">
+                    <div class="play-btn"><div><svg width="26" height="26" viewBox="0 0 24 24" fill="white"><polygon points="6,4 20,12 6,20"/></svg></div></div>
+                </div>
+                <p style="font-size:0.68rem;color:#64748b;margin-top:5px;"><a href="https://www.youtube.com/watch?v=F5tz887wXCY" target="_blank" style="color:#0b63ce;text-decoration:underline;">Source: YouTube · CBC Kids News — Social media algorithms explained</a></p>
+            </div>
+            <div class="card reveal">
+                <p class="question-chip mb-2"><span class="icon">?</span><span>Watch for these</span></p>
+                <ul class="list-disc pl-4 text-sm text-slate-700 space-y-2">
+                    <li>What signals does an app track when you scroll?</li>
+                    <li>Why does the algorithm "feed you more of the same"?</li>
+                    <li>Whose interests does the algorithm serve — yours or the company's?</li>
+                    <li>What's <em>one</em> moment in the video that surprised you?</li>
+                </ul>
+                <div class="mt-3 card" style="padding:8px 12px;background:rgba(11,99,206,0.06);">
+                    <p class="text-xs text-slate-600">💬 After watching: turn to a partner and finish the sentence — "An algorithm is like a ___ that ___."</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===================== SLIDE 6: HOW APPS USE DATA ===================== -->
+<div class="slide slide-6" data-slide="6">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:380px;height:380px;top:-70px;right:-70px;background:#0b63ce;opacity:0.07;"></div>
+        <div class="blob" style="width:220px;height:220px;bottom:-50px;left:-40px;background:#f59e0b;opacity:0.07;"></div>
+    </div>
+    <div class="content" style="z-index:2;position:relative;">
+        <p class="pill mb-3 reveal">Concept · From Clicks to Suggestions (4 min)</p>
+        <h2 class="font-display reveal" style="font-size:clamp(1.6rem,2.8vw,2.2rem);font-weight:700;margin-bottom:1rem;">Every tap is a tiny vote 🗳️</h2>
+        <div class="grid-cards grid-2">
+            <div class="reveal">
+                <div class="img-frame mb-3" style="aspect-ratio:1.78;">
+                    <img src="https://stratoflow.com/wp-content/uploads/2024/08/Viewed-2.png" alt="Netflix viewing data illustration">
+                </div>
+                <p style="font-size:0.68rem;color:#64748b;"><a href="https://stratoflow.com/how-netflix-recommendation-algorithm-works/" target="_blank" style="color:#0b63ce;text-decoration:underline;">Source: Stratoflow — Inside the Netflix Algorithm</a></p>
+            </div>
+            <div class="card reveal">
+                <p class="question-chip mb-3"><span class="icon">?</span><span>Reason about the data</span></p>
+                <ul class="list-disc pl-4 text-sm text-slate-700 space-y-2">
+                    <li>Netflix records what you watched, when you stopped, and what you skipped. Which signal is the <strong>strongest</strong>?</li>
+                    <li>If two students get the <em>same</em> homepage, did the system personalize anything?</li>
+                    <li>How could the system learn about <strong>you</strong> on your <em>very first day</em>?</li>
+                </ul>
+                <div class="mt-3 p-3 rounded-xl" style="background:rgba(16,185,129,0.07);">
+                    <p class="text-xs text-slate-600">🧩 <strong>Big idea:</strong> A recommender's only ingredients are <em>data</em> + <em>a rule</em>. Today we'll write the rule.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===================== SLIDE 7: AVERAGE-RATING INTRO ===================== -->
+<div class="slide slide-7" data-slide="7">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:380px;height:380px;top:-70px;right:-70px;background:#0b63ce;opacity:0.07;"></div>
+        <div class="blob" style="width:220px;height:220px;bottom:-50px;left:-40px;background:#10b981;opacity:0.07;"></div>
+    </div>
+    <div class="content" style="z-index:2;position:relative;">
+        <p class="pill mb-3 reveal">Algorithm 1 · Average Rating (4 min)</p>
+        <h2 class="font-display reveal" style="font-size:clamp(1.6rem,2.8vw,2.2rem);font-weight:700;margin-bottom:1rem;">The simplest rule that works ⭐</h2>
+        <div class="grid-cards grid-2">
+            <div class="card reveal accent-card-blue">
+                <p style="font-size:0.7rem;font-weight:800;letter-spacing:0.13em;text-transform:uppercase;color:#0b63ce;" class="mb-2">The rule, in plain English</p>
+                <p class="text-sm text-slate-700 mb-2">For every game, add up all the thumbs-ups, divide by how many people voted. Whichever game has the <strong>highest average</strong> wins the top spot.</p>
+                <div class="code-block">
+<span class="cm"># pseudo-code</span>
+<span class="kw">for</span> game <span class="kw">in</span> ratings:
+    score = <span class="nb">sum</span>(votes) / <span class="nb">len</span>(votes)
+recommend <span class="nb">max</span>(score)
+                </div>
+            </div>
+            <div class="card reveal">
+                <p class="question-chip mb-3"><span class="icon">?</span><span>Predict before we run it</span></p>
+                <p class="text-sm text-slate-700 mb-2">Given these tallies, who wins?</p>
+                <ul class="list-disc pl-4 text-sm text-slate-700 space-y-1">
+                    <li>Racing → <code style="background:#f1f5f9;padding:1px 5px;border-radius:4px;">[1,1,0,1,1]</code></li>
+                    <li>Puzzle → <code style="background:#f1f5f9;padding:1px 5px;border-radius:4px;">[1,0,0,1,0]</code></li>
+                    <li>Shooter → <code style="background:#f1f5f9;padding:1px 5px;border-radius:4px;">[0,0,1,0,0]</code></li>
+                    <li>Sports → <code style="background:#f1f5f9;padding:1px 5px;border-radius:4px;">[1,1,1,1,1]</code></li>
+                </ul>
+                <div class="mt-3 p-3 rounded-xl" style="background:rgba(245,158,11,0.09);">
+                    <p class="text-xs text-slate-700">✋ Show on your fingers: 1 = Racing, 2 = Puzzle, 3 = Shooter, 4 = Sports. <em>Ready, set, vote!</em></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===================== SLIDE 8: AVERAGE-RATING CODE ===================== -->
+<div class="slide slide-8" data-slide="8">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:360px;height:360px;top:-70px;right:-60px;background:#0b63ce;opacity:0.07;"></div>
+        <div class="blob" style="width:200px;height:200px;bottom:-50px;left:-40px;background:#10b981;opacity:0.06;"></div>
+    </div>
+    <div class="content" style="z-index:2;position:relative;">
+        <p class="pill mb-3 reveal">Live Code · Type Along (8 min)</p>
+        <h2 class="font-display reveal" style="font-size:clamp(1.55rem,2.6vw,2.05rem);font-weight:700;margin-bottom:0.7rem;">Average-Rating Recommender 💻</h2>
+        <div class="grid-cards grid-2">
+            <div class="reveal">
+                <div class="card accent-card-blue">
+                    <p style="font-size:0.7rem;font-weight:800;letter-spacing:0.13em;text-transform:uppercase;color:#0b63ce;" class="mb-2">Recommender_v1.py</p>
+                    <div class="code-block code-scroll">
+<span class="nb">ratings</span> = {
+    <span class="st">'Racing'</span>:  [<span class="kw">1</span>, <span class="kw">1</span>, <span class="kw">0</span>, <span class="kw">1</span>, <span class="kw">1</span>],
+    <span class="st">'Puzzle'</span>:  [<span class="kw">1</span>, <span class="kw">0</span>, <span class="kw">0</span>, <span class="kw">1</span>, <span class="kw">0</span>],
+    <span class="st">'Shooter'</span>: [<span class="kw">0</span>, <span class="kw">0</span>, <span class="kw">1</span>, <span class="kw">0</span>, <span class="kw">0</span>],
+    <span class="st">'Sports'</span>:  [<span class="kw">1</span>, <span class="kw">1</span>, <span class="kw">1</span>, <span class="kw">1</span>, <span class="kw">1</span>],
+}
+
+<span class="nb">averages</span> = {}
+<span class="kw">for</span> game, votes <span class="kw">in</span> ratings.items():
+    score = <span class="nb">sum</span>(votes) / <span class="nb">len</span>(votes)
+    averages[game] = score
+
+<span class="nb">print</span>(<span class="st">'Average scores:'</span>)
+<span class="kw">for</span> game, score <span class="kw">in</span> averages.items():
+    <span class="nb">print</span>(game, <span class="st">'->'</span>, <span class="nb">round</span>(score, <span class="kw">2</span>))
+
+best_game = <span class="nb">max</span>(averages, key=averages.get)
+<span class="nb">print</span>(<span class="st">'Recommended first:'</span>, best_game)
+                    </div>
+                </div>
+            </div>
+            <div class="card reveal">
+                <p class="question-chip mb-3"><span class="icon">?</span><span>Read the code line by line</span></p>
+                <ul class="list-disc pl-4 text-sm text-slate-700 space-y-2">
+                    <li>What does <code style="background:#f1f5f9;padding:1px 5px;border-radius:4px;">.items()</code> hand back to us each loop?</li>
+                    <li>Why divide by <code style="background:#f1f5f9;padding:1px 5px;border-radius:4px;">len(votes)</code> and not by 5?</li>
+                    <li>What does <code style="background:#f1f5f9;padding:1px 5px;border-radius:4px;">key=averages.get</code> tell <code style="background:#f1f5f9;padding:1px 5px;border-radius:4px;">max()</code> to do?</li>
+                    <li><strong>Predict</strong> the printed winner — then run it. Were you right?</li>
+                </ul>
+                <div class="mt-3 p-3 rounded-xl" style="background:rgba(11,99,206,0.06);">
+                    <p class="text-xs text-slate-700">🛠️ <strong>Mini-stretch:</strong> Add a 5th game called <code>'Coding'</code> with votes <code>[1,1,1,1,0]</code>. Does it beat Sports? Why or why not?</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===================== SLIDE 9: WHEN POPULAR != BEST ===================== -->
+<div class="slide slide-9" data-slide="9">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:360px;height:360px;top:-70px;right:-70px;background:#ef4444;opacity:0.07;"></div>
+        <div class="blob" style="width:220px;height:220px;bottom:-50px;left:-40px;background:#f59e0b;opacity:0.07;"></div>
+    </div>
+    <div class="content" style="z-index:2;position:relative;">
+        <p class="pill mb-3 reveal">Critique · Where the Rule Breaks (4 min)</p>
+        <h2 class="font-display reveal" style="font-size:clamp(1.6rem,2.8vw,2.2rem);font-weight:700;margin-bottom:1rem;">When does "most popular" go wrong? 🚧</h2>
+        <div class="grid-cards grid-3 reveal">
+            <div class="card accent-card-red">
+                <div style="font-size:1.6rem;margin-bottom:6px;">🎂</div>
+                <p style="font-size:0.72rem;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:#b91c1c;" class="mb-1">Tastes differ</p>
+                <p class="text-sm text-slate-700">Most kids in class love Sports — but you love Puzzle. The popular pick isn't <em>your</em> pick.</p>
+            </div>
+            <div class="card accent-card-amber">
+                <div style="font-size:1.6rem;margin-bottom:6px;">🆕</div>
+                <p style="font-size:0.72rem;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:#b45309;" class="mb-1">Cold start</p>
+                <p class="text-sm text-slate-700">A brand-new game has zero votes. Average = ??? It can never appear at the top — even if it's amazing.</p>
+            </div>
+            <div class="card accent-card-blue">
+                <div style="font-size:1.6rem;margin-bottom:6px;">📣</div>
+                <p style="font-size:0.72rem;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:#0b63ce;" class="mb-1">Rich-get-richer</p>
+                <p class="text-sm text-slate-700">Whatever shows up first gets more clicks → higher average → shown more. The leader stays the leader.</p>
+            </div>
+        </div>
+        <div class="card mt-4 reveal" style="background:rgba(11,99,206,0.06);border:1px solid rgba(11,99,206,0.18);">
+            <p class="text-sm text-slate-700">🧠 <strong>Class debate:</strong> Imagine a librarian who only recommends the most-borrowed book. What books would <em>never</em> reach a reader? Whose voice goes missing?</p>
+        </div>
+    </div>
+</div>
+
+<!-- ===================== SLIDE 10: PERSONALIZATION INTRO ===================== -->
+<div class="slide slide-10" data-slide="10">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:380px;height:380px;top:-70px;right:-70px;background:#10b981;opacity:0.08;"></div>
+        <div class="blob" style="width:220px;height:220px;bottom:-50px;left:-40px;background:#0b63ce;opacity:0.06;"></div>
+    </div>
+    <div class="content" style="z-index:2;position:relative;">
+        <p class="pill mb-3 reveal">Algorithm 2 · Personalization (4 min)</p>
+        <h2 class="font-display reveal" style="font-size:clamp(1.6rem,2.8vw,2.2rem);font-weight:700;margin-bottom:1rem;">One ranking <em>per person</em> 🧍🧍</h2>
+        <div class="grid-cards grid-2">
+            <div class="reveal">
+                <div class="img-frame mb-3" style="aspect-ratio:2.33;">
+                    <img src="https://takuti.github.io/Recommendation.jl/latest/assets/images/cf.png" alt="Collaborative filtering user-item matrix diagram">
+                </div>
+                <p style="font-size:0.68rem;color:#64748b;"><a href="https://takuti.github.io/Recommendation.jl/latest/" target="_blank" style="color:#0b63ce;text-decoration:underline;">Source: Recommendation.jl docs — User × Item matrix</a></p>
+            </div>
+            <div class="card reveal">
+                <p class="question-chip mb-3"><span class="icon">?</span><span>Spot the difference</span></p>
+                <ul class="list-disc pl-4 text-sm text-slate-700 space-y-2">
+                    <li>In the picture, every <em>row</em> is a person and every <em>column</em> is an item. What does a single cell mean?</li>
+                    <li>If two people agree on most rows, what should the system do for the rows where one is empty?</li>
+                    <li>Why is keeping each user's data <em>separate</em> better for personalization than mixing it together?</li>
+                </ul>
+                <div class="mt-3 p-3 rounded-xl" style="background:rgba(16,185,129,0.07);">
+                    <p class="text-xs text-slate-600">🧩 <strong>Twist:</strong> We're going to give each player their <em>own dictionary</em> of votes — and run the same average rule for each player.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===================== SLIDE 11: PERSONALIZATION CODE ===================== -->
+<div class="slide slide-11" data-slide="11">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:360px;height:360px;top:-70px;right:-60px;background:#10b981;opacity:0.07;"></div>
+        <div class="blob" style="width:200px;height:200px;bottom:-50px;left:-40px;background:#0b63ce;opacity:0.06;"></div>
+    </div>
+    <div class="content" style="z-index:2;position:relative;">
+        <p class="pill mb-3 reveal">Live Code · Type Along (10 min)</p>
+        <h2 class="font-display reveal" style="font-size:clamp(1.55rem,2.6vw,2.05rem);font-weight:700;margin-bottom:0.7rem;">Per-Player Recommender 🧍🧍</h2>
+        <div class="grid-cards grid-2">
+            <div class="reveal">
+                <div class="card accent-card-green">
+                    <p style="font-size:0.7rem;font-weight:800;letter-spacing:0.13em;text-transform:uppercase;color:#047857;" class="mb-2">Recommender_v2.py</p>
+                    <div class="code-block code-scroll">
+<span class="nb">player_ratings</span> = {
+    <span class="st">'Alex'</span>:   {<span class="st">'Racing'</span>:[<span class="kw">1</span>,<span class="kw">1</span>,<span class="kw">1</span>],
+                <span class="st">'Puzzle'</span>:[<span class="kw">1</span>,<span class="kw">1</span>,<span class="kw">0</span>],
+                <span class="st">'Shooter'</span>:[<span class="kw">0</span>,<span class="kw">0</span>,<span class="kw">0</span>]},
+    <span class="st">'Jordan'</span>: {<span class="st">'Racing'</span>:[<span class="kw">0</span>,<span class="kw">1</span>,<span class="kw">0</span>],
+                <span class="st">'Puzzle'</span>:[<span class="kw">1</span>,<span class="kw">1</span>,<span class="kw">1</span>],
+                <span class="st">'Shooter'</span>:[<span class="kw">1</span>,<span class="kw">1</span>,<span class="kw">0</span>]},
+}
+
+<span class="kw">for</span> name, games <span class="kw">in</span> player_ratings.items():
+    <span class="nb">print</span>(<span class="st">'\nRecommendations for'</span>, name)
+    averages = {}
+    <span class="kw">for</span> game, votes <span class="kw">in</span> games.items():
+        averages[game] = <span class="nb">sum</span>(votes) / <span class="nb">len</span>(votes)
+    ranked = <span class="nb">sorted</span>(averages.items(),
+        key=<span class="kw">lambda</span> item: item[<span class="kw">1</span>],
+        reverse=<span class="kw">True</span>)
+    <span class="kw">for</span> game, score <span class="kw">in</span> ranked:
+        <span class="nb">print</span>(<span class="st">' '</span>, game, <span class="st">'->'</span>, <span class="nb">round</span>(score, <span class="kw">2</span>))
+                    </div>
+                </div>
+            </div>
+            <div class="card reveal">
+                <p class="question-chip mb-3"><span class="icon">?</span><span>Trace the loops</span></p>
+                <ul class="list-disc pl-4 text-sm text-slate-700 space-y-2">
+                    <li>The outer loop runs <strong>2</strong> times — why? The inner loop runs <strong>3</strong> times — why?</li>
+                    <li><code style="background:#f1f5f9;padding:1px 5px;border-radius:4px;">sorted(... reverse=True)</code> — what does that flip?</li>
+                    <li><code style="background:#f1f5f9;padding:1px 5px;border-radius:4px;">lambda item: item[1]</code> — why item <em>1</em> and not <em>0</em>?</li>
+                    <li>Predict: who gets Racing first — Alex or Jordan?</li>
+                </ul>
+                <div class="mt-3 p-3 rounded-xl" style="background:rgba(245,158,11,0.09);">
+                    <p class="text-xs text-slate-700">🛠️ <strong>Mini-stretch:</strong> Add a third player <code>'Sam'</code> who hates everything (all zeros). What gets recommended? Is the answer meaningful?</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===================== SLIDE 12: VIDEO 2 — Collaborative Filtering ===================== -->
+<div class="slide slide-12" data-slide="12">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:360px;height:360px;top:-70px;right:-70px;background:#0b63ce;opacity:0.07;"></div>
+        <div class="blob" style="width:220px;height:220px;bottom:-50px;left:-40px;background:#10b981;opacity:0.06;"></div>
+    </div>
+    <div class="content" style="z-index:2;position:relative;">
+        <p class="pill mb-3 reveal">Video Deepdive (5 min)</p>
+        <h2 class="font-display reveal" style="font-size:clamp(1.6rem,2.8vw,2.2rem);font-weight:700;margin-bottom:1rem;">How real apps go beyond averages 🧬</h2>
+        <div class="grid-cards grid-2 reveal">
+            <div class="card">
+                <p style="font-size:0.7rem;font-weight:800;letter-spacing:0.13em;text-transform:uppercase;color:#7c3aed;" class="mb-2">Watch · How Recommendation Algorithms Actually Work (8:03)</p>
+                <div class="media-embed" id="player-iWwQGYkZTAw" onclick="playVideo('iWwQGYkZTAw')">
+                    <img src="https://img.youtube.com/vi/iWwQGYkZTAw/hqdefault.jpg" alt="How Recommendation Algorithms Actually Work thumbnail">
+                    <div class="play-btn"><div><svg width="26" height="26" viewBox="0 0 24 24" fill="white"><polygon points="6,4 20,12 6,20"/></svg></div></div>
+                </div>
+                <p style="font-size:0.68rem;color:#64748b;margin-top:5px;"><a href="https://www.youtube.com/watch?v=iWwQGYkZTAw" target="_blank" style="color:#0b63ce;text-decoration:underline;">Source: YouTube · Explaining Tech Like You're Five</a></p>
+            </div>
+            <div class="card">
+                <p class="think-chip mb-2"><span>🔬</span><span>Listen for these ideas</span></p>
+                <div class="timeline">
+                    <div class="timeline-step"><div class="timeline-dot"></div><p class="text-sm text-slate-800 font-semibold">Collaborative filtering</p><p class="text-xs text-slate-500">"People like you also liked…" — finds <em>look-alike</em> users.</p></div>
+                    <div class="timeline-step"><div class="timeline-dot"></div><p class="text-sm text-slate-800 font-semibold">Content-based filtering</p><p class="text-xs text-slate-500">Looks at <em>features</em> of the item (genre, tempo, color) instead of other people's votes.</p></div>
+                    <div class="timeline-step" style="margin-bottom:0;"><div class="timeline-dot"></div><p class="text-sm text-slate-800 font-semibold">The cold-start problem</p><p class="text-xs text-slate-500">When a user or item is brand new, the math has nothing to work with.</p></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===================== SLIDE 13: FILTER BUBBLES ===================== -->
+<div class="slide slide-13" data-slide="13">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:380px;height:380px;top:-70px;right:-70px;background:#f59e0b;opacity:0.08;"></div>
+        <div class="blob" style="width:240px;height:240px;bottom:-55px;left:-50px;background:#ef4444;opacity:0.06;"></div>
+    </div>
+    <div class="content" style="z-index:2;position:relative;">
+        <p class="pill mb-3 reveal">Ethics · The Filter Bubble (4 min)</p>
+        <h2 class="font-display reveal" style="font-size:clamp(1.6rem,2.8vw,2.2rem);font-weight:700;margin-bottom:1rem;">When recommendations trap you 🫧</h2>
+        <div class="grid-cards grid-2">
+            <div class="reveal">
+                <div class="img-frame mb-3" style="aspect-ratio:1.8;">
+                    <img src="https://lhsepic.com/wp-content/uploads/2021/02/filter-bubbles.jpg" alt="Filter bubble illustration">
+                </div>
+                <p style="font-size:0.68rem;color:#64748b;"><a href="https://lhsepic.com/9907/news/isolated-in-online-spaces-the-filter-bubble-effect/" target="_blank" style="color:#0b63ce;text-decoration:underline;">Source: The Epic — Isolated in online social spaces</a></p>
+            </div>
+            <div class="card reveal">
+                <p class="question-chip mb-3"><span class="icon">?</span><span>Wrestle with this</span></p>
+                <ul class="list-disc pl-4 text-sm text-slate-700 space-y-2">
+                    <li>If the algorithm <em>only</em> shows you what you already like, what do you stop discovering?</li>
+                    <li>Could two students at the same school end up with totally different views of the news? How?</li>
+                    <li>What's <strong>one tiny change</strong> we could add to our code to break the bubble?</li>
+                    <li>Whose responsibility is it — the user's, the company's, or the code's?</li>
+                </ul>
+                <div class="mt-3 p-3 rounded-xl" style="background:rgba(239,68,68,0.06);">
+                    <p class="text-xs text-slate-700">⚖️ Real systems sometimes <em>inject</em> a random suggestion on purpose to keep the bubble from sealing shut. Smart trade-off.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===================== SLIDE 14: COMPARE TWO ALGORITHMS ===================== -->
+<div class="slide slide-14" data-slide="14">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:340px;height:340px;top:-70px;right:-60px;background:#0b63ce;opacity:0.08;"></div>
+        <div class="blob" style="width:220px;height:220px;bottom:-50px;left:-40px;background:#10b981;opacity:0.07;"></div>
+    </div>
+    <div class="content" style="z-index:2;position:relative;">
+        <p class="pill mb-3 reveal">Compare · Two Tools, Two Jobs (3 min)</p>
+        <h2 class="font-display reveal" style="font-size:clamp(1.6rem,2.8vw,2.2rem);font-weight:700;margin-bottom:1rem;">Average vs. Personalized — when to use each ⚖️</h2>
+        <div class="grid-cards grid-2 reveal">
+            <div class="card accent-card-blue">
+                <p style="font-size:0.78rem;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:#0b63ce;" class="mb-2">📊 Average rating</p>
+                <ul class="list-disc pl-4 text-sm text-slate-700 space-y-1">
+                    <li>✅ Fast and easy to explain</li>
+                    <li>✅ Great for "trending" or "popular now"</li>
+                    <li>❌ Ignores personal taste</li>
+                    <li>❌ Suffers from cold start</li>
+                </ul>
+                <p class="text-xs text-slate-500 mt-2">Use when: you have <em>many</em> users but very <em>little</em> data per user.</p>
+            </div>
+            <div class="card accent-card-green">
+                <p style="font-size:0.78rem;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:#047857;" class="mb-2">🧍 Per-user (personalized)</p>
+                <ul class="list-disc pl-4 text-sm text-slate-700 space-y-1">
+                    <li>✅ Captures individual taste</li>
+                    <li>✅ Improves the more you watch</li>
+                    <li>❌ Needs lots of data per user</li>
+                    <li>❌ Can build filter bubbles</li>
+                </ul>
+                <p class="text-xs text-slate-500 mt-2">Use when: each user has <em>plenty</em> of history and you want a unique homepage.</p>
+            </div>
+        </div>
+        <div class="card mt-4 reveal" style="background:rgba(11,99,206,0.06);border:1px solid rgba(11,99,206,0.18);">
+            <p class="text-sm text-slate-700">🤝 <strong>In real apps</strong> (Netflix, YouTube, Spotify) the two are <em>combined</em>: average for new users, personalized for regulars, plus a sprinkle of randomness. Which approach is closest to <em>your</em> intuition?</p>
+        </div>
+    </div>
+</div>
+
+<!-- ===================== SLIDE 15: STRETCH CHALLENGES ===================== -->
+<div class="slide slide-15" data-slide="15">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:380px;height:380px;top:-70px;right:-70px;background:#0b63ce;opacity:0.08;"></div>
+        <div class="blob" style="width:240px;height:240px;bottom:-55px;left:-50px;background:#10b981;opacity:0.07;"></div>
+    </div>
+    <div class="content" style="z-index:2;position:relative;">
+        <p class="pill mb-3 reveal">Challenge Time · Pick One (5 min)</p>
+        <h2 class="font-display reveal" style="font-size:clamp(1.6rem,2.8vw,2.2rem);font-weight:700;margin-bottom:1rem;">Push the algorithm further 🚀</h2>
+        <div class="grid-cards grid-3 reveal">
+            <div class="card accent-card-blue">
+                <div style="font-size:1.6rem;margin-bottom:6px;">🥉</div>
+                <p style="font-size:0.72rem;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:#0b63ce;" class="mb-1">Bronze</p>
+                <p class="text-sm text-slate-700">Print the <strong>bottom-ranked</strong> game for each player. Why might a system sometimes <em>need</em> the worst-rated item?</p>
+            </div>
+            <div class="card accent-card-green">
+                <div style="font-size:1.6rem;margin-bottom:6px;">🥈</div>
+                <p style="font-size:0.72rem;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:#047857;" class="mb-1">Silver</p>
+                <p class="text-sm text-slate-700">Refuse to recommend a game with <strong>fewer than 3 votes</strong>. How does that change the leaderboard? What's the trade-off?</p>
+            </div>
+            <div class="card accent-card-amber">
+                <div style="font-size:1.6rem;margin-bottom:6px;">🥇</div>
+                <p style="font-size:0.72rem;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:#b45309;" class="mb-1">Gold</p>
+                <p class="text-sm text-slate-700">Find Alex's <em>look-alike</em>: which other player ranked games most similarly? Recommend the one game Alex hasn't tried that the look-alike loved.</p>
+            </div>
+        </div>
+        <div class="card mt-4 reveal" style="background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.22);">
+            <p class="text-sm text-slate-700">🧠 <strong>Gold</strong> is the seed of <em>collaborative filtering</em> — the same idea Netflix used to win a $1 million prize in 2009. You're closer to that than you think.</p>
+        </div>
+    </div>
+</div>
+
+<!-- ===================== SLIDE 16: HOMEWORK ===================== -->
+<div class="slide slide-16" data-slide="16">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:360px;height:360px;top:-70px;right:-70px;background:#10b981;opacity:0.08;"></div>
+        <div class="blob" style="width:220px;height:220px;bottom:-50px;left:-40px;background:#f59e0b;opacity:0.07;"></div>
+    </div>
+    <div class="content" style="z-index:2;position:relative;">
+        <p class="pill mb-3 reveal">Homework (3 min · explain now, do tonight)</p>
+        <h2 class="font-display reveal" style="font-size:clamp(1.6rem,2.8vw,2.2rem);font-weight:700;margin-bottom:1rem;">Take it home 🏠</h2>
+        <div class="grid-cards grid-2 reveal">
+            <div class="card accent-card-blue">
+                <p style="font-size:0.72rem;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:#0b63ce;" class="mb-2">Part A · Code</p>
+                <p class="text-sm text-slate-700">Make a dictionary of <strong>4–5 items you actually love</strong> (songs, books, snacks — your call) and rate each from <code style="background:#f1f5f9;padding:1px 5px;border-radius:4px;">0</code> to <code style="background:#f1f5f9;padding:1px 5px;border-radius:4px;">1</code>. Run the average-rating recommender. Does it pick what <em>you</em> would pick? Where does it go wrong?</p>
+            </div>
+            <div class="card accent-card-green">
+                <p style="font-size:0.72rem;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:#047857;" class="mb-2">Part B · Reflect</p>
+                <p class="text-sm text-slate-700">Write 4–5 sentences about <strong>two moments</strong>: a time recommendations genuinely <em>helped</em> you, and a time they felt creepy or pushy. What was different about the two?</p>
+            </div>
+        </div>
+        <div class="card mt-4 reveal" style="background:rgba(11,99,206,0.06);border:1px solid rgba(11,99,206,0.18);">
+            <p class="text-sm text-slate-700">📬 Submit screenshots of your code output and your reflection to <a href="mailto:hue.weng.88@gmail.com" style="color:#0b63ce;font-weight:700;">hue.weng.88@gmail.com</a> by next class.</p>
+        </div>
+    </div>
+</div>
+
+<!-- ===================== SLIDE 17: EXIT TICKET / RECAP ===================== -->
+<div class="slide slide-17" data-slide="17">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:340px;height:340px;top:-70px;right:-60px;background:#0b63ce;opacity:0.08;"></div>
+        <div class="blob" style="width:220px;height:220px;bottom:-50px;left:-40px;background:#10b981;opacity:0.07;"></div>
+    </div>
+    <div class="content" style="z-index:2;position:relative;">
+        <p class="pill mb-3 reveal">Recap &amp; Exit Ticket (3 min)</p>
+        <h2 class="font-display reveal" style="font-size:clamp(1.6rem,2.8vw,2.2rem);font-weight:700;margin-bottom:1rem;">What did the code change in your thinking? 🎟️</h2>
+        <div class="grid-cards grid-3 reveal">
+            <div class="card stat-box accent-card-blue">
+                <div class="stat-num grad-text">2</div>
+                <p class="text-xs font-extrabold tracking-widest text-slate-600 uppercase mt-1">Algorithms coded</p>
+                <p class="text-xs text-slate-500 mt-1">Average + Per-user</p>
+            </div>
+            <div class="card stat-box accent-card-green">
+                <div class="stat-num grad-text">6</div>
+                <p class="text-xs font-extrabold tracking-widest text-slate-600 uppercase mt-1">New vocab words</p>
+                <p class="text-xs text-slate-500 mt-1">Recommender → Personalization</p>
+            </div>
+            <div class="card stat-box accent-card-amber">
+                <div class="stat-num grad-text">$1M</div>
+                <p class="text-xs font-extrabold tracking-widest text-slate-600 uppercase mt-1">Netflix Prize, 2009</p>
+                <p class="text-xs text-slate-500 mt-1">For a better recommender</p>
+            </div>
+        </div>
+        <div class="card mt-4 reveal" style="background:rgba(11,99,206,0.06);border:1px solid rgba(11,99,206,0.18);">
+            <p class="text-sm text-slate-700 mb-2">✏️ <strong>Exit ticket</strong> — answer ONE on a sticky note before you leave:</p>
+            <ul class="list-disc pl-5 text-sm text-slate-700 space-y-1">
+                <li>What is one situation where average-rating is the <em>right</em> tool?</li>
+                <li>What is one situation where it would <em>fail</em> a user?</li>
+                <li>What new question about algorithms are you walking out with?</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- ===================== SLIDE 18: THANK YOU ===================== -->
+<div class="slide slide-18" data-slide="18">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:500px;height:500px;top:-120px;right:-100px;background:#0b63ce;opacity:0.14;"></div>
+        <div class="blob" style="width:340px;height:340px;bottom:-80px;left:-60px;background:#10b981;opacity:0.11;"></div>
+        <div class="blob" style="width:200px;height:200px;top:40%;left:12%;background:#f59e0b;opacity:0.10;"></div>
+    </div>
+    <canvas class="particle-canvas" id="pc18"></canvas>
+    <div class="content text-center" style="z-index:2;position:relative;">
+        <div style="font-size:5rem;margin-bottom:1rem;animation:float 3s ease-in-out infinite;" class="reveal">🎯</div>
+        <h1 class="font-display grad-text reveal" style="font-size:clamp(2rem,4.5vw,3.4rem);font-weight:700;margin-bottom:0.8rem;">Awesome work today!</h1>
+        <p class="reveal" style="font-size:clamp(0.95rem,1.5vw,1.15rem);color:#5b6b7e;max-width:640px;margin:0 auto 1.4rem;">You just wrote the same kind of logic that decides what a billion people watch, listen to, and read every day. Use that power thoughtfully.</p>
+        <div class="max-w-2xl mx-auto grid-cards grid-3 mt-2">
+            <div class="card text-center reveal">
+                <div style="font-size:1.4rem;margin-bottom:4px;">📬</div>
+                <p style="font-size:0.72rem;font-weight:700;color:#374151;">hue.weng.88@gmail.com</p>
+            </div>
+            <div class="card text-center reveal" style="background:rgba(11,99,206,0.07);">
+                <div style="font-size:1.4rem;margin-bottom:4px;">🌐</div>
+                <p style="font-size:0.72rem;font-weight:700;color:#0b63ce;">hue881.github.io</p>
+            </div>
+            <div class="card text-center reveal">
+                <div style="font-size:1.4rem;margin-bottom:4px;">📞</div>
+                <p style="font-size:0.72rem;font-weight:700;color:#374151;">646-280-7089</p>
+            </div>
+        </div>
+        <p class="reveal" style="font-size:0.75rem;color:#94a3b8;margin-top:1.2rem;letter-spacing:0.08em;text-transform:uppercase;">Day 15 · AI &amp; Coding for Kids · Spring 2026</p>
+    </div>
+</div>
+
+</div><!-- end .deck -->
+
+<!-- NAV -->
+<div class="nav-controls">
+    <button class="nav-btn" onclick="changeSlide(-1)">&#8249;</button>
+    <div class="slide-dots" id="dots"></div>
+    <button class="nav-btn" onclick="changeSlide(1)">&#8250;</button>
+    <span class="slide-counter" id="counter">1 / 18</span>
+</div>
+
+<script>
+let current = 1;
+const total = document.querySelectorAll('.slide').length;
+const dotsContainer = document.getElementById('dots');
+const counter = document.getElementById('counter');
+for (let i = 1; i <= total; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'dot' + (i === 1 ? ' active' : '');
+    dot.onclick = () => goToSlide(i);
+    dotsContainer.appendChild(dot);
+}
+function goToSlide(n) {
+    const prev = document.querySelector('.slide.active');
+    const next = document.querySelector('.slide[data-slide="' + n + '"]');
+    if (prev) prev.classList.remove('active');
+    if (next) { next.classList.add('active'); animateSlide(next); }
+    current = n; updateNav();
+}
+function changeSlide(dir) { let n = current + dir; if (n < 1) n = total; if (n > total) n = 1; goToSlide(n); }
+function updateNav() {
+    document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i + 1 === current));
+    counter.textContent = current + ' / ' + total;
+}
+document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); changeSlide(1); }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); changeSlide(-1); }
+});
+let tx = 0;
+document.addEventListener('touchstart', e => { tx = e.touches[0].clientX; });
+document.addEventListener('touchend', e => { const dx = tx - e.changedTouches[0].clientX; if (Math.abs(dx) > 50) changeSlide(dx > 0 ? 1 : -1); });
+
+function animateSlide(slide) {
+    slide.querySelectorAll('.reveal').forEach((el, i) => {
+        el.style.transition = 'none'; el.style.opacity = '0'; el.style.transform = 'translateY(16px)';
+        el.offsetHeight;
+        const d = i * 0.07;
+        el.style.transition = 'opacity 0.32s ease ' + d + 's, transform 0.32s ease ' + d + 's';
+        el.style.opacity = '1'; el.style.transform = 'translateY(0)';
+    });
+    slide.querySelectorAll('[data-count]:not(.counted)').forEach(el => {
+        el.classList.add('counted');
+        const target = parseInt(el.dataset.count);
+        if (isNaN(target)) return;
+        let cur = 0; const step = target / 40;
+        const t = setInterval(() => { cur += step; if (cur >= target) { cur = target; clearInterval(t); } el.textContent = Math.round(cur); }, 30);
+    });
+}
+
+function playVideo(videoId) {
+    const container = document.getElementById('player-' + videoId);
+    if (!container) return;
+    container.onclick = null;
+    container.style.cursor = 'default';
+    container.innerHTML = '<iframe src="https://www.youtube.com/embed/' + videoId + '?autoplay=1&rel=0" allowfullscreen allow="autoplay; encrypted-media" style="position:absolute;inset:0;width:100%;height:100%;border:0;border-radius:13px;"></iframe>';
+}
+
+/* Mouse spotlight */
+document.addEventListener('mousemove', e => {
+    const s = document.querySelector('.mouse-spotlight');
+    if (s) s.style.background = 'radial-gradient(600px circle at ' + e.clientX + 'px ' + e.clientY + 'px, rgba(11,99,206,0.05), transparent 40%)';
+});
+
+/* Particles */
+window.initParticles = function(canvas, opts) {
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight;
+    const count = opts.count || 40; let mx = -1000, my = -1000;
+    const [r, g, b] = [11, 99, 206];
+    const particles = Array.from({ length: count }, () => ({
+        x: Math.random() * canvas.width, y: Math.random() * canvas.height,
+        vx: (Math.random() - 0.5) * 0.3, vy: (Math.random() - 0.5) * 0.3,
+        size: Math.random() * 2.2 + 0.7, alpha: Math.random() * 0.3 + 0.08
+    }));
+    canvas.addEventListener('mousemove', e => { const rc = canvas.getBoundingClientRect(); mx = e.clientX - rc.left; my = e.clientY - rc.top; });
+    canvas.addEventListener('mouseleave', () => { mx = -1000; my = -1000; });
+    (function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        particles.forEach(p => {
+            const dx = p.x - mx, dy = p.y - my, dist = Math.sqrt(dx*dx + dy*dy);
+            if (dist < 100) { const f = (100 - dist) / 100 * 1.5; p.vx += (dx / dist) * f * 0.1; p.vy += (dy / dist) * f * 0.1; }
+            p.vx *= 0.98; p.vy *= 0.98; p.x += p.vx; p.y += p.vy;
+            if (p.x < 0) p.x = canvas.width; if (p.x > canvas.width) p.x = 0;
+            if (p.y < 0) p.y = canvas.height; if (p.y > canvas.height) p.y = 0;
+            ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2);
+            ctx.fillStyle = 'rgba(' + r + ',' + g + ',' + b + ',' + p.alpha + ')'; ctx.fill();
+        });
+        requestAnimationFrame(animate);
+    })();
+};
+['pc1','pc18'].forEach(id => {
+    const c = document.getElementById(id);
+    if (c) initParticles(c, { count: 45 });
+});
+
+try { animateSlide(document.querySelector('.slide.active')); } catch(e) {}
+</script>
+</body>
+</html>
