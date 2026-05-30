@@ -1,1 +1,760 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="slides-format" content="viewport">
+    <title>Day 16 · AI for Images — Beginner Version</title>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+    <style type="text/tailwindcss">
+        @theme {
+            --color-bg: #f4fbff;
+            --color-bg-deep: #e0f2ff;
+            --color-surface: rgba(255,255,255,0.95);
+            --color-text: #1f2a37;
+            --color-text-secondary: #374151;
+            --color-text-muted: #5b6b7e;
+            --color-accent-1: #0b63ce;
+            --color-accent-2: #10b981;
+            --color-accent-3: #f59e0b;
+            --color-glass-bg: rgba(255,255,255,0.88);
+            --color-glass-border: rgba(11,99,206,0.16);
+            --color-vignette: rgba(15,23,42,0.07);
+            --font-display: "Fredoka", "Trebuchet MS", sans-serif;
+            --font-body: "Nunito", Arial, sans-serif;
+        }
+    </style>
+
+    <style>
+        :root { --color-bg:#f4fbff; --color-text:#1f2a37; --glow-color-rgb:11,99,206; }
+        *, *::before, *::after { box-sizing:border-box; }
+        html, body { background:var(--color-bg); margin:0; }
+        body { font-family:"Nunito",Arial,sans-serif; color:var(--color-text); overflow:hidden; height:100vh; width:100vw; }
+        .deck { width:100vw; height:100vh; position:relative; }
+        .slide {
+            position:absolute; top:0; left:0; width:100%; height:100%;
+            background: radial-gradient(circle at top left, rgba(56,189,248,0.14),transparent 40%),
+                        radial-gradient(circle at bottom right, rgba(16,185,129,0.10),transparent 40%),
+                        var(--color-bg);
+            display:flex; flex-direction:column; align-items:center; justify-content:center;
+            opacity:0; transform:scale(0.96); transition:opacity 0.55s ease,transform 0.55s ease;
+            pointer-events:none; overflow:hidden;
+        }
+        .slide.active { opacity:1; transform:scale(1); pointer-events:all; }
+        .slide > .content { position:relative; z-index:2; width:100%; max-width:1060px; padding:clamp(1.2rem,3.5vw,3rem); }
+        .nav-controls { position:fixed; bottom:22px; left:50%; transform:translateX(-50%); display:flex; align-items:center; gap:14px; z-index:100; background:rgba(255,255,255,0.92); backdrop-filter:blur(12px); padding:9px 22px; border-radius:999px; border:1px solid rgba(148,163,184,0.4); box-shadow:0 8px 28px rgba(15,23,42,0.13); }
+        .nav-btn { width:36px; height:36px; border:none; background:rgba(15,23,42,0.06); color:#0b63ce; border-radius:999px; font-size:1.1rem; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:background 0.2s,transform 0.15s; }
+        .nav-btn:hover { background:rgba(15,23,42,0.12); transform:translateY(-1px); }
+        .slide-dots { display:flex; gap:7px; }
+        .slide-dots .dot { width:8px; height:8px; border-radius:50%; background:rgba(148,163,184,0.6); cursor:pointer; transition:background 0.25s,transform 0.25s; }
+        .slide-dots .dot.active { background:#0b63ce; transform:scale(1.4); }
+        .slide-counter { font-size:0.78rem; color:#64748b; min-width:46px; text-align:center; font-weight:700; }
+        .reveal { opacity:0; transform:translateY(16px); }
+        .mouse-spotlight { position:fixed; inset:0; z-index:1; pointer-events:none; }
+
+        .card { background:var(--color-surface); border-radius:18px; padding:16px 20px; box-shadow:0 8px 24px rgba(15,23,42,0.07); border:1px solid rgba(255,255,255,0.7); }
+        .pill { display:inline-flex; align-items:center; gap:7px; padding:5px 14px; border-radius:999px; border:1px solid rgba(148,163,184,0.5); background:rgba(255,255,255,0.9); font-size:0.76rem; font-weight:800; letter-spacing:0.08em; text-transform:uppercase; color:#0b63ce; }
+        .think-chip { display:inline-flex; align-items:center; gap:9px; padding:7px 13px; border-radius:999px; background:rgba(11,99,206,0.08); color:#1e40af; font-size:0.82rem; font-weight:700; }
+        .question-chip { display:inline-flex; align-items:center; gap:9px; padding:7px 13px; border-radius:999px; background:rgba(245,158,11,0.09); color:#92400e; font-size:0.82rem; font-weight:700; }
+        .question-chip .icon { display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px; border-radius:999px; background:rgba(245,158,11,0.95); color:#fff; font-size:0.78rem; }
+
+        /* Big friendly text for less advanced */
+        .big-text { font-size:clamp(1rem,1.7vw,1.25rem); line-height:1.65; }
+        .fun-box { border-radius:16px; padding:14px 18px; border:2px dashed; }
+
+        .media-embed { position:relative; padding-top:56.25%; border-radius:13px; overflow:hidden; background:#1e293b; cursor:pointer; }
+        .media-embed img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+        .media-embed .play-btn { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; }
+        .media-embed .play-btn div { width:58px; height:58px; background:rgba(255,0,0,0.88); border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 18px rgba(0,0,0,0.38); transition:transform 0.2s; }
+        .media-embed:hover .play-btn div { transform:scale(1.1); }
+        .media-embed iframe { position:absolute; inset:0; width:100%; height:100%; border:0; border-radius:13px; }
+
+        .code-block { background:#1e293b; color:#e2e8f0; border-radius:12px; padding:14px 18px; font-family:"Fira Code",Consolas,monospace; font-size:clamp(0.72rem,1.15vw,0.88rem); line-height:1.65; overflow-x:auto; border:1px solid rgba(255,255,255,0.06); }
+        .code-block .kw { color:#93c5fd; }
+        .code-block .cm { color:#64748b; font-style:italic; }
+        .code-block .st { color:#86efac; }
+        .code-block .nb { color:#fcd34d; }
+        .code-scroll { max-height:clamp(120px,24vh,220px); overflow-y:auto; }
+        .code-scroll::-webkit-scrollbar { width:5px; }
+        .code-scroll::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.2); border-radius:4px; }
+
+        .accent-card-blue  { border-left:4px solid #0b63ce; }
+        .accent-card-green { border-left:4px solid #10b981; }
+        .accent-card-amber { border-left:4px solid #f59e0b; }
+
+        .vocab-tag { display:inline-flex; align-items:center; padding:5px 13px; border-radius:999px; background:rgba(15,23,42,0.04); font-size:0.85rem; font-weight:800; color:#0b63ce; }
+
+        .pixel-cell { width:44px; height:44px; display:flex; align-items:center; justify-content:center; font-family:"Fira Code",monospace; font-size:0.92rem; font-weight:700; border-radius:6px; }
+
+        .grid-cards { display:grid; gap:16px; }
+        @media(min-width:800px){ .grid-2{grid-template-columns:repeat(2,minmax(0,1fr));} .grid-3{grid-template-columns:repeat(3,minmax(0,1fr));} }
+
+        .grad-text { background:linear-gradient(135deg,#0b63ce 0%,#10b981 50%,#f59e0b 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+
+        .gradient-mesh { position:absolute; inset:0; z-index:0; overflow:hidden; pointer-events:none; }
+        .blob { position:absolute; border-radius:50%; filter:blur(72px); animation:float-slow 12s ease-in-out infinite; }
+        .blob:nth-child(2) { animation:float-drift 16s ease-in-out infinite; }
+        .blob:nth-child(3) { animation:float-slow 20s ease-in-out infinite reverse; }
+        @keyframes float-slow { 0%{transform:translate(0,0) scale(1);} 25%{transform:translate(50px,-40px) scale(1.1);} 50%{transform:translate(-30px,35px) scale(0.92);} 75%{transform:translate(45px,18px) scale(1.07);} 100%{transform:translate(0,0) scale(1);} }
+        @keyframes float-drift { 0%{transform:translate(0,0) scale(1) rotate(0deg);} 33%{transform:translate(-45px,-55px) scale(1.13) rotate(3deg);} 66%{transform:translate(38px,28px) scale(0.9) rotate(-2deg);} 100%{transform:translate(0,0) scale(1) rotate(0deg);} }
+        @keyframes float { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-14px);} }
+        .slide::after { content:""; position:absolute; inset:0; z-index:1; pointer-events:none; background:radial-gradient(ellipse at center,transparent 55%,rgba(15,23,42,0.06) 100%); }
+        .particle-canvas { position:absolute; inset:0; z-index:1; }
+        @media(prefers-reduced-motion:reduce){ *,*::before,*::after{animation-duration:0.01ms!important;transition-duration:0.2s!important;} }
+    </style>
+</head>
+<body>
+<div class="mouse-spotlight"></div>
+<div class="deck">
+
+<!-- ======================== SLIDE 1: TITLE ======================== -->
+<div class="slide slide-1 active" data-slide="1">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:500px;height:500px;top:-120px;right:-100px;background:#0b63ce;opacity:0.12;"></div>
+        <div class="blob" style="width:340px;height:340px;bottom:-80px;left:-80px;background:#10b981;opacity:0.10;"></div>
+        <div class="blob" style="width:220px;height:220px;top:40%;left:10%;background:#f59e0b;opacity:0.08;"></div>
+    </div>
+    <canvas class="particle-canvas" id="pc1"></canvas>
+    <div class="content" style="z-index:2;position:relative;text-align:center;">
+        <div style="font-size:clamp(4rem,9vw,7rem);margin-bottom:1rem;animation:float 3s ease-in-out infinite;" class="reveal">🖼️</div>
+        <h1 class="font-display grad-text reveal" style="font-size:clamp(2.4rem,5.5vw,4.2rem);font-weight:700;margin-bottom:0.5rem;line-height:1.1;">Day 16 · AI for Images</h1>
+        <p class="reveal" style="font-size:clamp(1rem,1.8vw,1.35rem);color:#5b6b7e;font-weight:700;margin-bottom:1.2rem;">How computers learn to see edges 👀</p>
+        <div class="reveal" style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+            <span class="pill">🧑‍🏫 Mr. Hsiao "Hue" Weng</span>
+            <span class="pill">📅 Spring 2026</span>
+            <span class="pill">⭐ Beginner-Friendly Edition</span>
+        </div>
+    </div>
+</div>
+
+<!-- ======================== SLIDE 2: WARM-UP (simple) ======================== -->
+<div class="slide slide-2" data-slide="2">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:380px;height:380px;top:-70px;right:-70px;background:#f59e0b;opacity:0.09;"></div>
+        <div class="blob" style="width:260px;height:260px;bottom:-55px;left:-50px;background:#0b63ce;opacity:0.07;"></div>
+    </div>
+    <div class="content" style="z-index:2;position:relative;">
+        <p class="pill mb-3 reveal">🔥 Warm-Up · Let's Think Together</p>
+        <h2 class="font-display reveal" style="font-size:clamp(1.6rem,2.8vw,2.2rem);font-weight:700;margin-bottom:1rem;">Two easy questions to start 🤔</h2>
+        <div class="grid-cards grid-2 reveal" style="margin-bottom:16px;">
+            <div class="card accent-card-blue" style="padding:22px 24px;">
+                <div style="font-size:2.2rem;margin-bottom:10px;">📸</div>
+                <p style="font-size:0.7rem;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:#0b63ce;" class="mb-2">Question 1</p>
+                <p class="big-text" style="color:#374151;">If you zoom in really close on a photo on a phone screen, what do you see? Tiny squares? What color are those squares?</p>
+            </div>
+            <div class="card accent-card-green" style="padding:22px 24px;">
+                <div style="font-size:2.2rem;margin-bottom:10px;">🐱</div>
+                <p style="font-size:0.7rem;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:#047857;" class="mb-2">Question 2</p>
+                <p class="big-text" style="color:#374151;">Look at a photo of a cat on a white background. Where does the <strong>cat end</strong> and the <strong>background begin</strong>? What do we call that line?</p>
+            </div>
+        </div>
+        <div class="card reveal" style="background:rgba(11,99,206,0.06);border:1px solid rgba(11,99,206,0.18);padding:14px 18px;">
+            <p class="big-text" style="color:#374151;">✏️ <strong>Write</strong> one sentence answer for each question in your notebook. No wrong answers — just your best guess!</p>
+        </div>
+    </div>
+</div>
+
+<!-- ======================== SLIDE 3: WHAT IS A PIXEL ======================== -->
+<div class="slide slide-3" data-slide="3">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:360px;height:360px;top:-60px;right:-60px;background:#10b981;opacity:0.08;"></div>
+        <div class="blob" style="width:240px;height:240px;bottom:-50px;left:-40px;background:#0b63ce;opacity:0.07;"></div>
+    </div>
+    <div class="content" style="z-index:2;position:relative;">
+        <p class="pill mb-3 reveal">📸 Step 1 · Pictures = Numbers</p>
+        <h2 class="font-display reveal" style="font-size:clamp(1.6rem,2.8vw,2.2rem);font-weight:700;margin-bottom:1rem;">Every photo is secretly a grid of numbers! 🔢</h2>
+        <div class="grid-cards grid-2 reveal">
+            <div class="card" style="padding:20px 22px;">
+                <div style="font-size:1.8rem;margin-bottom:10px;">🎨</div>
+                <p style="font-size:0.7rem;font-weight:800;letter-spacing:0.13em;text-transform:uppercase;color:#0b63ce;" class="mb-2">What is a pixel?</p>
+                <ul class="list-disc pl-4 space-y-3" style="color:#374151;">
+                    <li class="big-text">A <strong>pixel</strong> is the tiniest dot in a picture — like one square on graph paper.</li>
+                    <li class="big-text"><strong>0</strong> = completely black &nbsp; <strong>9</strong> = very bright (in our mini-grid)</li>
+                    <li class="big-text">A real photo has <strong>millions</strong> of pixels — we'll practice with just <strong>25</strong> today.</li>
+                </ul>
+            </div>
+            <div class="card" style="padding:20px 22px;">
+                <p style="font-size:0.7rem;font-weight:800;letter-spacing:0.13em;text-transform:uppercase;color:#047857;" class="mb-2">Our 5×5 mini-picture</p>
+                <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin-bottom:12px;">
+                    <div class="pixel-cell" style="background:#f1f5f9;color:#94a3b8;">0</div><div class="pixel-cell" style="background:#f1f5f9;color:#94a3b8;">0</div><div class="pixel-cell" style="background:#f1f5f9;color:#94a3b8;">0</div><div class="pixel-cell" style="background:#f1f5f9;color:#94a3b8;">0</div><div class="pixel-cell" style="background:#f1f5f9;color:#94a3b8;">0</div>
+                    <div class="pixel-cell" style="background:#f1f5f9;color:#94a3b8;">0</div><div class="pixel-cell" style="background:#93c5fd;color:#1e40af;">5</div><div class="pixel-cell" style="background:#93c5fd;color:#1e40af;">5</div><div class="pixel-cell" style="background:#93c5fd;color:#1e40af;">5</div><div class="pixel-cell" style="background:#f1f5f9;color:#94a3b8;">0</div>
+                    <div class="pixel-cell" style="background:#f1f5f9;color:#94a3b8;">0</div><div class="pixel-cell" style="background:#93c5fd;color:#1e40af;">5</div><div class="pixel-cell" style="background:#1d4ed8;color:#fff;">9</div><div class="pixel-cell" style="background:#93c5fd;color:#1e40af;">5</div><div class="pixel-cell" style="background:#f1f5f9;color:#94a3b8;">0</div>
+                    <div class="pixel-cell" style="background:#f1f5f9;color:#94a3b8;">0</div><div class="pixel-cell" style="background:#93c5fd;color:#1e40af;">5</div><div class="pixel-cell" style="background:#93c5fd;color:#1e40af;">5</div><div class="pixel-cell" style="background:#93c5fd;color:#1e40af;">5</div><div class="pixel-cell" style="background:#f1f5f9;color:#94a3b8;">0</div>
+                    <div class="pixel-cell" style="background:#f1f5f9;color:#94a3b8;">0</div><div class="pixel-cell" style="background:#f1f5f9;color:#94a3b8;">0</div><div class="pixel-cell" style="background:#f1f5f9;color:#94a3b8;">0</div><div class="pixel-cell" style="background:#f1f5f9;color:#94a3b8;">0</div><div class="pixel-cell" style="background:#f1f5f9;color:#94a3b8;">0</div>
+                </div>
+                <p class="big-text" style="color:#374151;">The <strong>blue numbers</strong> are the bright part. The <strong>gray zeros</strong> are the dark border. Can you see the square shape?</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ======================== SLIDE 4: WHAT IS AN EDGE ======================== -->
+<div class="slide slide-4" data-slide="4">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:360px;height:360px;top:-70px;right:-70px;background:#0b63ce;opacity:0.08;"></div>
+        <div class="blob" style="width:240px;height:240px;bottom:-50px;left:-40px;background:#f59e0b;opacity:0.07;"></div>
+    </div>
+    <div class="content" style="z-index:2;position:relative;">
+        <p class="pill mb-3 reveal">🔍 Step 2 · What Is an Edge?</p>
+        <h2 class="font-display reveal" style="font-size:clamp(1.6rem,2.8vw,2.2rem);font-weight:700;margin-bottom:1rem;">An edge is where numbers suddenly change! ⚡</h2>
+        <div class="grid-cards grid-3 reveal">
+            <div class="card accent-card-blue" style="padding:20px;">
+                <div style="font-size:2rem;margin-bottom:8px;">🌅</div>
+                <p style="font-size:0.72rem;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:#0b63ce;" class="mb-2">In a photo</p>
+                <p class="big-text" style="color:#374151;">Where a <strong>dark sky</strong> meets a <strong>bright building</strong> — that sudden change is an edge. Your eye sees a line there!</p>
+            </div>
+            <div class="card accent-card-green" style="padding:20px;">
+                <div style="font-size:2rem;margin-bottom:8px;">🔢</div>
+                <p style="font-size:0.72rem;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:#047857;" class="mb-2">In numbers</p>
+                <p class="big-text" style="color:#374151;">Going across a row: <br><code style="background:#e0f2ff;padding:2px 7px;border-radius:4px;font-size:0.9rem;">0 → 0 → 5 → 5</code><br>The jump from <strong>0 to 5</strong> is an edge — a big number change!</p>
+            </div>
+            <div class="card accent-card-amber" style="padding:20px;">
+                <div style="font-size:2rem;margin-bottom:8px;">🤖</div>
+                <p style="font-size:0.72rem;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:#b45309;" class="mb-2">Why AI needs it</p>
+                <p class="big-text" style="color:#374151;">If AI can find edges, it can see <strong>shapes</strong>. Shapes tell it: "this is a face", "this is a stop sign", "this is a cat"!</p>
+            </div>
+        </div>
+        <div class="card mt-4 reveal" style="background:rgba(245,158,11,0.06);border:2px dashed rgba(245,158,11,0.4);padding:14px 18px;">
+            <p class="big-text" style="color:#374151;">
+                <span class="question-chip"><span class="icon">?</span><span>Think about it</span></span>
+                &nbsp; In our 5×5 grid, can you find where the number <strong>jumps from 0 to 5</strong>? Point to it on the screen — that's where an edge lives! 👆
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- ======================== SLIDE 5: VIDEO 1 ======================== -->
+<div class="slide slide-5" data-slide="5">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:380px;height:380px;top:-70px;right:-70px;background:#0b63ce;opacity:0.07;"></div>
+        <div class="blob" style="width:240px;height:240px;bottom:-50px;left:-40px;background:#10b981;opacity:0.06;"></div>
+    </div>
+    <div class="content" style="z-index:2;position:relative;">
+        <p class="pill mb-3 reveal">🎬 Video · How Computers See</p>
+        <h2 class="font-display reveal" style="font-size:clamp(1.6rem,2.8vw,2.2rem);font-weight:700;margin-bottom:1rem;">Let's watch edges in action! 📺</h2>
+        <div class="grid-cards grid-2 reveal">
+            <div class="card">
+                <p style="font-size:0.7rem;font-weight:800;letter-spacing:0.13em;text-transform:uppercase;color:#0b63ce;" class="mb-2">Watch · How Computers See: Edge Detection</p>
+                <div class="media-embed" id="player-pJXBmnDg-8U" onclick="playVideo('pJXBmnDg-8U')">
+                    <img src="https://img.youtube.com/vi/pJXBmnDg-8U/hqdefault.jpg" alt="How Computers See: Edge Detection thumbnail">
+                    <div class="play-btn"><div><svg width="26" height="26" viewBox="0 0 24 24" fill="white"><polygon points="6,4 20,12 6,20"/></svg></div></div>
+                </div>
+                <p style="font-size:0.68rem;color:#64748b;margin-top:5px;"><a href="https://www.youtube.com/watch?v=pJXBmnDg-8U" target="_blank" style="color:#0b63ce;text-decoration:underline;">▶ Source: YouTube · How Computers See: Edge Detection</a></p>
+            </div>
+            <div class="card reveal" style="padding:20px 22px;">
+                <p class="question-chip mb-3"><span class="icon">?</span><span>Watch for these 3 things</span></p>
+                <ul class="list-disc pl-4 space-y-3" style="color:#374151;">
+                    <li class="big-text">When the filter runs, where do the <strong>bright white lines</strong> appear?</li>
+                    <li class="big-text">What does the photo look like <em>after</em> edge detection — does it still look like a photo?</li>
+                    <li class="big-text">Can you still tell what objects are in the picture even without colors?</li>
+                </ul>
+                <div class="mt-3 card" style="padding:10px 14px;background:rgba(11,99,206,0.06);">
+                    <p class="big-text" style="color:#374151;">💬 After watching: give the video a thumbs up 👍 or thumbs down 👎 — and say <em>one word</em> to describe what you saw.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ======================== SLIDE 6: THE FORMULA — SIMPLE INTRO ======================== -->
+<div class="slide slide-6" data-slide="6">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:380px;height:380px;top:-70px;right:-70px;background:#0b63ce;opacity:0.07;"></div>
+        <div class="blob" style="width:240px;height:240px;bottom:-50px;left:-40px;background:#f59e0b;opacity:0.07;"></div>
+    </div>
+    <div class="content" style="z-index:2;position:relative;">
+        <p class="pill mb-3 reveal">🧮 Step 3 · The Edge Formula</p>
+        <h2 class="font-display reveal" style="font-size:clamp(1.6rem,2.8vw,2.2rem);font-weight:700;margin-bottom:0.9rem;">One simple idea: compare a pixel to its neighbors 🏘️</h2>
+        <div class="grid-cards grid-2 reveal">
+            <div class="card" style="padding:20px 22px;">
+                <p style="font-size:0.7rem;font-weight:800;letter-spacing:0.13em;text-transform:uppercase;color:#0b63ce;" class="mb-3">The big idea in plain English</p>
+                <div class="fun-box" style="background:rgba(11,99,206,0.05);border-color:rgba(11,99,206,0.3);margin-bottom:12px;">
+                    <p class="big-text" style="color:#1e40af;font-weight:700;text-align:center;">For every pixel — ask:<br>"Are you very different from your neighbors?"</p>
+                </div>
+                <ul class="list-disc pl-4 space-y-2" style="color:#374151;">
+                    <li class="big-text"><strong>Big difference</strong> → you're on an edge! 🔴</li>
+                    <li class="big-text"><strong>Tiny difference</strong> → you're in a flat area ⬜</li>
+                </ul>
+                <div class="mt-3" style="background:#1e293b;border-radius:10px;padding:10px 14px;font-family:'Fira Code',monospace;color:#e2e8f0;font-size:0.88rem;text-align:center;">
+                    value = center×4 − (up+down+left+right)
+                </div>
+            </div>
+            <div class="card" style="padding:20px 22px;">
+                <p style="font-size:0.7rem;font-weight:800;letter-spacing:0.13em;text-transform:uppercase;color:#047857;" class="mb-2">Meet the 5 neighbors 👋</p>
+                <div style="display:grid;grid-template-columns:repeat(3,56px);gap:5px;margin:0 auto 12px;width:fit-content;">
+                    <div style="width:56px;height:44px;display:flex;align-items:center;justify-content:center;background:#f1f5f9;border-radius:7px;color:#94a3b8;font-size:0.75rem;"></div>
+                    <div style="width:56px;height:44px;display:flex;align-items:center;justify-content:center;background:#fef3c7;border-radius:7px;color:#b45309;font-weight:800;font-size:0.85rem;border:2px solid #f59e0b;">⬆️up</div>
+                    <div style="width:56px;height:44px;display:flex;align-items:center;justify-content:center;background:#f1f5f9;border-radius:7px;color:#94a3b8;font-size:0.75rem;"></div>
+                    <div style="width:56px;height:44px;display:flex;align-items:center;justify-content:center;background:#fef3c7;border-radius:7px;color:#b45309;font-weight:800;font-size:0.85rem;border:2px solid #f59e0b;">⬅️left</div>
+                    <div style="width:56px;height:44px;display:flex;align-items:center;justify-content:center;background:#dbeafe;border-radius:7px;color:#1d4ed8;font-weight:800;font-size:1.1rem;border:3px solid #0b63ce;">⭐</div>
+                    <div style="width:56px;height:44px;display:flex;align-items:center;justify-content:center;background:#fef3c7;border-radius:7px;color:#b45309;font-weight:800;font-size:0.85rem;border:2px solid #f59e0b;">➡️right</div>
+                    <div style="width:56px;height:44px;display:flex;align-items:center;justify-content:center;background:#f1f5f9;border-radius:7px;color:#94a3b8;font-size:0.75rem;"></div>
+                    <div style="width:56px;height:44px;display:flex;align-items:center;justify-content:center;background:#fef3c7;border-radius:7px;color:#b45309;font-weight:800;font-size:0.85rem;border:2px solid #f59e0b;">⬇️down</div>
+                    <div style="width:56px;height:44px;display:flex;align-items:center;justify-content:center;background:#f1f5f9;border-radius:7px;color:#94a3b8;font-size:0.75rem;"></div>
+                </div>
+                <p class="big-text" style="color:#374151;">⭐ = the pixel we're checking. The 4 arrows are its neighbors. If ⭐ is much brighter or darker than the arrows → <strong>EDGE!</strong></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ======================== SLIDE 7: VOCABULARY (SIMPLE) ======================== -->
+<div class="slide slide-7" data-slide="7">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:340px;height:340px;top:-70px;right:-60px;background:#10b981;opacity:0.08;"></div>
+        <div class="blob" style="width:220px;height:220px;bottom:-50px;left:-40px;background:#0b63ce;opacity:0.07;"></div>
+    </div>
+    <div class="content" style="z-index:2;position:relative;">
+        <p class="pill mb-3 reveal">🔑 Vocabulary · 4 Key Words</p>
+        <h2 class="font-display reveal" style="font-size:clamp(1.6rem,2.8vw,2.2rem);font-weight:700;margin-bottom:0.9rem;">Learn these words — use them today! 📖</h2>
+        <div class="grid-cards grid-2 reveal">
+            <div class="card" style="padding:20px 22px;">
+                <p class="vocab-tag mb-2">🖼️ Pixel</p>
+                <p class="big-text" style="color:#374151;">The <strong>tiniest dot</strong> in a digital picture. Each pixel stores one number. Zoom in on any photo and you'll see the squares!</p>
+            </div>
+            <div class="card" style="padding:20px 22px;">
+                <p class="vocab-tag mb-2">📐 Edge</p>
+                <p class="big-text" style="color:#374151;">A place in the image where the numbers <strong>change a lot</strong> very quickly. Like the outline of a shape — where light meets dark.</p>
+            </div>
+            <div class="card" style="padding:20px 22px;">
+                <p class="vocab-tag mb-2">🌀 Filter</p>
+                <p class="big-text" style="color:#374151;">A math operation that <strong>slides over every pixel</strong> and checks its neighbors. Different filters can blur, sharpen, or find edges.</p>
+            </div>
+            <div class="card" style="padding:20px 22px;">
+                <p class="vocab-tag mb-2">🔁 Nested Loop</p>
+                <p class="big-text" style="color:#374151;">A <strong>loop inside another loop</strong>. The outer loop moves through rows, the inner loop through columns — visits every pixel one by one.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ======================== SLIDE 8: THE CODE — WALKED THROUGH ======================== -->
+<div class="slide slide-8" data-slide="8">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:360px;height:360px;top:-70px;right:-70px;background:#0b63ce;opacity:0.07;"></div>
+        <div class="blob" style="width:230px;height:230px;bottom:-50px;left:-40px;background:#10b981;opacity:0.07;"></div>
+    </div>
+    <div class="content" style="z-index:2;position:relative;">
+        <p class="pill mb-3 reveal">🐍 The Code · Line by Line</p>
+        <h2 class="font-display reveal" style="font-size:clamp(1.6rem,2.8vw,2.2rem);font-weight:700;margin-bottom:0.8rem;">Let's read the code together — no scary parts! 😊</h2>
+        <div class="grid-cards grid-2 reveal">
+            <div class="card code-scroll">
+                <pre class="code-block" style="margin:0;font-size:clamp(0.7rem,1.1vw,0.85rem);"><code><span class="cm"># Our tiny picture (5 rows, 5 columns)</span>
+image = [
+  [0, 0, 0, 0, 0],
+  [0, <span class="nb">5</span>, <span class="nb">5</span>, <span class="nb">5</span>, 0],
+  [0, <span class="nb">5</span>, <span class="nb">9</span>, <span class="nb">5</span>, 0],
+  [0, <span class="nb">5</span>, <span class="nb">5</span>, <span class="nb">5</span>, 0],
+  [0, 0, 0, 0, 0],
+]
+
+filtered = []  <span class="cm"># our results go here</span>
+
+<span class="kw">for</span> y <span class="kw">in</span> range(1, 4):     <span class="cm"># rows 1, 2, 3</span>
+  new_row = []
+  <span class="kw">for</span> x <span class="kw">in</span> range(1, 4):   <span class="cm"># columns 1, 2, 3</span>
+    center = image[y][x]
+    up     = image[y-1][x]
+    down   = image[y+1][x]
+    left   = image[y][x-1]
+    right  = image[y][x+1]
+
+    <span class="cm"># How different is center from neighbors?</span>
+    value = center*4 - (up + down + left + right)
+    new_row.append(value)
+  filtered.append(new_row)
+
+<span class="kw">print</span>(filtered)</code></pre>
+            </div>
+            <div class="card" style="padding:20px 22px;">
+                <p style="font-size:0.7rem;font-weight:800;letter-spacing:0.13em;text-transform:uppercase;color:#0b63ce;" class="mb-2">What each part does 🗺️</p>
+                <ul class="list-none space-y-3" style="color:#374151;">
+                    <li class="big-text">📦 <strong>image</strong> — our 5×5 picture stored as a list of lists</li>
+                    <li class="big-text">🔁 <strong>for y in range(1,4)</strong> — visits rows 1, 2, 3 (skips the edges!)</li>
+                    <li class="big-text">🔁 <strong>for x in range(1,4)</strong> — visits columns 1, 2, 3</li>
+                    <li class="big-text">👆 <strong>image[y-1][x]</strong> — reads the pixel <em>above</em> the current one</li>
+                    <li class="big-text">📊 <strong>value</strong> — a big number means edge, small number means flat</li>
+                </ul>
+                <div class="mt-3" style="background:rgba(16,185,129,0.07);border-radius:10px;padding:10px 14px;">
+                    <p class="big-text" style="color:#065f46;">💡 <strong>Why skip row 0?</strong> There's no row above it! <code style="background:#d1fae5;padding:1px 5px;border-radius:4px;">y-1</code> would go off the grid.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ======================== SLIDE 9: WALK THROUGH EXAMPLE ======================== -->
+<div class="slide slide-9" data-slide="9">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:360px;height:360px;top:-70px;right:-70px;background:#f59e0b;opacity:0.08;"></div>
+        <div class="blob" style="width:230px;height:230px;bottom:-50px;left:-40px;background:#0b63ce;opacity:0.07;"></div>
+    </div>
+    <div class="content" style="z-index:2;position:relative;">
+        <p class="pill mb-3 reveal">🔢 Let's Calculate Together!</p>
+        <h2 class="font-display reveal" style="font-size:clamp(1.6rem,2.8vw,2.2rem);font-weight:700;margin-bottom:0.8rem;">We do one pixel together — step by step ✍️</h2>
+        <div class="grid-cards grid-2 reveal">
+            <div class="card" style="padding:20px 22px;">
+                <p style="font-size:0.7rem;font-weight:800;letter-spacing:0.13em;text-transform:uppercase;color:#0b63ce;" class="mb-2">Pixel at row 1, column 1</p>
+                <div style="background:#1e293b;border-radius:10px;padding:14px 18px;font-family:'Fira Code',monospace;font-size:0.9rem;color:#e2e8f0;line-height:1.9;margin-bottom:10px;">
+                    center = image[1][1] = <span style="color:#fcd34d;font-weight:700;">5</span><br>
+                    up     = image[0][1] = <span style="color:#93c5fd;">0</span>&nbsp; ← row above<br>
+                    down   = image[2][1] = <span style="color:#93c5fd;">5</span>&nbsp; ← row below<br>
+                    left   = image[1][0] = <span style="color:#93c5fd;">0</span>&nbsp; ← column left<br>
+                    right  = image[1][2] = <span style="color:#93c5fd;">5</span>&nbsp; ← column right<br>
+                    <br>
+                    value = <span style="color:#fcd34d;">5</span>×4 − (<span style="color:#93c5fd;">0+5+0+5</span>)<br>
+                          = 20 − 10 = <span style="color:#86efac;font-weight:700;">10</span> 🔴
+                </div>
+                <p class="big-text" style="color:#374151;"><strong>10 is a big number</strong> — this pixel is on an edge! It sits right where the dark border meets the bright square.</p>
+            </div>
+            <div class="card" style="padding:20px 22px;">
+                <p style="font-size:0.7rem;font-weight:800;letter-spacing:0.13em;text-transform:uppercase;color:#047857;" class="mb-2">Now your turn — try pixel [2][2]</p>
+                <div style="background:#1e293b;border-radius:10px;padding:14px 18px;font-family:'Fira Code',monospace;font-size:0.9rem;color:#e2e8f0;line-height:1.9;margin-bottom:12px;">
+                    center = image[2][2] = <span style="color:#fcd34d;">9</span><br>
+                    up     = image[1][2] = <span style="color:#93c5fd;">5</span><br>
+                    down   = image[3][2] = <span style="color:#93c5fd;">5</span><br>
+                    left   = image[2][1] = <span style="color:#93c5fd;">5</span><br>
+                    right  = image[2][3] = <span style="color:#93c5fd;">5</span><br>
+                    <br>
+                    value = <span style="color:#fcd34d;">9</span>×4 − (5+5+5+5) = ?
+                </div>
+                <div class="fun-box" style="background:rgba(11,99,206,0.06);border-color:rgba(11,99,206,0.3);padding:10px 14px;">
+                    <p class="big-text" style="color:#1e40af;">Calculate the answer in your notebook! Then check: is 9×4 = 36 and 5+5+5+5 = 20, so 36 − 20 = <strong>?</strong></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ======================== SLIDE 10: VIDEO 2 ======================== -->
+<div class="slide slide-10" data-slide="10">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:380px;height:380px;top:-70px;right:-70px;background:#0b63ce;opacity:0.07;"></div>
+        <div class="blob" style="width:240px;height:240px;bottom:-50px;left:-40px;background:#f59e0b;opacity:0.06;"></div>
+    </div>
+    <div class="content" style="z-index:2;position:relative;">
+        <p class="pill mb-3 reveal">🎬 Video 2 · How Edges Are Detected</p>
+        <h2 class="font-display reveal" style="font-size:clamp(1.6rem,2.8vw,2.2rem);font-weight:700;margin-bottom:1rem;">One more video — seeing the filter in action 📺</h2>
+        <div class="grid-cards grid-2 reveal">
+            <div class="card">
+                <p style="font-size:0.7rem;font-weight:800;letter-spacing:0.13em;text-transform:uppercase;color:#0b63ce;" class="mb-2">Watch · How Algorithms Detect Edges</p>
+                <div class="media-embed" id="player-lkLmIyj_OcA" onclick="playVideo('lkLmIyj_OcA')">
+                    <img src="https://img.youtube.com/vi/lkLmIyj_OcA/hqdefault.jpg" alt="How Do Algorithms Detect Edges In Images thumbnail">
+                    <div class="play-btn"><div><svg width="26" height="26" viewBox="0 0 24 24" fill="white"><polygon points="6,4 20,12 6,20"/></svg></div></div>
+                </div>
+                <p style="font-size:0.68rem;color:#64748b;margin-top:5px;"><a href="https://www.youtube.com/watch?v=lkLmIyj_OcA" target="_blank" style="color:#0b63ce;text-decoration:underline;">▶ Source: YouTube · How Do Algorithms Detect Edges In Images?</a></p>
+            </div>
+            <div class="card reveal" style="padding:20px 22px;">
+                <p class="question-chip mb-3"><span class="icon">?</span><span>Watch for just 2 things</span></p>
+                <ul class="list-disc pl-4 space-y-3" style="color:#374151;">
+                    <li class="big-text">What part of the image does the filter make <strong>bright white</strong>?</li>
+                    <li class="big-text">After the filter runs, can you recognize what is in the image from just the edges?</li>
+                </ul>
+                <div class="mt-4" style="background:rgba(245,158,11,0.07);border-radius:12px;padding:12px 16px;">
+                    <p class="big-text" style="color:#92400e;">💬 After watching: tell your neighbor — <em>"The filter makes ___ bright because ___."</em> Fill in the blanks!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ======================== SLIDE 11: EXERCISE A (EASIER) ======================== -->
+<div class="slide slide-11" data-slide="11">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:380px;height:380px;top:-70px;right:-70px;background:#0b63ce;opacity:0.08;"></div>
+        <div class="blob" style="width:240px;height:240px;bottom:-50px;left:-40px;background:#10b981;opacity:0.07;"></div>
+    </div>
+    <div class="content" style="z-index:2;position:relative;">
+        <p class="pill mb-3 reveal">💻 Exercise A · Copy &amp; Explore</p>
+        <h2 class="font-display reveal" style="font-size:clamp(1.6rem,2.8vw,2.2rem);font-weight:700;margin-bottom:0.8rem;">Run the code, then change one thing! 🛠️</h2>
+        <div class="grid-cards grid-2 reveal">
+            <div class="card code-scroll">
+                <p style="font-size:0.7rem;font-weight:800;letter-spacing:0.13em;text-transform:uppercase;color:#0b63ce;" class="mb-2">Step 1 · Copy this exactly</p>
+                <pre class="code-block" style="margin:0;font-size:clamp(0.7rem,1.1vw,0.85rem);"><code>image = [
+  [0, 0, 0, 0, 0],
+  [0, <span class="nb">5</span>, <span class="nb">5</span>, <span class="nb">5</span>, 0],
+  [0, <span class="nb">5</span>, <span class="nb">9</span>, <span class="nb">5</span>, 0],
+  [0, <span class="nb">5</span>, <span class="nb">5</span>, <span class="nb">5</span>, 0],
+  [0, 0, 0, 0, 0],
+]
+filtered = []
+<span class="kw">for</span> y <span class="kw">in</span> range(1, 4):
+  new_row = []
+  <span class="kw">for</span> x <span class="kw">in</span> range(1, 4):
+    center = image[y][x]
+    up     = image[y-1][x]
+    down   = image[y+1][x]
+    left   = image[y][x-1]
+    right  = image[y][x+1]
+    value  = center*4-(up+down+left+right)
+    new_row.append(value)
+  filtered.append(new_row)
+<span class="kw">print</span>(filtered)</code></pre>
+            </div>
+            <div class="card" style="padding:20px 22px;">
+                <p style="font-size:0.7rem;font-weight:800;letter-spacing:0.13em;text-transform:uppercase;color:#047857;" class="mb-2">Step 2 · Answer these 🌟</p>
+                <ul class="list-none space-y-3" style="color:#374151;">
+                    <li class="big-text">🔵 Run it. What 3 rows does <code style="background:#e0f2ff;padding:1px 5px;border-radius:4px;">filtered</code> have?</li>
+                    <li class="big-text">🔢 Which numbers are biggest? Write them down.</li>
+                    <li class="big-text">✏️ Change <code style="background:#e0f2ff;padding:1px 5px;border-radius:4px;">image[2][2] = 9</code> to <code style="background:#e0f2ff;padding:1px 5px;border-radius:4px;">image[2][2] = 1</code> and run again. What changed?</li>
+                </ul>
+                <div class="mt-4" style="background:rgba(11,99,206,0.06);border-radius:12px;padding:12px 16px;">
+                    <p class="big-text" style="color:#1e40af;">🏅 <strong>Bonus:</strong> Can you change the image to make ALL the filtered values equal to 0? (Hint: what if every number is the same?)</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ======================== SLIDE 12: EXERCISE B (FILL IN BLANKS — EASIER) ======================== -->
+<div class="slide slide-12" data-slide="12">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:380px;height:380px;top:-70px;right:-70px;background:#10b981;opacity:0.08;"></div>
+        <div class="blob" style="width:240px;height:240px;bottom:-50px;left:-40px;background:#f59e0b;opacity:0.07;"></div>
+    </div>
+    <div class="content" style="z-index:2;position:relative;">
+        <p class="pill mb-3 reveal">💻 Exercise B · Fill in the Blanks</p>
+        <h2 class="font-display reveal" style="font-size:clamp(1.6rem,2.8vw,2.2rem);font-weight:700;margin-bottom:0.8rem;">Three blanks — use the word bank below! 📝</h2>
+        <div class="grid-cards grid-2 reveal">
+            <div class="card code-scroll">
+                <pre class="code-block" style="margin:0;font-size:clamp(0.7rem,1.1vw,0.85rem);"><code>image = [
+  [0, 0, 0, 0, 0],
+  [0, <span class="nb">7</span>, <span class="nb">7</span>, <span class="nb">7</span>, 0],
+  [0, <span class="nb">7</span>, <span class="nb">7</span>, <span class="nb">7</span>, 0],
+  [0, <span class="nb">7</span>, <span class="nb">7</span>, <span class="nb">7</span>, 0],
+  [0, 0, 0, 0, 0],
+]
+filtered = []
+<span class="kw">for</span> y <span class="kw">in</span> range(1, 4):
+  new_row = []
+  <span class="kw">for</span> x <span class="kw">in</span> range(1, 4):
+    center = image[y][x]
+    up     = image[y-<span style="background:#fef3c7;color:#92400e;padding:0 4px;border-radius:3px;">__</span>][x]  <span class="cm"># Blank 1</span>
+    down   = image[y+<span style="background:#fef3c7;color:#92400e;padding:0 4px;border-radius:3px;">__</span>][x]  <span class="cm"># Blank 2</span>
+    left   = image[y][x-<span style="background:#fef3c7;color:#92400e;padding:0 4px;border-radius:3px;">__</span>]  <span class="cm"># Blank 3</span>
+    right  = image[y][x+1]
+    value  = center*4-(up+down+left+right)
+    new_row.append(value)
+  filtered.append(new_row)
+<span class="kw">print</span>(filtered)</code></pre>
+            </div>
+            <div class="card" style="padding:20px 22px;">
+                <p style="font-size:0.7rem;font-weight:800;letter-spacing:0.13em;text-transform:uppercase;color:#047857;" class="mb-2">Word Bank 📦</p>
+                <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;">
+                    <span style="background:#dbeafe;color:#1d4ed8;padding:6px 14px;border-radius:999px;font-family:'Fira Code',monospace;font-size:0.95rem;font-weight:700;">1</span>
+                    <span style="background:#d1fae5;color:#065f46;padding:6px 14px;border-radius:999px;font-family:'Fira Code',monospace;font-size:0.95rem;font-weight:700;">1</span>
+                    <span style="background:#fef3c7;color:#92400e;padding:6px 14px;border-radius:999px;font-family:'Fira Code',monospace;font-size:0.95rem;font-weight:700;">1</span>
+                </div>
+                <p class="big-text" style="color:#374151;margin-bottom:10px;">All three blanks use the same number! Think: how many rows/columns do you move to reach the neighbor?</p>
+                <div style="background:rgba(245,158,11,0.07);border-radius:12px;padding:10px 14px;margin-bottom:10px;">
+                    <p class="big-text" style="color:#92400e;"><strong>Predict before you run:</strong> In this new image, all 7s are surrounded by other 7s in the middle. What do you think the filtered values will be? Big or small?</p>
+                </div>
+                <div style="background:rgba(16,185,129,0.07);border-radius:12px;padding:10px 14px;">
+                    <p class="big-text" style="color:#065f46;">🔑 <strong>Answer:</strong> All three blanks = <strong>1</strong></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ======================== SLIDE 13: REAL WORLD ======================== -->
+<div class="slide slide-13" data-slide="13">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:380px;height:380px;top:-70px;right:-70px;background:#10b981;opacity:0.08;"></div>
+        <div class="blob" style="width:240px;height:240px;bottom:-50px;left:-40px;background:#0b63ce;opacity:0.07;"></div>
+    </div>
+    <div class="content" style="z-index:2;position:relative;">
+        <p class="pill mb-3 reveal">🌍 Cool Stuff · Where Is This Used?</p>
+        <h2 class="font-display reveal" style="font-size:clamp(1.6rem,2.8vw,2.2rem);font-weight:700;margin-bottom:1rem;">Your code runs inside real technology! 🚀</h2>
+        <div class="grid-cards grid-3 reveal">
+            <div class="card accent-card-blue" style="padding:20px;">
+                <div style="font-size:2.2rem;margin-bottom:8px;">🔓</div>
+                <p style="font-size:0.72rem;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:#0b63ce;" class="mb-2">Face Unlock</p>
+                <p class="big-text" style="color:#374151;">Your phone takes a grid of numbers (your face), finds the edges of your eyes and nose, and compares to a saved pattern. Match = unlock! 🔑</p>
+            </div>
+            <div class="card accent-card-green" style="padding:20px;">
+                <div style="font-size:2.2rem;margin-bottom:8px;">🚗</div>
+                <p style="font-size:0.72rem;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:#047857;" class="mb-2">Self-Driving Cars</p>
+                <p class="big-text" style="color:#374151;">Cars like Tesla run edge filters on every camera frame to find lane lines, other cars, and pedestrians — <strong>30 times per second!</strong> 🛣️</p>
+            </div>
+            <div class="card accent-card-amber" style="padding:20px;">
+                <div style="font-size:2.2rem;margin-bottom:8px;">🏥</div>
+                <p style="font-size:0.72rem;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:#b45309;" class="mb-2">Medical Scans</p>
+                <p class="big-text" style="color:#374151;">Doctors use AI to find edges in X-rays and MRIs to spot tumors — the same idea, but on a <strong>1000×1000 grid</strong> instead of 5×5! 🩺</p>
+            </div>
+        </div>
+        <div class="card mt-4 reveal" style="background:rgba(11,99,206,0.06);border:1px solid rgba(11,99,206,0.18);padding:14px 18px;">
+            <p class="big-text" style="color:#374151;">🤔 <strong>Think about it:</strong> You just wrote the same kind of code that powers face unlock, self-driving cars, and medical AI. How does that make you feel?</p>
+        </div>
+    </div>
+</div>
+
+<!-- ======================== SLIDE 14: HOMEWORK (SIMPLE) ======================== -->
+<div class="slide slide-14" data-slide="14">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:380px;height:380px;top:-70px;right:-70px;background:#f59e0b;opacity:0.09;"></div>
+        <div class="blob" style="width:250px;height:250px;bottom:-55px;left:-50px;background:#0b63ce;opacity:0.07;"></div>
+    </div>
+    <div class="content" style="z-index:2;position:relative;">
+        <p class="pill mb-3 reveal">📝 Homework · Two Fun Tasks</p>
+        <h2 class="font-display reveal" style="font-size:clamp(1.6rem,2.8vw,2.2rem);font-weight:700;margin-bottom:0.9rem;">Before next class 🏠</h2>
+        <div class="grid-cards grid-2 reveal">
+            <div class="card accent-card-blue" style="padding:22px 24px;">
+                <p style="font-size:0.7rem;font-weight:800;letter-spacing:0.13em;text-transform:uppercase;color:#0b63ce;" class="mb-2">🎨 Task 1 · Draw Your Own 5×5 Picture</p>
+                <ul class="list-disc pl-4 space-y-2" style="color:#374151;">
+                    <li class="big-text">Draw a 5×5 grid on paper and fill each square with a number <strong>0–9</strong></li>
+                    <li class="big-text">Try to draw a <strong>simple shape</strong> — a cross (+), a letter, or a smiley!</li>
+                    <li class="big-text">Circle the squares where you think the <strong>edges will be</strong></li>
+                    <li class="big-text">Optional: type it into Python and run the filter to check!</li>
+                </ul>
+            </div>
+            <div class="card accent-card-green" style="padding:22px 24px;">
+                <p style="font-size:0.7rem;font-weight:800;letter-spacing:0.13em;text-transform:uppercase;color:#047857;" class="mb-2">✍️ Task 2 · Answer in 3 Sentences</p>
+                <div class="fun-box" style="background:rgba(16,185,129,0.06);border-color:rgba(16,185,129,0.4);margin-bottom:12px;padding:12px 14px;">
+                    <p class="big-text" style="color:#065f46;font-style:italic;">"Why are edges important for a computer to understand a picture?"</p>
+                </div>
+                <p class="big-text" style="color:#374151;">Your 3 sentences should cover:</p>
+                <ul class="list-disc pl-4 space-y-1" style="color:#374151;">
+                    <li class="big-text">What an edge IS in plain words</li>
+                    <li class="big-text">One real example (face, car, medical scan...)</li>
+                    <li class="big-text">How the <em>numbers</em> show where an edge is</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ======================== SLIDE 15: CLOSING ======================== -->
+<div class="slide slide-15" data-slide="15">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:500px;height:500px;top:-120px;right:-100px;background:#0b63ce;opacity:0.12;"></div>
+        <div class="blob" style="width:340px;height:340px;bottom:-80px;left:-80px;background:#10b981;opacity:0.10;"></div>
+        <div class="blob" style="width:220px;height:220px;top:40%;left:10%;background:#f59e0b;opacity:0.08;"></div>
+    </div>
+    <canvas class="particle-canvas" id="pc15"></canvas>
+    <div class="content" style="z-index:2;position:relative;text-align:center;">
+        <div style="font-size:clamp(3.5rem,7vw,5.5rem);margin-bottom:0.8rem;animation:float 3s ease-in-out infinite;" class="reveal">🌟</div>
+        <h2 class="font-display grad-text reveal" style="font-size:clamp(2rem,4.5vw,3.5rem);font-weight:700;margin-bottom:0.5rem;line-height:1.1;">Amazing work today!</h2>
+        <p class="reveal" style="font-size:clamp(1rem,1.7vw,1.3rem);color:#5b6b7e;font-weight:600;margin-bottom:1.2rem;">Look at your warm-up answers — did today change how you see photos? 📸</p>
+        <div class="grid-cards grid-3 reveal" style="text-align:left;margin-bottom:1rem;">
+            <div class="card" style="text-align:center;padding:16px 10px;">
+                <div style="font-size:2rem;color:#0b63ce;font-weight:800;font-family:'Fredoka',sans-serif;">25</div>
+                <p style="font-size:0.75rem;color:#64748b;text-transform:uppercase;font-weight:700;letter-spacing:0.1em;">Pixels in our grid</p>
+            </div>
+            <div class="card" style="text-align:center;padding:16px 10px;">
+                <div style="font-size:2rem;color:#10b981;font-weight:800;font-family:'Fredoka',sans-serif;">9</div>
+                <p style="font-size:0.75rem;color:#64748b;text-transform:uppercase;font-weight:700;letter-spacing:0.1em;">Edges our filter checked</p>
+            </div>
+            <div class="card" style="text-align:center;padding:16px 10px;">
+                <div style="font-size:2rem;color:#f59e0b;font-weight:800;font-family:'Fredoka',sans-serif;">∞</div>
+                <p style="font-size:0.75rem;color:#64748b;text-transform:uppercase;font-weight:700;letter-spacing:0.1em;">Same idea in real AI!</p>
+            </div>
+        </div>
+        <div class="pill reveal" style="margin:0 auto;">📧 hue.weng.88@gmail.com · 🌐 hue881.github.io · 📞 646-280-7089</div>
+    </div>
+</div>
+
+</div><!-- end .deck -->
+
+<div class="nav-controls">
+    <button class="nav-btn" onclick="changeSlide(-1)">&#8249;</button>
+    <div class="slide-dots" id="dots"></div>
+    <button class="nav-btn" onclick="changeSlide(1)">&#8250;</button>
+    <span class="slide-counter" id="counter">1 / 15</span>
+</div>
+
+<script>
+let current = 1;
+const total = document.querySelectorAll('.slide').length;
+const dotsContainer = document.getElementById('dots');
+const counter = document.getElementById('counter');
+for (let i = 1; i <= total; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'dot' + (i === 1 ? ' active' : '');
+    dot.onclick = () => goToSlide(i);
+    dotsContainer.appendChild(dot);
+}
+function goToSlide(n) {
+    const prev = document.querySelector('.slide.active');
+    const next = document.querySelector('.slide[data-slide="' + n + '"]');
+    if (prev) prev.classList.remove('active');
+    if (next) { next.classList.add('active'); animateSlide(next); }
+    current = n; updateNav();
+}
+function changeSlide(dir) { let n = current + dir; if (n < 1) n = total; if (n > total) n = 1; goToSlide(n); }
+function updateNav() {
+    document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i + 1 === current));
+    counter.textContent = current + ' / ' + total;
+}
+document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); changeSlide(1); }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); changeSlide(-1); }
+});
+let tx = 0;
+document.addEventListener('touchstart', e => { tx = e.touches[0].clientX; });
+document.addEventListener('touchend', e => { const dx = tx - e.changedTouches[0].clientX; if (Math.abs(dx) > 50) changeSlide(dx > 0 ? 1 : -1); });
+
+function animateSlide(slide) {
+    slide.querySelectorAll('.reveal').forEach((el, i) => {
+        el.style.transition = 'none'; el.style.opacity = '0'; el.style.transform = 'translateY(16px)';
+        el.offsetHeight;
+        const d = i * 0.07;
+        el.style.transition = 'opacity 0.32s ease ' + d + 's, transform 0.32s ease ' + d + 's';
+        el.style.opacity = '1'; el.style.transform = 'translateY(0)';
+    });
+}
+
+function playVideo(videoId) {
+    const container = document.getElementById('player-' + videoId);
+    if (!container) return;
+    container.onclick = null;
+    container.style.cursor = 'default';
+    container.innerHTML = '<iframe src="https://www.youtube.com/embed/' + videoId + '?autoplay=1&rel=0" allowfullscreen allow="autoplay; encrypted-media" style="position:absolute;inset:0;width:100%;height:100%;border:0;border-radius:13px;"></iframe>';
+}
+
+document.addEventListener('mousemove', e => {
+    const s = document.querySelector('.mouse-spotlight');
+    if (s) s.style.background = 'radial-gradient(600px circle at ' + e.clientX + 'px ' + e.clientY + 'px, rgba(11,99,206,0.05), transparent 40%)';
+});
+
+window.initParticles = function(canvas, opts) {
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight;
+    const count = opts.count || 40; let mx = -1000, my = -1000;
+    const [r, g, b] = [11, 99, 206];
+    const particles = Array.from({ length: count }, () => ({
+        x: Math.random() * canvas.width, y: Math.random() * canvas.height,
+        vx: (Math.random() - 0.5) * 0.3, vy: (Math.random() - 0.5) * 0.3,
+        size: Math.random() * 2.2 + 0.7, alpha: Math.random() * 0.3 + 0.08
+    }));
+    canvas.addEventListener('mousemove', e => { const rc = canvas.getBoundingClientRect(); mx = e.clientX - rc.left; my = e.clientY - rc.top; });
+    canvas.addEventListener('mouseleave', () => { mx = -1000; my = -1000; });
+    (function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        particles.forEach(p => {
+            const dx = p.x - mx, dy = p.y - my, dist = Math.sqrt(dx*dx + dy*dy);
+            if (dist < 100) { const f = (100 - dist) / 100 * 1.5; p.vx += (dx / dist) * f * 0.1; p.vy += (dy / dist) * f * 0.1; }
+            p.vx *= 0.98; p.vy *= 0.98; p.x += p.vx; p.y += p.vy;
+            if (p.x < 0) p.x = canvas.width; if (p.x > canvas.width) p.x = 0;
+            if (p.y < 0) p.y = canvas.height; if (p.y > canvas.height) p.y = 0;
+            ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2);
+            ctx.fillStyle = 'rgba(' + r + ',' + g + ',' + b + ',' + p.alpha + ')'; ctx.fill();
+        });
+        requestAnimationFrame(animate);
+    })();
+};
+['pc1','pc15'].forEach(id => {
+    const c = document.getElementById(id);
+    if (c) initParticles(c, { count: 45 });
+});
+
+try { animateSlide(document.querySelector('.slide.active')); } catch(e) {}
+</script>
+</body>
+</html>
