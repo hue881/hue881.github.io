@@ -1,1 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="slides-format" content="viewport">
+    <title>Day 15 · Recommendation Systems (Easier)</title>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+    <style type="text/tailwindcss">
+        @theme {
+            --color-bg: #f4fbff;
+            --color-bg-deep: #e0f2ff;
+            --color-surface: rgba(255,255,255,0.95);
+            --color-text: #1f2a37;
+            --color-text-secondary: #374151;
+            --color-text-muted: #5b6b7e;
+            --color-accent-1: #0b63ce;
+            --color-accent-2: #10b981;
+            --color-accent-3: #f59e0b;
+            --color-glass-bg: rgba(255,255,255,0.88);
+            --color-glass-border: rgba(11,99,206,0.16);
+            --color-vignette: rgba(15,23,42,0.07);
+            --font-display: "Fredoka", "Trebuchet MS", sans-serif;
+            --font-body: "Nunito", Arial, sans-serif;
+        }
+    </style>
+
+    <style>
+        :root { --color-bg:#f4fbff; --color-text:#1f2a37; --glow-color-rgb:11,99,206; }
+        *, *::before, *::after { box-sizing:border-box; }
+        html, body { background:var(--color-bg); margin:0; }
+        body { font-family:"Nunito",Arial,sans-serif; color:var(--color-text); overflow:hidden; height:100vh; width:100vw; }
+        .deck { width:100vw; height:100vh; position:relative; }
+        .slide { position:absolute; top:0; left:0; width:100%; height:100%;
+            background: radial-gradient(circle at top left, rgba(56,189,248,0.14),transparent 40%),
+                        radial-gradient(circle at bottom right, rgba(16,185,129,0.10),transparent 40%),
+                        var(--color-bg);
+            display:flex; flex-direction:column; align-items:center; justify-content:center;
+            opacity:0; transform:scale(0.96); transition:opacity 0.55s ease,transform 0.55s ease;
+            pointer-events:none; overflow:hidden; }
+        .slide.active { opacity:1; transform:scale(1); pointer-events:all; }
+        .slide > .content { position:relative; z-index:2; width:100%; max-width:1060px; padding:clamp(1.2rem,3.5vw,3rem); }
+        .nav-controls { position:fixed; bottom:22px; left:50%; transform:translateX(-50%); display:flex; align-items:center; gap:14px; z-index:100; background:rgba(255,255,255,0.92); backdrop-filter:blur(12px); padding:9px 22px; border-radius:999px; border:1px solid rgba(148,163,184,0.4); box-shadow:0 8px 28px rgba(15,23,42,0.13); }
+        .nav-btn { width:36px; height:36px; border:none; background:rgba(15,23,42,0.06); color:#0b63ce; border-radius:999px; font-size:1.1rem; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:background 0.2s,transform 0.15s; }
+        .nav-btn:hover { background:rgba(15,23,42,0.12); transform:translateY(-1px); }
+        .slide-dots { display:flex; gap:7px; }
+        .slide-dots .dot { width:8px; height:8px; border-radius:50%; background:rgba(148,163,184,0.6); cursor:pointer; transition:background 0.25s,transform 0.25s; }
+        .slide-dots .dot.active { background:#0b63ce; transform:scale(1.4); }
+        .slide-counter { font-size:0.78rem; color:#64748b; min-width:46px; text-align:center; font-weight:700; }
+        .reveal { opacity:0; transform:translateY(16px); }
+        .mouse-spotlight { position:fixed; inset:0; z-index:1; pointer-events:none; }
+
+        .card { background:var(--color-surface); border-radius:18px; padding:16px 20px; box-shadow:0 8px 24px rgba(15,23,42,0.07); border:1px solid rgba(255,255,255,0.7); }
+        .pill { display:inline-flex; align-items:center; gap:7px; padding:5px 14px; border-radius:999px; border:1px solid rgba(148,163,184,0.5); background:rgba(255,255,255,0.9); font-size:0.76rem; font-weight:800; letter-spacing:0.08em; text-transform:uppercase; color:#0b63ce; }
+        .question-chip { display:inline-flex; align-items:center; gap:9px; padding:7px 13px; border-radius:999px; background:rgba(245,158,11,0.09); color:#92400e; font-size:0.8rem; font-weight:700; }
+        .question-chip .icon { display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px; border-radius:999px; background:rgba(245,158,11,0.95); color:#fff; font-size:0.78rem; }
+        .think-chip { display:inline-flex; align-items:center; gap:9px; padding:7px 13px; border-radius:999px; background:rgba(11,99,206,0.08); color:#1e40af; font-size:0.8rem; font-weight:700; }
+
+        .media-embed { position:relative; padding-top:56.25%; border-radius:13px; overflow:hidden; background:#1e293b; cursor:pointer; }
+        .media-embed img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+        .media-embed .play-btn { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; }
+        .media-embed .play-btn div { width:58px; height:58px; background:rgba(255,0,0,0.88); border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 18px rgba(0,0,0,0.38); transition:transform 0.2s; }
+        .media-embed:hover .play-btn div { transform:scale(1.1); }
+        .media-embed iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }
+
+        .code-block { background:#1e293b; color:#e2e8f0; border-radius:12px; padding:14px 18px; font-family:"Fira Code",Consolas,monospace; font-size:clamp(0.7rem,1.15vw,0.92rem); line-height:1.65; overflow-x:auto; border:1px solid rgba(255,255,255,0.06); }
+        .code-block .kw { color:#93c5fd; }
+        .code-block .cm { color:#64748b; font-style:italic; }
+        .code-block .st { color:#86efac; }
+        .code-block .nb { color:#fcd34d; }
+
+        .timeline { position:relative; padding-left:24px; }
+        .timeline::before { content:""; position:absolute; left:9px; top:4px; bottom:4px; width:3px; border-radius:999px; background:linear-gradient(to bottom,#0b63ce,#10b981); }
+        .timeline-step { position:relative; margin-bottom:12px; }
+        .timeline-dot { position:absolute; left:-2px; top:4px; width:13px; height:13px; border-radius:999px; border:2px solid #f4fbff; background:#0b63ce; box-shadow:0 0 0 3px rgba(59,130,246,0.22); }
+
+        .grid-cards { display:grid; gap:16px; }
+        @media(min-width:800px){ .grid-2{grid-template-columns:repeat(2,minmax(0,1fr));} .grid-3{grid-template-columns:repeat(3,minmax(0,1fr));} }
+
+        .grad-text { background:linear-gradient(135deg,#0b63ce 0%,#10b981 50%,#f59e0b 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+
+        .accent-card-blue  { border-left:4px solid #0b63ce; }
+        .accent-card-green { border-left:4px solid #10b981; }
+        .accent-card-amber { border-left:4px solid #f59e0b; }
+        .accent-card-red   { border-left:4px solid #ef4444; }
+
+        .stat-box { text-align:center; padding:14px 10px; }
+        .stat-num { font-size:clamp(1.8rem,3.5vw,2.6rem); font-weight:800; line-height:1; }
+
+        .vocab-tag { display:inline-flex; align-items:center; padding:4px 11px; border-radius:999px; background:rgba(15,23,42,0.04); font-size:0.85rem; font-weight:700; color:#0b63ce; }
+
+        .gradient-mesh { position:absolute; inset:0; z-index:0; overflow:hidden; pointer-events:none; }
+        .blob { position:absolute; border-radius:50%; filter:blur(72px); animation:float-slow 12s ease-in-out infinite; }
+        .blob:nth-child(2) { animation:float-drift 16s ease-in-out infinite; }
+        .blob:nth-child(3) { animation:float-slow 20s ease-in-out infinite reverse; }
+        @keyframes float-slow { 0%{transform:translate(0,0) scale(1);} 25%{transform:translate(50px,-40px) scale(1.1);} 50%{transform:translate(-30px,35px) scale(0.92);} 75%{transform:translate(45px,18px) scale(1.07);} 100%{transform:translate(0,0) scale(1);} }
+        @keyframes float-drift { 0%{transform:translate(0,0) scale(1) rotate(0deg);} 33%{transform:translate(-45px,-55px) scale(1.13) rotate(3deg);} 66%{transform:translate(38px,28px) scale(0.9) rotate(-2deg);} 100%{transform:translate(0,0) scale(1) rotate(0deg);} }
+        @keyframes float { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-14px);} }
+
+        .slide::after { content:""; position:absolute; inset:0; z-index:1; pointer-events:none; background:radial-gradient(ellipse at center,transparent 55%,rgba(15,23,42,0.06) 100%); }
+
+        .particle-canvas { position:absolute; inset:0; z-index:1; }
+
+        @media(prefers-reduced-motion:reduce){ *,*::before,*::after{animation-duration:0.01ms!important;transition-duration:0.2s!important;} }
+
+        .code-scroll { max-height:clamp(140px,28vh,260px); overflow-y:auto; }
+        .code-scroll::-webkit-scrollbar { width:5px; }
+        .code-scroll::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.2); border-radius:4px; }
+
+        .img-frame { border-radius:13px; overflow:hidden; border:1px solid rgba(11,99,206,0.18); box-shadow:0 8px 24px rgba(15,23,42,0.12); background:#fff; }
+        .img-frame img { display:block; width:100%; height:100%; object-fit:cover; }
+
+        .big-text p { font-size:clamp(0.95rem,1.5vw,1.1rem); }
+    </style>
+</head>
+<body>
+<div class="mouse-spotlight"></div>
+<div class="deck">
+
+<!-- ===================== SLIDE 1: TITLE ===================== -->
+<div class="slide slide-1 active" data-slide="1">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:500px;height:500px;top:-120px;right:-100px;background:#0b63ce;opacity:0.12;"></div>
+        <div class="blob" style="width:320px;height:320px;bottom:-80px;left:-60px;background:#10b981;opacity:0.10;"></div>
+        <div class="blob" style="width:200px;height:200px;top:42%;left:14%;background:#f59e0b;opacity:0.09;"></div>
+    </div>
+    <canvas class="particle-canvas" id="pc1"></canvas>
+    <div class="content text-center" style="z-index:2;position:relative;">
+        <div class="flex flex-wrap justify-center gap-3 mb-5">
+            <span class="pill">AI &amp; Coding · Beginners</span>
+            <span class="pill" style="color:#047857;background:rgba(16,185,129,0.08);">~60 minutes</span>
+            <span class="pill" style="color:#b45309;background:rgba(245,158,11,0.08);">Day 15 · Spring 2026</span>
+        </div>
+        <div class="mb-5 flex justify-center reveal">
+            <div class="rounded-2xl bg-white/90 shadow-lg border border-slate-200 px-7 py-4 flex items-center gap-4">
+                <span style="font-size:3.2rem;">🍦</span>
+                <div class="text-left">
+                    <p style="font-size:0.7rem;font-weight:800;letter-spacing:0.15em;text-transform:uppercase;color:#0b63ce;" class="mb-1">Mr. Hsiao "Hue" Weng</p>
+                    <p style="font-size:0.85rem;font-weight:600;color:#374151;">hue881.github.io · hue.weng.88@gmail.com</p>
+                </div>
+            </div>
+        </div>
+        <h1 class="font-display grad-text tracking-tight reveal" style="font-size:clamp(2rem,4.5vw,3.4rem);font-weight:700;margin-bottom:0.8rem;line-height:1.15;">
+            Day 15: How Apps Pick "What's Next"
+        </h1>
+        <p class="reveal" style="font-size:clamp(1rem,1.6vw,1.25rem);color:#5b6b7e;max-width:720px;margin:0 auto 1.2rem;">
+            How does YouTube decide which video to play after this one? Today we'll build a tiny version ourselves.
+        </p>
+        <div class="max-w-2xl mx-auto grid-cards grid-2 mt-3">
+            <div class="card text-left reveal">
+                <p style="font-size:0.7rem;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:#0b63ce;" class="mb-1">You already know</p>
+                <ul class="list-disc pl-4 text-sm text-slate-700 space-y-1">
+                    <li>Lists like <code style="font-size:0.78rem;background:#f1f5f9;padding:1px 5px;border-radius:4px;">[1, 0, 1]</code></li>
+                    <li>How to find an <strong>average</strong></li>
+                </ul>
+            </div>
+            <div class="card text-left reveal">
+                <p style="font-size:0.7rem;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:#047857;" class="mb-1">Today you'll be able to…</p>
+                <ul class="list-disc pl-4 text-sm text-slate-700 space-y-1">
+                    <li>Write a tiny "picker" program</li>
+                    <li>Explain it to a friend in your own words</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===================== SLIDE 2: WARM-UP — ICE CREAM ===================== -->
+<div class="slide slide-2" data-slide="2">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:360px;height:360px;top:-80px;right:-80px;background:#0b63ce;opacity:0.08;"></div>
+        <div class="blob" style="width:240px;height:240px;bottom:-60px;left:-40px;background:#10b981;opacity:0.07;"></div>
+    </div>
+    <div class="content" style="z-index:2;position:relative;">
+        <p class="pill mb-4 reveal">Warm-Up · Story Time (5 min)</p>
+        <h2 class="font-display reveal" style="font-size:clamp(1.7rem,3vw,2.4rem);font-weight:700;margin-bottom:1rem;">The ice cream truck problem 🍦</h2>
+        <div class="grid-cards grid-2">
+            <div class="card reveal big-text">
+                <p class="text-slate-700 mb-2">An ice cream truck pulls up. There are <strong>4 flavors</strong>. Twenty kids in line want a recommendation: <em>"Just pick one for me!"</em></p>
+                <p class="text-slate-700 mb-2">How would <strong>you</strong> decide what to suggest?</p>
+                <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                    <li>Pick the flavor <strong>most</strong> kids love?</li>
+                    <li>Pick a different one for each kid?</li>
+                    <li>Pick the newest flavor?</li>
+                </ul>
+            </div>
+            <div class="reveal">
+                <div class="img-frame" style="aspect-ratio:1.78;">
+                    <img src="https://i.ytimg.com/vi/gMpkhk_j0YI/maxresdefault.jpg" alt="Ice cream flavors illustration">
+                </div>
+                <p style="font-size:0.68rem;color:#64748b;margin-top:5px;"><a href="https://www.youtube.com/watch?v=gMpkhk_j0YI" target="_blank" style="color:#0b63ce;text-decoration:underline;">Source: YouTube · Ice cream flavors for kids</a></p>
+            </div>
+        </div>
+        <div class="card mt-4 reveal" style="background:rgba(11,99,206,0.06);border:1px solid rgba(11,99,206,0.18);">
+            <p class="text-sm text-slate-700">✏️ <strong>Turn &amp; talk:</strong> Tell a partner which strategy you'd pick — and why. Each one is a real "algorithm" big apps actually use.</p>
+        </div>
+    </div>
+</div>
+
+<!-- ===================== SLIDE 3: WHAT WE'LL DO ===================== -->
+<div class="slide slide-3" data-slide="3">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:380px;height:380px;top:-70px;right:-70px;background:#0b63ce;opacity:0.07;"></div>
+        <div class="blob" style="width:260px;height:260px;bottom:-55px;left:-50px;background:#f59e0b;opacity:0.07;"></div>
+    </div>
+    <div class="content" style="z-index:2;position:relative;">
+        <p class="pill mb-3 reveal">Today's Plan (2 min)</p>
+        <h2 class="font-display reveal" style="font-size:clamp(1.7rem,3vw,2.4rem);font-weight:700;margin-bottom:1rem;">Here's our adventure 🗺️</h2>
+        <div class="grid-cards grid-2">
+            <div class="card reveal">
+                <p style="font-size:0.7rem;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:#0b63ce;" class="mb-2">We will…</p>
+                <div class="timeline">
+                    <div class="timeline-step"><div class="timeline-dot"></div><p class="text-sm text-slate-800 font-semibold">Watch a quick video</p><p class="text-xs text-slate-500">What's an algorithm? (4 min)</p></div>
+                    <div class="timeline-step"><div class="timeline-dot"></div><p class="text-sm text-slate-800 font-semibold">Learn 4 simple words</p><p class="text-xs text-slate-500">Vote · Average · Picker · Top</p></div>
+                    <div class="timeline-step"><div class="timeline-dot"></div><p class="text-sm text-slate-800 font-semibold">Write code together</p><p class="text-xs text-slate-500">A tiny game-picker program</p></div>
+                    <div class="timeline-step" style="margin-bottom:0;"><div class="timeline-dot"></div><p class="text-sm text-slate-800 font-semibold">Try it on YOUR favorites</p><p class="text-xs text-slate-500">Snacks, songs, or shows</p></div>
+                </div>
+            </div>
+            <div class="card reveal" style="background:rgba(16,185,129,0.07);">
+                <p style="font-size:0.7rem;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:#047857;" class="mb-2">By the end…</p>
+                <p class="text-sm text-slate-700 mb-2">You'll be able to finish this sentence:</p>
+                <p class="text-base text-slate-800 italic font-semibold">"My computer picks the top game by adding all the thumbs-ups and dividing by how many kids voted."</p>
+                <p class="text-xs text-slate-500 mt-3">That single sentence describes how huge apps like Spotify start out. You'll really get it.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===================== SLIDE 4: VIDEO 1 — What's an Algorithm? ===================== -->
+<div class="slide slide-4" data-slide="4">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:360px;height:360px;top:-70px;right:-70px;background:#0b63ce;opacity:0.07;"></div>
+        <div class="blob" style="width:220px;height:220px;bottom:-50px;left:-40px;background:#10b981;opacity:0.06;"></div>
+    </div>
+    <div class="content" style="z-index:2;position:relative;">
+        <p class="pill mb-3 reveal">Video 1 (5 min)</p>
+        <h2 class="font-display reveal" style="font-size:clamp(1.6rem,2.8vw,2.2rem);font-weight:700;margin-bottom:1rem;">What's an algorithm? 🎬</h2>
+        <div class="grid-cards grid-2 reveal">
+            <div class="card">
+                <p style="font-size:0.7rem;font-weight:800;letter-spacing:0.13em;text-transform:uppercase;color:#0b63ce;" class="mb-2">Watch · TED-Ed (4:58)</p>
+                <div class="media-embed" id="player-6hfOvs8pY1k" onclick="playVideo('6hfOvs8pY1k')">
+                    <img src="https://img.youtube.com/vi/6hfOvs8pY1k/hqdefault.jpg" alt="What's an algorithm? TED-Ed thumbnail">
+                    <div class="play-btn"><div><svg width="26" height="26" viewBox="0 0 24 24" fill="white"><polygon points="6,4 20,12 6,20"/></svg></div></div>
+                </div>
+                <p style="font-size:0.68rem;color:#64748b;margin-top:5px;"><a href="https://www.youtube.com/watch?v=6hfOvs8pY1k" target="_blank" style="color:#0b63ce;text-decoration:underline;">Source: YouTube · TED-Ed — David J. Malan</a></p>
+            </div>
+            <div class="card">
+                <p class="question-chip mb-2"><span class="icon">?</span><span>While you watch, listen for…</span></p>
+                <ul class="list-disc pl-4 text-sm text-slate-700 space-y-2">
+                    <li>What is an <strong>algorithm</strong> in simple words?</li>
+                    <li>Can you name <em>one</em> algorithm you used today?</li>
+                    <li>Does an algorithm have to be on a computer?</li>
+                </ul>
+                <div class="mt-3 card" style="padding:8px 12px;background:rgba(11,99,206,0.06);">
+                    <p class="text-xs text-slate-600">💬 After: tell a partner — "An algorithm is a recipe for ___."</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===================== SLIDE 5: VOCABULARY ===================== -->
+<div class="slide slide-5" data-slide="5">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:340px;height:340px;top:-70px;right:-60px;background:#10b981;opacity:0.08;"></div>
+        <div class="blob" style="width:220px;height:220px;bottom:-50px;left:-40px;background:#0b63ce;opacity:0.07;"></div>
+    </div>
+    <div class="content" style="z-index:2;position:relative;">
+        <p class="pill mb-3 reveal">Just 4 Words to Remember (3 min)</p>
+        <h2 class="font-display reveal" style="font-size:clamp(1.6rem,2.8vw,2.2rem);font-weight:700;margin-bottom:0.9rem;">Today's word kit 🔑</h2>
+        <div class="grid-cards grid-2 reveal">
+            <div class="card accent-card-blue">
+                <p class="vocab-tag mb-2">👍 Vote</p>
+                <p class="text-base text-slate-700">A thumbs-up (<code style="background:#e0f2ff;padding:1px 5px;border-radius:4px;">1</code>) or thumbs-down (<code style="background:#e0f2ff;padding:1px 5px;border-radius:4px;">0</code>) from one person about one thing.</p>
+            </div>
+            <div class="card accent-card-green">
+                <p class="vocab-tag mb-2">📊 Average</p>
+                <p class="text-base text-slate-700">Add all the votes, then divide by how many people voted. Tells you "how much the group liked it."</p>
+            </div>
+            <div class="card accent-card-amber">
+                <p class="vocab-tag mb-2">🤖 Picker</p>
+                <p class="text-base text-slate-700">The little program that does the picking for us. Other people call it a <em>recommender</em> — same thing.</p>
+            </div>
+            <div class="card accent-card-red">
+                <p class="vocab-tag mb-2">🥇 Top</p>
+                <p class="text-base text-slate-700">The item with the highest average. The picker shows the <strong>top</strong> first.</p>
+            </div>
+        </div>
+        <div class="card mt-4 reveal" style="background:rgba(11,99,206,0.06);border:1px dashed rgba(11,99,206,0.25);">
+            <p class="text-sm text-slate-700">🧠 <strong>Quick check:</strong> If 5 friends thumbs-up a snack with <code style="background:#e0f2ff;padding:1px 5px;border-radius:4px;">[1, 1, 1, 1, 1]</code>, what's the average? What if it was <code style="background:#e0f2ff;padding:1px 5px;border-radius:4px;">[1, 0, 0, 0, 0]</code>?</p>
+        </div>
+    </div>
+</div>
+
+<!-- ===================== SLIDE 6: AVERAGE BY HAND ===================== -->
+<div class="slide slide-6" data-slide="6">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:380px;height:380px;top:-70px;right:-70px;background:#0b63ce;opacity:0.07;"></div>
+        <div class="blob" style="width:220px;height:220px;bottom:-50px;left:-40px;background:#f59e0b;opacity:0.07;"></div>
+    </div>
+    <div class="content" style="z-index:2;position:relative;">
+        <p class="pill mb-3 reveal">Pencil &amp; Paper (5 min)</p>
+        <h2 class="font-display reveal" style="font-size:clamp(1.6rem,2.8vw,2.2rem);font-weight:700;margin-bottom:1rem;">Find the average — by hand first ✋</h2>
+        <div class="grid-cards grid-2">
+            <div class="card reveal accent-card-blue">
+                <p style="font-size:0.7rem;font-weight:800;letter-spacing:0.13em;text-transform:uppercase;color:#0b63ce;" class="mb-2">Worked example: Racing 🏁</p>
+                <div class="big-text">
+                    <p class="text-slate-700 mb-1">Five friends voted: <code style="background:#f1f5f9;padding:2px 6px;border-radius:4px;">[1, 1, 0, 1, 1]</code></p>
+                    <p class="text-slate-700 mb-1"><strong>Step 1.</strong> Add the thumbs-ups: 1+1+0+1+1 = <strong>4</strong></p>
+                    <p class="text-slate-700 mb-1"><strong>Step 2.</strong> Count voters: <strong>5</strong></p>
+                    <p class="text-slate-700 mb-1"><strong>Step 3.</strong> 4 ÷ 5 = <strong>0.8</strong></p>
+                    <p class="text-slate-700 mt-2">That's an 80% thumbs-up score 👍</p>
+                </div>
+            </div>
+            <div class="card reveal" style="background:rgba(245,158,11,0.07);">
+                <p class="question-chip mb-3"><span class="icon">?</span><span>You try these</span></p>
+                <ul class="list-disc pl-5 text-base text-slate-700 space-y-2">
+                    <li>Puzzle: <code style="background:#f1f5f9;padding:1px 5px;border-radius:4px;">[1, 0, 0, 1, 0]</code> → ?</li>
+                    <li>Shooter: <code style="background:#f1f5f9;padding:1px 5px;border-radius:4px;">[0, 0, 1, 0, 0]</code> → ?</li>
+                    <li>Sports: <code style="background:#f1f5f9;padding:1px 5px;border-radius:4px;">[1, 1, 1, 1, 1]</code> → ?</li>
+                </ul>
+                <p class="text-sm text-slate-600 mt-3">✋ Hold up the number with your fingers when you finish.</p>
+            </div>
+        </div>
+        <div class="card mt-3 reveal" style="background:rgba(11,99,206,0.06);">
+            <p class="text-sm text-slate-700">🥇 Which game has the <strong>biggest</strong> average? That's the one our picker will recommend first.</p>
+        </div>
+    </div>
+</div>
+
+<!-- ===================== SLIDE 7: BUILDING UP THE CODE — PART 1 ===================== -->
+<div class="slide slide-7" data-slide="7">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:380px;height:380px;top:-70px;right:-70px;background:#0b63ce;opacity:0.07;"></div>
+        <div class="blob" style="width:220px;height:220px;bottom:-50px;left:-40px;background:#10b981;opacity:0.07;"></div>
+    </div>
+    <div class="content" style="z-index:2;position:relative;">
+        <p class="pill mb-3 reveal">Code Step 1 of 3 (4 min)</p>
+        <h2 class="font-display reveal" style="font-size:clamp(1.55rem,2.6vw,2.05rem);font-weight:700;margin-bottom:0.7rem;">Step 1 · Put the votes in a dictionary 📒</h2>
+        <div class="grid-cards grid-2">
+            <div class="reveal">
+                <div class="card accent-card-blue">
+                    <p style="font-size:0.7rem;font-weight:800;letter-spacing:0.13em;text-transform:uppercase;color:#0b63ce;" class="mb-2">Type this in Python</p>
+                    <div class="code-block">
+<span class="nb">ratings</span> = {
+    <span class="st">'Racing'</span>:  [<span class="kw">1</span>, <span class="kw">1</span>, <span class="kw">0</span>, <span class="kw">1</span>, <span class="kw">1</span>],
+    <span class="st">'Puzzle'</span>:  [<span class="kw">1</span>, <span class="kw">0</span>, <span class="kw">0</span>, <span class="kw">1</span>, <span class="kw">0</span>],
+    <span class="st">'Shooter'</span>: [<span class="kw">0</span>, <span class="kw">0</span>, <span class="kw">1</span>, <span class="kw">0</span>, <span class="kw">0</span>],
+    <span class="st">'Sports'</span>:  [<span class="kw">1</span>, <span class="kw">1</span>, <span class="kw">1</span>, <span class="kw">1</span>, <span class="kw">1</span>],
+}
+<span class="nb">print</span>(ratings)
+                    </div>
+                </div>
+            </div>
+            <div class="card reveal big-text">
+                <p class="question-chip mb-2"><span class="icon">?</span><span>What's happening?</span></p>
+                <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                    <li>The <strong>name</strong> of each game is a <em>key</em>.</li>
+                    <li>The <strong>list of votes</strong> is the <em>value</em>.</li>
+                    <li>Together they're a <strong>dictionary</strong>: a labeled box of stuff.</li>
+                </ul>
+                <p class="text-slate-700 mt-2">📦 Run it. You should see all four games printed back at you. If not — raise your hand.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===================== SLIDE 8: BUILDING UP THE CODE — PART 2 ===================== -->
+<div class="slide slide-8" data-slide="8">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:360px;height:360px;top:-70px;right:-60px;background:#10b981;opacity:0.07;"></div>
+        <div class="blob" style="width:200px;height:200px;bottom:-50px;left:-40px;background:#0b63ce;opacity:0.06;"></div>
+    </div>
+    <div class="content" style="z-index:2;position:relative;">
+        <p class="pill mb-3 reveal">Code Step 2 of 3 (5 min)</p>
+        <h2 class="font-display reveal" style="font-size:clamp(1.55rem,2.6vw,2.05rem);font-weight:700;margin-bottom:0.7rem;">Step 2 · Loop through and average each game 🔁</h2>
+        <div class="grid-cards grid-2">
+            <div class="reveal">
+                <div class="card accent-card-green">
+                    <p style="font-size:0.7rem;font-weight:800;letter-spacing:0.13em;text-transform:uppercase;color:#047857;" class="mb-2">Add this below your code</p>
+                    <div class="code-block">
+<span class="nb">averages</span> = {}
+<span class="kw">for</span> game, votes <span class="kw">in</span> ratings.items():
+    score = <span class="nb">sum</span>(votes) / <span class="nb">len</span>(votes)
+    averages[game] = score
+
+<span class="kw">for</span> game, score <span class="kw">in</span> averages.items():
+    <span class="nb">print</span>(game, <span class="st">'->'</span>, <span class="nb">round</span>(score, <span class="kw">2</span>))
+                    </div>
+                </div>
+            </div>
+            <div class="card reveal big-text">
+                <p class="question-chip mb-2"><span class="icon">?</span><span>Read it like a story</span></p>
+                <ul class="list-disc pl-5 text-slate-700 space-y-1">
+                    <li><code style="background:#f1f5f9;padding:1px 5px;border-radius:4px;">averages = {}</code> — start an empty box for scores.</li>
+                    <li><code style="background:#f1f5f9;padding:1px 5px;border-radius:4px;">for game, votes in ratings.items()</code> — visit each game one at a time.</li>
+                    <li><code style="background:#f1f5f9;padding:1px 5px;border-radius:4px;">sum(votes) / len(votes)</code> — that's our average from slide 6.</li>
+                    <li><code style="background:#f1f5f9;padding:1px 5px;border-radius:4px;">round(..., 2)</code> — keep just 2 decimal places so it's tidy.</li>
+                </ul>
+                <p class="text-slate-700 mt-2">▶️ Run it. Did Sports come out as <strong>1.0</strong>?</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===================== SLIDE 9: BUILDING UP THE CODE — PART 3 ===================== -->
+<div class="slide slide-9" data-slide="9">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:380px;height:380px;top:-70px;right:-70px;background:#f59e0b;opacity:0.08;"></div>
+        <div class="blob" style="width:240px;height:240px;bottom:-55px;left:-50px;background:#0b63ce;opacity:0.07;"></div>
+    </div>
+    <div class="content" style="z-index:2;position:relative;">
+        <p class="pill mb-3 reveal">Code Step 3 of 3 (3 min)</p>
+        <h2 class="font-display reveal" style="font-size:clamp(1.55rem,2.6vw,2.05rem);font-weight:700;margin-bottom:0.7rem;">Step 3 · Pick the winner 🏆</h2>
+        <div class="grid-cards grid-2">
+            <div class="reveal">
+                <div class="card accent-card-amber">
+                    <p style="font-size:0.7rem;font-weight:800;letter-spacing:0.13em;text-transform:uppercase;color:#b45309;" class="mb-2">Add one last line</p>
+                    <div class="code-block">
+best_game = <span class="nb">max</span>(averages, key=averages.get)
+<span class="nb">print</span>(<span class="st">'Recommended first:'</span>, best_game)
+                    </div>
+                </div>
+                <div class="card mt-3" style="background:rgba(245,158,11,0.07);">
+                    <p style="font-size:0.7rem;font-weight:800;letter-spacing:0.13em;text-transform:uppercase;color:#b45309;" class="mb-2">Expected output</p>
+                    <div class="code-block" style="font-size:0.85rem;">
+Racing -> 0.8
+Puzzle -> 0.4
+Shooter -> 0.2
+Sports -> 1.0
+Recommended first: Sports
+                    </div>
+                </div>
+            </div>
+            <div class="card reveal big-text">
+                <p class="question-chip mb-2"><span class="icon">?</span><span>What does <code>max</code> do?</span></p>
+                <p class="text-slate-700 mb-2"><code style="background:#f1f5f9;padding:1px 5px;border-radius:4px;">max</code> finds the biggest. We tell it: <em>biggest by which rule?</em> By the score in <code style="background:#f1f5f9;padding:1px 5px;border-radius:4px;">averages</code>.</p>
+                <p class="text-slate-700 mb-2">🎉 You just wrote a real recommender! It's about 8 lines of code.</p>
+                <p class="text-slate-700 text-sm">High-five your neighbor — you both did it.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===================== SLIDE 10: VIDEO 2 — Real Apps ===================== -->
+<div class="slide slide-10" data-slide="10">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:360px;height:360px;top:-70px;right:-70px;background:#0b63ce;opacity:0.07;"></div>
+        <div class="blob" style="width:220px;height:220px;bottom:-50px;left:-40px;background:#10b981;opacity:0.06;"></div>
+    </div>
+    <div class="content" style="z-index:2;position:relative;">
+        <p class="pill mb-3 reveal">Video 2 (5 min)</p>
+        <h2 class="font-display reveal" style="font-size:clamp(1.6rem,2.8vw,2.2rem);font-weight:700;margin-bottom:1rem;">Real apps do this — but bigger 🎬</h2>
+        <div class="grid-cards grid-2 reveal">
+            <div class="card">
+                <p style="font-size:0.7rem;font-weight:800;letter-spacing:0.13em;text-transform:uppercase;color:#7c3aed;" class="mb-2">Watch · CBC Kids News (3:02)</p>
+                <div class="media-embed" id="player-F5tz887wXCY" onclick="playVideo('F5tz887wXCY')">
+                    <img src="https://img.youtube.com/vi/F5tz887wXCY/hqdefault.jpg" alt="Social media algorithms explained for kids thumbnail">
+                    <div class="play-btn"><div><svg width="26" height="26" viewBox="0 0 24 24" fill="white"><polygon points="6,4 20,12 6,20"/></svg></div></div>
+                </div>
+                <p style="font-size:0.68rem;color:#64748b;margin-top:5px;"><a href="https://www.youtube.com/watch?v=F5tz887wXCY" target="_blank" style="color:#0b63ce;text-decoration:underline;">Source: YouTube · CBC Kids News</a></p>
+            </div>
+            <div class="card big-text">
+                <p class="think-chip mb-2"><span>👀</span><span>Watch for these</span></p>
+                <ul class="list-disc pl-5 text-slate-700 space-y-2">
+                    <li>What does an app <em>track</em> when you scroll?</li>
+                    <li>Why does the next video sometimes feel "spooky" — like it knew?</li>
+                    <li>How is YouTube's picker the same as ours? How is it bigger?</li>
+                </ul>
+                <p class="text-slate-700 mt-3">💡 Spoiler: it's the same idea — just with millions of votes instead of 5.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===================== SLIDE 11: WHAT MIGHT GO WRONG ===================== -->
+<div class="slide slide-11" data-slide="11">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:360px;height:360px;top:-70px;right:-70px;background:#ef4444;opacity:0.07;"></div>
+        <div class="blob" style="width:220px;height:220px;bottom:-50px;left:-40px;background:#f59e0b;opacity:0.07;"></div>
+    </div>
+    <div class="content" style="z-index:2;position:relative;">
+        <p class="pill mb-3 reveal">Talk Time (4 min)</p>
+        <h2 class="font-display reveal" style="font-size:clamp(1.6rem,2.8vw,2.2rem);font-weight:700;margin-bottom:1rem;">When does "most popular" go wrong? 🤷</h2>
+        <div class="grid-cards grid-3 reveal">
+            <div class="card accent-card-red">
+                <div style="font-size:1.6rem;margin-bottom:6px;">🍦</div>
+                <p style="font-size:0.78rem;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:#b91c1c;" class="mb-1">Tastes are different</p>
+                <p class="text-base text-slate-700">If 19 kids love chocolate but YOU love mint, the popular pick isn't <em>your</em> pick.</p>
+            </div>
+            <div class="card accent-card-amber">
+                <div style="font-size:1.6rem;margin-bottom:6px;">🆕</div>
+                <p style="font-size:0.78rem;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:#b45309;" class="mb-1">Brand new things</p>
+                <p class="text-base text-slate-700">A new flavor has zero votes. The picker can never put it on top — even if it's amazing.</p>
+            </div>
+            <div class="card accent-card-blue">
+                <div style="font-size:1.6rem;margin-bottom:6px;">🔁</div>
+                <p style="font-size:0.78rem;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:#0b63ce;" class="mb-1">Same thing again</p>
+                <p class="text-base text-slate-700">If you only see the popular flavor, you might never try anything else.</p>
+            </div>
+        </div>
+        <div class="card mt-4 reveal" style="background:rgba(11,99,206,0.06);border:1px solid rgba(11,99,206,0.18);">
+            <p class="text-sm text-slate-700">💬 <strong>Class chat:</strong> Have you ever felt like an app only shows you the same kind of video over and over? Why might that happen?</p>
+        </div>
+    </div>
+</div>
+
+<!-- ===================== SLIDE 12: PERSONAL TWIST ===================== -->
+<div class="slide slide-12" data-slide="12">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:340px;height:340px;top:-70px;right:-60px;background:#10b981;opacity:0.08;"></div>
+        <div class="blob" style="width:220px;height:220px;bottom:-50px;left:-40px;background:#0b63ce;opacity:0.07;"></div>
+    </div>
+    <div class="content" style="z-index:2;position:relative;">
+        <p class="pill mb-3 reveal">Bonus Twist (5 min)</p>
+        <h2 class="font-display reveal" style="font-size:clamp(1.6rem,2.8vw,2.2rem);font-weight:700;margin-bottom:1rem;">One picker per person 🧍</h2>
+        <div class="grid-cards grid-2">
+            <div class="reveal">
+                <div class="card accent-card-green">
+                    <p style="font-size:0.7rem;font-weight:800;letter-spacing:0.13em;text-transform:uppercase;color:#047857;" class="mb-2">Try this in a fresh file</p>
+                    <div class="code-block code-scroll">
+<span class="nb">player_ratings</span> = {
+    <span class="st">'Alex'</span>:   {<span class="st">'Racing'</span>:[<span class="kw">1</span>,<span class="kw">1</span>,<span class="kw">1</span>],
+                <span class="st">'Puzzle'</span>:[<span class="kw">1</span>,<span class="kw">1</span>,<span class="kw">0</span>],
+                <span class="st">'Shooter'</span>:[<span class="kw">0</span>,<span class="kw">0</span>,<span class="kw">0</span>]},
+    <span class="st">'Jordan'</span>: {<span class="st">'Racing'</span>:[<span class="kw">0</span>,<span class="kw">1</span>,<span class="kw">0</span>],
+                <span class="st">'Puzzle'</span>:[<span class="kw">1</span>,<span class="kw">1</span>,<span class="kw">1</span>],
+                <span class="st">'Shooter'</span>:[<span class="kw">1</span>,<span class="kw">1</span>,<span class="kw">0</span>]},
+}
+
+<span class="kw">for</span> name, games <span class="kw">in</span> player_ratings.items():
+    <span class="nb">print</span>(<span class="st">'\nFor'</span>, name)
+    <span class="kw">for</span> game, votes <span class="kw">in</span> games.items():
+        score = <span class="nb">sum</span>(votes) / <span class="nb">len</span>(votes)
+        <span class="nb">print</span>(<span class="st">' '</span>, game, <span class="st">'->'</span>, <span class="nb">round</span>(score, <span class="kw">2</span>))
+                    </div>
+                </div>
+            </div>
+            <div class="card reveal big-text">
+                <p class="question-chip mb-2"><span class="icon">?</span><span>What changed?</span></p>
+                <ul class="list-disc pl-5 text-slate-700 space-y-2">
+                    <li>Now Alex has his <strong>own</strong> ratings, and Jordan has <strong>her own</strong>.</li>
+                    <li>Same average rule — but run <strong>once for each person</strong>.</li>
+                    <li>Predict: who likes Racing more, Alex or Jordan?</li>
+                </ul>
+                <p class="text-slate-700 mt-2">▶️ Run it. Did each person get their own list? That's <strong>personalization</strong> — the secret behind YouTube.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===================== SLIDE 13: MAKE IT YOURS ===================== -->
+<div class="slide slide-13" data-slide="13">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:380px;height:380px;top:-70px;right:-70px;background:#0b63ce;opacity:0.08;"></div>
+        <div class="blob" style="width:240px;height:240px;bottom:-55px;left:-50px;background:#10b981;opacity:0.07;"></div>
+    </div>
+    <div class="content" style="z-index:2;position:relative;">
+        <p class="pill mb-3 reveal">Make It Yours (6 min)</p>
+        <h2 class="font-display reveal" style="font-size:clamp(1.6rem,2.8vw,2.2rem);font-weight:700;margin-bottom:1rem;">Your turn — pick your topic 🎨</h2>
+        <div class="grid-cards grid-3 reveal">
+            <div class="card accent-card-blue">
+                <div style="font-size:1.8rem;margin-bottom:6px;">🍕</div>
+                <p style="font-size:0.78rem;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:#0b63ce;" class="mb-1">Idea 1</p>
+                <p class="text-base text-slate-700">4 lunch foods. Survey 5 friends. Which wins?</p>
+            </div>
+            <div class="card accent-card-green">
+                <div style="font-size:1.8rem;margin-bottom:6px;">🎵</div>
+                <p style="font-size:0.78rem;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:#047857;" class="mb-1">Idea 2</p>
+                <p class="text-base text-slate-700">4 songs you like. Make up 5 votes. Predict the winner first.</p>
+            </div>
+            <div class="card accent-card-amber">
+                <div style="font-size:1.8rem;margin-bottom:6px;">📺</div>
+                <p style="font-size:0.78rem;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:#b45309;" class="mb-1">Idea 3</p>
+                <p class="text-base text-slate-700">4 TV shows. Vote with your family tonight.</p>
+            </div>
+        </div>
+        <div class="card mt-4 reveal" style="background:rgba(11,99,206,0.06);border:1px solid rgba(11,99,206,0.18);">
+            <p class="text-sm text-slate-700">📝 <strong>Steps:</strong> 1) Copy your code from Slide 9. 2) Replace the four games with your own. 3) Run it. 4) Show a partner — does the picker agree with you? Why or why not?</p>
+        </div>
+    </div>
+</div>
+
+<!-- ===================== SLIDE 14: HOMEWORK ===================== -->
+<div class="slide slide-14" data-slide="14">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:360px;height:360px;top:-70px;right:-70px;background:#10b981;opacity:0.08;"></div>
+        <div class="blob" style="width:220px;height:220px;bottom:-50px;left:-40px;background:#f59e0b;opacity:0.07;"></div>
+    </div>
+    <div class="content" style="z-index:2;position:relative;">
+        <p class="pill mb-3 reveal">Homework (3 min · do tonight)</p>
+        <h2 class="font-display reveal" style="font-size:clamp(1.6rem,2.8vw,2.2rem);font-weight:700;margin-bottom:1rem;">Take it home 🏠</h2>
+        <div class="grid-cards grid-2 reveal big-text">
+            <div class="card accent-card-blue">
+                <p style="font-size:0.78rem;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:#0b63ce;" class="mb-2">Part A · Code</p>
+                <p class="text-slate-700">Pick <strong>4 things you love</strong> (snacks, books, video games — your choice). Make up 4–5 votes for each. Run the picker. Did it choose what <em>you</em> would choose?</p>
+            </div>
+            <div class="card accent-card-green">
+                <p style="font-size:0.78rem;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:#047857;" class="mb-2">Part B · Write</p>
+                <p class="text-slate-700">Write <strong>3 sentences</strong>: a time an app suggested something <em>great</em>, and a time it suggested something <em>weird</em>. What was different?</p>
+            </div>
+        </div>
+        <div class="card mt-4 reveal" style="background:rgba(11,99,206,0.06);border:1px solid rgba(11,99,206,0.18);">
+            <p class="text-sm text-slate-700">📬 Email a screenshot of your code's output and your 3 sentences to <a href="mailto:hue.weng.88@gmail.com" style="color:#0b63ce;font-weight:700;">hue.weng.88@gmail.com</a> by next class.</p>
+        </div>
+    </div>
+</div>
+
+<!-- ===================== SLIDE 15: RECAP ===================== -->
+<div class="slide slide-15" data-slide="15">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:340px;height:340px;top:-70px;right:-60px;background:#0b63ce;opacity:0.08;"></div>
+        <div class="blob" style="width:220px;height:220px;bottom:-50px;left:-40px;background:#10b981;opacity:0.07;"></div>
+    </div>
+    <div class="content" style="z-index:2;position:relative;">
+        <p class="pill mb-3 reveal">Recap &amp; Exit Ticket (3 min)</p>
+        <h2 class="font-display reveal" style="font-size:clamp(1.6rem,2.8vw,2.2rem);font-weight:700;margin-bottom:1rem;">Look what you can do now 🎟️</h2>
+        <div class="grid-cards grid-3 reveal">
+            <div class="card stat-box accent-card-blue">
+                <div class="stat-num grad-text">4</div>
+                <p class="text-xs font-extrabold tracking-widest text-slate-600 uppercase mt-1">New words</p>
+                <p class="text-xs text-slate-500 mt-1">Vote · Average · Picker · Top</p>
+            </div>
+            <div class="card stat-box accent-card-green">
+                <div class="stat-num grad-text">8</div>
+                <p class="text-xs font-extrabold tracking-widest text-slate-600 uppercase mt-1">Lines of code</p>
+                <p class="text-xs text-slate-500 mt-1">Your very own picker</p>
+            </div>
+            <div class="card stat-box accent-card-amber">
+                <div class="stat-num grad-text">∞</div>
+                <p class="text-xs font-extrabold tracking-widest text-slate-600 uppercase mt-1">Things to try it on</p>
+                <p class="text-xs text-slate-500 mt-1">Songs, snacks, anything</p>
+            </div>
+        </div>
+        <div class="card mt-4 reveal" style="background:rgba(11,99,206,0.06);border:1px solid rgba(11,99,206,0.18);">
+            <p class="text-sm text-slate-700 mb-2">✏️ <strong>Sticky note before you leave</strong> — answer ONE:</p>
+            <ul class="list-disc pl-5 text-base text-slate-700 space-y-1">
+                <li>What does the picker actually <em>do</em> in your own words?</li>
+                <li>Name one thing the picker <em>can't</em> figure out on its own.</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- ===================== SLIDE 16: THANK YOU ===================== -->
+<div class="slide slide-16" data-slide="16">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:500px;height:500px;top:-120px;right:-100px;background:#0b63ce;opacity:0.14;"></div>
+        <div class="blob" style="width:340px;height:340px;bottom:-80px;left:-60px;background:#10b981;opacity:0.11;"></div>
+        <div class="blob" style="width:200px;height:200px;top:40%;left:12%;background:#f59e0b;opacity:0.10;"></div>
+    </div>
+    <canvas class="particle-canvas" id="pc16"></canvas>
+    <div class="content text-center" style="z-index:2;position:relative;">
+        <div style="font-size:5rem;margin-bottom:1rem;animation:float 3s ease-in-out infinite;" class="reveal">🎉</div>
+        <h1 class="font-display grad-text reveal" style="font-size:clamp(2rem,4.5vw,3.4rem);font-weight:700;margin-bottom:0.8rem;">You did it!</h1>
+        <p class="reveal" style="font-size:clamp(0.95rem,1.5vw,1.15rem);color:#5b6b7e;max-width:640px;margin:0 auto 1.4rem;">You wrote a real recommender today — the same kind of code that helps apps pick what to play next.</p>
+        <div class="max-w-2xl mx-auto grid-cards grid-3 mt-2">
+            <div class="card text-center reveal">
+                <div style="font-size:1.4rem;margin-bottom:4px;">📬</div>
+                <p style="font-size:0.72rem;font-weight:700;color:#374151;">hue.weng.88@gmail.com</p>
+            </div>
+            <div class="card text-center reveal" style="background:rgba(11,99,206,0.07);">
+                <div style="font-size:1.4rem;margin-bottom:4px;">🌐</div>
+                <p style="font-size:0.72rem;font-weight:700;color:#0b63ce;">hue881.github.io</p>
+            </div>
+            <div class="card text-center reveal">
+                <div style="font-size:1.4rem;margin-bottom:4px;">📞</div>
+                <p style="font-size:0.72rem;font-weight:700;color:#374151;">646-280-7089</p>
+            </div>
+        </div>
+        <p class="reveal" style="font-size:0.75rem;color:#94a3b8;margin-top:1.2rem;letter-spacing:0.08em;text-transform:uppercase;">Day 15 · AI &amp; Coding for Kids · Spring 2026</p>
+    </div>
+</div>
+
+</div><!-- end .deck -->
+
+<!-- NAV -->
+<div class="nav-controls">
+    <button class="nav-btn" onclick="changeSlide(-1)">&#8249;</button>
+    <div class="slide-dots" id="dots"></div>
+    <button class="nav-btn" onclick="changeSlide(1)">&#8250;</button>
+    <span class="slide-counter" id="counter">1 / 16</span>
+</div>
+
+<script>
+let current = 1;
+const total = document.querySelectorAll('.slide').length;
+const dotsContainer = document.getElementById('dots');
+const counter = document.getElementById('counter');
+for (let i = 1; i <= total; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'dot' + (i === 1 ? ' active' : '');
+    dot.onclick = () => goToSlide(i);
+    dotsContainer.appendChild(dot);
+}
+function goToSlide(n) {
+    const prev = document.querySelector('.slide.active');
+    const next = document.querySelector('.slide[data-slide="' + n + '"]');
+    if (prev) prev.classList.remove('active');
+    if (next) { next.classList.add('active'); animateSlide(next); }
+    current = n; updateNav();
+}
+function changeSlide(dir) { let n = current + dir; if (n < 1) n = total; if (n > total) n = 1; goToSlide(n); }
+function updateNav() {
+    document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i + 1 === current));
+    counter.textContent = current + ' / ' + total;
+}
+document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); changeSlide(1); }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); changeSlide(-1); }
+});
+let tx = 0;
+document.addEventListener('touchstart', e => { tx = e.touches[0].clientX; });
+document.addEventListener('touchend', e => { const dx = tx - e.changedTouches[0].clientX; if (Math.abs(dx) > 50) changeSlide(dx > 0 ? 1 : -1); });
+
+function animateSlide(slide) {
+    slide.querySelectorAll('.reveal').forEach((el, i) => {
+        el.style.transition = 'none'; el.style.opacity = '0'; el.style.transform = 'translateY(16px)';
+        el.offsetHeight;
+        const d = i * 0.07;
+        el.style.transition = 'opacity 0.32s ease ' + d + 's, transform 0.32s ease ' + d + 's';
+        el.style.opacity = '1'; el.style.transform = 'translateY(0)';
+    });
+}
+
+function playVideo(videoId) {
+    const container = document.getElementById('player-' + videoId);
+    if (!container) return;
+    container.onclick = null;
+    container.style.cursor = 'default';
+    container.innerHTML = '<iframe src="https://www.youtube.com/embed/' + videoId + '?autoplay=1&rel=0" allowfullscreen allow="autoplay; encrypted-media" style="position:absolute;inset:0;width:100%;height:100%;border:0;border-radius:13px;"></iframe>';
+}
+
+document.addEventListener('mousemove', e => {
+    const s = document.querySelector('.mouse-spotlight');
+    if (s) s.style.background = 'radial-gradient(600px circle at ' + e.clientX + 'px ' + e.clientY + 'px, rgba(11,99,206,0.05), transparent 40%)';
+});
+
+window.initParticles = function(canvas, opts) {
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight;
+    const count = opts.count || 40; let mx = -1000, my = -1000;
+    const [r, g, b] = [11, 99, 206];
+    const particles = Array.from({ length: count }, () => ({
+        x: Math.random() * canvas.width, y: Math.random() * canvas.height,
+        vx: (Math.random() - 0.5) * 0.3, vy: (Math.random() - 0.5) * 0.3,
+        size: Math.random() * 2.2 + 0.7, alpha: Math.random() * 0.3 + 0.08
+    }));
+    canvas.addEventListener('mousemove', e => { const rc = canvas.getBoundingClientRect(); mx = e.clientX - rc.left; my = e.clientY - rc.top; });
+    canvas.addEventListener('mouseleave', () => { mx = -1000; my = -1000; });
+    (function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        particles.forEach(p => {
+            const dx = p.x - mx, dy = p.y - my, dist = Math.sqrt(dx*dx + dy*dy);
+            if (dist < 100) { const f = (100 - dist) / 100 * 1.5; p.vx += (dx / dist) * f * 0.1; p.vy += (dy / dist) * f * 0.1; }
+            p.vx *= 0.98; p.vy *= 0.98; p.x += p.vx; p.y += p.vy;
+            if (p.x < 0) p.x = canvas.width; if (p.x > canvas.width) p.x = 0;
+            if (p.y < 0) p.y = canvas.height; if (p.y > canvas.height) p.y = 0;
+            ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2);
+            ctx.fillStyle = 'rgba(' + r + ',' + g + ',' + b + ',' + p.alpha + ')'; ctx.fill();
+        });
+        requestAnimationFrame(animate);
+    })();
+};
+['pc1','pc16'].forEach(id => {
+    const c = document.getElementById(id);
+    if (c) initParticles(c, { count: 45 });
+});
+
+try { animateSlide(document.querySelector('.slide.active')); } catch(e) {}
+</script>
+</body>
+</html>
