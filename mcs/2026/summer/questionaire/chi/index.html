@@ -1,1 +1,510 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI 程式設計暑期班 · 家長問卷（關於您的孩子）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Nunito:wght@400;600;700;800&family=Fira+Code:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f4fbff; --surface:rgba(255,255,255,0.97);
+    --text:#1f2a37; --text2:#374151; --muted:#5b6b7e;
+    --a1:#0b63ce; --a2:#10b981; --a3:#f59e0b; --ar:#ef4444;
+    --ap:#7c3aed;
+    --fd:'Fredoka','Trebuchet MS',sans-serif;
+    --fb:'Nunito','Microsoft JhengHei','PingFang TC',Arial,sans-serif;
+    --fc:'Fira Code',Consolas,monospace;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--fb);color:var(--text);background:var(--bg);min-height:100vh}
 
+  /* ── Print bar ── */
+  .print-bar{background:rgba(255,255,255,0.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(148,163,184,.3);padding:10px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;gap:12px;flex-wrap:wrap}
+  .bar-title{font-family:var(--fd);font-size:1.05rem;font-weight:700;color:var(--a1)}
+  .bar-sub{font-size:.78rem;color:var(--muted)}
+  .btn-print{background:var(--a1);color:#fff;border:none;padding:8px 20px;border-radius:999px;font-family:var(--fb);font-size:.82rem;font-weight:800;cursor:pointer;letter-spacing:.06em;transition:background .2s,transform .15s}
+  .btn-print:hover{background:#0952b0;transform:translateY(-1px)}
+
+  /* ── Page ── */
+  .page{max-width:920px;margin:0 auto;padding:32px 24px 60px}
+
+  /* ── Header ── */
+  .sheet-header{background:linear-gradient(135deg,#7c3aed 0%,#0b63ce 45%,#10b981 100%);border-radius:20px;padding:28px 32px 24px;color:#fff;margin-bottom:28px;position:relative;overflow:hidden}
+  .sheet-header::before{content:'';position:absolute;top:-60px;right:-60px;width:200px;height:200px;background:rgba(255,255,255,.08);border-radius:50%}
+  .sheet-header::after{content:'';position:absolute;bottom:-40px;left:-40px;width:140px;height:140px;background:rgba(255,255,255,.06);border-radius:50%}
+  .header-emoji{font-size:2.8rem;margin-bottom:6px}
+  .header-day{font-size:.75rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;opacity:.85;margin-bottom:4px}
+  .header-title{font-family:var(--fd);font-size:clamp(1.6rem,4vw,2.4rem);font-weight:700;line-height:1.1;margin-bottom:6px}
+  .header-sub{font-size:.88rem;opacity:.85;margin-bottom:14px}
+  .header-pills{display:flex;flex-wrap:wrap;gap:8px}
+  .header-pill{background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:4px 14px;font-size:.72rem;font-weight:800;letter-spacing:.04em}
+
+  /* ── Info grid ── */
+  .info-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:28px}
+  @media(max-width:600px){.info-grid{grid-template-columns:1fr}}
+  .info-field{background:var(--surface);border-radius:12px;padding:12px 14px;border:1.5px solid rgba(124,58,237,.14);box-shadow:0 2px 8px rgba(15,23,42,.05)}
+  .info-label{font-size:.65rem;font-weight:800;letter-spacing:.1em;color:var(--ap);margin-bottom:6px}
+  input.info-line{font-family:var(--fb);font-size:.88rem;color:var(--text);background:transparent;border:none;border-bottom:1.5px solid #cbd5e1;border-radius:0;outline:none;transition:border-color .2s;padding:4px 2px;display:block;width:100%}
+  input.info-line:focus{border-bottom-color:var(--ap)}
+
+  /* ── Write lines & text areas ── */
+  .wline{display:block;width:100%;padding:5px 10px;margin-bottom:9px;border:none;border-bottom:1.5px solid #cbd5e1;border-radius:0;background:transparent;font-family:var(--fb);font-size:.85rem;color:var(--text);outline:none;transition:border-color .2s}
+  .wline:focus{border-bottom-color:var(--a1)}
+  textarea.warea{display:block;width:100%;padding:8px 10px;border:1.5px solid #cbd5e1;background:#f8fafc;border-radius:8px;font-family:var(--fb);font-size:.84rem;color:var(--text);line-height:1.6;outline:none;resize:vertical;transition:border-color .2s;margin-bottom:8px}
+  textarea.warea:focus{border-color:var(--a1)}
+
+  /* ── Section labels & titles ── */
+  .section-label{display:inline-flex;align-items:center;gap:8px;padding:5px 16px;border-radius:999px;border:1px solid rgba(148,163,184,.4);background:rgba(255,255,255,.9);font-size:.72rem;font-weight:800;letter-spacing:.08em;color:var(--ap);margin-bottom:10px}
+  .section-title{font-size:clamp(1.3rem,2.5vw,1.8rem);font-weight:700;margin-bottom:4px;color:var(--text);line-height:1.3}
+  .section-sub{font-size:.82rem;color:var(--muted);margin-bottom:16px}
+  .part-divider{border:none;border-top:2px dashed rgba(148,163,184,.35);margin:28px 0}
+
+  /* ── Cards ── */
+  .card{background:var(--surface);border-radius:16px;padding:18px 20px;box-shadow:0 4px 18px rgba(15,23,42,.07);border:1px solid rgba(255,255,255,.7);margin-bottom:16px}
+  .card.ab{border-left:4px solid var(--a1)}
+  .card.ag{border-left:4px solid var(--a2)}
+  .card.aa{border-left:4px solid var(--a3)}
+  .card.ar{border-left:4px solid var(--ar)}
+  .card.ap{border-left:4px solid var(--ap)}
+  .clabel{font-size:.78rem;font-weight:800;letter-spacing:.06em;margin-bottom:10px;display:block}
+  .clabel.b{color:var(--a1)}.clabel.g{color:#047857}.clabel.a{color:#b45309}.clabel.r{color:#b91c1c}.clabel.p{color:var(--ap)}
+  .q-hint{font-size:.78rem;color:var(--muted);font-style:italic;font-weight:400}
+
+  /* ── Grids ── */
+  .g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
+  @media(max-width:680px){.g2{grid-template-columns:1fr}}
+
+  /* ── Radio list ── */
+  .radio-list{list-style:none;display:flex;flex-direction:column;gap:9px;margin-top:8px}
+  .radio-list li{display:flex;align-items:flex-start;gap:10px;font-size:.875rem;color:var(--text2);line-height:1.55;cursor:pointer}
+  .radio-list li input[type="radio"]{width:18px;height:18px;min-width:18px;accent-color:var(--ap);cursor:pointer;margin-top:2px}
+  .radio-list li label{cursor:pointer}
+
+  /* ── Checkbox list ── */
+  .check-list{list-style:none;display:flex;flex-direction:column;gap:9px;margin-top:8px}
+  .check-list li{display:flex;align-items:flex-start;gap:10px;font-size:.875rem;color:var(--text2);line-height:1.55}
+  .check-list li input[type="checkbox"]{width:18px;height:18px;min-width:18px;accent-color:var(--a1);cursor:pointer;margin-top:2px}
+  .check-list li label{cursor:pointer}
+
+  /* ── Rank table ── */
+  table.rank{width:100%;border-collapse:collapse;font-size:.83rem;margin-top:8px}
+  table.rank th{background:#1e293b;color:#e2e8f0;padding:8px 10px;text-align:left;font-weight:700;font-size:.7rem;letter-spacing:.04em}
+  table.rank th:last-child{text-align:center;width:80px}
+  table.rank td{padding:8px 10px;border-bottom:1px solid #e2e8f0;vertical-align:middle;color:var(--text2)}
+  table.rank tr:nth-child(even) td{background:rgba(241,245,249,.6)}
+  table.rank td:last-child{text-align:center}
+  .rank-in{width:56px;border:none;border-bottom:2px solid var(--a3);background:transparent;font-family:var(--fc);font-size:.85rem;font-weight:700;color:var(--text);outline:none;text-align:center;padding:3px 4px}
+
+  /* ── Time allocation table ── */
+  table.time-tbl{width:100%;border-collapse:collapse;font-size:.83rem;margin-top:8px}
+  table.time-tbl th{background:#7c3aed;color:#fff;padding:8px 12px;text-align:left;font-weight:700;font-size:.7rem;letter-spacing:.04em}
+  table.time-tbl th:not(:first-child){text-align:center}
+  table.time-tbl td{padding:8px 12px;border-bottom:1px solid #e2e8f0;vertical-align:middle;color:var(--text2)}
+  table.time-tbl tr:nth-child(even) td{background:rgba(124,58,237,.03)}
+  table.time-tbl td:first-child{font-weight:700;color:var(--text)}
+  table.time-tbl td:not(:first-child){text-align:center}
+  table.time-tbl input[type="radio"]{width:18px;height:18px;accent-color:var(--ap);cursor:pointer}
+
+  /* ── Likert table ── */
+  table.likert{width:100%;border-collapse:collapse;font-size:.82rem;margin-top:8px}
+  table.likert th{background:#1e293b;color:#e2e8f0;padding:8px 10px;text-align:center;font-weight:700;font-size:.7rem;letter-spacing:.04em}
+  table.likert th:first-child{text-align:left}
+  table.likert td{padding:8px 10px;border-bottom:1px solid #e2e8f0;vertical-align:middle;color:var(--text2)}
+  table.likert tr:nth-child(even) td{background:rgba(241,245,249,.6)}
+  table.likert td:first-child{color:var(--text);font-size:.83rem;line-height:1.5}
+  table.likert td:not(:first-child){text-align:center}
+  table.likert input[type="radio"]{width:18px;height:18px;accent-color:var(--a2);cursor:pointer}
+
+  /* ── Tip boxes ── */
+  .tip{border-radius:10px;padding:10px 14px;font-size:.8rem;line-height:1.6;margin-top:12px}
+  .tip.b{background:rgba(11,99,206,.07);color:#1e40af}
+  .tip.g{background:rgba(16,185,129,.07);color:#065f46}
+  .tip.a{background:rgba(245,158,11,.08);color:#92400e}
+  .tip.p{background:rgba(124,58,237,.07);color:#5b21b6}
+
+  /* ── Q number ── */
+  .qnum{font-family:var(--fc);font-size:.74rem;font-weight:700;color:var(--ap);margin-right:5px;background:rgba(124,58,237,.09);border-radius:5px;padding:1px 6px}
+
+  /* ── Footer ── */
+  .sheet-footer{margin-top:40px;padding:16px 20px;border-radius:12px;background:rgba(124,58,237,.05);border:1px solid rgba(124,58,237,.12);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:.76rem;color:var(--muted)}
+
+  /* ── Utilities ── */
+  .mb2{margin-bottom:10px} .mb3{margin-bottom:16px} .mt2{margin-top:10px} .mt3{margin-top:16px}
+  p{line-height:1.65;margin-bottom:8px;font-size:.87rem;color:var(--text2)}
+  strong{color:var(--text)}
+</style>
+
+<!-- ══ PRINT STYLESHEET: 純文字，8.5×11，無格式 ══ -->
+<style>
+@media print {
+  @page { size: 8.5in 11in; margin: 0.75in; }
+  *, *::before, *::after {
+    background: none !important;
+    background-image: none !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+    color: #000 !important;
+    border-color: #999 !important;
+    font-family: 'Microsoft JhengHei', 'PingFang TC', Arial, sans-serif !important;
+  }
+  body { font-size: 11pt !important; line-height: 1.55 !important; background: #fff !important; }
+  .no-print, .print-bar, .sheet-header, .header-emoji, .header-pills,
+  .header-pill, .section-label, .part-divider, .tip, .sheet-footer { display: none !important; }
+  .page { max-width: 100% !important; margin: 0 !important; padding: 0 !important; }
+  .page::before {
+    content: "AI 程式設計暑期班：Python & Scratch — 2026年暑假 — 現代中文學校";
+    display: block; font-size: 13pt; font-weight: bold;
+    border-bottom: 1.5pt solid #000; padding-bottom: 4pt; margin-bottom: 10pt;
+  }
+  .info-grid { display: table !important; width: 100% !important; margin-bottom: 14pt !important; }
+  .info-field { display: table-cell !important; width: 33% !important; padding-right: 12pt !important; vertical-align: top !important; border: none !important; background: none !important; border-radius: 0 !important; }
+  .info-label { display: block !important; font-size: 8pt !important; font-weight: bold !important; margin-bottom: 2pt !important; }
+  input.info-line { display: block !important; width: 90% !important; border: none !important; border-bottom: 1pt solid #000 !important; font-size: 11pt !important; padding: 2pt 0 !important; background: none !important; }
+  .card.ap.mb3 { display: block !important; border: none !important; padding: 0 !important; margin-bottom: 10pt !important; }
+  .card.ap.mb3 .clabel { font-size: 11pt !important; font-weight: bold !important; margin-bottom: 4pt !important; letter-spacing: 0 !important; }
+  .card.ap.mb3 .g2 { display: block !important; }
+  .card.ap.mb3 p { font-size: 10pt !important; margin-bottom: 2pt !important; }
+  .card { display: block !important; background: none !important; border: none !important; border-radius: 0 !important; padding: 0 !important; margin-bottom: 12pt !important; }
+  .section-title { display: block !important; font-size: 13pt !important; font-weight: bold !important; margin: 16pt 0 2pt 0 !important; border-bottom: 1pt solid #000 !important; padding-bottom: 2pt !important; page-break-after: avoid !important; }
+  .section-sub { display: block !important; font-size: 9.5pt !important; margin-bottom: 6pt !important; }
+  .clabel { display: block !important; font-size: 11pt !important; font-weight: bold !important; margin-bottom: 4pt !important; letter-spacing: 0 !important; }
+  .qnum { font-size: 11pt !important; font-weight: bold !important; background: none !important; border-radius: 0 !important; padding: 0 !important; margin-right: 3pt !important; }
+  .q-hint { font-size: 9pt !important; font-style: italic !important; }
+  .radio-list, .check-list { display: block !important; list-style: none !important; margin: 2pt 0 0 0 !important; padding: 0 !important; }
+  .radio-list li, .check-list li { display: block !important; font-size: 11pt !important; margin-bottom: 4pt !important; padding-left: 20pt !important; position: relative !important; line-height: 1.5 !important; }
+  .radio-list li input[type="radio"], .check-list li input[type="checkbox"] { position: absolute !important; left: 0 !important; top: 2pt !important; width: 11pt !important; height: 11pt !important; margin: 0 !important; }
+  .check-list li input.wline { display: inline !important; width: 180pt !important; border-bottom: 1pt solid #000 !important; background: none !important; font-size: 10pt !important; margin-bottom: 0 !important; }
+  input.wline { display: block !important; width: 100% !important; border: none !important; border-bottom: 1pt solid #000 !important; background: none !important; font-size: 11pt !important; padding: 2pt 0 !important; margin-bottom: 6pt !important; }
+  textarea.warea { display: block !important; width: 100% !important; border: none !important; border-bottom: 1pt solid #000 !important; border-radius: 0 !important; background: none !important; font-size: 11pt !important; min-height: 48pt !important; resize: none !important; padding: 0 !important; }
+  table.rank, table.time-tbl, table.likert { display: table !important; width: 100% !important; border-collapse: collapse !important; font-size: 10pt !important; margin: 4pt 0 8pt 0 !important; }
+  table.rank thead, table.time-tbl thead, table.likert thead { display: table-header-group !important; }
+  table.rank tbody, table.time-tbl tbody, table.likert tbody { display: table-row-group !important; }
+  table.rank tr, table.time-tbl tr, table.likert tr { display: table-row !important; }
+  table.rank th, table.time-tbl th, table.likert th { display: table-cell !important; background: none !important; color: #000 !important; border: 1pt solid #000 !important; padding: 4pt 6pt !important; font-weight: bold !important; font-size: 9pt !important; }
+  table.time-tbl th:not(:first-child), table.likert th:not(:first-child) { text-align: center !important; }
+  table.rank td, table.time-tbl td, table.likert td { display: table-cell !important; border: 0.5pt solid #aaa !important; padding: 4pt 6pt !important; background: none !important; font-size: 10pt !important; }
+  table.rank td:last-child { text-align: center !important; }
+  table.time-tbl td:not(:first-child), table.likert td:not(:first-child) { text-align: center !important; }
+  table.time-tbl td:first-child { font-weight: bold !important; }
+  .rank-in { width: 36pt !important; border: none !important; border-bottom: 1pt solid #000 !important; background: none !important; font-size: 10pt !important; text-align: center !important; }
+  table.time-tbl input[type="radio"], table.likert input[type="radio"] { width: 11pt !important; height: 11pt !important; margin: 0 !important; }
+  .g2 { display: block !important; }
+  .section-title { page-break-before: always !important; }
+  .section-title:first-of-type { page-break-before: avoid !important; }
+  .card, table.rank, table.time-tbl, table.likert { page-break-inside: avoid !important; }
+}
+</style>
+</head>
+<body>
+
+<!-- 列印列 -->
+<div class="print-bar no-print">
+  <div>
+    <div class="bar-title">👨‍👩‍👧 AI 程式設計暑期班：Python & Scratch · 2026年暑假 · 現代中文學校</div>
+    <div class="bar-sub">家長問卷（關於您的孩子）</div>
+  </div>
+  <button class="btn-print" onclick="window.print()">🖨️ 列印 / 儲存為 PDF</button>
+</div>
+
+<div class="page">
+
+<!-- 頁首 -->
+<div class="sheet-header">
+  <div class="header-emoji">👨‍👩‍👧</div>
+  <div class="header-day">Python &amp; Scratch · 2026年暑假 · 現代中文學校</div>
+  <div class="header-title">請告訴我們您孩子的情況</div>
+  <div class="header-sub">請根據您的孩子回答所有問題 — 您的分享將幫助我們從第一天起為孩子打造最適合的學習環境。</div>
+  <div class="header-pills">
+    <span class="header-pill">🐍 Python</span>
+    <span class="header-pill">🐱 Scratch</span>
+    <span class="header-pill">🧠 AI 概念</span>
+    <span class="header-pill">⏱ 約10分鐘</span>
+    <span class="header-pill">🔒 保密</span>
+  </div>
+</div>
+
+<!-- 基本資料 -->
+<div class="info-grid">
+  <div class="info-field">
+    <div class="info-label">孩子的姓名 / 暱稱</div>
+    <input class="info-line" type="text" placeholder="課堂上使用的名字">
+  </div>
+  <div class="info-field">
+    <div class="info-label">就讀年級（2026年秋季）</div>
+    <input class="info-line" type="text" placeholder="例：六年級">
+  </div>
+  <div class="info-field">
+    <div class="info-label">家長 / 監護人姓名</div>
+    <input class="info-line" type="text" placeholder="您的全名">
+  </div>
+</div>
+
+<!-- 總覽 -->
+<div class="card ap mb3">
+  <div class="clabel p">📋 本問卷涵蓋內容</div>
+  <div class="g2" style="margin-bottom:0">
+    <div>
+      <p class="mb2"><strong>第一部分</strong> — 孩子在程式設計與AI方面的經驗</p>
+      <p class="mb2"><strong>第二部分</strong> — 您希望孩子在本課程中達到的目標</p>
+    </div>
+    <div>
+      <p class="mb2"><strong>第三部分</strong> — 孩子在課堂上最佳的學習方式</p>
+      <p class="mb2"><strong>第四部分</strong> — 溝通方式偏好與開放性問題</p>
+    </div>
+  </div>
+  <div class="tip p">💡 <strong>提示：</strong>所有問題皆是關於<strong>您的孩子</strong>，而非您本人。沒有對錯之分——您提供的細節越多，孩子的學習體驗就越好。</div>
+</div>
+
+<hr class="part-divider">
+
+<!-- 第一部分 -->
+<div class="section-label">💻 第一部分</div>
+<div class="section-title">孩子在程式設計與 AI 方面的經驗</div>
+<div class="section-sub">請幫助我們了解孩子已有的基礎，以便我們將課程調整到最適合的程度。</div>
+
+<!-- Q1 -->
+<div class="card ab">
+  <span class="clabel b"><span class="qnum">Q1</span> 孩子對科技的整體感受如何？</span>
+  <ul class="radio-list">
+    <li><input type="radio" name="Q1" id="Q1a"><label for="Q1a">❤️ <strong>非常喜歡</strong> — 孩子在空閒時間會自行探索應用程式、動手做東西，或擺弄各種設備</label></li>
+    <li><input type="radio" name="Q1" id="Q1b"><label for="Q1b">💡 <strong>有興趣但不深入</strong> — 喜歡使用科技產品，但未深入了解其運作原理</label></li>
+    <li><input type="radio" name="Q1" id="Q1c"><label for="Q1c">😐 <strong>普通</strong> — 只是日常使用，科技並非特別的興趣</label></li>
+    <li><input type="radio" name="Q1" id="Q1d"><label for="Q1d">😰 <strong>猶豫或焦慮</strong> — 面對新科技或陌生設備時容易感到不安</label></li>
+  </ul>
+</div>
+
+<!-- Q2 -->
+<div class="card ag">
+  <span class="clabel g"><span class="qnum">Q2</span> 孩子以前有沒有學過程式設計？ <span class="q-hint">（可多選）</span></span>
+  <ul class="check-list">
+    <li><input type="checkbox" id="Q2a"><label for="Q2a">🆕 <strong>完全沒有經驗</strong> — 這是孩子第一次接觸任何程式設計相關內容</label></li>
+    <li><input type="checkbox" id="Q2b"><label for="Q2b">🐱 <strong>曾非正式地嘗試過 Scratch</strong> — 在家、學校或課餘時間自行玩過</label></li>
+    <li><input type="checkbox" id="Q2c"><label for="Q2c">📚 <strong>在學校完成過 Scratch 或積木式程式設計的單元課程</strong></label></li>
+    <li><input type="checkbox" id="Q2d"><label for="Q2d">🐍 <strong>寫過 Python 程式碼</strong> — 即使只有幾行也算</label></li>
+    <li><input type="checkbox" id="Q2e"><label for="Q2e">🏕️ <strong>參加過其他程式設計課程或暑期班</strong> — 請在下方說明</label></li>
+  </ul>
+  <input class="wline mt2" type="text" placeholder="若曾參加過課程／暑期班，請描述學習內容（選填）">
+</div>
+
+<!-- Q3 -->
+<div class="card aa">
+  <span class="clabel a"><span class="qnum">Q3</span> 孩子對人工智慧（AI）概念的接觸程度如何？ <span class="q-hint">（可多選）</span></span>
+  <ul class="check-list">
+    <li><input type="checkbox" id="Q3a"><label for="Q3a">🆕 <strong>AI 對孩子來說完全陌生</strong> — 從未以任何有意義的方式聽說過這個詞</label></li>
+    <li><input type="checkbox" id="Q3b"><label for="Q3b">🗣️ <strong>聽說過這個詞</strong>，但無法解釋它的實際含義</label></li>
+    <li><input type="checkbox" id="Q3c"><label for="Q3c">📱 <strong>使用過 AI 工具</strong>（如 ChatGPT、Siri、圖片生成器），但未深入了解其運作方式</label></li>
+    <li><input type="checkbox" id="Q3d"><label for="Q3d">🧠 <strong>了解基本 AI 概念</strong> — 例如訓練資料、模型和預測</label></li>
+    <li><input type="checkbox" id="Q3e"><label for="Q3e">🎓 <strong>曾上過課或觀看課程</strong>，學習過 AI 系統的構建原理</label></li>
+  </ul>
+</div>
+
+<!-- Q4 -->
+<div class="card ap">
+  <span class="clabel p"><span class="qnum">Q4</span> 請評估孩子在以下各領域的目前能力程度。 <span class="q-hint">每行選一個選項。</span></span>
+  <table class="time-tbl" style="margin-top:10px">
+    <thead><tr><th>領域</th><th>從未接觸</th><th>初學者</th><th>有一些經驗</th><th>有信心</th></tr></thead>
+    <tbody>
+      <tr><td>🐱 Scratch / 積木式程式設計</td><td><input type="radio" name="c1" value="0"></td><td><input type="radio" name="c1" value="1"></td><td><input type="radio" name="c1" value="2"></td><td><input type="radio" name="c1" value="3"></td></tr>
+      <tr><td>🐍 Python（文字型程式設計）</td><td><input type="radio" name="c2" value="0"></td><td><input type="radio" name="c2" value="1"></td><td><input type="radio" name="c2" value="2"></td><td><input type="radio" name="c2" value="3"></td></tr>
+      <tr><td>🧠 AI / 機器學習概念</td><td><input type="radio" name="c3" value="0"></td><td><input type="radio" name="c3" value="1"></td><td><input type="radio" name="c3" value="2"></td><td><input type="radio" name="c3" value="3"></td></tr>
+      <tr><td>🔢 一般數學與邏輯思維</td><td><input type="radio" name="c4" value="0"></td><td><input type="radio" name="c4" value="1"></td><td><input type="radio" name="c4" value="2"></td><td><input type="radio" name="c4" value="3"></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<hr class="part-divider">
+
+<!-- 第二部分 -->
+<div class="section-label">🎯 第二部分</div>
+<div class="section-title">您對孩子的課程目標</div>
+<div class="section-sub">您最希望孩子在這個暑假獲得什麼？</div>
+
+<!-- Q5 — 排名 -->
+<div class="card ap">
+  <span class="clabel p"><span class="qnum">Q5</span> 請為孩子在本課程中的<strong>前3項目標</strong>排名。 <span class="q-hint">在框中填入 1（最重要）、2 或 3，其餘留空。</span></span>
+  <table class="rank">
+    <thead><tr><th>孩子的學習目標</th><th>排名（1–3）</th></tr></thead>
+    <tbody>
+      <tr><td>孩子學會 Python 程式設計基礎</td><td><input class="rank-in" type="text" maxlength="1" placeholder="—"></td></tr>
+      <tr><td>孩子熟練掌握 Scratch 與積木式程式設計</td><td><input class="rank-in" type="text" maxlength="1" placeholder="—"></td></tr>
+      <tr><td>孩子了解 AI 的真正運作原理（而非只會使用）</td><td><input class="rank-in" type="text" maxlength="1" placeholder="—"></td></tr>
+      <tr><td>孩子培養更強的解決問題與邏輯思維能力</td><td><input class="rank-in" type="text" maxlength="1" placeholder="—"></td></tr>
+      <tr><td>孩子對科技與電腦建立信心</td><td><input class="rank-in" type="text" maxlength="1" placeholder="—"></td></tr>
+      <tr><td>孩子探索未來在科技領域的職業興趣</td><td><input class="rank-in" type="text" maxlength="1" placeholder="—"></td></tr>
+      <tr><td>孩子結交志同道合的新朋友</td><td><input class="rank-in" type="text" maxlength="1" placeholder="—"></td></tr>
+      <tr><td>孩子完成一個真實作品，並為此感到驕傲</td><td><input class="rank-in" type="text" maxlength="1" placeholder="—"></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Q6 — 時間分配 -->
+<div class="card ab">
+  <span class="clabel b"><span class="qnum">Q6</span> 您希望孩子在每個主題上花多少時間？ <span class="q-hint">每行選一個選項。</span></span>
+  <table class="time-tbl">
+    <thead><tr><th>主題</th><th>多一些</th><th>差不多</th><th>少一些</th></tr></thead>
+    <tbody>
+      <tr><td>🐱 Scratch（視覺化／積木式程式設計）</td><td><input type="radio" name="t1" value="more"></td><td><input type="radio" name="t1" value="equal"></td><td><input type="radio" name="t1" value="less"></td></tr>
+      <tr><td>🐍 Python（文字型程式設計）</td><td><input type="radio" name="t2" value="more"></td><td><input type="radio" name="t2" value="equal"></td><td><input type="radio" name="t2" value="less"></td></tr>
+      <tr><td>🧠 AI 概念（AI 的真正運作原理）</td><td><input type="radio" name="t3" value="more"></td><td><input type="radio" name="t3" value="equal"></td><td><input type="radio" name="t3" value="less"></td></tr>
+      <tr><td>🎮 創意專題（遊戲、故事、動畫）</td><td><input type="radio" name="t4" value="more"></td><td><input type="radio" name="t4" value="equal"></td><td><input type="radio" name="t4" value="less"></td></tr>
+      <tr><td>⚖️ AI 倫理（公平、隱私、現實影響）</td><td><input type="radio" name="t5" value="more"></td><td><input type="radio" name="t5" value="equal"></td><td><input type="radio" name="t5" value="less"></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Q7 — 顧慮 -->
+<div class="card aa">
+  <span class="clabel a"><span class="qnum">Q7</span> 您對孩子參加本課程最大的擔憂是什麼？ <span class="q-hint">（最多選2項）</span></span>
+  <ul class="check-list">
+    <li><input type="checkbox" id="Q7a"><label for="Q7a">📉 孩子可能因為經驗少於其他同學而落後</label></li>
+    <li><input type="checkbox" id="Q7b"><label for="Q7b">😴 若內容太簡單，孩子可能會感到無聊或缺乏挑戰</label></li>
+    <li><input type="checkbox" id="Q7c"><label for="Q7c">📱 我擔心每天的螢幕使用時間過多</label></li>
+    <li><input type="checkbox" id="Q7d"><label for="Q7d">😤 孩子遇到無法立即解決的問題時容易沮喪</label></li>
+    <li><input type="checkbox" id="Q7e"><label for="Q7e">🤔 我不確定 AI 是否適合 11–12 歲的孩子學習</label></li>
+    <li><input type="checkbox" id="Q7f"><label for="Q7f">🤝 人際互動問題 — 融入群體、小組合作或交朋友</label></li>
+    <li><input type="checkbox" id="Q7g"><label for="Q7g">✅ 我沒有重大擔憂 — 我相信孩子一定表現很好！</label></li>
+    <li><input type="checkbox" id="Q7h"><label for="Q7h">其他：<input class="wline" style="display:inline-block;width:260px;margin-bottom:0" type="text" placeholder="請描述您的擔憂"></label></li>
+  </ul>
+</div>
+
+<hr class="part-divider">
+
+<!-- 第三部分 -->
+<div class="section-label">🧠 第三部分</div>
+<div class="section-title">孩子最佳的學習方式</div>
+<div class="section-sub">請幫助我們了解孩子的真實性格，以便打造最適合的課堂環境。</div>
+
+<!-- Q8 -->
+<div class="card ag">
+  <span class="clabel g"><span class="qnum">Q8</span> 您認為孩子在哪種課堂環境中表現最好？ <span class="q-hint">（可多選）</span></span>
+  <ul class="check-list">
+    <li><input type="checkbox" id="Q8a"><label for="Q8a">📋 <strong>結構化</strong> — 每天有清晰的分步驟課程與明確議程</label></li>
+    <li><input type="checkbox" id="Q8b"><label for="Q8b">🔭 <strong>探索式</strong> — 有自由嘗試自己想法的空間，不受固定腳本限制</label></li>
+    <li><input type="checkbox" id="Q8c"><label for="Q8c">🤝 <strong>合作式</strong> — 頻繁與同學進行結對或小組合作</label></li>
+    <li><input type="checkbox" id="Q8d"><label for="Q8d">🧑‍💻 <strong>獨立學習</strong> — 大多按自己的節奏，完成自己的專題</label></li>
+    <li><input type="checkbox" id="Q8e"><label for="Q8e">⚖️ <strong>混合式</strong> — 直接講授與開放創意時間的平衡</label></li>
+    <li><input type="checkbox" id="Q8f"><label for="Q8f">🏆 <strong>競賽 / 挑戰導向</strong> — 迷你黑客松、限時挑戰、排行榜</label></li>
+  </ul>
+</div>
+
+<!-- Q9 -->
+<div class="card ab">
+  <span class="clabel b"><span class="qnum">Q9</span> 當孩子遇到困難問題時，他們通常會怎麼做？</span>
+  <ul class="radio-list">
+    <li><input type="radio" name="Q9" id="Q9a"><label for="Q9a">🙋 馬上尋求幫助 — 他們不害羞開口問</label></li>
+    <li><input type="radio" name="Q9" id="Q9b"><label for="Q9b">🕵️ 傾向先自行嘗試解決，再向他人求助</label></li>
+    <li><input type="radio" name="Q9" id="Q9c"><label for="Q9c">😤 會明顯感到沮喪 — 可能需要鼓勵才能繼續</label></li>
+    <li><input type="radio" name="Q9" id="Q9d"><label for="Q9d">⏸️ 暫時離開再回來 — 需要短暫休息來重新整理</label></li>
+    <li><input type="radio" name="Q9" id="Q9e"><label for="Q9e">🤷 視情況而定，也取決於當天的狀態</label></li>
+  </ul>
+</div>
+
+<!-- Q10 -->
+<div class="card aa">
+  <span class="clabel a"><span class="qnum">Q10</span> 孩子如何看待在眾人面前分享自己的作品？</span>
+  <ul class="radio-list">
+    <li><input type="radio" name="Q10" id="Q10a"><label for="Q10a">🎤 <strong>喜歡</strong> — 為自己的作品感到自豪，喜歡展示給大家看</label></li>
+    <li><input type="radio" name="Q10" id="Q10b"><label for="Q10b">😊 <strong>若被點到名沒問題</strong> — 不會拒絕，但不會主動舉手</label></li>
+    <li><input type="radio" name="Q10" id="Q10c"><label for="Q10c">😬 <strong>緊張但願意嘗試</strong> — 在鼓勵下可以做到</label></li>
+    <li><input type="radio" name="Q10" id="Q10d"><label for="Q10d">🙈 <strong>不喜歡</strong> — 在眾人面前被點名會引起明顯焦慮</label></li>
+  </ul>
+</div>
+
+<!-- Q11 -->
+<div class="card ap">
+  <span class="clabel p"><span class="qnum">Q11</span> 孩子在團隊或小組專題中表現如何？</span>
+  <ul class="radio-list">
+    <li><input type="radio" name="Q11" id="Q11a"><label for="Q11a">🤩 <strong>在小組中如魚得水</strong> — 合作讓他們充滿活力，並發揮最佳水準</label></li>
+    <li><input type="radio" name="Q11" id="Q11b"><label for="Q11b">⚖️ <strong>因人而異</strong> — 偶爾小組合作不錯，但也需要獨立創作時間</label></li>
+    <li><input type="radio" name="Q11" id="Q11c"><label for="Q11c">🧑‍💻 <strong>偏好獨自工作</strong> — 有強烈個人想法，不喜歡妥協</label></li>
+    <li><input type="radio" name="Q11" id="Q11d"><label for="Q11d">😬 <strong>小組合作有挑戰</strong> — 人際互動對他們來說可能造成壓力</label></li>
+  </ul>
+</div>
+
+<!-- Q12 -->
+<div class="card ar">
+  <span class="clabel r"><span class="qnum">Q12</span> 關於孩子的學習風格、需求或個性，有什麼是老師在第一天上課前應該知道的嗎？</span>
+  <p style="font-size:.82rem;color:var(--muted);margin-bottom:10px"><em>例如：注意力缺乏、閱讀困難、焦慮、感覺敏感、英語非母語、偏好視覺化講解、不喜歡被單獨點名、需要更多正面鼓勵等。所有資訊絕對保密。</em></p>
+  <textarea class="warea" rows="4" placeholder="分享多少都可以，完全由您決定。此資訊僅供老師閱讀，將直接影響老師如何支持您的孩子。"></textarea>
+</div>
+
+<hr class="part-divider">
+
+<!-- 第四部分 -->
+<div class="section-label">📬 第四部分</div>
+<div class="section-title">溝通方式與開放性問題</div>
+<div class="section-sub">請告訴我們您希望如何了解孩子的學習進度。</div>
+
+<!-- Q13 -->
+<div class="card ag">
+  <span class="clabel g"><span class="qnum">Q13</span> 您希望老師如何與您溝通孩子的學習狀況？ <span class="q-hint">（可多選）</span></span>
+  <ul class="check-list">
+    <li><input type="checkbox" id="Q13a"><label for="Q13a">📧 每週發送一封關於孩子學習情況的簡短電子郵件</label></li>
+    <li><input type="checkbox" id="Q13b"><label for="Q13b">📄 僅在課程結束時提供總結報告</label></li>
+    <li><input type="checkbox" id="Q13c"><label for="Q13c">⚡ 若孩子遇到困難或有不好的一天，請立即聯繫我</label></li>
+    <li><input type="checkbox" id="Q13d"><label for="Q13d">👨‍👩‍👧 我會直接詢問孩子 — 只有緊急情況才聯繫我</label></li>
+  </ul>
+  <div class="mt2">
+    <span style="font-size:.78rem;font-weight:700;color:var(--text);display:block;margin-bottom:4px">最佳聯繫電子郵件：</span>
+    <input class="wline" type="email" placeholder="parent@email.com" style="margin-bottom:0">
+  </div>
+</div>
+
+<!-- Q14 -->
+<div class="card ab">
+  <span class="clabel b"><span class="qnum">Q14</span> 用您自己的話說 — 什麼樣的結果會讓這個暑期班對<em>您的孩子</em>來說是成功的？</span>
+  <p style="font-size:.82rem;color:var(--muted);margin-bottom:10px"><em>請盡量具體描述。孩子需要經歷、學習或感受到什麼，才會讓這個課程有意義？</em></p>
+  <textarea class="warea" rows="4" placeholder="例如：「我希望我的孩子在課程結束後，感覺自己真的可以做出屬於自己的遊戲。」或「我只希望他開心學習，不要像上課外班一樣有壓力。」"></textarea>
+</div>
+
+<!-- Q15 -->
+<div class="card aa">
+  <span class="clabel a"><span class="qnum">Q15</span> 課程開始前，您是否有任何問題、請求，或希望老師了解的關於孩子的事？</span>
+  <textarea class="warea" rows="4" placeholder="任何問題都歡迎提問！"></textarea>
+</div>
+
+<hr class="part-divider">
+
+<!-- 評分量表 -->
+<div class="section-label">📊 評分量表</div>
+<div class="section-title">快速快照 — 關於您的孩子</div>
+<div class="section-sub">請為每項陳述圈選 1 到 5 分。<strong>1 = 非常不同意 &nbsp;·&nbsp; 5 = 非常同意</strong></div>
+
+<div class="card ap">
+  <table class="likert">
+    <thead>
+      <tr>
+        <th style="width:58%">關於孩子的陳述</th>
+        <th>1<br><small>非常<br>不同意</small></th>
+        <th>2</th>
+        <th>3<br><small>中立</small></th>
+        <th>4</th>
+        <th>5<br><small>非常<br>同意</small></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>孩子已做好開始學習程式設計的準備</td><td><input type="radio" name="L1" value="1"></td><td><input type="radio" name="L1" value="2"></td><td><input type="radio" name="L1" value="3"></td><td><input type="radio" name="L1" value="4"></td><td><input type="radio" name="L1" value="5"></td></tr>
+      <tr><td>孩子對人工智慧（AI）有基本概念</td><td><input type="radio" name="L2" value="1"></td><td><input type="radio" name="L2" value="2"></td><td><input type="radio" name="L2" value="3"></td><td><input type="radio" name="L2" value="4"></td><td><input type="radio" name="L2" value="5"></td></tr>
+      <tr><td>孩子在同儕面前犯錯時不會感到太不自在</td><td><input type="radio" name="L3" value="1"></td><td><input type="radio" name="L3" value="2"></td><td><input type="radio" name="L3" value="3"></td><td><input type="radio" name="L3" value="4"></td><td><input type="radio" name="L3" value="5"></td></tr>
+      <tr><td>孩子對這個課程真心感到期待</td><td><input type="radio" name="L4" value="1"></td><td><input type="radio" name="L4" value="2"></td><td><input type="radio" name="L4" value="3"></td><td><input type="radio" name="L4" value="4"></td><td><input type="radio" name="L4" value="5"></td></tr>
+      <tr><td>孩子的學習方式是動手做／實驗，而非單純觀察</td><td><input type="radio" name="L5" value="1"></td><td><input type="radio" name="L5" value="2"></td><td><input type="radio" name="L5" value="3"></td><td><input type="radio" name="L5" value="4"></td><td><input type="radio" name="L5" value="5"></td></tr>
+      <tr><td>孩子在遇到挫折時不會輕易放棄</td><td><input type="radio" name="L6" value="1"></td><td><input type="radio" name="L6" value="2"></td><td><input type="radio" name="L6" value="3"></td><td><input type="radio" name="L6" value="4"></td><td><input type="radio" name="L6" value="5"></td></tr>
+      <tr><td>孩子在團隊或合作環境中表現良好</td><td><input type="radio" name="L7" value="1"></td><td><input type="radio" name="L7" value="2"></td><td><input type="radio" name="L7" value="3"></td><td><input type="radio" name="L7" value="4"></td><td><input type="radio" name="L7" value="5"></td></tr>
+      <tr><td>我對孩子在這個暑假學習 AI 感到放心</td><td><input type="radio" name="L8" value="1"></td><td><input type="radio" name="L8" value="2"></td><td><input type="radio" name="L8" value="3"></td><td><input type="radio" name="L8" value="4"></td><td><input type="radio" name="L8" value="5"></td></tr>
+      <tr><td>我相信孩子未來有可能走向科技或程式設計的發展方向</td><td><input type="radio" name="L9" value="1"></td><td><input type="radio" name="L9" value="2"></td><td><input type="radio" name="L9" value="3"></td><td><input type="radio" name="L9" value="4"></td><td><input type="radio" name="L9" value="5"></td></tr>
+    </tbody>
+  </table>
+  <div class="tip b" style="margin-top:14px">✅ <strong>感謝您！</strong>您的回答已記錄完畢。老師將在孩子第一天上課前仔細閱讀每一份問卷。若有任何疑問，歡迎隨時聯繫。</div>
+</div>
+
+<!-- 頁尾 -->
+<div class="sheet-footer">
+  <div>🤖 <strong>AI 程式設計暑期班：Python &amp; Scratch</strong> · 2026年暑假 · 現代中文學校</div>
+  <div>🔒 所有回覆均保密，僅供老師閱讀。</div>
+</div>
+
+</div><!-- /page -->
+</body>
+</html>
