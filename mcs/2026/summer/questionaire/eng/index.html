@@ -1,1 +1,807 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI Coding Summer Program · Parent Questionnaire About Your Child</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Nunito:wght@400;600;700;800&family=Fira+Code:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f4fbff; --surface:rgba(255,255,255,0.97);
+    --text:#1f2a37; --text2:#374151; --muted:#5b6b7e;
+    --a1:#0b63ce; --a2:#10b981; --a3:#f59e0b; --ar:#ef4444;
+    --ap:#7c3aed;
+    --fd:'Fredoka','Trebuchet MS',sans-serif;
+    --fb:'Nunito',Arial,sans-serif;
+    --fc:'Fira Code',Consolas,monospace;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 
+  body{font-family:var(--fb);color:var(--text);background:var(--bg);min-height:100vh}
+
+  /* ── Print bar ── */
+  .print-bar{background:rgba(255,255,255,0.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(148,163,184,.3);padding:10px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;gap:12px;flex-wrap:wrap}
+  .bar-title{font-family:var(--fd);font-size:1.05rem;font-weight:700;color:var(--a1)}
+  .bar-sub{font-size:.78rem;color:var(--muted)}
+  .btn-print{background:var(--a1);color:#fff;border:none;padding:8px 20px;border-radius:999px;font-family:var(--fb);font-size:.82rem;font-weight:800;cursor:pointer;letter-spacing:.06em;transition:background .2s,transform .15s}
+  .btn-print:hover{background:#0952b0;transform:translateY(-1px)}
+
+  /* ── Page ── */
+  .page{max-width:920px;margin:0 auto;padding:32px 24px 60px}
+
+  /* ── Header ── */
+  .sheet-header{background:linear-gradient(135deg,#7c3aed 0%,#0b63ce 45%,#10b981 100%);border-radius:20px;padding:28px 32px 24px;color:#fff;margin-bottom:28px;position:relative;overflow:hidden}
+  .sheet-header::before{content:'';position:absolute;top:-60px;right:-60px;width:200px;height:200px;background:rgba(255,255,255,.08);border-radius:50%}
+  .sheet-header::after{content:'';position:absolute;bottom:-40px;left:-40px;width:140px;height:140px;background:rgba(255,255,255,.06);border-radius:50%}
+  .header-emoji{font-size:2.8rem;margin-bottom:6px}
+  .header-day{font-size:.75rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;opacity:.85;margin-bottom:4px}
+  .header-title{font-family:var(--fd);font-size:clamp(1.6rem,4vw,2.4rem);font-weight:700;line-height:1.1;margin-bottom:6px}
+  .header-sub{font-size:.88rem;opacity:.85;margin-bottom:14px}
+  .header-pills{display:flex;flex-wrap:wrap;gap:8px}
+  .header-pill{background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:4px 14px;font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+
+  /* ── Info grid ── */
+  .info-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:28px}
+  @media(max-width:600px){.info-grid{grid-template-columns:1fr}}
+  .info-field{background:var(--surface);border-radius:12px;padding:12px 14px;border:1.5px solid rgba(124,58,237,.14);box-shadow:0 2px 8px rgba(15,23,42,.05)}
+  .info-label{font-size:.65rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--ap);margin-bottom:6px}
+  input.info-line{font-family:var(--fb);font-size:.88rem;color:var(--text);background:transparent;border:none;border-bottom:1.5px solid #cbd5e1;border-radius:0;outline:none;transition:border-color .2s;padding:4px 2px;display:block;width:100%}
+  input.info-line:focus{border-bottom-color:var(--ap);box-shadow:none}
+
+  /* ── Write lines & text areas ── */
+  .wline{display:block;width:100%;padding:5px 10px;margin-bottom:9px;border:none;border-bottom:1.5px solid #cbd5e1;border-radius:0;background:transparent;font-family:var(--fb);font-size:.85rem;color:var(--text);outline:none;transition:border-color .2s}
+  .wline:focus{border-bottom-color:var(--a1)}
+  textarea.warea{display:block;width:100%;padding:8px 10px;border:1.5px solid #cbd5e1;background:#f8fafc;border-radius:8px;font-family:var(--fb);font-size:.84rem;color:var(--text);line-height:1.5;outline:none;resize:vertical;transition:border-color .2s;margin-bottom:8px}
+  textarea.warea:focus{border-color:var(--a1)}
+
+  /* ── Section labels & titles ── */
+  .section-label{display:inline-flex;align-items:center;gap:8px;padding:5px 16px;border-radius:999px;border:1px solid rgba(148,163,184,.4);background:rgba(255,255,255,.9);font-size:.72rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--ap);margin-bottom:10px}
+  .section-title{font-family:var(--fd);font-size:clamp(1.3rem,2.5vw,1.8rem);font-weight:700;margin-bottom:4px;color:var(--text);line-height:1.2}
+  .section-sub{font-size:.82rem;color:var(--muted);margin-bottom:16px}
+  .part-divider{border:none;border-top:2px dashed rgba(148,163,184,.35);margin:28px 0}
+
+  /* ── Cards ── */
+  .card{background:var(--surface);border-radius:16px;padding:18px 20px;box-shadow:0 4px 18px rgba(15,23,42,.07);border:1px solid rgba(255,255,255,.7);margin-bottom:16px}
+  .card.ab{border-left:4px solid var(--a1)}
+  .card.ag{border-left:4px solid var(--a2)}
+  .card.aa{border-left:4px solid var(--a3)}
+  .card.ar{border-left:4px solid var(--ar)}
+  .card.ap{border-left:4px solid var(--ap)}
+  .clabel{font-size:.68rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;margin-bottom:10px;display:block}
+  .clabel.b{color:var(--a1)}.clabel.g{color:#047857}.clabel.a{color:#b45309}.clabel.r{color:#b91c1c}.clabel.p{color:var(--ap)}
+  .q-text{font-size:.9rem;font-weight:700;color:var(--text);margin-bottom:10px;display:block;line-height:1.45}
+  .q-hint{font-size:.78rem;color:var(--muted);font-style:italic;font-weight:400}
+
+  /* ── Grids ── */
+  .g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
+  @media(max-width:680px){.g2{grid-template-columns:1fr}}
+
+  /* ── Radio list ── */
+  .radio-list{list-style:none;display:flex;flex-direction:column;gap:9px;margin-top:8px}
+  .radio-list li{display:flex;align-items:flex-start;gap:10px;font-size:.875rem;color:var(--text2);line-height:1.45;cursor:pointer}
+  .radio-list li input[type="radio"]{width:18px;height:18px;min-width:18px;accent-color:var(--ap);cursor:pointer;margin-top:2px}
+  .radio-list li label{cursor:pointer}
+
+  /* ── Checkbox list ── */
+  .check-list{list-style:none;display:flex;flex-direction:column;gap:9px;margin-top:8px}
+  .check-list li{display:flex;align-items:flex-start;gap:10px;font-size:.875rem;color:var(--text2);line-height:1.45}
+  .check-list li input[type="checkbox"]{width:18px;height:18px;min-width:18px;accent-color:var(--a1);cursor:pointer;margin-top:2px}
+  .check-list li label{cursor:pointer}
+
+  /* ── Rank table ── */
+  table.rank{width:100%;border-collapse:collapse;font-size:.83rem;margin-top:8px}
+  table.rank th{background:#1e293b;color:#e2e8f0;padding:8px 10px;text-align:left;font-weight:700;font-size:.7rem;letter-spacing:.06em}
+  table.rank th:last-child{text-align:center;width:80px}
+  table.rank td{padding:8px 10px;border-bottom:1px solid #e2e8f0;vertical-align:middle;color:var(--text2)}
+  table.rank tr:nth-child(even) td{background:rgba(241,245,249,.6)}
+  table.rank td:last-child{text-align:center}
+  .rank-in{width:56px;border:none;border-bottom:2px solid var(--a3);background:transparent;font-family:var(--fc);font-size:.85rem;font-weight:700;color:var(--text);outline:none;text-align:center;padding:3px 4px}
+  .rank-in:focus{border-bottom-color:var(--a1)}
+
+  /* ── Time allocation table ── */
+  table.time-tbl{width:100%;border-collapse:collapse;font-size:.83rem;margin-top:8px}
+  table.time-tbl th{background:#7c3aed;color:#fff;padding:8px 12px;text-align:left;font-weight:700;font-size:.7rem;letter-spacing:.06em}
+  table.time-tbl th:not(:first-child){text-align:center}
+  table.time-tbl td{padding:8px 12px;border-bottom:1px solid #e2e8f0;vertical-align:middle;color:var(--text2)}
+  table.time-tbl tr:nth-child(even) td{background:rgba(124,58,237,.03)}
+  table.time-tbl td:first-child{font-weight:700;color:var(--text)}
+  table.time-tbl td:not(:first-child){text-align:center}
+  table.time-tbl input[type="radio"]{width:18px;height:18px;accent-color:var(--ap);cursor:pointer}
+
+  /* ── Likert table ── */
+  table.likert{width:100%;border-collapse:collapse;font-size:.82rem;margin-top:8px}
+  table.likert th{background:#1e293b;color:#e2e8f0;padding:8px 10px;text-align:center;font-weight:700;font-size:.7rem;letter-spacing:.06em}
+  table.likert th:first-child{text-align:left}
+  table.likert td{padding:8px 10px;border-bottom:1px solid #e2e8f0;vertical-align:middle;color:var(--text2)}
+  table.likert tr:nth-child(even) td{background:rgba(241,245,249,.6)}
+  table.likert td:first-child{color:var(--text);font-size:.83rem;line-height:1.4}
+  table.likert td:not(:first-child){text-align:center}
+  table.likert input[type="radio"]{width:18px;height:18px;accent-color:var(--a2);cursor:pointer}
+
+  /* ── Tip boxes ── */
+  .tip{border-radius:10px;padding:10px 14px;font-size:.8rem;line-height:1.5;margin-top:12px}
+  .tip.b{background:rgba(11,99,206,.07);color:#1e40af}
+  .tip.g{background:rgba(16,185,129,.07);color:#065f46}
+  .tip.a{background:rgba(245,158,11,.08);color:#92400e}
+  .tip.p{background:rgba(124,58,237,.07);color:#5b21b6}
+
+  /* ── Q number ── */
+  .qnum{font-family:var(--fc);font-size:.74rem;font-weight:700;color:var(--ap);margin-right:5px;background:rgba(124,58,237,.09);border-radius:5px;padding:1px 6px}
+
+  /* ── Footer ── */
+  .sheet-footer{margin-top:40px;padding:16px 20px;border-radius:12px;background:rgba(124,58,237,.05);border:1px solid rgba(124,58,237,.12);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:.76rem;color:var(--muted)}
+
+  /* ── Utilities ── */
+  .mb2{margin-bottom:10px} .mb3{margin-bottom:16px} .mt2{margin-top:10px} .mt3{margin-top:16px}
+  p{line-height:1.55;margin-bottom:8px;font-size:.87rem;color:var(--text2)}
+  strong{color:var(--text)}
+</style>
+
+  <!-- ══ PRINT STYLESHEET: plain text, 8.5×11, no formatting ══ -->
+  <style>
+  @media print {
+
+    /* ── Page setup ── */
+    @page { size: 8.5in 11in; margin: 0.75in 0.75in 0.75in 0.75in; }
+
+    /* ── Reset everything to plain text ── */
+    *, *::before, *::after {
+      background: none !important;
+      background-image: none !important;
+      box-shadow: none !important;
+      text-shadow: none !important;
+      color: #000 !important;
+      border-color: #999 !important;
+      font-family: Arial, Helvetica, sans-serif !important;
+    }
+
+    body {
+      font-size: 11pt !important;
+      line-height: 1.45 !important;
+      color: #000 !important;
+      background: #fff !important;
+    }
+
+    /* ── Hide screen-only elements ── */
+    .no-print,
+    .print-bar,
+    .sheet-header,
+    .header-emoji,
+    .header-pills,
+    .header-pill,
+    .section-label,
+    .part-divider,
+    .tip,
+    .sheet-footer { display: none !important; }
+
+    /* ── Page container ── */
+    .page {
+      max-width: 100% !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+
+    /* ── Document title (printed at top) ── */
+    .page::before {
+      content: "AI Coding Summer Program: Python & Scratch — Summer 2026 — Modern Chinese School";
+      display: block;
+      font-size: 13pt;
+      font-weight: bold;
+      border-bottom: 1.5pt solid #000;
+      padding-bottom: 4pt;
+      margin-bottom: 10pt;
+    }
+
+    /* ── Info grid: three fields in a row ── */
+    .info-grid {
+      display: table !important;
+      width: 100% !important;
+      margin-bottom: 14pt !important;
+    }
+    .info-field {
+      display: table-cell !important;
+      width: 33% !important;
+      padding-right: 12pt !important;
+      vertical-align: top !important;
+      border: none !important;
+      background: none !important;
+      border-radius: 0 !important;
+    }
+    .info-label {
+      display: block !important;
+      font-size: 8pt !important;
+      font-weight: bold !important;
+      text-transform: uppercase !important;
+      letter-spacing: .05em !important;
+      margin-bottom: 2pt !important;
+    }
+    input.info-line {
+      display: block !important;
+      width: 90% !important;
+      border: none !important;
+      border-bottom: 1pt solid #000 !important;
+      font-size: 11pt !important;
+      padding: 2pt 0 !important;
+      background: none !important;
+    }
+
+    /* ── Overview card (intro list) ── */
+    .card.ap.mb3 {
+      display: block !important;
+      border: none !important;
+      padding: 0 !important;
+      margin-bottom: 10pt !important;
+    }
+    .card.ap.mb3 .clabel {
+      font-size: 11pt !important;
+      font-weight: bold !important;
+      margin-bottom: 4pt !important;
+      letter-spacing: 0 !important;
+      text-transform: none !important;
+    }
+    .card.ap.mb3 .g2 { display: block !important; }
+    .card.ap.mb3 p   { font-size: 10pt !important; margin-bottom: 2pt !important; }
+
+    /* ── All cards: strip decoration ── */
+    .card {
+      display: block !important;
+      background: none !important;
+      border: none !important;
+      border-radius: 0 !important;
+      padding: 0 !important;
+      margin-bottom: 12pt !important;
+    }
+
+    /* ── Section titles ── */
+    .section-title {
+      display: block !important;
+      font-size: 13pt !important;
+      font-weight: bold !important;
+      margin: 16pt 0 2pt 0 !important;
+      border-bottom: 1pt solid #000 !important;
+      padding-bottom: 2pt !important;
+      page-break-after: avoid !important;
+    }
+    .section-sub {
+      display: block !important;
+      font-size: 9.5pt !important;
+      color: #333 !important;
+      margin-bottom: 6pt !important;
+    }
+
+    /* ── Question labels ── */
+    .clabel {
+      display: block !important;
+      font-size: 11pt !important;
+      font-weight: bold !important;
+      margin-bottom: 4pt !important;
+      letter-spacing: 0 !important;
+      text-transform: none !important;
+    }
+    .qnum {
+      font-size: 11pt !important;
+      font-weight: bold !important;
+      background: none !important;
+      border-radius: 0 !important;
+      padding: 0 !important;
+      margin-right: 3pt !important;
+    }
+    .q-hint {
+      font-size: 9pt !important;
+      font-style: italic !important;
+    }
+
+    /* ── Radio & checkbox lists ── */
+    .radio-list,
+    .check-list {
+      display: block !important;
+      list-style: none !important;
+      margin: 2pt 0 0 0 !important;
+      padding: 0 !important;
+    }
+    .radio-list li,
+    .check-list li {
+      display: block !important;
+      font-size: 11pt !important;
+      margin-bottom: 4pt !important;
+      padding-left: 20pt !important;
+      position: relative !important;
+      line-height: 1.4 !important;
+    }
+    .radio-list li input[type="radio"],
+    .check-list li input[type="checkbox"] {
+      position: absolute !important;
+      left: 0 !important;
+      top: 2pt !important;
+      width: 11pt !important;
+      height: 11pt !important;
+      margin: 0 !important;
+    }
+    .radio-list li label,
+    .check-list li label {
+      font-size: 11pt !important;
+    }
+    /* inline wline inside a checkbox label */
+    .check-list li input.wline {
+      display: inline !important;
+      width: 180pt !important;
+      border-bottom: 1pt solid #000 !important;
+      background: none !important;
+      font-size: 10pt !important;
+      margin-bottom: 0 !important;
+    }
+
+    /* ── Write lines ── */
+    input.wline {
+      display: block !important;
+      width: 100% !important;
+      border: none !important;
+      border-bottom: 1pt solid #000 !important;
+      background: none !important;
+      font-size: 11pt !important;
+      padding: 2pt 0 !important;
+      margin-bottom: 6pt !important;
+    }
+
+    /* ── Text areas → plain underlines ── */
+    textarea.warea {
+      display: block !important;
+      width: 100% !important;
+      border: none !important;
+      border-bottom: 1pt solid #000 !important;
+      border-radius: 0 !important;
+      background: none !important;
+      font-size: 11pt !important;
+      min-height: 48pt !important;
+      resize: none !important;
+      padding: 0 !important;
+    }
+
+    /* ── Rank table ── */
+    table.rank {
+      display: table !important;
+      width: 100% !important;
+      border-collapse: collapse !important;
+      font-size: 10pt !important;
+      margin: 4pt 0 8pt 0 !important;
+    }
+    table.rank thead { display: table-header-group !important; }
+    table.rank tbody { display: table-row-group !important; }
+    table.rank tr    { display: table-row !important; }
+    table.rank th {
+      display: table-cell !important;
+      background: none !important;
+      color: #000 !important;
+      border: 1pt solid #000 !important;
+      padding: 4pt 6pt !important;
+      font-weight: bold !important;
+      font-size: 9pt !important;
+      text-align: left !important;
+    }
+    table.rank td {
+      display: table-cell !important;
+      border: 0.5pt solid #aaa !important;
+      padding: 4pt 6pt !important;
+      background: none !important;
+      font-size: 10pt !important;
+    }
+    table.rank td:last-child { text-align: center !important; width: 60pt !important; }
+    .rank-in {
+      width: 36pt !important;
+      border: none !important;
+      border-bottom: 1pt solid #000 !important;
+      background: none !important;
+      font-size: 10pt !important;
+      text-align: center !important;
+    }
+
+    /* ── Time-allocation table ── */
+    table.time-tbl {
+      display: table !important;
+      width: 100% !important;
+      border-collapse: collapse !important;
+      font-size: 10pt !important;
+      margin: 4pt 0 8pt 0 !important;
+    }
+    table.time-tbl thead { display: table-header-group !important; }
+    table.time-tbl tbody { display: table-row-group !important; }
+    table.time-tbl tr    { display: table-row !important; }
+    table.time-tbl th {
+      display: table-cell !important;
+      background: none !important;
+      color: #000 !important;
+      border: 1pt solid #000 !important;
+      padding: 4pt 6pt !important;
+      font-weight: bold !important;
+      font-size: 9pt !important;
+      text-align: left !important;
+    }
+    table.time-tbl th:not(:first-child) { text-align: center !important; }
+    table.time-tbl td {
+      display: table-cell !important;
+      border: 0.5pt solid #aaa !important;
+      padding: 4pt 6pt !important;
+      background: none !important;
+      font-size: 10pt !important;
+    }
+    table.time-tbl td:first-child { font-weight: bold !important; }
+    table.time-tbl td:not(:first-child) { text-align: center !important; }
+    table.time-tbl input[type="radio"] {
+      width: 11pt !important;
+      height: 11pt !important;
+      margin: 0 !important;
+    }
+
+    /* ── Likert table ── */
+    table.likert {
+      display: table !important;
+      width: 100% !important;
+      border-collapse: collapse !important;
+      font-size: 10pt !important;
+      margin: 4pt 0 8pt 0 !important;
+    }
+    table.likert thead { display: table-header-group !important; }
+    table.likert tbody { display: table-row-group !important; }
+    table.likert tr    { display: table-row !important; }
+    table.likert th {
+      display: table-cell !important;
+      background: none !important;
+      color: #000 !important;
+      border: 1pt solid #000 !important;
+      padding: 4pt 6pt !important;
+      font-weight: bold !important;
+      font-size: 9pt !important;
+      text-align: center !important;
+    }
+    table.likert th:first-child { text-align: left !important; }
+    table.likert td {
+      display: table-cell !important;
+      border: 0.5pt solid #aaa !important;
+      padding: 5pt 6pt !important;
+      background: none !important;
+      font-size: 10pt !important;
+      vertical-align: middle !important;
+    }
+    table.likert td:first-child { text-align: left !important; }
+    table.likert td:not(:first-child) { text-align: center !important; }
+    table.likert input[type="radio"] {
+      width: 11pt !important;
+      height: 11pt !important;
+      margin: 0 !important;
+    }
+
+    /* ── G2 two-column grid → single column in print ── */
+    .g2 { display: block !important; }
+
+    /* ── Page breaks ── */
+    .section-title { page-break-before: always !important; }
+    .section-title:first-of-type { page-break-before: avoid !important; }
+    .card { page-break-inside: avoid !important; }
+    table.rank, table.time-tbl, table.likert { page-break-inside: avoid !important; }
+
+  }
+  </style>
+</head>
+<body>
+
+<!-- PRINT BAR -->
+<div class="print-bar no-print">
+  <div>
+    <div class="bar-title">👨‍👩‍👧 AI Coding Summer Program: Python &amp; Scratch · Summer 2026 · Modern Chinese School</div>
+    <div class="bar-sub">Parent Questionnaire About Your Child</div>
+  </div>
+  <button class="btn-print" onclick="window.print()">🖨️ Print / Save as PDF</button>
+</div>
+
+<div class="page">
+
+<!-- ═══ HEADER ═══ -->
+<div class="sheet-header">
+  <div class="header-emoji">👨‍👩‍👧</div>
+  <div class="header-day">Python &amp; Scratch · Summer 2026 · Modern Chinese School</div>
+  <div class="header-title">Tell Us About Your Child</div>
+  <div class="header-sub">Please answer every question <strong>about your child</strong> — your insight helps us personalise their classroom experience from Day 1.</div>
+  <div class="header-pills">
+    <span class="header-pill">🐍 Python</span>
+    <span class="header-pill">🐱 Scratch</span>
+    <span class="header-pill">🧠 AI Concepts</span>
+    <span class="header-pill">⏱ ~10 min</span>
+    <span class="header-pill">🔒 Confidential</span>
+  </div>
+</div>
+
+<!-- INFO FIELDS -->
+<div class="info-grid">
+  <div class="info-field">
+    <div class="info-label">Child's Name / Preferred Name</div>
+    <input class="info-line" type="text" placeholder="First name they go by in class">
+  </div>
+  <div class="info-field">
+    <div class="info-label">Grade (Fall 2026)</div>
+    <input class="info-line" type="text" placeholder="e.g. 6th Grade">
+  </div>
+  <div class="info-field">
+    <div class="info-label">Your Name (Parent / Guardian)</div>
+    <input class="info-line" type="text" placeholder="Your full name">
+  </div>
+</div>
+
+<!-- OVERVIEW BOX -->
+<div class="card ap mb3">
+  <div class="clabel p">📋 What This Form Covers</div>
+  <div class="g2" style="margin-bottom:0">
+    <div>
+      <p class="mb2"><strong>Part 1</strong> — Your child's experience with coding &amp; AI</p>
+      <p class="mb2"><strong>Part 2</strong> — Your goals for your child in this program</p>
+    </div>
+    <div>
+      <p class="mb2"><strong>Part 3</strong> — How your child learns best in a classroom</p>
+      <p class="mb2"><strong>Part 4</strong> — Communication preferences &amp; open questions</p>
+    </div>
+  </div>
+  <div class="tip p">💡 <strong>Tip:</strong> All questions are about <strong>your child</strong>, not yourself. There are no right or wrong answers — the more detail you give, the better your child's experience will be.</div>
+</div>
+
+<hr class="part-divider">
+
+<!-- ══════════════════════════════════════
+     PART 1 — YOUR CHILD'S EXPERIENCE
+     ══════════════════════════════════════ -->
+<div class="section-label">💻 Part 1</div>
+<div class="section-title">Your Child's Experience with Coding &amp; AI</div>
+<div class="section-sub">Help us understand what your child already knows so we can pitch the class at exactly the right level.</div>
+
+<!-- Q1 -->
+<div class="card ab">
+  <span class="clabel b"><span class="qnum">Q1</span> How does your child generally feel about technology?</span>
+  <ul class="radio-list">
+    <li><input type="radio" name="Q1" id="Q1a"><label for="Q1a">❤️ <strong>Loves it</strong> — they spend free time exploring apps, building things, or tinkering with devices on their own</label></li>
+    <li><input type="radio" name="Q1" id="Q1b"><label for="Q1b">💡 <strong>Interested but not deeply</strong> — they enjoy tech but haven't dug into how it works</label></li>
+    <li><input type="radio" name="Q1" id="Q1c"><label for="Q1c">😐 <strong>Neutral</strong> — they use technology casually; it's not a special passion</label></li>
+    <li><input type="radio" name="Q1" id="Q1d"><label for="Q1d">😰 <strong>Hesitant or anxious</strong> — new technology or devices can make them uncomfortable</label></li>
+  </ul>
+</div>
+
+<!-- Q2 -->
+<div class="card ag">
+  <span class="clabel g"><span class="qnum">Q2</span> Has your child coded or programmed before? <span class="q-hint">(Check all that apply)</span></span>
+  <ul class="check-list">
+    <li><input type="checkbox" id="Q2a"><label for="Q2a">🆕 <strong>No prior experience</strong> — this is their first time doing anything related to coding</label></li>
+    <li><input type="checkbox" id="Q2b"><label for="Q2b">🐱 <strong>Tried Scratch informally</strong> — played around at home, at school, or during free time</label></li>
+    <li><input type="checkbox" id="Q2c"><label for="Q2c">📚 <strong>Completed a school unit on Scratch</strong> or other block-based coding tools</label></li>
+    <li><input type="checkbox" id="Q2d"><label for="Q2d">🐍 <strong>Written Python code before</strong> — even just a few lines</label></li>
+    <li><input type="checkbox" id="Q2e"><label for="Q2e">🏕️ <strong>Attended another coding class or summer camp</strong> — please describe below</label></li>
+  </ul>
+  <input class="wline mt2" type="text" placeholder="If attended a prior class/camp — what did they learn? (optional)">
+</div>
+
+<!-- Q3 -->
+<div class="card aa">
+  <span class="clabel a"><span class="qnum">Q3</span> How much has your child been exposed to Artificial Intelligence concepts? <span class="q-hint">(Check all that apply)</span></span>
+  <ul class="check-list">
+    <li><input type="checkbox" id="Q3a"><label for="Q3a">🆕 <strong>AI is completely new</strong> to them — they've never heard the term used in any meaningful way</label></li>
+    <li><input type="checkbox" id="Q3b"><label for="Q3b">🗣️ <strong>They've heard the term</strong> but can't explain what it actually means</label></li>
+    <li><input type="checkbox" id="Q3c"><label for="Q3c">📱 <strong>They use AI tools</strong> (e.g. ChatGPT, Siri, image generators) but haven't studied how they work</label></li>
+    <li><input type="checkbox" id="Q3d"><label for="Q3d">🧠 <strong>They understand basic AI concepts</strong> — such as training data, models, and predictions</label></li>
+    <li><input type="checkbox" id="Q3e"><label for="Q3e">🎓 <strong>They've taken a class or watched courses</strong> that explained how AI systems are built</label></li>
+  </ul>
+</div>
+
+<!-- Q4 -->
+<div class="card ap">
+  <span class="clabel p"><span class="qnum">Q4</span> How would you rate your child's current comfort level with each of the following? <span class="q-hint">Select one circle per row.</span></span>
+  <table class="time-tbl" style="margin-top:10px">
+    <thead><tr><th>Area</th><th>Never tried it</th><th>Beginner</th><th>Some experience</th><th>Confident</th></tr></thead>
+    <tbody>
+      <tr><td>🐱 Scratch / block coding</td><td><input type="radio" name="c1" value="0"></td><td><input type="radio" name="c1" value="1"></td><td><input type="radio" name="c1" value="2"></td><td><input type="radio" name="c1" value="3"></td></tr>
+      <tr><td>🐍 Python (text-based coding)</td><td><input type="radio" name="c2" value="0"></td><td><input type="radio" name="c2" value="1"></td><td><input type="radio" name="c2" value="2"></td><td><input type="radio" name="c2" value="3"></td></tr>
+      <tr><td>🧠 AI / machine learning concepts</td><td><input type="radio" name="c3" value="0"></td><td><input type="radio" name="c3" value="1"></td><td><input type="radio" name="c3" value="2"></td><td><input type="radio" name="c3" value="3"></td></tr>
+      <tr><td>🔢 General math &amp; logical thinking</td><td><input type="radio" name="c4" value="0"></td><td><input type="radio" name="c4" value="1"></td><td><input type="radio" name="c4" value="2"></td><td><input type="radio" name="c4" value="3"></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<hr class="part-divider">
+
+<!-- ══════════════════════════════════════
+     PART 2 — YOUR GOALS FOR YOUR CHILD
+     ══════════════════════════════════════ -->
+<div class="section-label">🎯 Part 2</div>
+<div class="section-title">Your Goals for Your Child</div>
+<div class="section-sub">What do you most want your child to get out of this summer?</div>
+
+<!-- Q5 — Rank -->
+<div class="card ap">
+  <span class="clabel p"><span class="qnum">Q5</span> Rank your <strong>top 3 goals</strong> for your child in this program. <span class="q-hint">Write 1 (most important), 2, or 3 in the box. Leave the rest blank.</span></span>
+  <table class="rank">
+    <thead><tr><th>Goal for your child</th><th>Rank (1–3)</th></tr></thead>
+    <tbody>
+      <tr><td>Your child learns Python coding fundamentals</td><td><input class="rank-in" type="text" maxlength="1" placeholder="—"></td></tr>
+      <tr><td>Your child masters Scratch and block-based programming</td><td><input class="rank-in" type="text" maxlength="1" placeholder="—"></td></tr>
+      <tr><td>Your child understands how AI really works (not just how to use it)</td><td><input class="rank-in" type="text" maxlength="1" placeholder="—"></td></tr>
+      <tr><td>Your child builds stronger problem-solving and logical thinking skills</td><td><input class="rank-in" type="text" maxlength="1" placeholder="—"></td></tr>
+      <tr><td>Your child gains confidence with technology and computers</td><td><input class="rank-in" type="text" maxlength="1" placeholder="—"></td></tr>
+      <tr><td>Your child explores a possible future career interest in tech</td><td><input class="rank-in" type="text" maxlength="1" placeholder="—"></td></tr>
+      <tr><td>Your child makes friends who share their interests</td><td><input class="rank-in" type="text" maxlength="1" placeholder="—"></td></tr>
+      <tr><td>Your child finishes with a real project they can show others and be proud of</td><td><input class="rank-in" type="text" maxlength="1" placeholder="—"></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Q6 — Time split -->
+<div class="card ab">
+  <span class="clabel b"><span class="qnum">Q6</span> How much time would you like your child to spend on each topic? <span class="q-hint">Select one circle per row.</span></span>
+  <table class="time-tbl">
+    <thead><tr><th>Topic</th><th>More Time</th><th>About Equal</th><th>Less Time</th></tr></thead>
+    <tbody>
+      <tr><td>🐱 Scratch (visual / block coding)</td><td><input type="radio" name="t1" value="more"></td><td><input type="radio" name="t1" value="equal"></td><td><input type="radio" name="t1" value="less"></td></tr>
+      <tr><td>🐍 Python (text-based coding)</td><td><input type="radio" name="t2" value="more"></td><td><input type="radio" name="t2" value="equal"></td><td><input type="radio" name="t2" value="less"></td></tr>
+      <tr><td>🧠 AI concepts (how AI actually works)</td><td><input type="radio" name="t3" value="more"></td><td><input type="radio" name="t3" value="equal"></td><td><input type="radio" name="t3" value="less"></td></tr>
+      <tr><td>🎮 Creative projects (games, stories, animations)</td><td><input type="radio" name="t4" value="more"></td><td><input type="radio" name="t4" value="equal"></td><td><input type="radio" name="t4" value="less"></td></tr>
+      <tr><td>⚖️ AI ethics (fairness, privacy, real-world impact)</td><td><input type="radio" name="t5" value="more"></td><td><input type="radio" name="t5" value="equal"></td><td><input type="radio" name="t5" value="less"></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Q7 — Concerns -->
+<div class="card aa">
+  <span class="clabel a"><span class="qnum">Q7</span> What is your biggest concern about your child in this program? <span class="q-hint">(Select up to 2)</span></span>
+  <ul class="check-list">
+    <li><input type="checkbox" id="Q7a"><label for="Q7a">📉 They might fall behind because they have less experience than other students</label></li>
+    <li><input type="checkbox" id="Q7b"><label for="Q7b">😴 They might be bored or under-challenged if the material is too easy</label></li>
+    <li><input type="checkbox" id="Q7c"><label for="Q7c">📱 I have concerns about the amount of daily screen time</label></li>
+    <li><input type="checkbox" id="Q7d"><label for="Q7d">😤 They get frustrated quickly when they can't solve something right away</label></li>
+    <li><input type="checkbox" id="Q7e"><label for="Q7e">🤔 I'm unsure whether AI is an age-appropriate topic for an 11–12 year old</label></li>
+    <li><input type="checkbox" id="Q7f"><label for="Q7f">🤝 Managing social dynamics — fitting in, group work, or making friends</label></li>
+    <li><input type="checkbox" id="Q7g"><label for="Q7g">✅ I have no major concerns — I'm confident they'll do great!</label></li>
+    <li><input type="checkbox" id="Q7h"><label for="Q7h">Other: <input class="wline" style="display:inline-block;width:260px;margin-bottom:0" type="text" placeholder="describe your concern"></label></li>
+  </ul>
+</div>
+
+<hr class="part-divider">
+
+<!-- ══════════════════════════════════════
+     PART 3 — HOW YOUR CHILD LEARNS
+     ══════════════════════════════════════ -->
+<div class="section-label">🧠 Part 3</div>
+<div class="section-title">How Your Child Learns Best</div>
+<div class="section-sub">Help us match the classroom environment to who your child really is.</div>
+
+<!-- Q8 — Classroom feel -->
+<div class="card ag">
+  <span class="clabel g"><span class="qnum">Q8</span> What kind of classroom environment do you think your child thrives in? <span class="q-hint">(Check all that apply)</span></span>
+  <ul class="check-list">
+    <li><input type="checkbox" id="Q8a"><label for="Q8a">📋 <strong>Structured</strong> — clear step-by-step lessons each day with a defined agenda</label></li>
+    <li><input type="checkbox" id="Q8b"><label for="Q8b">🔭 <strong>Exploratory</strong> — freedom to try their own ideas without a rigid script</label></li>
+    <li><input type="checkbox" id="Q8c"><label for="Q8c">🤝 <strong>Collaborative</strong> — frequent pair or group work with other students</label></li>
+    <li><input type="checkbox" id="Q8d"><label for="Q8d">🧑‍💻 <strong>Independent</strong> — working mostly at their own pace, on their own project</label></li>
+    <li><input type="checkbox" id="Q8e"><label for="Q8e">⚖️ <strong>Mixed</strong> — a balance of direct instruction and open creative time</label></li>
+    <li><input type="checkbox" id="Q8f"><label for="Q8f">🏆 <strong>Competitive / Challenge-driven</strong> — mini-hackathons, timed challenges, leaderboards</label></li>
+  </ul>
+</div>
+
+<!-- Q9 — When stuck -->
+<div class="card ab">
+  <span class="clabel b"><span class="qnum">Q9</span> When your child gets stuck on a difficult problem, what do they typically do?</span>
+  <ul class="radio-list">
+    <li><input type="radio" name="Q9" id="Q9a"><label for="Q9a">🙋 They ask for help right away — they're not shy about it</label></li>
+    <li><input type="radio" name="Q9" id="Q9b"><label for="Q9b">🕵️ They prefer to work through it on their own before asking anyone</label></li>
+    <li><input type="radio" name="Q9" id="Q9c"><label for="Q9c">😤 They get visibly frustrated — they may need encouragement to keep going</label></li>
+    <li><input type="radio" name="Q9" id="Q9d"><label for="Q9d">⏸️ They step away and come back — they need short breaks to reset</label></li>
+    <li><input type="radio" name="Q9" id="Q9e"><label for="Q9e">🤷 It really depends on the situation and what kind of day they're having</label></li>
+  </ul>
+</div>
+
+<!-- Q10 — Presenting -->
+<div class="card aa">
+  <span class="clabel a"><span class="qnum">Q10</span> How does your child feel about sharing their work in front of a group?</span>
+  <ul class="radio-list">
+    <li><input type="radio" name="Q10" id="Q10a"><label for="Q10a">🎤 <strong>They enjoy it</strong> — they're proud of their work and like showing it off</label></li>
+    <li><input type="radio" name="Q10" id="Q10b"><label for="Q10b">😊 <strong>Fine if asked</strong> — no problem, but they won't volunteer spontaneously</label></li>
+    <li><input type="radio" name="Q10" id="Q10c"><label for="Q10c">😬 <strong>Nervous but willing</strong> — they can do it with encouragement</label></li>
+    <li><input type="radio" name="Q10" id="Q10d"><label for="Q10d">🙈 <strong>Dislikes it</strong> — being called on in front of the group causes significant anxiety</label></li>
+  </ul>
+</div>
+
+<!-- Q11 — Group work -->
+<div class="card ap">
+  <span class="clabel p"><span class="qnum">Q11</span> How does your child do in team or group project settings?</span>
+  <ul class="radio-list">
+    <li><input type="radio" name="Q11" id="Q11a"><label for="Q11a">🤩 <strong>Thrives in groups</strong> — collaboration energises them and brings out their best work</label></li>
+    <li><input type="radio" name="Q11" id="Q11b"><label for="Q11b">⚖️ <strong>Mixed</strong> — enjoys occasional group work but also needs independent time to create</label></li>
+    <li><input type="radio" name="Q11" id="Q11c"><label for="Q11c">🧑‍💻 <strong>Prefers working alone</strong> — they have a strong vision and don't like compromise</label></li>
+    <li><input type="radio" name="Q11" id="Q11d"><label for="Q11d">😬 <strong>Group work is challenging</strong> — social dynamics can be stressful for them</label></li>
+  </ul>
+</div>
+
+<!-- Q12 — Learning needs -->
+<div class="card ar">
+  <span class="clabel r"><span class="qnum">Q12</span> Is there anything about your child's learning style, needs, or personality the instructor should know before the first day?</span>
+  <p style="font-size:.82rem;color:var(--muted);margin-bottom:10px"><em>e.g. ADHD, dyslexia, anxiety, sensory sensitivities, English as a second language, strong preference for visual explanations, dislikes being singled out in class, needs extra positive reinforcement, etc. All information is completely confidential.</em></p>
+  <textarea class="warea" rows="4" placeholder="Share as much or as little as you're comfortable with. This is read only by the instructor and directly shapes how they support your child."></textarea>
+</div>
+
+<hr class="part-divider">
+
+<!-- ══════════════════════════════════════
+     PART 4 — COMMUNICATION
+     ══════════════════════════════════════ -->
+<div class="section-label">📬 Part 4</div>
+<div class="section-title">Communication &amp; Open Questions</div>
+<div class="section-sub">Let us know how you'd like to stay in the loop about your child's progress.</div>
+
+<!-- Q13 -->
+<div class="card ag">
+  <span class="clabel g"><span class="qnum">Q13</span> How would you prefer the instructor to communicate updates about your child? <span class="q-hint">(Check all that apply)</span></span>
+  <ul class="check-list">
+    <li><input type="checkbox" id="Q13a"><label for="Q13a">📧 A brief weekly email about how your child is doing</label></li>
+    <li><input type="checkbox" id="Q13b"><label for="Q13b">📄 An end-of-program summary report only</label></li>
+    <li><input type="checkbox" id="Q13c"><label for="Q13c">⚡ Reach out immediately if your child struggles or has a difficult day</label></li>
+    <li><input type="checkbox" id="Q13d"><label for="Q13d">👨‍👩‍👧 I'll check in with my child directly — only contact me if it's urgent</label></li>
+  </ul>
+  <div class="mt2">
+    <span style="font-size:.78rem;font-weight:700;color:var(--text);display:block;margin-bottom:4px">Best email to reach you at:</span>
+    <input class="wline" type="email" placeholder="parent@email.com" style="margin-bottom:0">
+  </div>
+</div>
+
+<!-- Q14 — Success definition -->
+<div class="card ab">
+  <span class="clabel b"><span class="qnum">Q14</span> In your own words — what would make this summer program a success <em>for your child</em>?</span>
+  <p style="font-size:.82rem;color:var(--muted);margin-bottom:10px"><em>Be as specific as you like. What would your child need to experience, learn, or feel to make this program worthwhile?</em></p>
+  <textarea class="warea" rows="4" placeholder="e.g. 'I'd love for my daughter to finish camp feeling like she could actually build her own game one day.' or 'I just want him to have fun and not feel like it's more school.'"></textarea>
+</div>
+
+<!-- Q15 — Questions for instructor -->
+<div class="card aa">
+  <span class="clabel a"><span class="qnum">Q15</span> Do you have any questions, requests, or things you'd like the instructor to know about your child before the program begins?</span>
+  <textarea class="warea" rows="4" placeholder="No question is too small — ask anything at all!"></textarea>
+</div>
+
+<hr class="part-divider">
+
+<!-- ══════════════════════════════════════
+     RATING SCALE — ABOUT YOUR CHILD
+     ══════════════════════════════════════ -->
+<div class="section-label">📊 Rating Scale</div>
+<div class="section-title">Quick Snapshot — About Your Child</div>
+<div class="section-sub">Circle a number from 1 to 5 for each statement. <strong>1 = Strongly Disagree &nbsp;·&nbsp; 5 = Strongly Agree</strong></div>
+
+<div class="card ap">
+  <table class="likert">
+    <thead>
+      <tr>
+        <th style="width:58%">Statement about your child</th>
+        <th>1<br><small>Strongly<br>Disagree</small></th>
+        <th>2</th>
+        <th>3<br><small>Neutral</small></th>
+        <th>4</th>
+        <th>5<br><small>Strongly<br>Agree</small></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>My child feels ready to start learning to code</td><td><input type="radio" name="L1" value="1"></td><td><input type="radio" name="L1" value="2"></td><td><input type="radio" name="L1" value="3"></td><td><input type="radio" name="L1" value="4"></td><td><input type="radio" name="L1" value="5"></td></tr>
+      <tr><td>My child has a basic idea of what Artificial Intelligence is</td><td><input type="radio" name="L2" value="1"></td><td><input type="radio" name="L2" value="2"></td><td><input type="radio" name="L2" value="3"></td><td><input type="radio" name="L2" value="4"></td><td><input type="radio" name="L2" value="5"></td></tr>
+      <tr><td>My child is comfortable making mistakes in front of peers</td><td><input type="radio" name="L3" value="1"></td><td><input type="radio" name="L3" value="2"></td><td><input type="radio" name="L3" value="3"></td><td><input type="radio" name="L3" value="4"></td><td><input type="radio" name="L3" value="5"></td></tr>
+      <tr><td>My child is genuinely excited about this program</td><td><input type="radio" name="L4" value="1"></td><td><input type="radio" name="L4" value="2"></td><td><input type="radio" name="L4" value="3"></td><td><input type="radio" name="L4" value="4"></td><td><input type="radio" name="L4" value="5"></td></tr>
+      <tr><td>My child learns best by doing / experimenting rather than watching</td><td><input type="radio" name="L5" value="1"></td><td><input type="radio" name="L5" value="2"></td><td><input type="radio" name="L5" value="3"></td><td><input type="radio" name="L5" value="4"></td><td><input type="radio" name="L5" value="5"></td></tr>
+      <tr><td>My child handles frustration and setbacks without shutting down</td><td><input type="radio" name="L6" value="1"></td><td><input type="radio" name="L6" value="2"></td><td><input type="radio" name="L6" value="3"></td><td><input type="radio" name="L6" value="4"></td><td><input type="radio" name="L6" value="5"></td></tr>
+      <tr><td>My child works well in team or collaborative settings</td><td><input type="radio" name="L7" value="1"></td><td><input type="radio" name="L7" value="2"></td><td><input type="radio" name="L7" value="3"></td><td><input type="radio" name="L7" value="4"></td><td><input type="radio" name="L7" value="5"></td></tr>
+      <tr><td>I am comfortable with AI being taught to my child this summer</td><td><input type="radio" name="L8" value="1"></td><td><input type="radio" name="L8" value="2"></td><td><input type="radio" name="L8" value="3"></td><td><input type="radio" name="L8" value="4"></td><td><input type="radio" name="L8" value="5"></td></tr>
+      <tr><td>I believe my child could pursue a tech or coding-related path someday</td><td><input type="radio" name="L9" value="1"></td><td><input type="radio" name="L9" value="2"></td><td><input type="radio" name="L9" value="3"></td><td><input type="radio" name="L9" value="4"></td><td><input type="radio" name="L9" value="5"></td></tr>
+    </tbody>
+  </table>
+  <div class="tip b" style="margin-top:14px">✅ <strong>Thank you!</strong> Your answers have been recorded. The instructor will read every response before your child's first day of class. If you have any last-minute questions, please reach out at any time.</div>
+</div>
+
+<!-- FOOTER -->
+<div class="sheet-footer">
+  <div>🤖 <strong>AI Coding Summer Program: Python &amp; Scratch</strong> · Summer 2026 · Modern Chinese School</div>
+  <div>🔒 All responses are confidential and read only by the instructor.</div>
+</div>
+
+</div><!-- /page -->
+</body>
+</html>
