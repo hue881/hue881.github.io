@@ -1,0 +1,14 @@
+Goto Course sites:
+https://hue881.github.io/
+https://hue881.github.io/activity
+
+IDLE (Summer preview):
+https://playcode.io/python-template
+
+Notes:
+NotePad 
+
+Three Build Sprint: 
+RateRec - EdgeDetector - Tinybot
+
+
