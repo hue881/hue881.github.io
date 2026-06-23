@@ -1,1 +1,856 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Activity Sheet · Day 21 · Three-Project Build Sprint</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --color-bg: #f4fbff;
+    --color-surface: rgba(255,255,255,0.97);
+    --color-text: #1f2a37;
+    --color-text-secondary: #374151;
+    --color-text-muted: #5b6b7e;
+    --color-accent-1: #0b63ce;
+    --color-accent-2: #10b981;
+    --color-accent-3: #f59e0b;
+    --color-accent-red: #ef4444;
+    --color-accent-purple: #7c3aed;
+    --font-display: "Fredoka", "Trebuchet MS", sans-serif;
+    --font-body: "Nunito", Arial, sans-serif;
+    --font-code: "Fira Code", Consolas, monospace;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  @media print {
+    body { background: #fff !important; }
+    .no-print { display: none !important; }
+    .page-break { page-break-before: always; }
+    .card { box-shadow: none !important; border: 1.5px solid #d1d5db !important; }
+    .code-block, .dark-code-write { border: 1.5px solid #cbd5e1 !important; }
+  }
+  body { font-family: var(--font-body); color: var(--color-text); background: var(--color-bg); min-height: 100vh; }
 
+  /* PRINT BAR */
+  .print-bar {
+    background: rgba(255,255,255,0.92); backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(148,163,184,0.3);
+    padding: 10px 24px; display: flex; align-items: center;
+    justify-content: space-between; position: sticky; top: 0; z-index: 100; gap: 12px; flex-wrap: wrap;
+  }
+  .print-bar .bar-title { font-family: var(--font-display); font-size: 1.05rem; font-weight: 700; color: var(--color-accent-1); }
+  .print-bar .bar-sub { font-size: 0.78rem; color: var(--color-text-muted); }
+  .btn-print { background: var(--color-accent-1); color: #fff; border: none; padding: 8px 20px; border-radius: 999px;
+    font-family: var(--font-body); font-size: 0.82rem; font-weight: 800; cursor: pointer; letter-spacing: 0.06em;
+    transition: background 0.2s, transform 0.15s; }
+  .btn-print:hover { background: #0952b0; transform: translateY(-1px); }
+
+  /* PAGE */
+  .page { max-width: 940px; margin: 0 auto; padding: 32px 24px 60px; }
+
+  /* HEADER */
+  .sheet-header {
+    background: linear-gradient(135deg, #22c55e 0%, #0b63ce 48%, #7c3aed 100%);
+    border-radius: 20px; padding: 28px 32px 24px; color: #fff; margin-bottom: 28px; position: relative; overflow: hidden;
+  }
+  .sheet-header::before { content:""; position:absolute; top:-60px; right:-60px; width:200px; height:200px; background:rgba(255,255,255,0.08); border-radius:50%; }
+  .sheet-header::after  { content:""; position:absolute; bottom:-40px; left:-40px; width:140px; height:140px; background:rgba(255,255,255,0.06); border-radius:50%; }
+  .header-emoji { font-size:2.8rem; margin-bottom:6px; }
+  .header-day { font-size:0.75rem; font-weight:800; letter-spacing:0.18em; text-transform:uppercase; opacity:0.85; margin-bottom:4px; }
+  .header-title { font-family:var(--font-display); font-size:clamp(1.6rem,4vw,2.4rem); font-weight:700; line-height:1.1; margin-bottom:6px; }
+  .header-sub { font-size:0.88rem; opacity:0.85; margin-bottom:14px; }
+  .header-pills { display:flex; gap:8px; flex-wrap:wrap; }
+  .header-pill { background:rgba(255,255,255,0.22); border:1px solid rgba(255,255,255,0.35); border-radius:999px;
+    padding:4px 14px; font-size:0.72rem; font-weight:800; letter-spacing:0.08em; text-transform:uppercase; }
+
+  /* STUDENT INFO */
+  .student-info { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:28px; }
+  @media(max-width:600px){ .student-info{grid-template-columns:1fr;} }
+  .info-field { background:var(--color-surface); border-radius:12px; padding:12px 14px;
+    border:1.5px solid rgba(11,99,206,0.14); box-shadow:0 2px 8px rgba(15,23,42,0.05); }
+  .info-label { font-size:0.65rem; font-weight:800; letter-spacing:0.14em; text-transform:uppercase; color:var(--color-accent-1); margin-bottom:6px; }
+  .info-line { border:none; border-bottom:1.5px solid #cbd5e1; width:100%; font-family:var(--font-body);
+    font-size:0.9rem; color:var(--color-text); background:transparent; outline:none; padding:2px 0; }
+  .info-line:focus { border-bottom-color:#0b63ce; }
+
+  /* SECTION */
+  .section-label { display:inline-flex; align-items:center; gap:8px; padding:5px 16px; border-radius:999px;
+    border:1px solid rgba(148,163,184,0.4); background:rgba(255,255,255,0.9);
+    font-size:0.72rem; font-weight:800; letter-spacing:0.1em; text-transform:uppercase; color:var(--color-accent-1); margin-bottom:10px; }
+  .section-title { font-family:var(--font-display); font-size:clamp(1.3rem,2.5vw,1.8rem); font-weight:700;
+    margin-bottom:16px; color:var(--color-text); line-height:1.2; }
+
+  /* CARDS */
+  .card { background:var(--color-surface); border-radius:16px; padding:18px 20px;
+    box-shadow:0 4px 18px rgba(15,23,42,0.07); border:1px solid rgba(255,255,255,0.7); margin-bottom:16px; }
+  .card.accent-blue   { border-left:4px solid var(--color-accent-1); }
+  .card.accent-green  { border-left:4px solid var(--color-accent-2); }
+  .card.accent-amber  { border-left:4px solid var(--color-accent-3); }
+  .card.accent-red    { border-left:4px solid var(--color-accent-red); }
+  .card.accent-purple { border-left:4px solid var(--color-accent-purple); }
+  .card-label { font-size:0.68rem; font-weight:800; letter-spacing:0.14em; text-transform:uppercase; margin-bottom:8px; }
+  .card-label.blue   { color:var(--color-accent-1); }
+  .card-label.green  { color:#047857; }
+  .card-label.amber  { color:#b45309; }
+  .card-label.red    { color:#b91c1c; }
+  .card-label.purple { color:#6d28d9; }
+
+  /* GRIDS */
+  .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .grid-3 { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+  @media(max-width:680px){ .grid-2, .grid-3{grid-template-columns:1fr;} }
+
+  /* CODE */
+  .code-block { background:#1e293b; color:#e2e8f0; border-radius:12px; padding:14px 18px;
+    font-family:var(--font-code); font-size:clamp(0.66rem,1.05vw,0.81rem); line-height:1.65;
+    overflow-x:auto; margin-bottom:12px; white-space:pre; }
+  .kw{color:#93c5fd;} .nb{color:#fcd34d;} .st{color:#86efac;} .fn{color:#c4b5fd;}
+  .cm{color:#64748b;font-style:italic;} .hl{color:#fcd34d;font-weight:700;} .bug{color:#f87171;font-weight:700;}
+  .dark-code-write { background:#1e293b; color:#86efac; border-radius:12px; padding:14px 18px;
+    font-family:var(--font-code); font-size:0.81rem; line-height:1.65; width:100%; resize:vertical;
+    border:none; outline:none; display:block; }
+  .dark-code-write::placeholder { color:#475569; font-style:italic; }
+  .dark-code-write:focus { outline:2px solid rgba(11,99,206,0.4); }
+
+  /* WRITE LINES */
+  .write-lines { margin:8px 0; }
+  input.write-line { border:none; border-bottom:1.5px solid #cbd5e1; width:100%; margin-bottom:10px; height:28px;
+    display:block; background:transparent; font-family:var(--font-body); font-size:0.88rem; color:var(--color-text); outline:none; padding:2px 4px; }
+  input.write-line:focus { border-bottom-color:#0b63ce; }
+  input.write-line::placeholder { color:#bdc5d1; font-style:italic; }
+  textarea.write-area { border:1.5px solid #cbd5e1; border-radius:8px; width:100%; min-height:70px; padding:8px;
+    font-family:var(--font-body); font-size:0.85rem; color:var(--color-text); resize:vertical; background:#f8fafc; outline:none; display:block; }
+  textarea.write-area:focus { outline:2px solid rgba(11,99,206,0.3); }
+  textarea.write-area::placeholder { color:#bdc5d1; font-style:italic; }
+  input.blank-input { display:inline-block; background:rgba(251,191,36,0.18); border:none;
+    border-bottom:2px solid #f59e0b; min-width:60px; width:60px; height:1.1em; border-radius:3px;
+    vertical-align:middle; margin:0 2px; font-family:var(--font-code); font-size:inherit;
+    color:#92400e; text-align:center; outline:none; padding:0 2px; }
+  input.blank-input:focus { background:rgba(251,191,36,0.32); }
+  input.blank-input.wide  { min-width:110px; width:110px; }
+  input.blank-input.narrow{ min-width:36px;  width:36px;  }
+
+  /* TIP BOXES */
+  .tip-box { border-radius:10px; padding:10px 14px; font-size:0.8rem; line-height:1.5; margin-top:10px; }
+  .tip-box.blue   { background:rgba(11,99,206,0.07); color:#1e40af; }
+  .tip-box.green  { background:rgba(16,185,129,0.07); color:#065f46; }
+  .tip-box.amber  { background:rgba(245,158,11,0.07); color:#92400e; }
+  .tip-box.purple { background:rgba(124,58,237,0.07); color:#5b21b6; }
+
+  /* FORMULA BOX */
+  .formula-box { background:#1e293b; color:#e2e8f0; border-radius:10px; padding:10px 16px;
+    font-family:var(--font-code); font-size:0.88rem; text-align:center; margin-bottom:10px; }
+
+  /* DIVIDER */
+  .divider { border:none; border-top:2px dashed #dde6f0; margin:28px 0; }
+
+  /* CHECK LIST */
+  .check-list { list-style:none; padding:0; }
+  .check-list li { display:flex; align-items:flex-start; gap:8px; font-size:0.85rem;
+    color:var(--color-text-secondary); margin-bottom:8px; line-height:1.45; }
+  .check-list li .box { flex-shrink:0; width:17px; height:17px; border:2px solid #94a3b8;
+    border-radius:4px; margin-top:1px; background:#fff; display:inline-block; }
+
+  /* DIFFICULTY BADGES */
+  .diff-badge { display:inline-flex; align-items:center; gap:6px; padding:4px 14px;
+    border-radius:999px; font-size:0.72rem; font-weight:800; letter-spacing:0.08em; text-transform:uppercase; margin-bottom:8px; }
+  .diff-1 { background:#dcfce7; color:#166534; border:1px solid #bbf7d0; }
+  .diff-2 { background:#fef9c3; color:#854d0e; border:1px solid #fde68a; }
+  .diff-3 { background:#ede9fe; color:#5b21b6; border:1px solid #ddd6fe; }
+
+  /* LEVEL BADGES (coding challenge) */
+  .level-badge { display:inline-flex; align-items:center; gap:6px; padding:4px 14px;
+    border-radius:999px; font-size:0.72rem; font-weight:800; letter-spacing:0.08em; text-transform:uppercase; margin-bottom:8px; }
+  .level-1 { background:linear-gradient(135deg,#22c55e,#0b63ce); color:#fff; }
+  .level-2 { background:linear-gradient(135deg,#f59e0b,#ef4444); color:#fff; }
+  .level-3 { background:linear-gradient(135deg,#7c3aed,#0b63ce); color:#fff; }
+
+  /* CHALLENGE BADGE */
+  .challenge-badge { display:inline-block; background:linear-gradient(135deg,#f59e0b,#7c3aed);
+    color:#fff; font-size:0.75rem; font-weight:800; padding:4px 16px; border-radius:999px;
+    letter-spacing:0.06em; text-transform:uppercase; }
+
+  /* TABLES */
+  table.score-table, table.trace-table, table.rubric { width:100%; border-collapse:collapse; font-size:0.83rem; }
+  table.score-table thead tr, table.rubric thead tr { background:#1e293b; color:#e2e8f0; }
+  table.score-table th, table.score-table td,
+  table.trace-table th, table.trace-table td,
+  table.rubric th, table.rubric td { padding:7px 10px; border-bottom:1px solid #f1f5f9; text-align:left; }
+  table.rubric td.pts { font-weight:800; color:var(--color-accent-1); white-space:nowrap; }
+  table.trace-table thead tr { background:#293548; color:#e2e8f0; }
+
+  /* PROJECT STRIP */
+  .project-strip { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-bottom:18px; }
+  @media(max-width:700px){ .project-strip{grid-template-columns:1fr;} }
+  .proj-card { border-radius:14px; padding:14px 16px; border:1.5px solid transparent; }
+  .proj-card.beginner   { background:#f0fdf4; border-color:#bbf7d0; }
+  .proj-card.interm     { background:#fffbeb; border-color:#fde68a; }
+  .proj-card.advanced   { background:#f5f3ff; border-color:#ddd6fe; }
+  .proj-name { font-family:var(--font-display); font-size:1.05rem; font-weight:700; margin-bottom:4px; }
+
+  /* UTILITY */
+  .mb-2 { margin-bottom:10px; } .mb-3 { margin-bottom:18px; } .mt-2 { margin-top:10px; }
+  .text-muted { font-size:0.78rem; color:var(--color-text-muted); }
+  code { background:rgba(15,23,42,0.07); padding:1px 5px; border-radius:4px; font-family:var(--font-code); font-size:0.88em; }
+  strong { font-weight:800; }
+  p { line-height:1.5; font-size:0.88rem; color:var(--color-text-secondary); }
+</style>
+</head>
+<body>
+
+<!-- ══════════ PRINT BAR ══════════ -->
+<div class="print-bar no-print">
+  <div>
+    <div class="bar-title">Day 21 · Three-Project Build Sprint</div>
+    <div class="bar-sub">Activity Sheet · AI &amp; Coding for Kids · Spring 2026</div>
+  </div>
+  <button class="btn-print" onclick="window.print()">🖨 Print / Save PDF</button>
+</div>
+
+<div class="page">
+
+<!-- ══════════ HEADER ══════════ -->
+<div class="sheet-header">
+  <div class="header-emoji">🚀</div>
+  <div class="header-day">Day 21 · AI &amp; Coding for Kids · Spring 2026</div>
+  <div class="header-title">Three-Project Build Sprint<br>RateRec · EdgeBot · TinyBot v2</div>
+  <div class="header-sub">You will trace, predict, debug, and upgrade one of three real AI projects — each at a different difficulty level.</div>
+  <div class="header-pills">
+    <span class="header-pill">🟢 RateRec — Beginner</span>
+    <span class="header-pill">🟡 EdgeBot — Intermediate</span>
+    <span class="header-pill">🔴 TinyBot v2 — Advanced</span>
+    <span class="header-pill">Mr. Hsiao "Hue" Weng</span>
+  </div>
+</div>
+
+<!-- ══════════ STUDENT INFO ══════════ -->
+<div class="student-info">
+  <div class="info-field"><div class="info-label">Your Name</div><input class="info-line" type="text" placeholder="First Last" /></div>
+  <div class="info-field"><div class="info-label">Date</div><input class="info-line" type="text" placeholder="__ / __ / ____" /></div>
+  <div class="info-field"><div class="info-label">Project I Chose</div><input class="info-line" type="text" placeholder="RateRec / EdgeBot / TinyBot v2" /></div>
+</div>
+
+<!-- ══════════ PART 1 · WARM-UP ══════════ -->
+<div class="section-label">✏️ Part 1 of 5</div>
+<div class="section-title">Warm-Up — Think Before You Code</div>
+
+<!-- Three Think First questions from the lesson -->
+<div class="card accent-blue mb-3">
+  <div class="card-label blue">🧠 Plan First — Answer Before Opening Your Editor</div>
+  <p class="mb-2">All great programmers plan before they type. Write your three answers below, then return to them at the Exit Ticket to see how accurate your predictions were.</p>
+
+  <div style="display:flex;flex-direction:column;gap:14px;">
+    <div>
+      <p style="font-size:0.83rem;font-weight:800;color:#0b63ce;margin-bottom:5px;">Question 1 · Focus &amp; Difficulty</p>
+      <p class="mb-2">Which project are you upgrading? Circle your choice:
+        <strong style="color:#166534;">🟢 RateRec (Beginner)</strong> &nbsp;/&nbsp;
+        <strong style="color:#854d0e;">🟡 EdgeBot (Intermediate)</strong> &nbsp;/&nbsp;
+        <strong style="color:#5b21b6;">🔴 TinyBot v2 (Advanced)</strong>
+      </p>
+      <p class="mb-2" style="font-size:0.83rem;">What is the <em>one feature</em> you want to add or fix today?</p>
+      <div class="write-lines">
+        <input class="write-line" type="text" placeholder="I want to add / fix..." />
+        <input class="write-line" type="text" placeholder="..." />
+      </div>
+    </div>
+
+    <div>
+      <p style="font-size:0.83rem;font-weight:800;color:#047857;margin-bottom:5px;">Question 2 · Done-ness</p>
+      <p class="mb-2">How will you <em>know</em> when your upgrade is complete? Describe a testable outcome — a number, a printed line, or a behaviour you can observe.</p>
+      <div class="write-lines">
+        <input class="write-line" type="text" placeholder="I will know I'm done when..." />
+        <input class="write-line" type="text" placeholder="..." />
+      </div>
+    </div>
+
+    <div>
+      <p style="font-size:0.83rem;font-weight:800;color:#b45309;margin-bottom:5px;">Question 3 · Risk</p>
+      <p class="mb-2">What is the <em>riskiest</em> line of code in your plan — the one most likely to throw an error? How can you test just that line first, on its own?</p>
+      <div class="write-lines">
+        <input class="write-line" type="text" placeholder="The riskiest part is..." />
+        <input class="write-line" type="text" placeholder="I will test it first by..." />
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- AI Loop Connection -->
+<div class="card mb-3">
+  <div class="card-label purple">💡 The AI Loop — All Three Projects Use It</div>
+  <p class="mb-2">Every project you have built follows the same pattern real AI systems use. Fill in the blanks using the word bank below.</p>
+
+  <div class="formula-box">
+    collect <input class="blank-input wide" type="text" placeholder="______" /> →
+    apply a <input class="blank-input wide" type="text" placeholder="______" /> →
+    produce an <input class="blank-input wide" type="text" placeholder="______" /> →
+    <input class="blank-input wide" type="text" placeholder="______" /> it →
+    improve the rule
+  </div>
+
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
+    <span style="background:#e0f2ff;color:#0b63ce;border-radius:6px;padding:3px 10px;font-weight:700;font-size:0.8rem;">evaluate</span>
+    <span style="background:#e0f2ff;color:#0b63ce;border-radius:6px;padding:3px 10px;font-weight:700;font-size:0.8rem;">output</span>
+    <span style="background:#e0f2ff;color:#0b63ce;border-radius:6px;padding:3px 10px;font-weight:700;font-size:0.8rem;">rule</span>
+    <span style="background:#e0f2ff;color:#0b63ce;border-radius:6px;padding:3px 10px;font-weight:700;font-size:0.8rem;">data</span>
+  </div>
+
+  <div class="project-strip">
+    <div class="proj-card beginner">
+      <div class="diff-badge diff-1">🟢 Beginner</div>
+      <div class="proj-name">⭐ RateRec</div>
+      <p><strong>Data =</strong> votes &nbsp;|&nbsp; <strong>Rule =</strong> average &amp; sort<br><strong>Output =</strong> ranked list</p>
+      <p class="mt-2" style="font-size:0.78rem;color:#166534;font-weight:700;">Core: <code>sum()</code> · <code>dict</code> · <code>sorted()</code></p>
+    </div>
+    <div class="proj-card interm">
+      <div class="diff-badge diff-2">🟡 Intermediate</div>
+      <div class="proj-name">🔍 EdgeBot</div>
+      <p><strong>Data =</strong> pixel grid &nbsp;|&nbsp; <strong>Rule =</strong> Laplacian<br><strong>Output =</strong> filtered grid</p>
+      <p class="mt-2" style="font-size:0.78rem;color:#854d0e;font-weight:700;">Core: nested loops · 2-D list indexing</p>
+    </div>
+    <div class="proj-card advanced">
+      <div class="diff-badge diff-3">🔴 Advanced</div>
+      <div class="proj-name">🤖 TinyBot v2</div>
+      <p><strong>Data =</strong> message &nbsp;|&nbsp; <strong>Rule =</strong> keyword match<br><strong>Output =</strong> reply string</p>
+      <p class="mt-2" style="font-size:0.78rem;color:#5b21b6;font-weight:700;">Core: dict · set intersection · functions</p>
+    </div>
+  </div>
+
+  <p style="font-size:0.83rem;color:#374151;"><strong>💭 Pause and think:</strong> In which project does the computer <em>learn</em> from data — and in which does it just follow fixed rules? What would it take to make all three <em>learn</em>?</p>
+  <div class="write-lines mt-2">
+    <input class="write-line" type="text" placeholder="The project closest to 'learning' is... because..." />
+    <input class="write-line" type="text" placeholder="To make all three learn, you would need to..." />
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ══════════ PART 2 · VOCABULARY ══════════ -->
+<div class="section-label">📖 Part 2 of 5</div>
+<div class="section-title">Vocabulary &amp; Concept Check</div>
+
+<div class="grid-2 mb-3">
+  <!-- Term Matching -->
+  <div class="card">
+    <div class="card-label blue">🔤 Match the Term (write the letter)</div>
+    <p class="mb-2">Each term belongs to one of the three projects. Write the correct letter next to each definition.</p>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
+      <span style="background:#dcfce7;color:#166534;border-radius:6px;padding:3px 10px;font-weight:700;font-size:0.8rem;">A. sorted()</span>
+      <span style="background:#dcfce7;color:#166534;border-radius:6px;padding:3px 10px;font-weight:700;font-size:0.8rem;">B. lambda</span>
+      <span style="background:#fef9c3;color:#854d0e;border-radius:6px;padding:3px 10px;font-weight:700;font-size:0.8rem;">C. Laplacian</span>
+      <span style="background:#fef9c3;color:#854d0e;border-radius:6px;padding:3px 10px;font-weight:700;font-size:0.8rem;">D. Convolution</span>
+      <span style="background:#ede9fe;color:#5b21b6;border-radius:6px;padding:3px 10px;font-weight:700;font-size:0.8rem;">E. Intent</span>
+      <span style="background:#ede9fe;color:#5b21b6;border-radius:6px;padding:3px 10px;font-weight:700;font-size:0.8rem;">F. Set intersection</span>
+      <span style="background:#fee2e2;color:#b91c1c;border-radius:6px;padding:3px 10px;font-weight:700;font-size:0.8rem;">G. Collaborative filtering</span>
+    </div>
+    <table style="width:100%;font-size:0.82rem;border-collapse:collapse;">
+      <tr><td style="padding:5px 0;border-bottom:1px solid #f1f5f9;color:#374151;width:85%">The mathematical operation of sliding a filter across a grid</td><td><input type="text" style="width:36px;border:none;border-bottom:2px solid #0b63ce;text-align:center;font-weight:800;font-size:0.9rem;color:#0b63ce;background:transparent;outline:none;" placeholder="_" /></td></tr>
+      <tr><td style="padding:5px 0;border-bottom:1px solid #f1f5f9;color:#374151;">Returns only elements that appear in <em>both</em> sets — used by TinyBot v2 to match keywords</td><td><input type="text" style="width:36px;border:none;border-bottom:2px solid #0b63ce;text-align:center;font-weight:800;font-size:0.9rem;color:#0b63ce;background:transparent;outline:none;" placeholder="_" /></td></tr>
+      <tr><td style="padding:5px 0;border-bottom:1px solid #f1f5f9;color:#374151;">Recommends items based on what <em>other users with similar taste</em> enjoyed — the Netflix Prize idea</td><td><input type="text" style="width:36px;border:none;border-bottom:2px solid #0b63ce;text-align:center;font-weight:800;font-size:0.9rem;color:#0b63ce;background:transparent;outline:none;" placeholder="_" /></td></tr>
+      <tr><td style="padding:5px 0;border-bottom:1px solid #f1f5f9;color:#374151;">A small anonymous function often used as the sort <em>key</em> in RateRec</td><td><input type="text" style="width:36px;border:none;border-bottom:2px solid #0b63ce;text-align:center;font-weight:800;font-size:0.9rem;color:#0b63ce;background:transparent;outline:none;" placeholder="_" /></td></tr>
+      <tr><td style="padding:5px 0;border-bottom:1px solid #f1f5f9;color:#374151;">The goal or meaning behind a user's message — what TinyBot tries to identify</td><td><input type="text" style="width:36px;border:none;border-bottom:2px solid #0b63ce;text-align:center;font-weight:800;font-size:0.9rem;color:#0b63ce;background:transparent;outline:none;" placeholder="_" /></td></tr>
+      <tr><td style="padding:5px 0;border-bottom:1px solid #f1f5f9;color:#374151;">A filter that measures how <em>different</em> a pixel is from its neighbors — detects boundaries</td><td><input type="text" style="width:36px;border:none;border-bottom:2px solid #0b63ce;text-align:center;font-weight:800;font-size:0.9rem;color:#0b63ce;background:transparent;outline:none;" placeholder="_" /></td></tr>
+      <tr><td style="padding:5px 0;color:#374151;">Returns a new list arranged from smallest to largest (or reverse) — the core of RateRec's ranking</td><td><input type="text" style="width:36px;border:none;border-bottom:2px solid #0b63ce;text-align:center;font-weight:800;font-size:0.9rem;color:#0b63ce;background:transparent;outline:none;" placeholder="_" /></td></tr>
+    </table>
+  </div>
+
+  <!-- True/False -->
+  <div class="card">
+    <div class="card-label amber">✏️ True or False — Circle T or F</div>
+    <p class="mb-2">Circle <strong>T</strong> (True) or <strong>F</strong> (False). If it's False, write the correction below the row.</p>
+    <table style="width:100%;font-size:0.82rem;border-collapse:collapse;">
+      <tr><td style="padding:6px 0;border-bottom:1px solid #f1f5f9;color:#374151;width:83%">RateRec and EdgeBot both use nested loops.</td><td style="font-weight:800;color:#0b63ce;">T &nbsp; F</td></tr>
+      <tr><td style="padding:6px 0;border-bottom:1px solid #f1f5f9;color:#374151;">If center = 5 and all four neighbors = 5, the Laplacian formula gives 5.</td><td style="font-weight:800;color:#0b63ce;">T &nbsp; F</td></tr>
+      <tr><td style="padding:6px 0;border-bottom:1px solid #f1f5f9;color:#374151;">TinyBot v2's <code>missed_log</code> list tells you what new intents to add.</td><td style="font-weight:800;color:#0b63ce;">T &nbsp; F</td></tr>
+      <tr><td style="padding:6px 0;border-bottom:1px solid #f1f5f9;color:#374151;">Adding a new intent to TinyBot v2 requires changing the <code>getintent()</code> function logic.</td><td style="font-weight:800;color:#0b63ce;">T &nbsp; F</td></tr>
+      <tr><td style="padding:6px 0;border-bottom:1px solid #f1f5f9;color:#374151;">The Netflix Prize in 2009 was won using collaborative filtering — comparing users, not just averages.</td><td style="font-weight:800;color:#0b63ce;">T &nbsp; F</td></tr>
+      <tr><td style="padding:6px 0;color:#374151;">Tesla's FSD and Google's face unlock both use Laplacian-type filters as a first processing step.</td><td style="font-weight:800;color:#0b63ce;">T &nbsp; F</td></tr>
+    </table>
+    <div class="tip-box blue mt-2">🌍 <strong>Real World Scale:</strong> Netflix's recommender processes ~10 billion rating events per day. Your RateRec is the same algorithm — different scale.</div>
+  </div>
+</div>
+
+<!-- Real-World Connections -->
+<div class="card accent-purple mb-3">
+  <div class="card-label purple">🌍 Real-World Connection — Your Code vs. Production AI</div>
+  <p class="mb-2">Draw a line connecting each project to its real-world counterpart, then fill in the <em>one key difference</em> between your version and the deployed system.</p>
+  <div class="grid-2">
+    <table style="width:100%;font-size:0.82rem;border-collapse:collapse;">
+      <thead><tr><th style="background:#1e293b;color:#e2e8f0;padding:7px 10px;">Your Project</th><th style="background:#1e293b;color:#e2e8f0;padding:7px 10px;">Real System</th><th style="background:#1e293b;color:#e2e8f0;padding:7px 10px;">Key Difference</th></tr></thead>
+      <tbody>
+        <tr>
+          <td style="padding:7px 10px;border-bottom:1px solid #f1f5f9;">⭐ RateRec</td>
+          <td style="padding:7px 10px;border-bottom:1px solid #f1f5f9;">Netflix / Spotify</td>
+          <td style="padding:7px 10px;border-bottom:1px solid #f1f5f9;"><input type="text" style="width:100%;border:none;border-bottom:1.5px solid #cbd5e1;background:transparent;outline:none;font-size:0.8rem;" placeholder="One key difference..." /></td>
+        </tr>
+        <tr>
+          <td style="padding:7px 10px;border-bottom:1px solid #f1f5f9;">🔍 EdgeBot</td>
+          <td style="padding:7px 10px;border-bottom:1px solid #f1f5f9;">Tesla FSD / Face Unlock</td>
+          <td style="padding:7px 10px;border-bottom:1px solid #f1f5f9;"><input type="text" style="width:100%;border:none;border-bottom:1.5px solid #cbd5e1;background:transparent;outline:none;font-size:0.8rem;" placeholder="One key difference..." /></td>
+        </tr>
+        <tr>
+          <td style="padding:7px 10px;">🤖 TinyBot v2</td>
+          <td style="padding:7px 10px;">Siri / Alexa NLU</td>
+          <td style="padding:7px 10px;"><input type="text" style="width:100%;border:none;border-bottom:1.5px solid #cbd5e1;background:transparent;outline:none;font-size:0.8rem;" placeholder="One key difference..." /></td>
+        </tr>
+      </tbody>
+    </table>
+    <div>
+      <p style="font-size:0.83rem;font-weight:800;color:#6d28d9;margin-bottom:6px;">💭 The big question:</p>
+      <p class="mb-2">All three real systems started as a single loop written by one programmer — just like yours. What is the <strong>one thing</strong> that separates a school project from a deployed AI product?</p>
+      <textarea class="write-area" style="min-height:80px;" placeholder="The key difference is..."></textarea>
+    </div>
+  </div>
+</div>
+
+<hr class="divider page-break">
+
+<!-- ══════════ PART 3 · TRACE & PREDICT ══════════ -->
+<div class="section-label">🔍 Part 3 of 5</div>
+<div class="section-title">Trace &amp; Predict — Run It In Your Head</div>
+
+<!-- RateRec Trace -->
+<div class="card accent-green mb-2">
+  <div class="diff-badge diff-1">🟢 RateRec — Beginner Trace</div>
+  <div class="card-label green">📊 Trace the Per-Player Recommender</div>
+  <p class="mb-2">Here is the RateRec code from the lesson. Work through it step-by-step for player <strong>"Alex"</strong> and fill in the trace table.</p>
+  <div class="code-block"><span class="cm"># Per-player recommender (Day 15 upgrade)</span>
+player_ratings = {
+    <span class="st">'Alex'</span>:   {<span class="st">'Racing'</span>: [<span class="nb">1</span>,<span class="nb">1</span>,<span class="nb">1</span>], <span class="st">'Puzzle'</span>: [<span class="nb">1</span>,<span class="nb">1</span>,<span class="nb">0</span>], <span class="st">'Shooter'</span>: [<span class="nb">0</span>,<span class="nb">0</span>,<span class="nb">0</span>]},
+    <span class="st">'Jordan'</span>: {<span class="st">'Racing'</span>: [<span class="nb">0</span>,<span class="nb">1</span>,<span class="nb">0</span>], <span class="st">'Puzzle'</span>: [<span class="nb">1</span>,<span class="nb">1</span>,<span class="nb">1</span>], <span class="st">'Shooter'</span>: [<span class="nb">1</span>,<span class="nb">1</span>,<span class="nb">0</span>]},
+}
+<span class="kw">for</span> name, games <span class="kw">in</span> player_ratings.<span class="fn">items</span>():
+    averages = {}
+    <span class="kw">for</span> game, votes <span class="kw">in</span> games.<span class="fn">items</span>():
+        averages[game] = <span class="fn">sum</span>(votes) / <span class="fn">len</span>(votes)   <span class="cm"># ← average per game</span>
+    ranked = <span class="fn">sorted</span>(averages.<span class="fn">items</span>(), key=<span class="kw">lambda</span> item: item[<span class="nb">1</span>], reverse=<span class="nb">True</span>)
+    <span class="kw">for</span> game, score <span class="kw">in</span> ranked:
+        <span class="fn">print</span>(<span class="st">f'  {game} → {round(score, 2)}'</span>)</div>
+
+  <div class="grid-2">
+    <div>
+      <p style="font-size:0.8rem;font-weight:700;color:#047857;margin-bottom:6px;">📊 For Alex — fill in the averages:</p>
+      <table class="trace-table">
+        <thead><tr><th>Game</th><th>Votes</th><th>sum(votes)</th><th>average</th></tr></thead>
+        <tbody>
+          <tr><td>Racing</td><td>[1,1,1]</td><td><input type="text" style="width:40px;border:none;border-bottom:2px solid #10b981;text-align:center;font-family:var(--font-code);font-weight:700;background:transparent;outline:none;" placeholder="?" /></td><td><input type="text" style="width:50px;border:none;border-bottom:2px solid #10b981;text-align:center;font-family:var(--font-code);font-weight:700;background:transparent;outline:none;" placeholder="?" /></td></tr>
+          <tr><td>Puzzle</td><td>[1,1,0]</td><td><input type="text" style="width:40px;border:none;border-bottom:2px solid #10b981;text-align:center;font-family:var(--font-code);font-weight:700;background:transparent;outline:none;" placeholder="?" /></td><td><input type="text" style="width:50px;border:none;border-bottom:2px solid #10b981;text-align:center;font-family:var(--font-code);font-weight:700;background:transparent;outline:none;" placeholder="?" /></td></tr>
+          <tr><td>Shooter</td><td>[0,0,0]</td><td><input type="text" style="width:40px;border:none;border-bottom:2px solid #10b981;text-align:center;font-family:var(--font-code);font-weight:700;background:transparent;outline:none;" placeholder="?" /></td><td><input type="text" style="width:50px;border:none;border-bottom:2px solid #10b981;text-align:center;font-family:var(--font-code);font-weight:700;background:transparent;outline:none;" placeholder="?" /></td></tr>
+        </tbody>
+      </table>
+      <p style="font-size:0.8rem;font-weight:700;color:#047857;margin:8px 0 4px;">🏆 Top recommendation for Alex:</p>
+      <input class="write-line" type="text" placeholder="The top recommended game is..." />
+    </div>
+    <div>
+      <p style="font-size:0.8rem;font-weight:700;color:#b45309;margin-bottom:4px;">🐛 Spot the limitation!</p>
+      <p class="mb-2">Add <code>'Sam': &#123;'Racing':[0,0,0],'Puzzle':[0,0,0],'Shooter':[0,0,0]&#125;</code>. What does RateRec recommend for Sam?</p>
+      <input class="write-line" type="text" placeholder="RateRec would recommend..." />
+      <p class="mt-2" style="font-size:0.8rem;color:#374151;">Is that a meaningful recommendation? What is the bug?</p>
+      <textarea class="write-area" style="min-height:60px;" placeholder="The problem is..."></textarea>
+      <div class="tip-box green mt-2">💡 <strong>Upgrade idea:</strong> Add a check: <code>if max(averages.values()) == 0: print("Not enough data")</code></div>
+    </div>
+  </div>
+</div>
+
+<!-- EdgeBot Trace -->
+<div class="card accent-amber mb-2">
+  <div class="diff-badge diff-2">🟡 EdgeBot — Intermediate Trace</div>
+  <div class="card-label amber">🔢 Trace the Laplacian Filter</div>
+  <p class="mb-2">The Laplacian formula is <code>center × 4 − (up + down + left + right)</code>. Calculate the filtered value at position <strong>[2][2]</strong> (the center) by hand.</p>
+  <div class="grid-2">
+    <div>
+      <div class="code-block"><span class="cm"># The image grid from the lesson</span>
+image = [
+    [<span class="nb">0</span>, <span class="nb">0</span>, <span class="nb">0</span>, <span class="nb">0</span>, <span class="nb">0</span>],
+    [<span class="nb">0</span>, <span class="nb">5</span>, <span class="nb">5</span>, <span class="nb">5</span>, <span class="nb">0</span>],
+    [<span class="nb">0</span>, <span class="nb">5</span>, <span class="hl">9</span>, <span class="nb">5</span>, <span class="nb">0</span>],  <span class="cm"># ← brightest pixel</span>
+    [<span class="nb">0</span>, <span class="nb">5</span>, <span class="nb">5</span>, <span class="nb">5</span>, <span class="nb">0</span>],
+    [<span class="nb">0</span>, <span class="nb">0</span>, <span class="nb">0</span>, <span class="nb">0</span>, <span class="nb">0</span>],
+]
+<span class="cm"># Laplacian formula at [2][2]:</span>
+center = image[<span class="nb">2</span>][<span class="nb">2</span>]  <span class="cm"># = ?</span>
+up     = image[<span class="nb">1</span>][<span class="nb">2</span>]  <span class="cm"># = ?</span>
+down   = image[<span class="nb">3</span>][<span class="nb">2</span>]  <span class="cm"># = ?</span>
+left   = image[<span class="nb">2</span>][<span class="nb">1</span>]  <span class="cm"># = ?</span>
+right  = image[<span class="nb">2</span>][<span class="nb">3</span>]  <span class="cm"># = ?</span>
+value  = center*<span class="nb">4</span> - (up+down+left+right)</div>
+    </div>
+    <div>
+      <p style="font-size:0.8rem;font-weight:700;color:#b45309;margin-bottom:8px;">✏️ Fill in the values then calculate:</p>
+      <table class="trace-table">
+        <thead><tr><th>Variable</th><th>image[row][col]</th><th>Value</th></tr></thead>
+        <tbody>
+          <tr><td><code>center</code></td><td>image[2][2]</td><td><input type="text" style="width:40px;border:none;border-bottom:2px solid #f59e0b;text-align:center;font-family:var(--font-code);font-weight:700;background:transparent;outline:none;" placeholder="?" /></td></tr>
+          <tr><td><code>up</code></td><td>image[1][2]</td><td><input type="text" style="width:40px;border:none;border-bottom:2px solid #f59e0b;text-align:center;font-family:var(--font-code);font-weight:700;background:transparent;outline:none;" placeholder="?" /></td></tr>
+          <tr><td><code>down</code></td><td>image[3][2]</td><td><input type="text" style="width:40px;border:none;border-bottom:2px solid #f59e0b;text-align:center;font-family:var(--font-code);font-weight:700;background:transparent;outline:none;" placeholder="?" /></td></tr>
+          <tr><td><code>left</code></td><td>image[2][1]</td><td><input type="text" style="width:40px;border:none;border-bottom:2px solid #f59e0b;text-align:center;font-family:var(--font-code);font-weight:700;background:transparent;outline:none;" placeholder="?" /></td></tr>
+          <tr><td><code>right</code></td><td>image[2][3]</td><td><input type="text" style="width:40px;border:none;border-bottom:2px solid #f59e0b;text-align:center;font-family:var(--font-code);font-weight:700;background:transparent;outline:none;" placeholder="?" /></td></tr>
+        </tbody>
+      </table>
+      <p style="font-size:0.82rem;font-weight:700;color:#374151;margin:8px 0 4px;">🧮 Show your working:</p>
+      <p style="font-size:0.88rem;color:#374151;">value = <input type="text" style="width:30px;border:none;border-bottom:2px solid #f59e0b;text-align:center;font-family:var(--font-code);font-weight:700;background:transparent;outline:none;" placeholder="?" /> × 4 − ( <input type="text" style="width:28px;border:none;border-bottom:2px solid #f59e0b;text-align:center;font-family:var(--font-code);background:transparent;outline:none;" placeholder="?" /> + <input type="text" style="width:28px;border:none;border-bottom:2px solid #f59e0b;text-align:center;font-family:var(--font-code);background:transparent;outline:none;" placeholder="?" /> + <input type="text" style="width:28px;border:none;border-bottom:2px solid #f59e0b;text-align:center;font-family:var(--font-code);background:transparent;outline:none;" placeholder="?" /> + <input type="text" style="width:28px;border:none;border-bottom:2px solid #f59e0b;text-align:center;font-family:var(--font-code);background:transparent;outline:none;" placeholder="?" /> ) = <input type="text" style="width:44px;border:none;border-bottom:2px solid #f59e0b;text-align:center;font-family:var(--font-code);font-weight:800;color:#854d0e;background:transparent;outline:none;" placeholder="?" /></p>
+      <p style="font-size:0.8rem;font-weight:700;color:#374151;margin-top:10px;margin-bottom:4px;">What does this large value tell us about this pixel?</p>
+      <textarea class="write-area" style="min-height:55px;" placeholder="A large value means..."></textarea>
+      <div class="tip-box amber mt-2">💡 Now predict: if center=5 and all neighbors=5, what is the value? What does zero mean?</div>
+    </div>
+  </div>
+</div>
+
+<!-- TinyBot Trace -->
+<div class="card accent-purple mb-3">
+  <div class="diff-badge diff-3">🔴 TinyBot v2 — Advanced Trace</div>
+  <div class="card-label purple">🤖 Trace the Set Intersection + Bug Hunt</div>
+  <p class="mb-2">Here is TinyBot v2's core logic. Trace it for each input, then identify the two bugs.</p>
+  <div class="code-block"><span class="nb">RULES</span> = {
+    <span class="st">'greeting'</span>: [<span class="st">'hi'</span>, <span class="st">'hello'</span>, <span class="st">'hey'</span>],
+    <span class="st">'farewell'</span>: [<span class="st">'bye'</span>, <span class="st">'goodbye'</span>],
+    <span class="st">'negative'</span>: [<span class="st">'sad'</span>, <span class="st">'tired'</span>, <span class="st">'upset'</span>],
+    <span class="st">'positive'</span>: [<span class="st">'happy'</span>, <span class="st">'great'</span>, <span class="st">'excited'</span>],
+}
+<span class="nb">REPLIES</span> = {
+    <span class="st">'greeting'</span>: <span class="st">'Hi there! 👋'</span>,   <span class="st">'farewell'</span>: <span class="st">'Goodbye! 🚀'</span>,
+    <span class="st">'negative'</span>: <span class="st">'Sorry to hear that.'</span>,  <span class="st">'positive'</span>: <span class="st">'Awesome! 😊'</span>,
+    <span class="st">'unknown'</span>:  <span class="st">'Hmm, I do not know that yet. 🤔'</span>,
+}
+<span class="kw">def</span> <span class="fn">getintent</span>(msg):
+    tokens = <span class="fn">set</span>(msg.lower().<span class="fn">split</span>())           <span class="cm"># e.g. {"i'm", "not", "sad"}</span>
+    <span class="kw">for</span> intent, kws <span class="kw">in</span> <span class="nb">RULES</span>.<span class="fn">items</span>():
+        <span class="kw">if</span> tokens &amp; <span class="fn">set</span>(kws):                    <span class="cm"># set intersection</span>
+            <span class="kw">return</span> intent
+    <span class="kw">return</span> <span class="st">'unknown'</span></div>
+
+  <div class="grid-2">
+    <div>
+      <p style="font-size:0.8rem;font-weight:700;color:#6d28d9;margin-bottom:6px;">📊 Trace table — what does the bot reply?</p>
+      <table class="trace-table">
+        <thead><tr><th>Input</th><th>tokens set</th><th>Intent returned</th><th>Bot replies</th></tr></thead>
+        <tbody>
+          <tr>
+            <td style="padding:6px 8px;border-bottom:1px solid #f1f5f9;font-family:var(--font-code);font-size:0.78rem;">"hello there"</td>
+            <td style="padding:6px 8px;border-bottom:1px solid #f1f5f9;"><input type="text" style="width:100%;border:none;border-bottom:1.5px solid #8b5cf6;font-family:var(--font-code);font-size:0.75rem;background:transparent;outline:none;" placeholder="{ ... }" /></td>
+            <td style="padding:6px 8px;border-bottom:1px solid #f1f5f9;"><input type="text" style="width:80px;border:none;border-bottom:1.5px solid #8b5cf6;font-family:var(--font-code);background:transparent;outline:none;" placeholder="?" /></td>
+            <td style="padding:6px 8px;border-bottom:1px solid #f1f5f9;"><input type="text" style="width:100%;border:none;border-bottom:1.5px solid #8b5cf6;font-size:0.75rem;background:transparent;outline:none;" placeholder="..." /></td>
+          </tr>
+          <tr>
+            <td style="padding:6px 8px;border-bottom:1px solid #f1f5f9;font-family:var(--font-code);font-size:0.78rem;">"I'm not sad"</td>
+            <td style="padding:6px 8px;border-bottom:1px solid #f1f5f9;"><input type="text" style="width:100%;border:none;border-bottom:1.5px solid #8b5cf6;font-family:var(--font-code);font-size:0.75rem;background:transparent;outline:none;" placeholder="{ ... }" /></td>
+            <td style="padding:6px 8px;border-bottom:1px solid #f1f5f9;"><input type="text" style="width:80px;border:none;border-bottom:1.5px solid #8b5cf6;font-family:var(--font-code);background:transparent;outline:none;" placeholder="?" /></td>
+            <td style="padding:6px 8px;border-bottom:1px solid #f1f5f9;"><input type="text" style="width:100%;border:none;border-bottom:1.5px solid #8b5cf6;font-size:0.75rem;background:transparent;outline:none;" placeholder="..." /></td>
+          </tr>
+          <tr>
+            <td style="padding:6px 8px;font-family:var(--font-code);font-size:0.78rem;">"I love pizza"</td>
+            <td style="padding:6px 8px;"><input type="text" style="width:100%;border:none;border-bottom:1.5px solid #8b5cf6;font-family:var(--font-code);font-size:0.75rem;background:transparent;outline:none;" placeholder="{ ... }" /></td>
+            <td style="padding:6px 8px;"><input type="text" style="width:80px;border:none;border-bottom:1.5px solid #8b5cf6;font-family:var(--font-code);background:transparent;outline:none;" placeholder="?" /></td>
+            <td style="padding:6px 8px;"><input type="text" style="width:100%;border:none;border-bottom:1.5px solid #8b5cf6;font-size:0.75rem;background:transparent;outline:none;" placeholder="..." /></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div>
+      <p style="font-size:0.8rem;font-weight:700;color:#b91c1c;margin-bottom:6px;">🐛 Two bugs — identify and explain each</p>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div style="background:#fff5f5;border:1.5px solid #fecaca;border-radius:10px;padding:10px 12px;">
+          <p style="font-size:0.78rem;font-weight:800;color:#b91c1c;margin-bottom:4px;">🐛 Bug 1 — Negation ignored</p>
+          <p style="font-size:0.78rem;color:#374151;margin-bottom:4px;">Input that triggers it:</p>
+          <input class="write-line" type="text" placeholder="e.g. I'm not sad..." style="margin-bottom:6px;" />
+          <p style="font-size:0.78rem;color:#374151;margin-bottom:4px;">Why does it fail?</p>
+          <textarea class="write-area" style="min-height:48px;" placeholder="The bot replies... but should reply... because..."></textarea>
+        </div>
+        <div style="background:#fff5f5;border:1.5px solid #fecaca;border-radius:10px;padding:10px 12px;">
+          <p style="font-size:0.78rem;font-weight:800;color:#b91c1c;margin-bottom:4px;">🐛 Bug 2 — Missing intent</p>
+          <p style="font-size:0.78rem;color:#374151;margin-bottom:4px;">Input that triggers it:</p>
+          <input class="write-line" type="text" placeholder="e.g. I want pizza..." style="margin-bottom:6px;" />
+          <p style="font-size:0.78rem;color:#374151;margin-bottom:4px;">How would you fix it in 2 lines?</p>
+          <textarea class="dark-code-write" style="min-height:48px;" spellcheck="false" placeholder="RULES['food'] = ['pizza', 'eat', 'hungry']&#10;REPLIES['food'] = '...'"></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider page-break">
+
+<!-- ══════════ PART 4 · CODING CHALLENGE ══════════ -->
+<div class="section-label">💻 Part 4 of 5</div>
+<div class="section-title">Tiered Coding Challenge — Choose Your Level</div>
+
+<div class="card mb-2" style="background:linear-gradient(135deg,rgba(34,197,94,0.05),rgba(124,58,237,0.05));border:1.5px solid rgba(11,99,206,0.14);">
+  <div class="card-label blue">🎯 Circle Your Level Before You Start</div>
+  <div class="project-strip" style="margin-bottom:0;">
+    <div>
+      <span class="level-badge level-1">🟢 Level 1 · RateRec</span>
+      <p style="font-size:0.78rem;color:#374151;">Pure Python · No imports · ~15 lines</p>
+    </div>
+    <div>
+      <span class="level-badge level-2">🟡 Level 2 · EdgeBot</span>
+      <p style="font-size:0.78rem;color:#374151;">Nested loops · 2-D math · Predict first</p>
+    </div>
+    <div>
+      <span class="level-badge level-3">🔴 Level 3 · TinyBot v2</span>
+      <p style="font-size:0.78rem;color:#374151;">Functions · Dicts · Set ops · test()</p>
+    </div>
+  </div>
+</div>
+
+<!-- LEVEL 1 — RateRec -->
+<div class="card accent-green mb-2">
+  <div class="diff-badge diff-1">🟢 Level 1 · RateRec Upgrade</div>
+  <div class="grid-2">
+    <div>
+      <div class="card-label green">✅ Your Tasks</div>
+      <ul class="check-list">
+        <li><span class="box"></span>Add a 3rd player <code>'Sam'</code> with her own 3-game ratings (make them up!)</li>
+        <li><span class="box"></span>Add a 4th game <code>'Coding': [_, _, _]</code> for all 3 players</li>
+        <li><span class="box"></span>Run the loop mentally — predict who gets <em>Coding</em> recommended first</li>
+        <li><span class="box"></span>⭐ Super: write a function <code>top_pick(name)</code> that returns only the single best game for a given player</li>
+      </ul>
+      <p style="font-size:0.8rem;font-weight:700;color:#047857;margin-top:8px;margin-bottom:4px;">📝 My prediction before running:</p>
+      <input class="write-line" type="text" placeholder="I predict Sam's top recommendation will be..." />
+      <input class="write-line" type="text" placeholder="Because her ratings show..." />
+    </div>
+    <div>
+      <div class="card-label green">🐍 Write your upgraded RateRec here:</div>
+      <textarea class="dark-code-write" style="min-height:220px;" spellcheck="false" placeholder="# Per-player recommender — your upgrade&#10;player_ratings = {&#10;    'Alex':   {'Racing':[1,1,1], 'Puzzle':[1,1,0], 'Shooter':[0,0,0], 'Coding':[_,_,_]},&#10;    'Jordan': {'Racing':[0,1,0], 'Puzzle':[1,1,1], 'Shooter':[1,1,0], 'Coding':[_,_,_]},&#10;    'Sam':    {  # ← add Sam's ratings here&#10;    },&#10;}&#10;for name, games in player_ratings.items():&#10;    # ... your code here"></textarea>
+      <p style="font-size:0.78rem;font-weight:700;color:#047857;margin-top:6px;margin-bottom:3px;">⭐ Super — top_pick() function:</p>
+      <textarea class="dark-code-write" style="min-height:80px;" spellcheck="false" placeholder="def top_pick(name):&#10;    # return only the single best game for this player&#10;    ..."></textarea>
+    </div>
+  </div>
+  <div class="tip-box green mt-2">🤔 <strong>Think about it:</strong> After adding Sam with all-zero ratings, what gets recommended? Is that meaningful? How would you handle all-zero ratings?</div>
+</div>
+
+<!-- LEVEL 2 — EdgeBot -->
+<div class="card accent-amber mb-2">
+  <div class="diff-badge diff-2">🟡 Level 2 · EdgeBot Upgrade</div>
+  <div class="grid-2">
+    <div>
+      <div class="card-label amber">✅ Your Tasks</div>
+      <ul class="check-list">
+        <li><span class="box"></span>Change <code>image[2][2]</code> from <code>9</code> to <code>1</code> — predict all 9 filtered values <em>before</em> running</li>
+        <li><span class="box"></span>Add a second loop that prints <code>"EDGE!"</code> next to any filtered value &gt; 8</li>
+        <li><span class="box"></span>Design your own 5×5 grid on paper — draw it below, then predict where edges appear</li>
+        <li><span class="box"></span>⭐ Super: print the 3×3 filtered result as a formatted table (padded columns)</li>
+      </ul>
+      <p style="font-size:0.8rem;font-weight:700;color:#b45309;margin-top:8px;margin-bottom:4px;">🗒 My 5×5 grid design (draw or write):</p>
+      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:3px;max-width:160px;">
+        <input type="text" style="border:1.5px solid #fde68a;border-radius:4px;padding:4px;text-align:center;font-family:var(--font-code);font-size:0.8rem;outline:none;" placeholder="0" />
+        <input type="text" style="border:1.5px solid #fde68a;border-radius:4px;padding:4px;text-align:center;font-family:var(--font-code);font-size:0.8rem;outline:none;" placeholder="0" />
+        <input type="text" style="border:1.5px solid #fde68a;border-radius:4px;padding:4px;text-align:center;font-family:var(--font-code);font-size:0.8rem;outline:none;" placeholder="0" />
+        <input type="text" style="border:1.5px solid #fde68a;border-radius:4px;padding:4px;text-align:center;font-family:var(--font-code);font-size:0.8rem;outline:none;" placeholder="0" />
+        <input type="text" style="border:1.5px solid #fde68a;border-radius:4px;padding:4px;text-align:center;font-family:var(--font-code);font-size:0.8rem;outline:none;" placeholder="0" />
+        <input type="text" style="border:1.5px solid #fde68a;border-radius:4px;padding:4px;text-align:center;font-family:var(--font-code);font-size:0.8rem;outline:none;" placeholder="0" />
+        <input type="text" style="border:1.5px solid #f59e0b;border-radius:4px;padding:4px;text-align:center;font-family:var(--font-code);font-size:0.8rem;outline:none;" placeholder="?" />
+        <input type="text" style="border:1.5px solid #f59e0b;border-radius:4px;padding:4px;text-align:center;font-family:var(--font-code);font-size:0.8rem;outline:none;" placeholder="?" />
+        <input type="text" style="border:1.5px solid #f59e0b;border-radius:4px;padding:4px;text-align:center;font-family:var(--font-code);font-size:0.8rem;outline:none;" placeholder="?" />
+        <input type="text" style="border:1.5px solid #fde68a;border-radius:4px;padding:4px;text-align:center;font-family:var(--font-code);font-size:0.8rem;outline:none;" placeholder="0" />
+        <input type="text" style="border:1.5px solid #f59e0b;border-radius:4px;padding:4px;text-align:center;font-family:var(--font-code);font-size:0.8rem;outline:none;" placeholder="?" />
+        <input type="text" style="border:1.5px solid #ef4444;border-radius:4px;padding:4px;text-align:center;font-family:var(--font-code);font-size:0.8rem;font-weight:800;color:#b91c1c;outline:none;" placeholder="9" />
+        <input type="text" style="border:1.5px solid #f59e0b;border-radius:4px;padding:4px;text-align:center;font-family:var(--font-code);font-size:0.8rem;outline:none;" placeholder="?" />
+        <input type="text" style="border:1.5px solid #fde68a;border-radius:4px;padding:4px;text-align:center;font-family:var(--font-code);font-size:0.8rem;outline:none;" placeholder="0" />
+        <input type="text" style="border:1.5px solid #f59e0b;border-radius:4px;padding:4px;text-align:center;font-family:var(--font-code);font-size:0.8rem;outline:none;" placeholder="?" />
+        <input type="text" style="border:1.5px solid #f59e0b;border-radius:4px;padding:4px;text-align:center;font-family:var(--font-code);font-size:0.8rem;outline:none;" placeholder="?" />
+        <input type="text" style="border:1.5px solid #f59e0b;border-radius:4px;padding:4px;text-align:center;font-family:var(--font-code);font-size:0.8rem;outline:none;" placeholder="?" />
+        <input type="text" style="border:1.5px solid #fde68a;border-radius:4px;padding:4px;text-align:center;font-family:var(--font-code);font-size:0.8rem;outline:none;" placeholder="0" />
+        <input type="text" style="border:1.5px solid #fde68a;border-radius:4px;padding:4px;text-align:center;font-family:var(--font-code);font-size:0.8rem;outline:none;" placeholder="0" />
+        <input type="text" style="border:1.5px solid #fde68a;border-radius:4px;padding:4px;text-align:center;font-family:var(--font-code);font-size:0.8rem;outline:none;" placeholder="0" />
+        <input type="text" style="border:1.5px solid #fde68a;border-radius:4px;padding:4px;text-align:center;font-family:var(--font-code);font-size:0.8rem;outline:none;" placeholder="0" />
+        <input type="text" style="border:1.5px solid #fde68a;border-radius:4px;padding:4px;text-align:center;font-family:var(--font-code);font-size:0.8rem;outline:none;" placeholder="0" />
+        <input type="text" style="border:1.5px solid #fde68a;border-radius:4px;padding:4px;text-align:center;font-family:var(--font-code);font-size:0.8rem;outline:none;" placeholder="0" />
+        <input type="text" style="border:1.5px solid #fde68a;border-radius:4px;padding:4px;text-align:center;font-family:var(--font-code);font-size:0.8rem;outline:none;" placeholder="0" />
+        <input type="text" style="border:1.5px solid #fde68a;border-radius:4px;padding:4px;text-align:center;font-family:var(--font-code);font-size:0.8rem;outline:none;" placeholder="0" />
+      </div>
+      <p style="font-size:0.75rem;color:#b45309;margin-top:5px;">Fill in pixel values (0–9). Where do you predict edges?</p>
+      <input class="write-line" type="text" placeholder="I predict EDGE! at position(s)..." />
+    </div>
+    <div>
+      <div class="card-label amber">🐍 Write your upgraded EdgeBot here:</div>
+      <textarea class="dark-code-write" style="min-height:260px;" spellcheck="false" placeholder="# EdgeBot — Laplacian edge detection (upgraded)&#10;image = [&#10;    [0, 0, 0, 0, 0],&#10;    [0, 5, 5, 5, 0],&#10;    [0, 5, 1, 5, 0],  # ← changed from 9 to 1&#10;    [0, 5, 5, 5, 0],&#10;    [0, 0, 0, 0, 0],&#10;]&#10;filtered = []&#10;for y in range(1, 4):&#10;    new_row = []&#10;    for x in range(1, 4):&#10;        # ... Laplacian formula here&#10;        pass&#10;    filtered.append(new_row)&#10;&#10;# Second loop: print EDGE! for values > 8&#10;for row in filtered:&#10;    for v in row:&#10;        # ... your code here"></textarea>
+    </div>
+  </div>
+  <div class="tip-box amber mt-2">🤔 <strong>Think about it:</strong> If center=5 and all neighbors=5, the formula gives 0. What does zero mean in the real world — is it a boring flat region or an edge?</div>
+</div>
+
+<!-- LEVEL 3 — TinyBot v2 -->
+<div class="card accent-purple mb-3">
+  <div class="diff-badge diff-3">🔴 Level 3 · TinyBot v2 Upgrade</div>
+  <div class="grid-2">
+    <div>
+      <div class="card-label purple">✅ Your Tasks</div>
+      <ul class="check-list">
+        <li><span class="box"></span>Add a <code>'food'</code> intent: keywords <code>['pizza','eat','hungry']</code>, reply of your choice</li>
+        <li><span class="box"></span>Add a <code>'school'</code> intent: keywords <code>['class','homework','teacher']</code></li>
+        <li><span class="box"></span>After running, print <code>missed_log</code> and list 2 new intents it reveals</li>
+        <li><span class="box"></span>⭐ Super: write a <code>test()</code> function — 6 messages, <code>PASS</code>/<code>FAIL</code> for each; include 2 adversarial tests</li>
+      </ul>
+      <p style="font-size:0.8rem;font-weight:700;color:#6d28d9;margin-top:8px;margin-bottom:4px;">📋 New intents revealed by missed_log:</p>
+      <input class="write-line" type="text" placeholder="Intent idea 1: keywords = ['...' , '...']" />
+      <input class="write-line" type="text" placeholder="Intent idea 2: keywords = ['...' , '...']" />
+      <p style="font-size:0.8rem;font-weight:700;color:#6d28d9;margin-top:8px;margin-bottom:4px;">⭐ Write 3 test cases (msg, expected intent):</p>
+      <input class="write-line" type="text" placeholder='("hello there", "greeting")' />
+      <input class="write-line" type="text" placeholder='("I&apos;m not sad", "unknown")  ← adversarial' />
+      <input class="write-line" type="text" placeholder='("...", "...")' />
+    </div>
+    <div>
+      <div class="card-label purple">🐍 Write your upgraded TinyBot v2 here:</div>
+      <textarea class="dark-code-write" style="min-height:230px;" spellcheck="false" placeholder="# TinyBot v2 — upgraded with new intents&#10;RULES = {&#10;    'greeting': ['hi','hello','hey'],&#10;    'farewell': ['bye','goodbye'],&#10;    'negative': ['sad','tired','upset'],&#10;    'positive': ['happy','great','excited'],&#10;    'food':  [...],   # ← add your keywords&#10;    'school':[...],   # ← add your keywords&#10;}&#10;REPLIES = {&#10;    # ... match each RULES key&#10;}&#10;missed_log = []&#10;def getintent(msg):&#10;    tokens = set(msg.lower().split())&#10;    for intent, kws in RULES.items():&#10;        if tokens &amp; set(kws):&#10;            return intent&#10;    missed_log.append(msg)&#10;    return 'unknown'"></textarea>
+      <p style="font-size:0.78rem;font-weight:700;color:#6d28d9;margin-top:6px;margin-bottom:3px;">⭐ Super — test() function:</p>
+      <textarea class="dark-code-write" style="min-height:90px;" spellcheck="false" placeholder="def test():&#10;    cases = [('hello', 'greeting'), ('bye', 'farewell'),&#10;             (&quot;I'm not sad&quot;, 'unknown'),  # adversarial&#10;             # add 3 more...&#10;    ]&#10;    for msg, expected in cases:&#10;        status = '✓ PASS' if getintent(msg)==expected else '✗ FAIL'&#10;        print(f'{status} | {msg!r}')&#10;test()"></textarea>
+    </div>
+  </div>
+  <div class="tip-box purple mt-2">🤔 <strong>Think about it:</strong> Type <em>"I'm not sad at all"</em>. The bot replies with the negative response — why? What check would you add <em>before</em> the set-intersection to fix the negation bug?</div>
+</div>
+
+<hr class="divider page-break">
+
+<!-- ══════════ PART 5 · EXTENSION CHALLENGES ══════════ -->
+<div class="section-label">⭐ Part 5 of 5 — Bonus</div>
+<div class="section-title">Extension Challenges</div>
+
+<!-- Bonus A -->
+<div class="card mb-2">
+  <div style="margin-bottom:8px;"><span class="challenge-badge">⭐ Bonus A — Right-Sizing Your Upgrade</span></div>
+  <div class="grid-2">
+    <div>
+      <div class="card-label blue">📋 What to do</div>
+      <p class="mb-2">For your chosen project, categorise each possible upgrade idea as Too Big, Just Right, or Too Tiny — then explain why using the 15-minute rule.</p>
+      <div class="tip-box blue mb-2">🚀 <strong>15-minute rule:</strong> an upgrade is the right size if you can code <em>and</em> test it in under 15 minutes. If not — split it in half.</div>
+      <table style="width:100%;font-size:0.82rem;border-collapse:collapse;margin-top:6px;">
+        <thead><tr><th style="background:#1e293b;color:#e2e8f0;padding:7px 10px;">Upgrade Idea</th><th style="background:#1e293b;color:#e2e8f0;padding:7px 10px;">Size? (✗ / ✓ / ?)</th><th style="background:#1e293b;color:#e2e8f0;padding:7px 10px;">Why?</th></tr></thead>
+        <tbody>
+          <tr><td style="padding:7px 10px;border-bottom:1px solid #f1f5f9;"><input type="text" style="width:100%;border:none;border-bottom:1.5px solid #cbd5e1;background:transparent;outline:none;font-size:0.8rem;" placeholder="e.g. Add 5 enemies, lives, menu..." /></td><td style="padding:7px 10px;border-bottom:1px solid #f1f5f9;"><input type="text" style="width:36px;border:none;border-bottom:2px solid #0b63ce;text-align:center;font-weight:800;background:transparent;outline:none;" placeholder="?" /></td><td style="padding:7px 10px;border-bottom:1px solid #f1f5f9;"><input type="text" style="width:100%;border:none;border-bottom:1.5px solid #cbd5e1;background:transparent;outline:none;font-size:0.8rem;" placeholder="..." /></td></tr>
+          <tr><td style="padding:7px 10px;border-bottom:1px solid #f1f5f9;"><input type="text" style="width:100%;border:none;border-bottom:1.5px solid #cbd5e1;background:transparent;outline:none;font-size:0.8rem;" placeholder="e.g. Add 1 extra player..." /></td><td style="padding:7px 10px;border-bottom:1px solid #f1f5f9;"><input type="text" style="width:36px;border:none;border-bottom:2px solid #0b63ce;text-align:center;font-weight:800;background:transparent;outline:none;" placeholder="?" /></td><td style="padding:7px 10px;border-bottom:1px solid #f1f5f9;"><input type="text" style="width:100%;border:none;border-bottom:1.5px solid #cbd5e1;background:transparent;outline:none;font-size:0.8rem;" placeholder="..." /></td></tr>
+          <tr><td style="padding:7px 10px;"><input type="text" style="width:100%;border:none;border-bottom:1.5px solid #cbd5e1;background:transparent;outline:none;font-size:0.8rem;" placeholder="e.g. Change background color..." /></td><td style="padding:7px 10px;"><input type="text" style="width:36px;border:none;border-bottom:2px solid #0b63ce;text-align:center;font-weight:800;background:transparent;outline:none;" placeholder="?" /></td><td style="padding:7px 10px;"><input type="text" style="width:100%;border:none;border-bottom:1.5px solid #cbd5e1;background:transparent;outline:none;font-size:0.8rem;" placeholder="..." /></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div>
+      <div class="card-label green">✍️ Combining Projects — Stretch Thinking</div>
+      <p class="mb-2">The lesson shows three ways to combine the projects. Pick <strong>one combination</strong> and sketch how you would build it in pseudocode.</p>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:10px;">
+        <label style="display:flex;align-items:flex-start;gap:8px;font-size:0.82rem;cursor:pointer;"><input type="radio" name="combo" style="margin-top:2px;accent-color:#7c3aed;"> 🤖 + ⭐ = <strong>Personalised Chatbot</strong> — TinyBot recommends games</label>
+        <label style="display:flex;align-items:flex-start;gap:8px;font-size:0.82rem;cursor:pointer;"><input type="radio" name="combo" style="margin-top:2px;accent-color:#7c3aed;"> 🔍 + 🤖 = <strong>Visual Q&amp;A Bot</strong> — EdgeBot feeds edge count to TinyBot</label>
+        <label style="display:flex;align-items:flex-start;gap:8px;font-size:0.82rem;cursor:pointer;"><input type="radio" name="combo" style="margin-top:2px;accent-color:#7c3aed;"> ⭐ + 🔍 = <strong>Image-Quality Ranker</strong> — EdgeBot score ranked by RateRec</label>
+      </div>
+      <p style="font-size:0.8rem;font-weight:700;color:#6d28d9;margin-bottom:4px;">📝 My pseudocode sketch:</p>
+      <textarea class="dark-code-write" style="min-height:130px;" spellcheck="false" placeholder="# Step 1: ...&#10;# Step 2: ...&#10;# Step 3: ...&#10;# Output: ..."></textarea>
+    </div>
+  </div>
+</div>
+
+<!-- Bonus B -->
+<div class="card mb-2">
+  <div style="margin-bottom:8px;"><span class="challenge-badge">⭐⭐ Bonus B — Deep-Dive Analysis</span></div>
+  <div class="card-label blue">✍️ Written Analysis (4–6 sentences)</div>
+  <p class="mb-2">Use your knowledge of all three projects to answer: <em>Which of the three AI projects is closest to how a human brain works — and which is furthest away? What would each project need to become truly intelligent?</em></p>
+  <div class="grid-2">
+    <div>
+      <p style="font-size:0.8rem;font-weight:700;color:#0b63ce;margin-bottom:4px;">Closest to human reasoning — and why?</p>
+      <textarea class="write-area" style="min-height:80px;" placeholder="I think [project] is closest because..."></textarea>
+      <p style="font-size:0.8rem;font-weight:700;color:#b91c1c;margin:8px 0 4px;">Furthest away from human reasoning — and why?</p>
+      <textarea class="write-area" style="min-height:80px;" placeholder="[project] is furthest because it only..."></textarea>
+    </div>
+    <div>
+      <p style="font-size:0.8rem;font-weight:700;color:#047857;margin-bottom:4px;">What would each need to become truly intelligent?</p>
+      <textarea class="write-area" style="min-height:80px;" placeholder="RateRec would need...&#10;EdgeBot would need...&#10;TinyBot would need..."></textarea>
+      <div class="tip-box purple mt-2">🔍 <strong>Hint:</strong> Think about whether each project <em>learns</em> from new data, or whether it can only follow rules written by a programmer. What is the difference?</div>
+    </div>
+  </div>
+</div>
+
+<!-- Bonus C -->
+<div class="card accent-green mb-3">
+  <div style="margin-bottom:8px;"><span class="challenge-badge" style="background:linear-gradient(135deg,#10b981,#0b63ce);">⭐⭐⭐ Bonus C — Research Extension</span></div>
+  <div class="card-label green">🔬 Beyond the Lesson</div>
+  <p class="mb-2">Look up <strong>Convolutional Neural Networks (CNNs)</strong> — the deep learning extension of EdgeBot's filter idea. Write pseudocode for one "convolution layer" that uses <em>learnable</em> filter weights instead of a fixed Laplacian. How does that change what the filter can detect?</p>
+  <div class="grid-2">
+    <div>
+      <p style="font-size:0.8rem;font-weight:700;color:#047857;margin-bottom:4px;">📝 Pseudocode for one learnable convolution layer:</p>
+      <textarea class="dark-code-write" style="min-height:130px;" spellcheck="false" placeholder="# Learnable convolution (pseudocode)&#10;# weights = learnable 3x3 matrix (not fixed)&#10;# for each patch in image:&#10;#   output = sum(patch * weights)&#10;#   # weights update after each mistake&#10;# ..."></textarea>
+    </div>
+    <div>
+      <p style="font-size:0.8rem;font-weight:700;color:#047857;margin-bottom:4px;">📊 How does a CNN differ from your EdgeBot?</p>
+      <textarea class="write-area" style="min-height:130px;" placeholder="EdgeBot uses a fixed Laplacian filter — the same math every time. A CNN..."></textarea>
+    </div>
+  </div>
+  <p class="mt-2 text-muted">📧 <strong>Submit to:</strong> hue.weng.88@gmail.com · Subject: <em>Day 21 HW · [Your Name] · Level [1/2/3]</em></p>
+</div>
+
+<hr class="divider">
+
+<!-- ══════════ REAL-WORLD CONNECTIONS ══════════ -->
+<div class="section-label">🌍 Real World</div>
+<div class="section-title">Your Code vs. Production AI</div>
+
+<div class="card mb-3">
+  <table class="score-table">
+    <thead><tr>
+      <th>Your Code Today</th>
+      <th>Real System</th>
+      <th>Scale</th>
+    </tr></thead>
+    <tbody>
+      <tr><td><code>sorted(averages.items(), key=lambda...)</code></td><td>Netflix collaborative filter</td><td>~10 billion rating events/day</td></tr>
+      <tr><td><code>center×4 − neighbors</code></td><td>Tesla FSD convolutional layer</td><td>30 frames/sec · 8 cameras</td></tr>
+      <tr><td><code>tokens &amp; set(kws)</code></td><td>Alexa NLU intent pipeline</td><td>Millions of queries/hour</td></tr>
+      <tr><td>per-player <code>averages</code> dict</td><td>Spotify Discover Weekly</td><td>~600M users personalized weekly</td></tr>
+      <tr><td><code>missed_log</code> list</td><td>Chatbot error analytics</td><td>Drives model retraining</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ══════════ REFLECTION ══════════ -->
+<div class="section-label">💬 Reflect</div>
+<div class="section-title">Exit Ticket &amp; Growth Check</div>
+
+<div class="card mb-3">
+  <div class="grid-2">
+    <div>
+      <div class="card-label blue">🧠 Exit Ticket — Return to Your Slide 2 Answers</div>
+      <p style="font-size:0.8rem;font-weight:700;color:#374151;margin:8px 0 3px;">1. Did you pick the upgrade you planned at the start? If not — what made you switch?</p>
+      <div class="write-lines"><input class="write-line" type="text" placeholder="I planned to... but..." /><input class="write-line" type="text" placeholder="..." /></div>
+      <p style="font-size:0.8rem;font-weight:700;color:#374151;margin:8px 0 3px;">2. Was your "done" estimate correct? What did testing reveal?</p>
+      <div class="write-lines"><input class="write-line" type="text" placeholder="I thought it would take..." /><input class="write-line" type="text" placeholder="Testing revealed..." /></div>
+      <p style="font-size:0.8rem;font-weight:700;color:#374151;margin:8px 0 3px;">3. Did the riskiest part turn out to be hard — or did the surprise come from somewhere else?</p>
+      <div class="write-lines"><input class="write-line" type="text" placeholder="The hardest part was actually..." /><input class="write-line" type="text" placeholder="..." /></div>
+    </div>
+    <div>
+      <div class="card-label green">🌱 Growth Mindset Check</div>
+      <p style="font-size:0.8rem;color:#374151;margin-bottom:8px;">Circle the one that describes you today:</p>
+      <div style="display:flex;flex-direction:column;gap:7px;font-size:0.83rem;color:#374151;">
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;"><input type="radio" name="mood" style="accent-color:#7c3aed;"> 😤 I got stuck but kept trying</label>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;"><input type="radio" name="mood" style="accent-color:#7c3aed;"> 💡 I figured something out by myself</label>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;"><input type="radio" name="mood" style="accent-color:#7c3aed;"> 🤝 I helped a classmate understand</label>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;"><input type="radio" name="mood" style="accent-color:#7c3aed;"> 🚀 I finished early and tackled a bonus!</label>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;"><input type="radio" name="mood" style="accent-color:#7c3aed;"> 🤯 The Laplacian / set intersection idea clicked</label>
+      </div>
+      <p style="font-size:0.8rem;font-weight:700;color:#6d28d9;margin:12px 0 4px;">One thing I still want to learn:</p>
+      <input class="write-line" type="text" placeholder="..." />
+      <p style="font-size:0.8rem;font-weight:700;color:#047857;margin:8px 0 4px;">One thing I did really well today:</p>
+      <input class="write-line" type="text" placeholder="..." />
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ RUBRIC ══════════ -->
+<div class="section-label">📊 Scoring</div>
+<div class="section-title">Rubric &amp; Points</div>
+
+<div class="card mb-3">
+  <table class="rubric">
+    <thead><tr><th>Section</th><th>What to Look For</th><th>Points</th></tr></thead>
+    <tbody>
+      <tr><td>Part 1 — Warm-Up &amp; Plan</td><td>AI Loop blanks correct; AI loop explanation answered; all 3 planning questions filled with specific details</td><td class="pts">4 pts</td></tr>
+      <tr><td>Part 2 — Vocab &amp; Real World</td><td>All 7 term matches correct; True/False circled (corrections written for False); real-world table completed</td><td class="pts">4 pts</td></tr>
+      <tr><td>Part 3 — Trace &amp; Predict</td><td>RateRec trace table complete with working shown; EdgeBot hand calculation correct; TinyBot trace table + 2 bugs identified with trigger inputs and explanations</td><td class="pts">5 pts</td></tr>
+      <tr><td>Part 4 — Coding Challenge</td><td>Chosen level fully completed; code written with comments; upgrade tasks ticked; prediction written before running; test cases recorded (Level 3)</td><td class="pts">7 pts</td></tr>
+      <tr><td>Exit Ticket &amp; Reflection</td><td>Thoughtful responses to all 3 exit questions; growth mindset check completed</td><td class="pts">2 pts</td></tr>
+      <tr><td>⭐ Bonus A — Right-Sizing</td><td>3 upgrade ideas categorised with clear 15-min reasoning; pseudocode sketch for one combination</td><td class="pts">+2</td></tr>
+      <tr><td>⭐⭐ Bonus B — Analysis</td><td>4–6 sentences comparing all 3 projects to human reasoning; uses "learn", "rules", "data" vocabulary correctly</td><td class="pts">+3</td></tr>
+      <tr><td>⭐⭐⭐ Bonus C — CNN Research</td><td>Pseudocode written; meaningful comparison to fixed Laplacian; explains <em>learnable</em> weights</td><td class="pts">+3</td></tr>
+    </tbody>
+  </table>
+</div>
+
+</div><!-- end .page -->
+</body>
+</html>
