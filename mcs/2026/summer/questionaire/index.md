@@ -6,6 +6,6 @@ Instructions:
 2. Once complete, print/save form as PDF
 3. Send PDF to hue.weng.88@gmail.com or text PDF to 646-280-7089
 
-##[English](https://hue881.github.io/mcs/2026/summer/questionaire/eng/)  
+[English](https://hue881.github.io/mcs/2026/summer/questionaire/eng/)  
   
-##[中文](https://hue881.github.io/mcs/2026/summer/questionaire/chi/)
+[中文](https://hue881.github.io/mcs/2026/summer/questionaire/chi/)
