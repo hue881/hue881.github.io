@@ -1,1 +1,1088 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="slides-format" content="viewport">
+<title>Day 21 · Build-Your-Own: Three Projects</title>
 
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+<style type="text/tailwindcss">
+@theme {
+  --color-bg:            #f4fbff;
+  --color-bg-deep:       #e0f2ff;
+  --color-surface:       rgba(255,255,255,0.97);
+  --color-text:          #1f2a37;
+  --color-text-secondary:#374151;
+  --color-text-muted:    #5b6b7e;
+  --color-accent-1:      #0b63ce;
+  --color-accent-2:      #10b981;
+  --color-accent-3:      #f59e0b;
+  --color-glass-bg:      rgba(255,255,255,0.90);
+  --color-glass-border:  rgba(11,99,206,0.16);
+  --color-vignette:      rgba(15,23,42,0.06);
+  --font-display:        "Fredoka", "Trebuchet MS", sans-serif;
+  --font-body:           "Nunito", Arial, sans-serif;
+}
+</style>
+
+<style>
+/* ══ ROOT & DECK ══ */
+:root { --color-bg:#f4fbff; --color-text:#1f2a37; --glow-color-rgb:11,99,206; }
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+html,body { background:var(--color-bg); height:100vh; width:100vw; overflow:hidden; font-family:"Nunito",Arial,sans-serif; color:var(--color-text); }
+.deck { width:100vw; height:100vh; position:relative; }
+.slide {
+  position:absolute; top:0; left:0; width:100%; height:100%;
+  background:var(--color-bg);
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  opacity:0; transform:scale(0.96);
+  transition:opacity 0.65s ease, transform 0.65s ease;
+  pointer-events:none; overflow:hidden;
+}
+.slide.active { opacity:1; transform:scale(1); pointer-events:all; }
+.slide > .content { position:relative; z-index:2; width:100%; max-width:1100px; padding:clamp(1.2rem,3vw,3rem); }
+
+/* NAV */
+.nav-controls {
+  position:fixed; bottom:22px; left:50%; transform:translateX(-50%);
+  display:flex; align-items:center; gap:14px; z-index:100;
+  background:rgba(255,255,255,0.92); backdrop-filter:blur(12px);
+  padding:8px 22px; border-radius:40px;
+  border:1px solid rgba(11,99,206,0.16);
+  box-shadow:0 4px 24px rgba(11,99,206,0.10);
+}
+.nav-btn {
+  width:36px; height:36px; border:none;
+  background:rgba(15,23,42,0.06); color:#0b63ce;
+  border-radius:50%; font-size:1.2rem; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  transition:background 0.2s, transform 0.2s;
+}
+.nav-btn:hover { background:rgba(15,23,42,0.12); transform:translateY(-1px); }
+.slide-dots { display:flex; gap:7px; }
+.slide-dots .dot { width:9px; height:9px; border-radius:50%; background:rgba(148,163,184,0.6); cursor:pointer; transition:background 0.3s,transform 0.3s; }
+.slide-dots .dot.active { background:#0b63ce; transform:scale(1.4); }
+.slide-counter { font-size:0.78rem; color:#64748b; min-width:38px; text-align:center; }
+
+/* REVEAL */
+.reveal { opacity:0; transform:translateY(18px); }
+
+/* BLOBS */
+@keyframes float-slow { 0%{transform:translate(0,0) scale(1);} 25%{transform:translate(50px,-40px) scale(1.1);} 50%{transform:translate(-30px,35px) scale(0.92);} 75%{transform:translate(40px,15px) scale(1.06);} 100%{transform:translate(0,0) scale(1);} }
+@keyframes float-drift { 0%{transform:translate(0,0) scale(1) rotate(0deg);} 33%{transform:translate(-40px,-50px) scale(1.12) rotate(2deg);} 66%{transform:translate(35px,25px) scale(0.9) rotate(-2deg);} 100%{transform:translate(0,0) scale(1) rotate(0deg);} }
+@keyframes float { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-12px);} }
+.gradient-mesh { position:absolute; inset:0; z-index:0; overflow:hidden; pointer-events:none; }
+.blob { position:absolute; border-radius:50%; filter:blur(70px); animation:float-slow 12s ease-in-out infinite; }
+.blob:nth-child(2) { animation:float-drift 16s ease-in-out infinite; }
+.blob:nth-child(3) { animation:float-slow 20s ease-in-out infinite reverse; }
+.slide::after { content:''; position:absolute; inset:0; z-index:1; pointer-events:none; background:radial-gradient(ellipse at center,transparent 55%,rgba(15,23,42,0.06) 100%); }
+
+.particle-canvas { position:absolute; inset:0; z-index:1; pointer-events:none; }
+.mouse-spotlight { position:fixed; inset:0; z-index:99; pointer-events:none; }
+
+/* GLOW */
+@keyframes glow-pulse { 0%,100%{text-shadow:0 0 18px rgba(11,99,206,0.4),0 0 36px rgba(11,99,206,0.15);} 50%{text-shadow:0 0 28px rgba(11,99,206,0.7),0 0 56px rgba(11,99,206,0.3);} }
+.glow-pulse { animation:glow-pulse 3s ease-in-out infinite; }
+
+/* CODE */
+.code-wrap { background:#1e293b; border-radius:14px; padding:0; overflow:hidden; box-shadow:0 6px 32px rgba(15,23,42,0.18); }
+.code-toolbar { background:#293548; padding:8px 14px; display:flex; align-items:center; gap:6px; }
+.code-dot { width:11px; height:11px; border-radius:50%; }
+.code-label { font-family:"Fira Code",monospace; font-size:0.72rem; color:#64748b; margin-left:8px; letter-spacing:0.05em; }
+pre.code-block { font-family:"Fira Code",Consolas,monospace; font-size:clamp(0.7rem,1.1vw,0.9rem); line-height:1.7; color:#e2e8f0; padding:14px 18px; margin:0; white-space:pre; tab-size:4; overflow-x:auto; max-height:34vh; overflow-y:auto; }
+.kw{color:#93c5fd;font-weight:600;} .bi{color:#f9a8d4;} .cm{color:#64748b;font-style:italic;} .st{color:#86efac;} .nb{color:#fde68a;} .fn{color:#c4b5fd;} .op{color:#94a3b8;}
+
+/* CARDS */
+.card { background:rgba(255,255,255,0.93); border:1px solid rgba(11,99,206,0.13); border-radius:14px; padding:16px 18px; box-shadow:0 3px 16px rgba(11,99,206,0.07); transition:transform 0.2s,box-shadow 0.2s; }
+.card:hover { transform:translateY(-3px); box-shadow:0 8px 28px rgba(11,99,206,0.13); }
+.card-blue   { border-left:4px solid #0b63ce; }
+.card-green  { border-left:4px solid #10b981; }
+.card-amber  { border-left:4px solid #f59e0b; }
+.card-red    { border-left:4px solid #ef4444; }
+.card-purple { border-left:4px solid #8b5cf6; }
+
+.tag { display:inline-flex; align-items:center; padding:3px 10px; border-radius:20px; font-size:0.72rem; font-weight:700; letter-spacing:0.07em; text-transform:uppercase; }
+.tag-blue   { background:rgba(11,99,206,0.12); color:#1d4ed8; }
+.tag-green  { background:rgba(16,185,129,0.12); color:#065f46; }
+.tag-amber  { background:rgba(245,158,11,0.12); color:#92400e; }
+.tag-purple { background:rgba(139,92,246,0.12); color:#5b21b6; }
+
+/* SECTION PILL */
+.section-pill { display:inline-flex; align-items:center; gap:6px; background:linear-gradient(135deg,#0b63ce,#10b981); color:#fff; padding:6px 16px; border-radius:30px; font-size:0.78rem; font-weight:800; letter-spacing:0.1em; text-transform:uppercase; box-shadow:0 3px 14px rgba(11,99,206,0.25); }
+
+/* TIMELINE */
+.timeline-track { position:relative; padding-left:28px; border-left:3px solid rgba(11,99,206,0.2); }
+.timeline-node { position:absolute; left:-9px; top:4px; width:14px; height:14px; border-radius:50%; background:#0b63ce; box-shadow:0 0 0 3px rgba(11,99,206,0.18); }
+
+/* VIDEO EMBED */
+.video-thumb-wrap { position:relative; cursor:pointer; border-radius:14px; overflow:hidden; box-shadow:0 6px 28px rgba(15,23,42,0.18); transition:transform 0.2s,box-shadow 0.2s; }
+.video-thumb-wrap:hover { transform:scale(1.02); box-shadow:0 10px 36px rgba(15,23,42,0.22); }
+.video-thumb-wrap img { width:100%; display:block; aspect-ratio:16/9; object-fit:cover; }
+.play-btn { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:56px; height:56px; border-radius:50%; background:rgba(255,0,0,0.9); display:flex; align-items:center; justify-content:center; pointer-events:none; box-shadow:0 4px 18px rgba(0,0,0,0.35); transition:transform 0.2s; }
+.video-thumb-wrap:hover .play-btn { transform:translate(-50%,-50%) scale(1.12); }
+.play-btn svg { margin-left:4px; }
+.video-iframe-wrap { border-radius:14px; overflow:hidden; box-shadow:0 6px 28px rgba(15,23,42,0.18); aspect-ratio:16/9; }
+.video-iframe-wrap iframe { width:100%; height:100%; border:none; }
+
+/* REVEAL ANSWER */
+.reveal-answer { background:rgba(16,185,129,0.12); border:2px dashed rgba(16,185,129,0.5); border-radius:12px; padding:12px 16px; cursor:pointer; transition:background 0.3s; }
+.reveal-answer:hover { background:rgba(16,185,129,0.22); }
+.answer-text { display:none; color:#065f46; font-weight:700; margin-top:6px; }
+
+/* BAR CHART */
+.bar-row { display:flex; align-items:center; gap:10px; margin-bottom:8px; }
+.bar-label { width:90px; font-size:0.82rem; font-weight:700; text-align:right; color:#374151; flex-shrink:0; }
+.bar-track { flex:1; height:26px; border-radius:8px; background:rgba(11,99,206,0.08); overflow:hidden; }
+.bar-fill { height:100%; border-radius:8px; width:0%; transition:width 0.9s cubic-bezier(0.16,1,0.3,1); }
+.bar-val { width:48px; font-size:0.82rem; font-weight:800; color:#0b63ce; flex-shrink:0; }
+
+/* DECO */
+.deco-shape { position:absolute; pointer-events:none; z-index:1; will-change:transform; transition:transform 0.05s linear; }
+
+@media(prefers-reduced-motion:reduce){ *,*::before,*::after{animation-duration:0.01ms!important;transition-duration:0.2s!important;} }
+</style>
+</head>
+<body>
+<div class="mouse-spotlight"></div>
+<div class="deck">
+
+<!-- ═══════════════════════════════════════
+     SLIDE 1 · TITLE
+════════════════════════════════════════ -->
+<div class="slide slide-1 active" data-slide="1">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:480px;height:480px;top:-120px;right:-80px;background:#0b63ce;opacity:0.10;"></div>
+    <div class="blob" style="width:320px;height:320px;bottom:-80px;left:-60px;background:#10b981;opacity:0.10;"></div>
+    <div class="blob" style="width:200px;height:200px;top:45%;left:10%;background:#f59e0b;opacity:0.08;"></div>
+  </div>
+  <canvas class="particle-canvas" id="pc1"></canvas>
+  <div class="content" style="text-align:center;">
+    <div style="font-size:clamp(3rem,7vw,5rem);margin-bottom:0.8rem;animation:float 3s ease-in-out infinite;" class="reveal">🚀</div>
+    <h1 style="font-family:'Fredoka',sans-serif;font-size:clamp(2rem,5vw,3.6rem);font-weight:700;line-height:1.1;margin-bottom:0.7rem;" class="reveal glow-pulse">
+      Day 21 · Three-Project Build Sprint
+    </h1>
+    <p class="reveal" style="font-size:clamp(0.9rem,1.5vw,1.2rem);color:#5b6b7e;margin-bottom:1.4rem;">
+      One lesson, three projects — <em>RateRec · EdgeBot · TinyBot v2</em>. Pick yours and iterate.
+    </p>
+    <div class="reveal" style="display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-bottom:1.2rem;">
+      <span class="tag tag-blue">⭐ RateRec</span> <span class="tag tag-green" style="font-size:0.65rem;">🟢 Beginner</span>
+      <span class="tag tag-amber">🔍 EdgeBot</span> <span class="tag tag-amber" style="font-size:0.65rem;">🟡 Intermediate</span>
+      <span class="tag tag-purple">🤖 TinyBot v2</span> <span class="tag tag-purple" style="font-size:0.65rem;">🔴 Advanced</span>
+      <span class="tag tag-purple">Build · Test · Ship</span>
+    </div>
+    <p class="reveal" style="font-size:0.75rem;color:#94a3b8;letter-spacing:0.1em;text-transform:uppercase;">Mr. Hsiao &ldquo;Hue&rdquo; Weng &nbsp;·&nbsp; AI &amp; Coding for Kids · Spring 2026</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     SLIDE 2 · THINK FIRST — PLANNING QUESTIONS
+════════════════════════════════════════ -->
+<div class="slide slide-2" data-slide="2">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:350px;height:350px;top:-80px;right:-80px;background:#f59e0b;opacity:0.09;"></div>
+    <div class="blob" style="width:250px;height:250px;bottom:-60px;left:-40px;background:#0b63ce;opacity:0.07;"></div>
+  </div>
+  <div class="content">
+    <div class="section-pill reveal" style="margin-bottom:1rem;">✏️ Think First</div>
+    <h2 class="reveal" style="font-family:'Fredoka',sans-serif;font-size:clamp(1.5rem,3vw,2.2rem);color:#0b63ce;font-weight:700;margin-bottom:1.1rem;">
+      Before We Build — Plan It in 3 Questions
+    </h2>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div class="card card-blue reveal" style="padding:13px 16px;">
+        <p style="font-size:0.72rem;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#0b63ce;margin-bottom:4px;">Question 1 · Focus &amp; Difficulty</p>
+        <p style="font-size:0.92rem;color:#1f2a37;">Which project are you upgrading today? <span style="background:#dcfce7;color:#166534;padding:1px 7px;border-radius:8px;font-size:0.8rem;font-weight:700;">🟢 RateRec — Beginner</span> &nbsp;<span style="background:#fef9c3;color:#854d0e;padding:1px 7px;border-radius:8px;font-size:0.8rem;font-weight:700;">🟡 EdgeBot — Intermediate</span> &nbsp;<span style="background:#ede9fe;color:#5b21b6;padding:1px 7px;border-radius:8px;font-size:0.8rem;font-weight:700;">🔴 TinyBot — Advanced</span>. What is the <em>one feature</em> you want to add or fix?</p>
+      </div>
+      <div class="card card-green reveal" style="padding:13px 16px;">
+        <p style="font-size:0.72rem;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#059669;margin-bottom:4px;">Question 2 · Done-ness</p>
+        <p style="font-size:0.92rem;color:#1f2a37;">How will you <em>know</em> when today's upgrade is complete? Name a specific, testable outcome — a number, a printed output, or a behaviour you can observe.</p>
+      </div>
+      <div class="card card-amber reveal" style="padding:13px 16px;">
+        <p style="font-size:0.72rem;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#92400e;margin-bottom:4px;">Question 3 · Risk</p>
+        <p style="font-size:0.92rem;color:#1f2a37;">What is the <em>riskiest</em> part of your plan — the line of code most likely to throw an error? How can you test that one part first, in isolation?</p>
+      </div>
+    </div>
+    <p class="reveal" style="font-size:0.78rem;color:#5b6b7e;margin-top:10px;">✏️ Write your three answers on paper <em>before</em> opening your editor. We return to these at the Exit Ticket.</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     SLIDE 3 · WHAT CONNECTS ALL THREE PROJECTS
+════════════════════════════════════════ -->
+<div class="slide slide-3" data-slide="3">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:300px;height:300px;top:-60px;right:-60px;background:#0b63ce;opacity:0.08;"></div>
+    <div class="blob" style="width:220px;height:220px;bottom:-50px;left:-40px;background:#10b981;opacity:0.07;"></div>
+  </div>
+  <div class="content">
+    <div class="section-pill reveal" style="margin-bottom:0.9rem;">🔗 Core Concept</div>
+    <h2 class="reveal" style="font-family:'Fredoka',sans-serif;font-size:clamp(1.4rem,3vw,2.2rem);color:#0b63ce;font-weight:700;margin-bottom:1rem;">
+      Three Projects, One Big Idea
+    </h2>
+    <p class="reveal" style="font-size:0.88rem;color:#374151;margin-bottom:1rem;">All three projects you have built so far use the same underlying loop that drives most real AI: <strong>collect data → apply a rule → produce an output → evaluate it → improve the rule.</strong></p>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;" class="reveal">
+      <div class="card card-blue" style="padding:14px 16px;">
+        <p style="font-size:1.8rem;margin-bottom:6px;">⭐</p>
+        <p style="font-weight:800;color:#0b63ce;font-size:0.88rem;margin-bottom:4px;">RateRec (Day 15)</p>
+        <p style="font-size:0.76rem;color:#374151;margin-bottom:6px;">Recommends items based on average ratings or per-player taste. Data = votes. Rule = average or sort. Output = ranked list.</p>
+        <p style="font-size:0.72rem;font-weight:700;color:#374151;margin-bottom:4px;">Core: <span style="color:#0b63ce;">sum · len · dict · sorted()</span></p>
+        <div style="background:rgba(11,99,206,0.06);border-radius:8px;padding:7px 10px;">
+          <p style="font-size:0.7rem;color:#374151;font-weight:600;">💡 Upgrade: add a 3rd user and a new item; observe whose list changes</p>
+        </div>
+      </div>
+      <div class="card card-green" style="padding:14px 16px;">
+        <p style="font-size:1.8rem;margin-bottom:6px;">🔍</p>
+        <p style="font-weight:800;color:#059669;font-size:0.88rem;margin-bottom:4px;">EdgeBot (Day 16)</p>
+        <p style="font-size:0.76rem;color:#374151;margin-bottom:6px;">Detects edges in a 5×5 number grid using the Laplacian filter. Data = pixel grid. Rule = center×4 − neighbors. Output = filtered grid.</p>
+        <p style="font-size:0.72rem;font-weight:700;color:#374151;margin-bottom:4px;">Core: <span style="color:#059669;">nested loops · list indexing · arithmetic</span></p>
+        <div style="background:rgba(16,185,129,0.07);border-radius:8px;padding:7px 10px;">
+          <p style="font-size:0.7rem;color:#374151;font-weight:600;">💡 Upgrade: change the center value; predict and verify the new edge signal</p>
+        </div>
+      </div>
+      <div class="card card-amber" style="padding:14px 16px;">
+        <p style="font-size:1.8rem;margin-bottom:6px;">🤖</p>
+        <p style="font-weight:800;color:#7c3aed;font-size:0.88rem;margin-bottom:4px;">🤖 TinyBot v2 (Day 17)</p>
+        <span style="display:inline-block;background:#ede9fe;color:#5b21b6;font-size:0.65rem;font-weight:800;padding:2px 8px;border-radius:12px;letter-spacing:0.06em;margin-bottom:6px;">🔴 ADVANCED</span>
+        <p style="font-size:0.76rem;color:#374151;margin-bottom:6px;">Rule-based chatbot classifies intent from keywords and replies with stored responses. Data = message. Rule = keyword match. Output = reply string.</p>
+        <p style="font-size:0.72rem;font-weight:700;color:#374151;margin-bottom:4px;">Core: <span style="color:#7c3aed;">dict · set intersection · string methods · function dispatch</span></p>
+        <div style="background:rgba(139,92,246,0.08);border-radius:8px;padding:7px 10px;">
+          <p style="font-size:0.7rem;color:#374151;font-weight:600;">💡 Upgrade: add 2 new intents; log every missed message to a list</p>
+        </div>
+      </div>
+    </div>
+    <div class="reveal" style="margin-top:12px;background:rgba(11,99,206,0.06);border-radius:12px;padding:10px 16px;border:1px solid rgba(11,99,206,0.18);">
+      <p style="font-size:0.8rem;color:#1f2a37;">💭 <strong>Pause &amp; think:</strong> In which project does the computer <em>learn</em> from data — and in which does it just follow fixed rules? What would it take to make all three learn?</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     SLIDE 4 · REAL-WORLD CONNECTIONS
+════════════════════════════════════════ -->
+<div class="slide slide-4" data-slide="4">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:320px;height:320px;top:-60px;right:-60px;background:#10b981;opacity:0.09;"></div>
+    <div class="blob" style="width:220px;height:220px;bottom:-50px;left:-40px;background:#0b63ce;opacity:0.08;"></div>
+  </div>
+  <div class="content">
+    <div class="section-pill reveal" style="margin-bottom:0.9rem;">🌍 Real-World AI</div>
+    <h2 class="reveal" style="font-family:'Fredoka',sans-serif;font-size:clamp(1.4rem,3vw,2.1rem);color:#0b63ce;font-weight:700;margin-bottom:1rem;">
+      Your Three Projects Are Already Inside Real Apps
+    </h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;" class="reveal">
+      <div class="card card-blue" style="padding:14px 16px;">
+        <p style="font-size:1.6rem;margin-bottom:6px;">📺</p>
+        <p style="font-weight:800;color:#0b63ce;font-size:0.82rem;margin-bottom:4px;">RateRec → Netflix / Spotify</p>
+        <p style="font-size:0.78rem;color:#374151;">Netflix's earliest recommender ranked movies by average star ratings — exactly your Recommender_v1. The per-player version you built is the seed of <em>collaborative filtering</em>, which won a $1M Netflix Prize in 2009.</p>
+      </div>
+      <div class="card card-green" style="padding:14px 16px;">
+        <p style="font-size:1.6rem;margin-bottom:6px;">📸</p>
+        <p style="font-weight:800;color:#059669;font-size:0.82rem;margin-bottom:4px;">EdgeBot → Face Unlock / Self-Driving</p>
+        <p style="font-size:0.78rem;color:#374151;">The Laplacian filter you coded is layer 0 of every Convolutional Neural Network. Tesla and Waymo apply the same idea at 30 frames per second to detect lane markings, pedestrians, and stop signs.</p>
+      </div>
+      <div class="card card-amber" style="padding:14px 16px;">
+        <p style="font-size:1.6rem;margin-bottom:6px;">💬</p>
+        <p style="font-weight:800;color:#92400e;font-size:0.82rem;margin-bottom:4px;">TinyBot v2 → Siri / Alexa</p>
+        <p style="font-size:0.78rem;color:#374151;">Early versions of Alexa used rule-based intent classifiers almost identical to your dict-driven TinyBot. The difference is scale: Alexa's NLU model uses gigabytes of training data and 100+ intents.</p>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px;" class="reveal">
+      <div class="card" style="padding:12px 16px;">
+        <p style="font-size:0.72rem;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#5b6b7e;margin-bottom:6px;">🏆 Big Numbers</p>
+        <div class="bar-row"><span class="bar-label">Netflix CF</span><div class="bar-track"><div class="bar-fill" data-width="95" style="background:linear-gradient(90deg,#0b63ce,#60a5fa);"></div></div><span class="bar-val">$1M prize</span></div>
+        <div class="bar-row"><span class="bar-label">Tesla FSD</span><div class="bar-track"><div class="bar-fill" data-width="78" style="background:linear-gradient(90deg,#10b981,#34d399);"></div></div><span class="bar-val">30 fps</span></div>
+        <div class="bar-row"><span class="bar-label">Alexa NLU</span><div class="bar-track"><div class="bar-fill" data-width="62" style="background:linear-gradient(90deg,#f59e0b,#fcd34d);"></div></div><span class="bar-val">100+ intents</span></div>
+      </div>
+      <p style="font-size:0.72rem;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#5b6b7e;margin:10px 0 5px;">Today's project difficulty</p>
+      <div style="background:rgba(255,255,255,0.7);border-radius:10px;padding:8px 14px;">
+        <div class="bar-row"><span class="bar-label" style="color:#166534;width:110px;">⭐ RateRec</span><div class="bar-track"><div class="bar-fill" data-width="30" style="background:linear-gradient(90deg,#22c55e,#86efac);"></div></div><span class="bar-val" style="color:#166534;font-size:0.75rem;">🟢 Beginner</span></div>
+        <div class="bar-row"><span class="bar-label" style="color:#854d0e;width:110px;">🔍 EdgeBot</span><div class="bar-track"><div class="bar-fill" data-width="62" style="background:linear-gradient(90deg,#f59e0b,#fcd34d);"></div></div><span class="bar-val" style="color:#854d0e;font-size:0.75rem;">🟡 Intermediate</span></div>
+        <div class="bar-row"><span class="bar-label" style="color:#5b21b6;width:110px;">🤖 TinyBot v2</span><div class="bar-track"><div class="bar-fill" data-width="88" style="background:linear-gradient(90deg,#8b5cf6,#c4b5fd);"></div></div><span class="bar-val" style="color:#5b21b6;font-size:0.75rem;">🔴 Advanced</span></div>
+      </div>
+      <div class="card" style="padding:12px 16px;">
+        <p style="font-size:0.72rem;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#5b6b7e;margin-bottom:6px;">🤔 Think About It</p>
+        <p style="font-size:0.8rem;color:#374151;margin-bottom:6px;">All three real systems started as a single loop written by one programmer — just like yours. What is the <strong>one thing</strong> that separates a school project from a deployed product?</p>
+        <div class="reveal-answer" onclick="this.querySelector('.answer-text').style.display='block';">
+          <p style="font-size:0.78rem;color:#374151;font-weight:600;">Click to reveal the answer</p>
+          <p class="answer-text" style="font-size:0.78rem;">Scale + real data + feedback loops. The algorithm is often the same — what changes is how many data points it learns from and how often it is tested against real users.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     SLIDE 5 · VIDEO 1 — HOW RECOMMENDATION SYSTEMS WORK
+════════════════════════════════════════ -->
+<div class="slide slide-5" data-slide="5">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:340px;height:340px;top:-70px;right:-70px;background:#0b63ce;opacity:0.08;"></div>
+    <div class="blob" style="width:230px;height:230px;bottom:-55px;left:-40px;background:#f59e0b;opacity:0.07;"></div>
+  </div>
+  <div class="content">
+    <div class="section-pill reveal" style="margin-bottom:0.9rem;">🎬 Video 1 · Recommendation Systems</div>
+    <h2 class="reveal" style="font-family:'Fredoka',sans-serif;font-size:clamp(1.4rem,3vw,2.1rem);color:#0b63ce;font-weight:700;margin-bottom:1rem;">
+      What Is a Recommendation System? — ML for Kids
+    </h2>
+    <div style="display:grid;grid-template-columns:1.1fr 1fr;gap:18px;align-items:start;" class="reveal">
+      <div>
+        <div class="video-thumb-wrap" onclick="playVideo(this,'https://www.youtube.com/embed/SxCsaQ4Lh2U?autoplay=1&rel=0')">
+          <img src="https://img.youtube.com/vi/SxCsaQ4Lh2U/hqdefault.jpg" alt="What is a Recommendation System — ML for Kids thumbnail">
+          <div class="play-btn">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg>
+          </div>
+        </div>
+        <p style="font-size:0.72rem;color:#5b6b7e;margin-top:6px;">
+          Source: <a href="https://www.youtube.com/watch?v=SxCsaQ4Lh2U" target="_blank" style="color:#0b63ce;text-decoration:underline;">youtube.com/watch?v=SxCsaQ4Lh2U</a><br>
+          CBC Kids News · Social Media Algorithms Explained (~3 min)
+        </p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <p style="font-size:0.72rem;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#0b63ce;margin-bottom:2px;">Watch for these</p>
+        <div class="card card-blue" style="padding:9px 12px;">
+          <p style="font-size:0.8rem;color:#1f2a37;">The video says recommendation systems match users with things they might <strong>like or buy</strong> — find the line in RateRec that does exactly that matching. What's the Python word for it?</p>
+        </div>
+        <div class="card card-green" style="padding:9px 12px;">
+          <p style="font-size:0.8rem;color:#1f2a37;">The video describes <strong>user history and similar users</strong> as the two main signals — which does your per-player RateRec use, and which is it missing?</p>
+        </div>
+        <div class="card card-amber" style="padding:9px 12px;">
+          <p style="font-size:0.8rem;color:#1f2a37;">Does recommending the highest-rated item always mean it's the <strong>best recommendation</strong> for that user? What extra information would you need to improve it?</p>
+        </div>
+        <div class="reveal-answer" onclick="this.querySelector('.answer-text').style.display='block';" style="margin-top:4px;">
+          <p style="font-size:0.8rem;color:#374151;font-weight:600;">✍️ After watching: one sentence on what you would add to RateRec.</p>
+          <p class="answer-text">RateRec uses per-player averages (like content-based filtering), but adding a second player's ratings and comparing them would unlock collaborative filtering — recommending what "taste twins" liked.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     SLIDE 6 · RATЕРEC PROJECT DEEP-DIVE
+════════════════════════════════════════ -->
+<div class="slide slide-6" data-slide="6">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:360px;height:360px;top:-70px;right:-70px;background:#0b63ce;opacity:0.07;"></div>
+    <div class="blob" style="width:230px;height:230px;bottom:-50px;left:-40px;background:#10b981;opacity:0.06;"></div>
+  </div>
+  <div class="content">
+    <div class="section-pill reveal" style="margin-bottom:0.8rem;">⭐ Project 1 · RateRec &nbsp;<span style="background:rgba(255,255,255,0.25);border-radius:10px;padding:2px 8px;font-size:0.7rem;letter-spacing:0.08em;">🟢 BEGINNER</span></div>
+    <h2 class="reveal" style="font-family:'Fredoka',sans-serif;font-size:clamp(1.35rem,2.8vw,2rem);color:#0b63ce;font-weight:700;margin-bottom:0.8rem;">
+      ⭐ RateRec — Average-Rating &amp; Per-Player Recommender
+    </h2>
+    <p class="reveal" style="font-size:0.8rem;color:#166534;background:#dcfce7;border-radius:8px;padding:6px 12px;margin-bottom:0.8rem;display:inline-block;font-weight:700;">🟢 Beginner · Pure Python · No imports needed · ~15 lines total</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;" class="reveal">
+      <div>
+        <div class="code-wrap">
+          <div class="code-toolbar">
+            <div class="code-dot" style="background:#ef4444;"></div>
+            <div class="code-dot" style="background:#f59e0b;"></div>
+            <div class="code-dot" style="background:#22c55e;"></div>
+            <span class="code-label">recommender_v2.py</span>
+          </div>
+          <pre class="code-block"><span class="cm"># Per-player recommender (Day 15 upgrade)</span>
+player_ratings = {
+    <span class="st">'Alex'</span>:   {<span class="st">'Racing'</span>:[<span class="nb">1</span>,<span class="nb">1</span>,<span class="nb">1</span>],
+                <span class="st">'Puzzle'</span>:[<span class="nb">1</span>,<span class="nb">1</span>,<span class="nb">0</span>],
+                <span class="st">'Shooter'</span>:[<span class="nb">0</span>,<span class="nb">0</span>,<span class="nb">0</span>]},
+    <span class="st">'Jordan'</span>: {<span class="st">'Racing'</span>:[<span class="nb">0</span>,<span class="nb">1</span>,<span class="nb">0</span>],
+                <span class="st">'Puzzle'</span>:[<span class="nb">1</span>,<span class="nb">1</span>,<span class="nb">1</span>],
+                <span class="st">'Shooter'</span>:[<span class="nb">1</span>,<span class="nb">1</span>,<span class="nb">0</span>]},
+}
+
+<span class="kw">for</span> name, games <span class="kw">in</span> player_ratings.<span class="fn">items</span>():
+    <span class="fn">print</span>(<span class="st">'\nRecommendations for'</span>, name)
+    averages = {}
+    <span class="kw">for</span> game, votes <span class="kw">in</span> games.<span class="fn">items</span>():
+        averages[game] = <span class="fn">sum</span>(votes) / <span class="fn">len</span>(votes)
+    ranked = <span class="fn">sorted</span>(averages.<span class="fn">items</span>(),
+        key=<span class="kw">lambda</span> item: item[<span class="nb">1</span>],
+        reverse=<span class="kw">True</span>)
+    <span class="kw">for</span> game, score <span class="kw">in</span> ranked:
+        <span class="fn">print</span>(<span class="st">' '</span>, game, <span class="st">'->'</span>, <span class="fn">round</span>(score, <span class="nb">2</span>))</pre>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:9px;">
+        <div class="card card-blue" style="padding:10px 14px;">
+          <p style="font-size:0.72rem;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#0b63ce;margin-bottom:5px;">🔑 Key Concepts</p>
+          <ul style="list-style:disc;padding-left:16px;font-size:0.78rem;color:#374151;display:flex;flex-direction:column;gap:3px;">
+            <li><code style="background:#e0f2ff;padding:1px 4px;border-radius:4px;">.items()</code> yields (key, value) pairs — outer loop = players, inner = games</li>
+            <li><code style="background:#e0f2ff;padding:1px 4px;border-radius:4px;">lambda item: item[1]</code> tells <code style="background:#e0f2ff;padding:1px 4px;border-radius:4px;">sorted()</code> to sort by the <em>score</em>, not the name</li>
+            <li><code style="background:#e0f2ff;padding:1px 4px;border-radius:4px;">reverse=True</code> puts the highest score first — that's your recommendation</li>
+          </ul>
+        </div>
+        <div class="card card-green" style="padding:10px 14px;">
+          <p style="font-size:0.72rem;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#059669;margin-bottom:4px;">💡 Upgrade Hook</p>
+          <p style="font-size:0.78rem;color:#374151;">Add a third player <code style="background:#e8fdf5;padding:1px 4px;border-radius:4px;">'Sam'</code> with completely different tastes. Then add a 4th game <code style="background:#e8fdf5;padding:1px 4px;border-radius:4px;">'Coding'</code>. Does your loop need any changes? Why not?</p>
+        </div>
+        <div class="card card-amber" style="padding:10px 14px;">
+          <p style="font-size:0.72rem;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#92400e;margin-bottom:4px;">🤔 Think About It</p>
+          <p style="font-size:0.78rem;color:#374151;">Add <code style="background:#fef3c7;padding:1px 4px;border-radius:4px;">'Sam': {'Racing':[0,0,0],'Puzzle':[0,0,0],'Shooter':[0,0,0]}</code>. What gets recommended? Is that meaningful? How would you handle all-zero ratings?</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     SLIDE 7 · VIDEO 2 — HOW COMPUTERS SEE (EDGE DETECTION)
+════════════════════════════════════════ -->
+<div class="slide slide-7" data-slide="7">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:340px;height:340px;top:-70px;right:-70px;background:#10b981;opacity:0.08;"></div>
+    <div class="blob" style="width:230px;height:230px;bottom:-55px;left:-40px;background:#0b63ce;opacity:0.07;"></div>
+  </div>
+  <div class="content">
+    <div class="section-pill reveal" style="margin-bottom:0.9rem;">🎬 Video 2 · Edge Detection</div>
+    <h2 class="reveal" style="font-family:'Fredoka',sans-serif;font-size:clamp(1.4rem,3vw,2.1rem);color:#0b63ce;font-weight:700;margin-bottom:1rem;">
+      How Computers See — Pixels, Edges &amp; Filters
+    </h2>
+    <div style="display:grid;grid-template-columns:1.1fr 1fr;gap:18px;align-items:start;" class="reveal">
+      <div>
+        <div class="video-thumb-wrap" onclick="playVideo(this,'https://www.youtube.com/embed/pJXBmnDg-8U?autoplay=1&rel=0')">
+          <img src="https://img.youtube.com/vi/pJXBmnDg-8U/hqdefault.jpg" alt="How Computers See — Edge Detection thumbnail">
+          <div class="play-btn">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg>
+          </div>
+        </div>
+        <p style="font-size:0.72rem;color:#5b6b7e;margin-top:6px;">
+          Source: <a href="https://www.youtube.com/watch?v=pJXBmnDg-8U" target="_blank" style="color:#0b63ce;text-decoration:underline;">youtube.com/watch?v=pJXBmnDg-8U</a><br>
+          How Computers See: Edge Detection (~4 min)
+        </p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <p style="font-size:0.72rem;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#059669;margin-bottom:2px;">Watch for these</p>
+        <div class="card card-green" style="padding:9px 12px;">
+          <p style="font-size:0.8rem;color:#1f2a37;">The video shows a filter being "slid" over an image — which <strong>Python construct</strong> in your EdgeBot code does exactly that sliding motion?</p>
+        </div>
+        <div class="card card-blue" style="padding:9px 12px;">
+          <p style="font-size:0.8rem;color:#1f2a37;">What does a <strong>large output value</strong> from the filter mean about the pixels in that region?</p>
+        </div>
+        <div class="card card-amber" style="padding:9px 12px;">
+          <p style="font-size:0.8rem;color:#1f2a37;">The video mentions real applications — <strong>name one</strong> that surprised you and explain how edge detection enables it.</p>
+        </div>
+        <div class="reveal-answer" onclick="this.querySelector('.answer-text').style.display='block';" style="margin-top:4px;">
+          <p style="font-size:0.8rem;color:#374151;font-weight:600;">✍️ After watching: describe the filter in one sentence, in your own words.</p>
+          <p class="answer-text">A filter checks how different each pixel is from its neighbors — a big difference means an edge; near-zero means a flat, boring region.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     SLIDE 8 · EDGEBOT PROJECT DEEP-DIVE
+════════════════════════════════════════ -->
+<div class="slide slide-8" data-slide="8">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:360px;height:360px;top:-70px;right:-70px;background:#10b981;opacity:0.07;"></div>
+    <div class="blob" style="width:230px;height:230px;bottom:-50px;left:-40px;background:#0b63ce;opacity:0.06;"></div>
+  </div>
+  <div class="content">
+    <div class="section-pill reveal" style="margin-bottom:0.8rem;">🔍 Project 2 · EdgeBot &nbsp;<span style="background:rgba(255,255,255,0.25);border-radius:10px;padding:2px 8px;font-size:0.7rem;letter-spacing:0.08em;">🟡 INTERMEDIATE</span></div>
+    <h2 class="reveal" style="font-family:'Fredoka',sans-serif;font-size:clamp(1.35rem,2.8vw,2rem);color:#059669;font-weight:700;margin-bottom:0.8rem;">
+      🔍 EdgeBot — The 5×5 Laplacian Image Filter
+    </h2>
+    <p class="reveal" style="font-size:0.8rem;color:#854d0e;background:#fef9c3;border-radius:8px;padding:6px 12px;margin-bottom:0.8rem;display:inline-block;font-weight:700;">🟡 Intermediate · Nested loops · 2-D list indexing · boundary math</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;" class="reveal">
+      <div>
+        <div class="code-wrap">
+          <div class="code-toolbar">
+            <div class="code-dot" style="background:#ef4444;"></div>
+            <div class="code-dot" style="background:#f59e0b;"></div>
+            <div class="code-dot" style="background:#22c55e;"></div>
+            <span class="code-label">edge_filter.py</span>
+          </div>
+          <pre class="code-block"><span class="cm"># EdgeBot — Laplacian edge detection (Day 16)</span>
+image = [
+    [<span class="nb">0</span>, <span class="nb">0</span>, <span class="nb">0</span>, <span class="nb">0</span>, <span class="nb">0</span>],
+    [<span class="nb">0</span>, <span class="nb">5</span>, <span class="nb">5</span>, <span class="nb">5</span>, <span class="nb">0</span>],
+    [<span class="nb">0</span>, <span class="nb">5</span>, <span class="nb">9</span>, <span class="nb">5</span>, <span class="nb">0</span>],  <span class="cm"># ← brightest pixel</span>
+    [<span class="nb">0</span>, <span class="nb">5</span>, <span class="nb">5</span>, <span class="nb">5</span>, <span class="nb">0</span>],
+    [<span class="nb">0</span>, <span class="nb">0</span>, <span class="nb">0</span>, <span class="nb">0</span>, <span class="nb">0</span>],
+]
+
+filtered = []
+<span class="kw">for</span> y <span class="kw">in</span> <span class="fn">range</span>(<span class="nb">1</span>, <span class="nb">4</span>):    <span class="cm"># skip edge rows</span>
+    new_row = []
+    <span class="kw">for</span> x <span class="kw">in</span> <span class="fn">range</span>(<span class="nb">1</span>, <span class="nb">4</span>):  <span class="cm"># skip edge cols</span>
+        center = image[y][x]
+        up     = image[y-<span class="nb">1</span>][x]
+        down   = image[y+<span class="nb">1</span>][x]
+        left   = image[y][x-<span class="nb">1</span>]
+        right  = image[y][x+<span class="nb">1</span>]
+        value  = center*<span class="nb">4</span> - (up + down + left + right)
+        new_row.<span class="fn">append</span>(value)
+    filtered.<span class="fn">append</span>(new_row)
+
+<span class="fn">print</span>(filtered)</pre>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:9px;">
+        <div class="card card-green" style="padding:10px 14px;">
+          <p style="font-size:0.72rem;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#059669;margin-bottom:5px;">🔑 Key Concepts</p>
+          <ul style="list-style:disc;padding-left:16px;font-size:0.78rem;color:#374151;display:flex;flex-direction:column;gap:3px;">
+            <li><strong>Boundary condition:</strong> <code style="background:#e8fdf5;padding:1px 4px;border-radius:4px;">range(1,4)</code> skips row/col 0 and 4 because they have no outer neighbor</li>
+            <li><strong>The formula</strong> <code style="background:#e8fdf5;padding:1px 4px;border-radius:4px;">center×4 − neighbors</code> measures how <em>different</em> a pixel is from its surroundings</li>
+            <li>Big output value → rapid brightness change → <strong>edge detected!</strong></li>
+          </ul>
+        </div>
+        <div class="card card-blue" style="padding:10px 14px;">
+          <p style="font-size:0.72rem;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#0b63ce;margin-bottom:4px;">💡 Upgrade Hook</p>
+          <p style="font-size:0.78rem;color:#374151;">Change <code style="background:#e0f2ff;padding:1px 4px;border-radius:4px;">image[2][2] = 9</code> to <code style="background:#e0f2ff;padding:1px 4px;border-radius:4px;">1</code>. Predict the new filtered values <em>before</em> running. Then add a second loop that prints <code style="background:#e0f2ff;padding:1px 4px;border-radius:4px;">"EDGE!"</code> for any value &gt; 8.</p>
+        </div>
+        <div class="card card-amber" style="padding:10px 14px;">
+          <p style="font-size:0.72rem;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#92400e;margin-bottom:4px;">🤔 Think About It</p>
+          <p style="font-size:0.78rem;color:#374151;">If center = 5 and all neighbors = 5, the formula gives 0. If center = 9 and all neighbors = 5, calculate <code style="background:#fef3c7;padding:1px 4px;border-radius:4px;">9×4 − (5+5+5+5)</code> by hand. What does that number mean?</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     SLIDE 9 · VIDEO 3 — CHATBOTS & HOW THEY WORK
+════════════════════════════════════════ -->
+<div class="slide slide-9" data-slide="9">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:340px;height:340px;top:-70px;right:-70px;background:#f59e0b;opacity:0.09;"></div>
+    <div class="blob" style="width:230px;height:230px;bottom:-55px;left:-40px;background:#10b981;opacity:0.07;"></div>
+  </div>
+  <div class="content">
+    <div class="section-pill reveal" style="margin-bottom:0.9rem;">🎬 Video 3 · Chatbots</div>
+    <h2 class="reveal" style="font-family:'Fredoka',sans-serif;font-size:clamp(1.4rem,3vw,2.1rem);color:#0b63ce;font-weight:700;margin-bottom:1rem;">
+      Rule-Based vs. AI Chatbots — How Keyword Intent Matching Works
+    </h2>
+    <div style="display:grid;grid-template-columns:1.1fr 1fr;gap:18px;align-items:start;" class="reveal">
+      <div>
+        <div class="video-thumb-wrap" onclick="playVideo(this,'https://www.youtube.com/embed/ImyHf6WlR7o?autoplay=1&rel=0')">
+          <img src="https://img.youtube.com/vi/ImyHf6WlR7o/hqdefault.jpg" alt="Rule-Based vs AI Chatbots — JetSoftPro thumbnail">
+          <div class="play-btn">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg>
+          </div>
+        </div>
+        <p style="font-size:0.72rem;color:#5b6b7e;margin-top:6px;">
+          Source: <a href="https://www.youtube.com/watch?v=ImyHf6WlR7o" target="_blank" style="color:#0b63ce;text-decoration:underline;">youtube.com/watch?v=ImyHf6WlR7o</a><br>
+          JetSoftPro · Rule-Based vs AI Chatbots: Which One Are You Talking To? (~3 min)
+        </p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <p style="font-size:0.72rem;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#92400e;margin-bottom:2px;">Watch for these</p>
+        <div class="card card-amber" style="padding:9px 12px;">
+          <p style="font-size:0.8rem;color:#1f2a37;">The video says rule-based bots <strong>"scan for keywords"</strong> to pick a response — find the exact line in TinyBot v2 that does this. What Python operation is it?</p>
+        </div>
+        <div class="card card-blue" style="padding:9px 12px;">
+          <p style="font-size:0.8rem;color:#1f2a37;">According to the video, what is the key advantage of an <strong>AI chatbot</strong> over a rule-based one — and why can't TinyBot v2 do that <em>yet</em>?</p>
+        </div>
+        <div class="card card-green" style="padding:9px 12px;">
+          <p style="font-size:0.8rem;color:#1f2a37;">The video mentions a <strong>hybrid</strong> approach. If you could add one AI feature to TinyBot v2, what would it be — and which line of the code would you change first?</p>
+        </div>
+        <div class="reveal-answer" onclick="this.querySelector('.answer-text').style.display='block';" style="margin-top:4px;">
+          <p style="font-size:0.8rem;color:#374151;font-weight:600;">✍️ After watching: one advantage and one limitation of TinyBot v2.</p>
+          <p class="answer-text">Advantage: fully auditable and never hallucinates — every possible reply lives in the REPLIES dict. Limitation: it fails on any message that contains no exact keyword match.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     SLIDE 10 · TINYBOT V2 PROJECT DEEP-DIVE
+════════════════════════════════════════ -->
+<div class="slide slide-10" data-slide="10">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:360px;height:360px;top:-70px;right:-70px;background:#f59e0b;opacity:0.08;"></div>
+    <div class="blob" style="width:230px;height:230px;bottom:-50px;left:-40px;background:#0b63ce;opacity:0.06;"></div>
+  </div>
+  <div class="content">
+    <div class="section-pill reveal" style="margin-bottom:0.8rem;">🤖 Project 3 · TinyBot v2 &nbsp;<span style="background:rgba(255,255,255,0.25);border-radius:10px;padding:2px 8px;font-size:0.7rem;letter-spacing:0.08em;">🔴 ADVANCED</span></div>
+    <h2 class="reveal" style="font-family:'Fredoka',sans-serif;font-size:clamp(1.35rem,2.8vw,2rem);color:#92400e;font-weight:700;margin-bottom:0.8rem;">
+      🤖 TinyBot v2 — Dict-Driven Intent Classifier
+    </h2>
+    <p class="reveal" style="font-size:0.8rem;color:#5b21b6;background:#ede9fe;border-radius:8px;padding:6px 12px;margin-bottom:0.8rem;display:inline-block;font-weight:700;">🔴 Advanced · Functions · Nested dicts · Set intersection · Runtime dispatch</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;" class="reveal">
+      <div>
+        <div class="code-wrap">
+          <div class="code-toolbar">
+            <div class="code-dot" style="background:#ef4444;"></div>
+            <div class="code-dot" style="background:#f59e0b;"></div>
+            <div class="code-dot" style="background:#22c55e;"></div>
+            <span class="code-label">tinybot_v2.py</span>
+          </div>
+          <pre class="code-block"><span class="cm"># TinyBot v2 — data-driven, no elif chains (Day 17)</span>
+RULES = {
+    <span class="st">'greeting'</span>: [<span class="st">'hi'</span>,<span class="st">'hello'</span>,<span class="st">'hey'</span>,<span class="st">'greetings'</span>],
+    <span class="st">'farewell'</span>: [<span class="st">'bye'</span>,<span class="st">'goodbye'</span>,<span class="st">'see you'</span>],
+    <span class="st">'askname'</span>:  [<span class="st">'name'</span>,<span class="st">'who are you'</span>,<span class="st">'what are you'</span>],
+    <span class="st">'negative'</span>: [<span class="st">'sad'</span>,<span class="st">'tired'</span>,<span class="st">'upset'</span>,<span class="st">'unhappy'</span>],
+    <span class="st">'positive'</span>: [<span class="st">'happy'</span>,<span class="st">'excited'</span>,<span class="st">'great'</span>,<span class="st">'awesome'</span>],
+}
+REPLIES = {
+    <span class="st">'greeting'</span>: <span class="st">'Hi there! 👋'</span>,
+    <span class="st">'farewell'</span>: <span class="st">'Goodbye! Keep coding! 🚀'</span>,
+    <span class="st">'askname'</span>:  <span class="st">'I am TinyBot v2! 🤖'</span>,
+    <span class="st">'negative'</span>: <span class="st">'Sorry to hear that. Want help?'</span>,
+    <span class="st">'positive'</span>: <span class="st">'Awesome! Tell me more. 😊'</span>,
+    <span class="st">'unknown'</span>:  <span class="st">'Hmm, I do not know that yet. 🤔'</span>,
+}
+missed_log = []
+
+<span class="kw">def</span> <span class="fn">getintent</span>(msg):
+    tokens = <span class="fn">set</span>(msg.<span class="fn">lower</span>().<span class="fn">split</span>())
+    <span class="kw">for</span> intent, kws <span class="kw">in</span> RULES.<span class="fn">items</span>():
+        <span class="kw">if</span> tokens &amp; <span class="fn">set</span>(kws):  <span class="cm"># set intersection</span>
+            <span class="kw">return</span> intent
+    missed_log.<span class="fn">append</span>(msg)
+    <span class="kw">return</span> <span class="st">'unknown'</span>
+
+<span class="fn">print</span>(<span class="st">'TinyBot v2 ready. Type bye to quit.\n'</span>)
+<span class="kw">while</span> <span class="bi">True</span>:
+    msg = <span class="fn">input</span>(<span class="st">'You: '</span>)
+    intent = <span class="fn">getintent</span>(msg)
+    <span class="fn">print</span>(<span class="st">'Bot:'</span>, REPLIES[intent])
+    <span class="kw">if</span> intent == <span class="st">'farewell'</span>: <span class="kw">break</span>
+<span class="fn">print</span>(<span class="st">'Missed log:'</span>, missed_log)</pre>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:9px;">
+        <div class="card card-amber" style="padding:10px 14px;">
+          <p style="font-size:0.72rem;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#92400e;margin-bottom:5px;">🔑 Key Concepts</p>
+          <ul style="list-style:disc;padding-left:16px;font-size:0.78rem;color:#374151;display:flex;flex-direction:column;gap:3px;">
+            <li><code style="background:#fef3c7;padding:1px 4px;border-radius:4px;">tokens & set(kws)</code> is set intersection — fires when <em>any</em> keyword matches</li>
+            <li><strong>Separation of concerns:</strong> <code style="background:#fef3c7;padding:1px 4px;border-radius:4px;">RULES</code> and <code style="background:#fef3c7;padding:1px 4px;border-radius:4px;">REPLIES</code> are separate — a content editor can update replies without touching logic</li>
+            <li><code style="background:#fef3c7;padding:1px 4px;border-radius:4px;">missed_log</code> prints on exit — reveals what new intents you need to add</li>
+          </ul>
+        </div>
+        <div class="card card-green" style="padding:10px 14px;">
+          <p style="font-size:0.72rem;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#059669;margin-bottom:4px;">💡 Upgrade Hook</p>
+          <p style="font-size:0.78rem;color:#374151;">Add a <code style="background:#e8fdf5;padding:1px 4px;border-radius:4px;">'food'</code> intent with keywords <code style="background:#e8fdf5;padding:1px 4px;border-radius:4px;">['pizza','eat','hungry']</code> and a matching reply. Adding a new skill takes exactly <strong>2 lines</strong> — one in RULES, one in REPLIES.</p>
+        </div>
+        <div class="card card-blue" style="padding:10px 14px;">
+          <p style="font-size:0.72rem;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#0b63ce;margin-bottom:4px;">🤔 Think About It</p>
+          <p style="font-size:0.78rem;color:#374151;">Type <em>"I'm not sad at all"</em>. The bot still replies with the negative response — why? What would you need to add before the set-intersection check to fix this <strong>negation bug</strong>?</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     SLIDE 11 · RIGHT-SIZE YOUR UPGRADE
+════════════════════════════════════════ -->
+<div class="slide slide-11" data-slide="11">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:320px;height:320px;top:-70px;right:-60px;background:#0b63ce;opacity:0.07;"></div>
+    <div class="blob" style="width:220px;height:220px;bottom:-50px;left:-40px;background:#f59e0b;opacity:0.07;"></div>
+  </div>
+  <div class="content">
+    <div class="section-pill reveal" style="margin-bottom:0.9rem;">⚖️ Design Thinking</div>
+    <h2 class="reveal" style="font-family:'Fredoka',sans-serif;font-size:clamp(1.4rem,3vw,2.1rem);color:#0b63ce;font-weight:700;margin-bottom:1rem;">
+      Right-Sizing Your Upgrade
+    </h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;" class="reveal">
+      <div class="card card-red" style="padding:14px 16px;">
+        <p style="font-size:1.6rem;margin-bottom:6px;">❌</p>
+        <p style="font-weight:800;color:#ef4444;font-size:0.85rem;margin-bottom:6px;">Too Big</p>
+        <ul style="list-style:disc;padding-left:16px;font-size:0.76rem;color:#374151;display:flex;flex-direction:column;gap:4px;">
+          <li><strong>RateRec:</strong> "Add collaborative filtering, cold-start handling, and a GUI today."</li>
+          <li><strong>EdgeBot:</strong> "Make it work on real JPEGs with 1,000×1,000 pixels."</li>
+          <li><strong>TinyBot:</strong> "Add machine learning so it trains on new data automatically."</li>
+        </ul>
+        <p style="font-size:0.72rem;color:#ef4444;font-weight:700;margin-top:6px;">⏱ 3+ hours — if the core idea is wrong, all that time is wasted.</p>
+      </div>
+      <div class="card card-green" style="padding:14px 16px;border:2px solid #10b981;">
+        <p style="font-size:1.6rem;margin-bottom:6px;">✅</p>
+        <p style="font-weight:800;color:#059669;font-size:0.85rem;margin-bottom:6px;">Just Right</p>
+        <ul style="list-style:disc;padding-left:16px;font-size:0.76rem;color:#374151;display:flex;flex-direction:column;gap:4px;">
+          <li><strong>RateRec:</strong> "Add one new player and verify their ranking is different."</li>
+          <li><strong>EdgeBot:</strong> "Change one pixel value, predict and verify the new filter output."</li>
+          <li><strong>TinyBot:</strong> "Add one new intent — test it with 3 different messages."</li>
+        </ul>
+        <p style="font-size:0.72rem;color:#059669;font-weight:700;margin-top:6px;">⏱ 10–15 min — test it, learn, then decide the next step.</p>
+      </div>
+      <div class="card" style="padding:14px 16px;border-left:4px solid #94a3b8;">
+        <p style="font-size:1.6rem;margin-bottom:6px;">🤔</p>
+        <p style="font-weight:800;color:#64748b;font-size:0.85rem;margin-bottom:6px;">Too Tiny</p>
+        <ul style="list-style:disc;padding-left:16px;font-size:0.76rem;color:#374151;display:flex;flex-direction:column;gap:4px;">
+          <li><strong>RateRec:</strong> "Change 'Racing' to 'Car Racing' in the dict key."</li>
+          <li><strong>EdgeBot:</strong> "Add a comment explaining what range(1,4) means."</li>
+          <li><strong>TinyBot:</strong> "Change the greeting reply from 'Hi there!' to 'Hello!'"</li>
+        </ul>
+        <p style="font-size:0.72rem;color:#64748b;font-weight:700;margin-top:6px;">⏱ Fast — but doesn't answer any interesting design question.</p>
+      </div>
+    </div>
+    <div class="reveal" style="margin-top:12px;background:rgba(11,99,206,0.06);border-radius:12px;padding:10px 16px;border:1px solid rgba(11,99,206,0.18);">
+      <p style="font-size:0.82rem;color:#1f2a37;"><strong>Today's loop:</strong> Plan (slides 2) → Code → Test → Reflect (Exit Ticket). Each phase = one section of today's 20 minutes.<br>
+      🚀 <strong>Rule:</strong> your upgrade is the right size if you can code <em>and</em> test it in under 15 minutes. If not — split it.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     SLIDE 12 · BUILD TIME — CODING TIPS
+════════════════════════════════════════ -->
+<div class="slide slide-12" data-slide="12">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:300px;height:300px;top:-60px;right:-60px;background:#10b981;opacity:0.07;"></div>
+    <div class="blob" style="width:200px;height:200px;bottom:-50px;left:-40px;background:#f59e0b;opacity:0.07;"></div>
+  </div>
+  <div class="content">
+    <div class="section-pill reveal" style="margin-bottom:0.9rem;">⚙️ Build Time</div>
+    <h2 class="reveal" style="font-family:'Fredoka',sans-serif;font-size:clamp(1.4rem,3vw,2.1rem);color:#0b63ce;font-weight:700;margin-bottom:1rem;">
+      While You Code — Three Project Guides
+    </h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;" class="reveal">
+      <div style="display:flex;flex-direction:column;gap:9px;">
+        <div class="card card-blue" style="padding:10px 14px;">
+          <p style="font-weight:800;color:#0b63ce;font-size:0.82rem;margin-bottom:3px;">⭐ RateRec</p>
+            <span style="display:inline-block;background:#dcfce7;color:#166534;font-size:0.6rem;font-weight:800;padding:1px 7px;border-radius:10px;letter-spacing:0.06em;margin-bottom:5px;">🟢 BEGINNER</span>
+          <ul style="list-style:disc;padding-left:16px;font-size:0.76rem;color:#374151;display:flex;flex-direction:column;gap:3px;">
+            <li>Add a 3rd player <code style="background:#e0f2ff;padding:1px 4px;border-radius:4px;">'Sam'</code> with her own ratings</li>
+            <li>Add a 4th game <code style="background:#e0f2ff;padding:1px 4px;border-radius:4px;">'Coding': [1,1,1]</code></li>
+            <li>Print the full ranked list for all 3 players</li>
+            <li>Super: add a function <code style="background:#e0f2ff;padding:1px 4px;border-radius:4px;">top_pick(name)</code> that returns the single best game for a given player</li>
+          </ul>
+        </div>
+        <div class="card card-green" style="padding:10px 14px;">
+          <p style="font-weight:800;color:#059669;font-size:0.82rem;margin-bottom:3px;">🔍 EdgeBot</p>
+            <span style="display:inline-block;background:#fef9c3;color:#854d0e;font-size:0.6rem;font-weight:800;padding:1px 7px;border-radius:10px;letter-spacing:0.06em;margin-bottom:5px;">🟡 INTERMEDIATE</span>
+          <ul style="list-style:disc;padding-left:16px;font-size:0.76rem;color:#374151;display:flex;flex-direction:column;gap:3px;">
+            <li>Change <code style="background:#e8fdf5;padding:1px 4px;border-radius:4px;">image[2][2]</code> to <code style="background:#e8fdf5;padding:1px 4px;border-radius:4px;">1</code> — predict first, then run</li>
+            <li>Add a second loop that prints <code style="background:#e8fdf5;padding:1px 4px;border-radius:4px;">"EDGE!"</code> next to any value &gt; 8</li>
+            <li>Try a horizontal stripe image (rows of 8, rows of 0) — predict where the edges appear</li>
+            <li>Super: print the 3×3 filtered grid as a formatted table with padded columns</li>
+          </ul>
+        </div>
+        <div class="card card-amber" style="padding:10px 14px;">
+          <p style="font-weight:800;color:#7c3aed;font-size:0.82rem;margin-bottom:3px;">🤖 TinyBot v2</p>
+            <span style="display:inline-block;background:#ede9fe;color:#5b21b6;font-size:0.6rem;font-weight:800;padding:1px 7px;border-radius:10px;letter-spacing:0.06em;margin-bottom:5px;">🔴 ADVANCED</span>
+          <ul style="list-style:disc;padding-left:16px;font-size:0.76rem;color:#374151;display:flex;flex-direction:column;gap:3px;">
+            <li>Add <code style="background:#fef3c7;padding:1px 4px;border-radius:4px;">'food': ['pizza','eat','hungry']</code> to RULES and REPLIES</li>
+            <li>Add <code style="background:#fef3c7;padding:1px 4px;border-radius:4px;">'school': ['class','homework','teacher']</code></li>
+            <li>After exiting, print the <code style="background:#fef3c7;padding:1px 4px;border-radius:4px;">missed_log</code> — what new intents does it suggest?</li>
+            <li>Super: write a <code style="background:#fef3c7;padding:1px 4px;border-radius:4px;">test()</code> function that runs 5 messages and prints PASS/FAIL</li>
+          </ul>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:9px;">
+        <div class="card" style="padding:12px 14px;">
+          <p style="font-size:0.72rem;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#5b6b7e;margin-bottom:8px;">⚙️ While You Code</p>
+          <div class="timeline-track" style="display:flex;flex-direction:column;gap:8px;">
+            <div style="position:relative;padding-left:20px;">
+              <div class="timeline-node"></div>
+              <p style="font-size:0.78rem;color:#1f2a37;"><strong>1️⃣ One change at a time</strong> — run after every single edit. Never make two changes before testing.</p>
+            </div>
+            <div style="position:relative;padding-left:20px;">
+              <div class="timeline-node"></div>
+              <p style="font-size:0.78rem;color:#1f2a37;"><strong>2️⃣ Error messages = clues</strong> — read the last line first. It tells you what broke and on which line.</p>
+            </div>
+            <div style="position:relative;padding-left:20px;">
+              <div class="timeline-node"></div>
+              <p style="font-size:0.78rem;color:#1f2a37;"><strong>3️⃣ Predict before you run</strong> — write the expected output in your notebook first. If you can't predict it, you don't understand it yet.</p>
+            </div>
+          </div>
+        </div>
+        <div class="card" style="padding:12px 14px;">
+          <p style="font-size:0.72rem;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#5b6b7e;margin-bottom:8px;">🧪 While Testing</p>
+          <div style="display:flex;flex-direction:column;gap:6px;">
+            <div style="display:flex;gap:8px;align-items:flex-start;">
+              <span style="font-size:0.85rem;">👀</span>
+              <p style="font-size:0.78rem;color:#374151;"><strong>Watch, don't explain</strong> — ask a partner to use your project. Stay silent and note where they pause.</p>
+            </div>
+            <div style="display:flex;gap:8px;align-items:flex-start;">
+              <span style="font-size:0.85rem;">❓</span>
+              <p style="font-size:0.78rem;color:#374151;"><strong>Ask open questions</strong> — "What confused you?" not "Did you like it?"</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     SLIDE 13 · UPGRADE DECISION MAP
+════════════════════════════════════════ -->
+<div class="slide slide-13" data-slide="13">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:340px;height:340px;top:-70px;right:-70px;background:#8b5cf6;opacity:0.07;"></div>
+    <div class="blob" style="width:230px;height:230px;bottom:-55px;left:-40px;background:#0b63ce;opacity:0.07;"></div>
+  </div>
+  <div class="content">
+    <div class="section-pill reveal" style="margin-bottom:0.9rem;">🗺️ Upgrade Decision Map</div>
+    <h2 class="reveal" style="font-family:'Fredoka',sans-serif;font-size:clamp(1.4rem,3vw,2.1rem);color:#0b63ce;font-weight:700;margin-bottom:1rem;">
+      What Could You Build With These Three Together?
+    </h2>
+    <p class="reveal" style="font-size:0.86rem;color:#374151;margin-bottom:1rem;">Each project teaches one skill. Here's how those skills combine in real AI systems:</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;" class="reveal">
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div class="card card-purple" style="padding:12px 16px;">
+          <p style="font-size:0.72rem;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#7c3aed;margin-bottom:5px;">🤖 + ⭐ = Personalised Chatbot</p>
+          <p style="font-size:0.78rem;color:#374151;">Combine TinyBot v2 with RateRec to build a bot that <em>recommends</em> games based on what a user says. When TinyBot detects the "positive" intent, it ranks and suggests the highest-rated game.</p>
+        </div>
+        <div class="card card-green" style="padding:12px 16px;">
+          <p style="font-size:0.72rem;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#059669;margin-bottom:5px;">🔍 + 🤖 = Visual Q&amp;A Bot</p>
+          <p style="font-size:0.78rem;color:#374151;">Run EdgeBot on an image, count the number of cells where a value exceeds a threshold. Pass that count as a message to TinyBot — the bot can then "answer" questions like "does this image have many edges?"</p>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div class="card card-blue" style="padding:12px 16px;">
+          <p style="font-size:0.72rem;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#0b63ce;margin-bottom:5px;">⭐ + 🔍 = Image-Quality Ranker</p>
+          <p style="font-size:0.78rem;color:#374151;">Use EdgeBot's filtered output as a "sharpness score" for an image. Then use RateRec's sorted() logic to rank multiple images from sharpest (most edges) to blurriest (fewest edges).</p>
+        </div>
+        <div class="card" style="padding:12px 16px;background:rgba(11,99,206,0.04);border:2px dashed rgba(11,99,206,0.25);">
+          <p style="font-size:0.72rem;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#0b63ce;margin-bottom:5px;">🌟 All Three = Mini AI Pipeline</p>
+          <p style="font-size:0.78rem;color:#374151;margin-bottom:6px;">The full loop: <strong>EdgeBot</strong> extracts features from data → <strong>RateRec</strong> ranks the results → <strong>TinyBot</strong> explains the ranking in plain English. That's exactly how many real AI systems work.</p>
+          <p style="font-size:0.72rem;color:#5b6b7e;font-style:italic;">💭 This is your stretch goal — sketch the pseudocode on paper.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     SLIDE 14 · EXIT TICKET
+════════════════════════════════════════ -->
+<div class="slide slide-14" data-slide="14">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:340px;height:340px;top:-70px;right:-70px;background:#10b981;opacity:0.08;"></div>
+    <div class="blob" style="width:230px;height:230px;bottom:-55px;left:-40px;background:#f59e0b;opacity:0.07;"></div>
+  </div>
+  <div class="content">
+    <div class="section-pill reveal" style="margin-bottom:0.9rem;">🎯 Exit Ticket — Revisit Slide 2</div>
+    <h2 class="reveal" style="font-family:'Fredoka',sans-serif;font-size:clamp(1.4rem,3vw,2.1rem);color:#0b63ce;font-weight:700;margin-bottom:1rem;">
+      Look Back at Your Three Planning Answers
+    </h2>
+    <div style="display:flex;flex-direction:column;gap:10px;" class="reveal">
+      <div class="card card-blue" style="padding:13px 16px;">
+        <p style="font-size:0.8rem;font-weight:700;color:#1f2a37;margin-bottom:2px;"><strong>Did you pick the upgrade</strong> you planned at the start? If not — what made you switch? Was that a better decision?</p>
+      </div>
+      <div class="card card-green" style="padding:13px 16px;">
+        <p style="font-size:0.8rem;font-weight:700;color:#1f2a37;margin-bottom:2px;"><strong>Was your "done" estimate correct?</strong> Did testing reveal something unexpected that shifted what "done" means?</p>
+      </div>
+      <div class="card card-amber" style="padding:13px 16px;">
+        <p style="font-size:0.8rem;font-weight:700;color:#1f2a37;margin-bottom:2px;"><strong>Did the risky part</strong> turn out to be hard — or did the surprise come from somewhere else entirely?</p>
+      </div>
+    </div>
+    <div class="reveal" style="margin-top:12px;background:rgba(11,99,206,0.05);border-radius:12px;padding:12px 16px;">
+      <p style="font-size:0.86rem;color:#1f2a37;font-weight:700;margin-bottom:4px;">🌱 The lesson underneath all three projects:</p>
+      <p style="font-size:0.82rem;color:#374151;">The secret of great programmers: they're not smarter — they're <em>better at being wrong quickly</em> and learning from it. Every bug is data. Every failed prediction is progress.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     SLIDE 15 · HOMEWORK
+════════════════════════════════════════ -->
+<div class="slide slide-15" data-slide="15">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:360px;height:360px;top:-70px;right:-70px;background:#0b63ce;opacity:0.08;"></div>
+    <div class="blob" style="width:230px;height:230px;bottom:-55px;left:-40px;background:#10b981;opacity:0.07;"></div>
+  </div>
+  <div class="content">
+    <div class="section-pill reveal" style="margin-bottom:0.9rem;">🏠 Homework</div>
+    <h2 class="reveal" style="font-family:'Fredoka',sans-serif;font-size:clamp(1.4rem,3vw,2.1rem);color:#0b63ce;font-weight:700;margin-bottom:1rem;">
+      Take It Home — Two Tasks
+    </h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;" class="reveal">
+      <div class="card card-blue" style="padding:14px 18px;">
+        <p style="font-size:0.72rem;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#0b63ce;margin-bottom:8px;">Part A · Code (choose one project)</p>
+        <div class="timeline-track" style="display:flex;flex-direction:column;gap:7px;">
+          <div style="position:relative;padding-left:20px;">
+            <div class="timeline-node"></div>
+            <p style="font-size:0.78rem;color:#374151;"><strong>RateRec:</strong> Build a dictionary of 4–5 things <em>you</em> actually love (songs, snacks, apps). Rate each 0 or 1 for 3 different friends. Run the per-player recommender. Does it pick what you'd expect? Where does it go wrong?</p>
+          </div>
+          <div style="position:relative;padding-left:20px;">
+            <div class="timeline-node" style="background:#10b981;"></div>
+            <p style="font-size:0.78rem;color:#374151;"><strong>EdgeBot:</strong> Design your own 5×5 number grid (draw it on paper first), predict all 9 filtered values by hand, then run the code and compare. Take a photo of your paper prediction next to your terminal output.</p>
+          </div>
+          <div style="position:relative;padding-left:20px;">
+            <div class="timeline-node" style="background:#f59e0b;"></div>
+            <p style="font-size:0.78rem;color:#374151;"><strong>TinyBot v2:</strong> Add 2 new intents of your own choosing. Write a <code style="background:#fef3c7;padding:1px 4px;border-radius:4px;">test()</code> function that runs 6 messages and prints PASS/FAIL for each — include at least 2 tests designed to <em>break</em> the bot.</p>
+          </div>
+        </div>
+      </div>
+      <div class="card card-green" style="padding:14px 18px;">
+        <p style="font-size:0.72rem;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#059669;margin-bottom:8px;">Part B · Reflect (all students)</p>
+        <p style="font-size:0.8rem;color:#374151;margin-bottom:8px;">Write <strong>4–5 sentences</strong> answering:</p>
+        <ul style="list-style:disc;padding-left:16px;font-size:0.78rem;color:#374151;display:flex;flex-direction:column;gap:4px;">
+          <li>Which project did you upgrade, and what exactly did you change?</li>
+          <li>What did your tester or testing output tell you that you did not expect?</li>
+          <li>What is the <em>one thing</em> that still confuses you about your project's code?</li>
+          <li>What would you add next if you had one more class session?</li>
+        </ul>
+        <div style="margin-top:10px;background:rgba(16,185,129,0.06);border-radius:10px;padding:9px 12px;">
+          <p style="font-size:0.75rem;color:#374151;">📬 Submit a screenshot of your code output + your reflection to <a href="mailto:hue.weng.88@gmail.com" style="color:#0b63ce;font-weight:700;">hue.weng.88@gmail.com</a> by next class.<br><span style="font-size:0.72rem;color:#64748b;">Use <em>specific numbers</em> in your reflection — "Bot now handles 7 intents" beats "the bot got smarter".</span></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     SLIDE 16 · CLOSING
+════════════════════════════════════════ -->
+<div class="slide slide-16" data-slide="16">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:480px;height:480px;top:-120px;right:-80px;background:#0b63ce;opacity:0.12;"></div>
+    <div class="blob" style="width:320px;height:320px;bottom:-80px;left:-60px;background:#10b981;opacity:0.10;"></div>
+    <div class="blob" style="width:200px;height:200px;top:45%;left:10%;background:#f59e0b;opacity:0.09;"></div>
+  </div>
+  <canvas class="particle-canvas" id="pc16"></canvas>
+  <div class="content" style="text-align:center;">
+    <div style="font-size:clamp(3rem,7vw,5rem);margin-bottom:0.8rem;animation:float 3s ease-in-out infinite;" class="reveal">🎉</div>
+    <h2 style="font-family:'Fredoka',sans-serif;font-size:clamp(1.9rem,4vw,3rem);font-weight:700;margin-bottom:0.6rem;" class="reveal">
+      You just upgraded three AI projects!
+    </h2>
+    <p class="reveal" style="font-size:clamp(0.88rem,1.4vw,1.1rem);color:#5b6b7e;max-width:660px;margin:0 auto 1.2rem;">
+      Return to your warm-up answers. Did today's code change how you think about any of the three systems?
+    </p>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;max-width:760px;margin:0 auto 1.2rem;text-align:left;" class="reveal">
+      <div class="card" style="padding:12px 14px;text-align:center;">
+        <p style="font-size:2rem;font-weight:800;color:#0b63ce;line-height:1;">⭐</p>
+        <p style="font-size:0.72rem;color:#64748b;text-transform:uppercase;font-weight:700;letter-spacing:0.1em;">RateRec</p>
+        <span style="display:inline-block;background:#dcfce7;color:#166534;font-size:0.58rem;font-weight:800;padding:1px 7px;border-radius:10px;letter-spacing:0.06em;margin:3px 0;">🟢 BEGINNER</span>
+        <p style="font-size:0.72rem;color:#374151;margin-top:4px;">Averages + dicts = personalised ranking</p>
+      </div>
+      <div class="card" style="padding:12px 14px;text-align:center;">
+        <p style="font-size:2rem;font-weight:800;color:#059669;line-height:1;">🔍</p>
+        <p style="font-size:0.72rem;color:#64748b;text-transform:uppercase;font-weight:700;letter-spacing:0.1em;">EdgeBot</p>
+        <span style="display:inline-block;background:#fef9c3;color:#854d0e;font-size:0.58rem;font-weight:800;padding:1px 7px;border-radius:10px;letter-spacing:0.06em;margin:3px 0;">🟡 INTERMEDIATE</span>
+        <p style="font-size:0.72rem;color:#374151;margin-top:4px;">Nested loops + Laplacian = AI vision layer 0</p>
+      </div>
+      <div class="card" style="padding:12px 14px;text-align:center;">
+        <p style="font-size:2rem;font-weight:800;color:#92400e;line-height:1;">🤖</p>
+        <p style="font-size:0.72rem;color:#64748b;text-transform:uppercase;font-weight:700;letter-spacing:0.1em;">TinyBot v2</p>
+        <span style="display:inline-block;background:#ede9fe;color:#5b21b6;font-size:0.58rem;font-weight:800;padding:1px 7px;border-radius:10px;letter-spacing:0.06em;margin:3px 0;">🔴 ADVANCED</span>
+        <p style="font-size:0.72rem;color:#374151;margin-top:4px;">Set intersection + dicts = auditable NLU</p>
+      </div>
+    </div>
+    <p class="reveal" style="font-size:0.68rem;color:#94a3b8;text-transform:uppercase;letter-spacing:0.1em;margin-top:8px;">Day 21 · AI &amp; Coding · Spring 2026 &nbsp;·&nbsp; hue.weng.88@gmail.com &nbsp;·&nbsp; hue881.github.io</p>
+  </div>
+</div>
+
+</div><!-- end .deck -->
+
+<div class="nav-controls">
+  <button class="nav-btn" onclick="changeSlide(-1)">&#8592;</button>
+  <div class="slide-dots" id="dots"></div>
+  <button class="nav-btn" onclick="changeSlide(1)">&#8594;</button>
+  <span class="slide-counter" id="counter">1 / 16</span>
+</div>
+
+<script>
+/* ══ DECK NAVIGATION ══ */
+let current = 1;
+const total = document.querySelectorAll('.slide').length;
+const dotsEl = document.getElementById('dots');
+const counterEl = document.getElementById('counter');
+for (let i = 1; i <= total; i++) {
+  const d = document.createElement('div');
+  d.className = 'dot' + (i === 1 ? ' active' : '');
+  d.onclick = () => goToSlide(i);
+  dotsEl.appendChild(d);
+}
+function goToSlide(n) {
+  document.querySelector('.slide.active')?.classList.remove('active');
+  const next = document.querySelector(`.slide[data-slide="${n}"]`);
+  if (next) { next.classList.add('active'); animateSlide(next); }
+  current = n; updateNav();
+}
+function changeSlide(dir) { let n = current + dir; if (n < 1) n = total; if (n > total) n = 1; goToSlide(n); }
+function updateNav() {
+  document.querySelectorAll('.dot').forEach((d,i) => d.classList.toggle('active', i+1 === current));
+  counterEl.textContent = current + ' / ' + total;
+}
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); changeSlide(1); }
+  if (e.key === 'ArrowLeft') { e.preventDefault(); changeSlide(-1); }
+});
+let tx = 0;
+document.addEventListener('touchstart', e => { tx = e.touches[0].clientX; });
+document.addEventListener('touchend', e => { if (Math.abs(tx - e.changedTouches[0].clientX) > 50) changeSlide(tx > e.changedTouches[0].clientX ? 1 : -1); });
+
+/* ══ REVEAL + BAR CHARTS ══ */
+function animateSlide(slide) {
+  slide.querySelectorAll('.reveal').forEach((el, i) => {
+    el.style.transition = 'none'; el.style.opacity = '0'; el.style.transform = 'translateY(18px)';
+    el.offsetHeight;
+    el.style.transition = `opacity 0.35s ease ${i*0.07}s, transform 0.35s ease ${i*0.07}s`;
+    el.style.opacity = '1'; el.style.transform = 'translateY(0)';
+  });
+  slide.querySelectorAll('.bar-fill:not(.bar-init)').forEach((bar, i) => {
+    bar.classList.add('bar-init');
+    bar.style.width = '0%';
+    bar.style.transition = `width 0.9s cubic-bezier(0.16,1,0.3,1) ${0.2 + i*0.1}s`;
+    bar.offsetHeight;
+    bar.style.width = bar.dataset.width + '%';
+  });
+}
+
+/* ══ VIDEO THUMBNAIL → IFRAME ══ */
+function playVideo(wrapper, embedUrl) {
+  const div = document.createElement('div');
+  div.className = 'video-iframe-wrap';
+  div.style.width = wrapper.offsetWidth + 'px';
+  div.innerHTML = `<iframe src="${embedUrl}" allowfullscreen allow="autoplay; encrypted-media"></iframe>`;
+  wrapper.replaceWith(div);
+}
+
+/* ══ MOUSE SPOTLIGHT ══ */
+document.addEventListener('mousemove', e => {
+  const s = document.querySelector('.mouse-spotlight');
+  if (s) s.style.background = `radial-gradient(600px circle at ${e.clientX}px ${e.clientY}px, rgba(11,99,206,0.05), transparent 40%)`;
+});
+
+/* ══ PARALLAX DECO SHAPES ══ */
+(function() {
+  let mx = window.innerWidth/2, my = window.innerHeight/2;
+  const cx = window.innerWidth/2, cy = window.innerHeight/2;
+  document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+  (function tick() {
+    const ox = (mx-cx)/cx, oy = (my-cy)/cy;
+    document.querySelectorAll('.deco-shape').forEach(s => {
+      const sp = parseFloat(s.dataset.speed) || 0.03;
+      s.style.transform = `translate(${ox*sp*100}px,${oy*sp*100}px)`;
+    });
+    requestAnimationFrame(tick);
+  })();
+})();
+
+/* ══ PARTICLES ══ */
+function initParticles(canvas) {
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight;
+  let mx = -1000, my = -1000;
+  const [r,g,b] = [11,99,206];
+  const pts = Array.from({length:45}, () => ({
+    x: Math.random()*canvas.width, y: Math.random()*canvas.height,
+    vx: (Math.random()-0.5)*0.3, vy: (Math.random()-0.5)*0.3,
+    size: Math.random()*2.2+0.7, alpha: Math.random()*0.3+0.08
+  }));
+  canvas.addEventListener('mousemove', e => { const rc = canvas.getBoundingClientRect(); mx = e.clientX-rc.left; my = e.clientY-rc.top; });
+  canvas.addEventListener('mouseleave', () => { mx=-1000; my=-1000; });
+  (function animate() {
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    pts.forEach(p => {
+      const dx=p.x-mx, dy=p.y-my, d=Math.sqrt(dx*dx+dy*dy);
+      if (d<100) { const f=(100-d)/100*1.5; p.vx+=(dx/d)*f*0.1; p.vy+=(dy/d)*f*0.1; }
+      p.vx*=0.98; p.vy*=0.98; p.x+=p.vx; p.y+=p.vy;
+      if (p.x<0) p.x=canvas.width; if (p.x>canvas.width) p.x=0;
+      if (p.y<0) p.y=canvas.height; if (p.y>canvas.height) p.y=0;
+      ctx.beginPath(); ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
+      ctx.fillStyle=`rgba(${r},${g},${b},${p.alpha})`; ctx.fill();
+    });
+    requestAnimationFrame(animate);
+  })();
+}
+['pc1','pc16'].forEach(id => initParticles(document.getElementById(id)));
+
+try { animateSlide(document.querySelector('.slide.active')); } catch(e) {}
+</script>
+</body>
+</html>
