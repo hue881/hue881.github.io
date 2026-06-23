@@ -6,7 +6,7 @@ Instructions:
 2. Once complete, print/save form as PDF
 3. Send PDF to hue.weng.88@gmail.com or text PDF to 646-280-7089
 
-Thank you for taking the time to complete the survey.  We appreciate your help!
+Thank you for taking the time to complete the survey.  We appreciate it!
 
 [English](https://hue881.github.io/mcs/2026/summer/questionaire/eng/)  
   
