@@ -1,7 +1,6 @@
 ### 🌱 Spring 2026: AI Coding Lessons
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 ![Level](https://img.shields.io/badge/level-beginner%20to%20advanced-brightgreen)
-![Updated](https://img.shields.io/badge/updated-Spring%202026-blue)
+![Updated](https://img.shields.io/badge/updated-Spring%202026-green)
 
 | Day | Lesson | Class | Activity | Notes |
 |------|----------|---------------|-------|----------|
