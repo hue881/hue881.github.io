@@ -1,6 +1,6 @@
 ### 🏖️ Summer 2026: AI Coding Lessons
 ![Level](https://img.shields.io/badge/level-beginner%20to%20advanced-brightgreen)
-![Updated](https://img.shields.io/badge/updated-Summer%202026-red)
+![Updated](https://img.shields.io/badge/updated-Summer%202026-lightyellow)
 
 | Week-Day | Lesson | Class | Activity | Notes |
 |:-----:|:----------|:---------------:|:-------|:----------|
