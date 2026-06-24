@@ -1,6 +1,6 @@
 ### 🌱 Spring 2026: AI Coding Lessons
 ![Level](https://img.shields.io/badge/level-beginner%20to%20advanced-brightgreen)
-![Updated](https://img.shields.io/badge/updated-Spring%202026-green)
+![Updated](https://img.shields.io/badge/updated-Spring%202026-brightgreen)
 
 | Day | Lesson | Class | Activity | Notes |
 |------|----------|---------------|-------|----------|
