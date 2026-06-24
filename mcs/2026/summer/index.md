@@ -5,4 +5,4 @@
 
 | Week-Day | Lesson | Class | Activity | Notes |
 |:-----:|:----------|:---------------:|:-------|:----------|
-| **1-1** | [How Can a Robot Find Its Way Through a Maze?](https://hue881.github.io/mcs/2026/summer/1_1/index.html) | -- | -- ||
+| **1-1** | [How Can a Robot Find Its Way Through a Maze?](https://hue881.github.io/mcs/2026/summer/1/1/index.html) | -- | -- ||
