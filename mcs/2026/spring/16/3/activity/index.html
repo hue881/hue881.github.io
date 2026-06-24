@@ -1,1 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Activity Sheet · Python Image Edge Detection System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f4fbff; --surface: rgba(255,255,255,0.97);
+    --text: #1f2a37; --text2: #374151; --muted: #5b6b7e;
+    --a1: #0b63ce; --a2: #10b981; --a3: #f59e0b; --ar: #ef4444;
+    --fd: 'Fredoka','Trebuchet MS',sans-serif;
+    --fb: 'Nunito',Arial,sans-serif;
+    --fc: 'Fira Code',Consolas,monospace;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  @media print{
+    body{background:#fff!important}
+    .no-print{display:none!important}
+    .page-break{page-break-before:always}
+    .card{box-shadow:none!important;border:1.5px solid #d1d5db!important}
+  }
+  body{font-family:var(--fb);color:var(--text);background:var(--bg);min-height:100vh}
+  /* ── PRINT BAR ── */
+  .print-bar{background:rgba(255,255,255,0.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(148,163,184,.3);padding:10px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;gap:12px;flex-wrap:wrap}
+  .bar-title{font-family:var(--fd);font-size:1.05rem;font-weight:700;color:var(--a1)}
+  .bar-sub{font-size:.78rem;color:var(--muted)}
+  .btn-print{background:var(--a1);color:#fff;border:none;padding:8px 20px;border-radius:999px;font-family:var(--fb);font-size:.82rem;font-weight:800;cursor:pointer;letter-spacing:.06em;transition:background .2s,transform .15s}
+  .btn-print:hover{background:#0952b0;transform:translateY(-1px)}
+  /* ── PAGE ── */
+  .page{max-width:920px;margin:0 auto;padding:32px 24px 60px}
+  /* ── HEADER ── */
+  .sheet-header{background:linear-gradient(135deg,#0b63ce 0%,#10b981 60%,#f59e0b 100%);border-radius:20px;padding:28px 32px 24px;color:#fff;margin-bottom:28px;position:relative;overflow:hidden}
+  .sheet-header::before{content:'';position:absolute;top:-60px;right:-60px;width:200px;height:200px;background:rgba(255,255,255,.08);border-radius:50%}
+  .sheet-header::after{content:'';position:absolute;bottom:-40px;left:-40px;width:140px;height:140px;background:rgba(255,255,255,.06);border-radius:50%}
+  .header-emoji{font-size:2.8rem;margin-bottom:6px}
+  .header-day{font-size:.75rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;opacity:.85;margin-bottom:4px}
+  .header-title{font-family:var(--fd);font-size:clamp(1.6rem,4vw,2.4rem);font-weight:700;line-height:1.1;margin-bottom:6px}
+  .header-sub{font-size:.88rem;opacity:.85;margin-bottom:14px}
+  .header-pills{display:flex;gap:8px;flex-wrap:wrap}
+  .header-pill{background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:4px 14px;font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+  /* ── STUDENT INFO ── */
+  .student-info{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:28px}
+  @media(max-width:600px){.student-info{grid-template-columns:1fr}}
+  .info-field{background:var(--surface);border-radius:12px;padding:12px 14px;border:1.5px solid rgba(11,99,206,.14);box-shadow:0 2px 8px rgba(15,23,42,.05)}
+  .info-label{font-size:.65rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--a1);margin-bottom:6px}
+  /* ── SHARED INPUT STYLES ── */
+  input[type=text], textarea, select {
+    font-family:var(--fb);font-size:.88rem;color:var(--text);background:#fff;
+    border:1.5px solid #cbd5e1;border-radius:7px;outline:none;
+    transition:border-color .2s,box-shadow .2s;
+    width:100%;
+  }
+  input[type=text]:focus, textarea:focus {
+    border-color:var(--a1);box-shadow:0 0 0 3px rgba(11,99,206,.12);
+  }
+  .info-line{border:none;border-bottom:1.5px solid #cbd5e1;border-radius:0;padding:4px 2px;background:transparent;display:block}
+  .info-line:focus{border-bottom-color:var(--a1);box-shadow:none}
+  /* single-line write field */
+  .wline{
+    display:block;width:100%;padding:5px 10px;
+    margin-bottom:9px;
+    border:none;border-bottom:1.5px solid #cbd5e1;border-radius:0;
+    background:transparent;font-family:var(--fb);font-size:.85rem;color:var(--text);
+    outline:none;transition:border-color .2s;
+  }
+  .wline:focus{border-bottom-color:var(--a1)}
+  /* multi-line textarea */
+  .warea{
+    display:block;width:100%;padding:8px 10px;
+    min-height:72px;resize:vertical;
+    background:#f8fafc;border-radius:8px;
+    font-family:var(--fb);font-size:.84rem;color:var(--text);line-height:1.5;
+  }
+  /* blank fill-in (inline inside code) */
+  .blank{
+    display:inline-block;background:rgba(251,191,36,.18);
+    border-bottom:2px solid #f59e0b;border-radius:3px;
+    vertical-align:middle;margin:0 2px;
+  }
+  .blankinput{
+    display:inline-block;vertical-align:middle;margin:0 3px;
+    background:rgba(251,191,36,.13);border:none;border-bottom:2px solid #f59e0b;
+    border-radius:3px;padding:1px 4px;font-family:var(--fc);font-size:.78rem;
+    color:#fcd34d;width:60px;outline:none;text-align:center;
+  }
+  .blankinput.wide{width:90px}
+  .blankinput:focus{background:rgba(251,191,36,.25);border-bottom-color:#e07c00}
+  /* predict grid input cells */
+  .pred-input{
+    width:50px;height:48px;text-align:center;
+    font-family:var(--fc);font-size:.92rem;font-weight:700;
+    border:2px dashed #cbd5e1;border-radius:8px;background:#f8fafc;
+    color:var(--text);padding:0;
+  }
+  .pred-input:focus{border-color:var(--a1);background:#eff6ff}
+  /* pixel grid design cells */
+  .pxinput{
+    width:48px;height:48px;text-align:center;
+    font-family:var(--fc);font-size:.9rem;font-weight:700;
+    border:2px dashed #cbd5e1;border-radius:8px;background:#f8fafc;
+    color:var(--text);padding:0;transition:background .3s,color .3s;
+  }
+  .pxinput:focus{border-color:var(--a1)}
+  /* ── SECTION LABELS ── */
+  .section-label{display:inline-flex;align-items:center;gap:8px;padding:5px 16px;border-radius:999px;border:1px solid rgba(148,163,184,.4);background:rgba(255,255,255,.9);font-size:.72rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--a1);margin-bottom:10px}
+  .section-title{font-family:var(--fd);font-size:clamp(1.3rem,2.5vw,1.8rem);font-weight:700;margin-bottom:16px;color:var(--text);line-height:1.2}
+  /* ── CARDS ── */
+  .card{background:var(--surface);border-radius:16px;padding:18px 20px;box-shadow:0 4px 18px rgba(15,23,42,.07);border:1px solid rgba(255,255,255,.7);margin-bottom:16px}
+  .card.ab{border-left:4px solid var(--a1)}
+  .card.ag{border-left:4px solid var(--a2)}
+  .card.aa{border-left:4px solid var(--a3)}
+  .card.ar{border-left:4px solid var(--ar)}
+  .clabel{font-size:.68rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;margin-bottom:8px}
+  .clabel.b{color:var(--a1)}.clabel.g{color:#047857}.clabel.a{color:#b45309}.clabel.r{color:#b91c1c}
+  /* ── GRIDS ── */
+  .g2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .g3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  @media(max-width:680px){.g2,.g3{grid-template-columns:1fr}}
+  /* ── CODE ── */
+  .codeblock{background:#1e293b;color:#e2e8f0;border-radius:12px;padding:14px 18px;font-family:var(--fc);font-size:clamp(.68rem,1.1vw,.83rem);line-height:1.65;overflow-x:auto;border:1px solid rgba(255,255,255,.06);margin-bottom:12px;white-space:pre}
+  .kw{color:#93c5fd}.nb{color:#fcd34d}.st{color:#86efac}.cm{color:#64748b;font-style:italic}.op{color:#93c5fd}
+  /* ── PIXEL GRIDS ── */
+  .pgrid{display:grid;gap:4px;width:fit-content;margin:0 auto 10px}
+  .pgrid5{grid-template-columns:repeat(5,48px)}
+  .pgrid3{grid-template-columns:repeat(3,56px)}
+  .pcell{display:flex;align-items:center;justify-content:center;font-family:var(--fc);font-size:.9rem;font-weight:700;border-radius:8px;height:48px}
+  /* ── TIMELINE ── */
+  .timeline{position:relative;padding-left:22px}
+  .timeline::before{content:'';position:absolute;left:8px;top:4px;bottom:4px;width:3px;border-radius:999px;background:linear-gradient(to bottom,#0b63ce,#10b981)}
+  .tstep{position:relative;margin-bottom:12px}
+  .tdot{position:absolute;left:-15px;top:4px;width:12px;height:12px;border-radius:999px;border:2px solid #f4fbff;background:#0b63ce;box-shadow:0 0 0 3px rgba(11,99,206,.2)}
+  .tdot.g{background:#10b981}.tdot.a{background:#f59e0b}
+  /* ── TIP BOX ── */
+  .tip{border-radius:10px;padding:10px 14px;font-size:.8rem;line-height:1.5;margin-top:10px}
+  .tip.b{background:rgba(11,99,206,.07);color:#1e40af}
+  .tip.g{background:rgba(16,185,129,.07);color:#065f46}
+  .tip.a{background:rgba(245,158,11,.07);color:#92400e}
+  /* ── RUBRIC ── */
+  table.rub{width:100%;border-collapse:collapse;font-size:.82rem;margin-top:8px}
+  table.rub th{background:#1e293b;color:#e2e8f0;padding:8px 10px;text-align:left;font-weight:700;letter-spacing:.05em}
+  table.rub td{padding:8px 10px;border-bottom:1px solid #e2e8f0;vertical-align:top;color:var(--text2)}
+  table.rub tr:nth-child(even) td{background:rgba(241,245,249,.6)}
+  table.rub td:first-child{font-weight:700;color:var(--text)}
+  .pts{font-family:var(--fc);font-size:.75rem;font-weight:800;color:var(--a1);white-space:nowrap}
+  /* ── CHALLENGE BADGE ── */
+  .cbadge{display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff;padding:4px 14px;border-radius:999px;font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px}
+  /* ── FORMULA ── */
+  .fbox{background:#1e293b;color:#e2e8f0;border-radius:10px;padding:10px 16px;font-family:var(--fc);font-size:.9rem;text-align:center;margin-bottom:10px}
+  /* ── MISC ── */
+  .divider{border:none;border-top:2px dashed #dde6f0;margin:28px 0}
+  .checklist{list-style:none;padding:0}
+  .checklist li{display:flex;align-items:flex-start;gap:8px;font-size:.85rem;color:var(--text2);margin-bottom:8px;line-height:1.45}
+  .chkbox{flex-shrink:0;width:17px;height:17px;border:2px solid #94a3b8;border-radius:4px;margin-top:1px;background:#fff;display:inline-block}
+  .grad-text{background:linear-gradient(135deg,#0b63ce 0%,#10b981 50%,#f59e0b 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  p,li{font-size:.88rem;color:var(--text2);line-height:1.55}
+  strong{color:var(--text)}
+  code{background:#e0f2ff;padding:1px 6px;border-radius:4px;font-family:var(--fc);font-size:.82em;color:#0b63ce}
+  .mb1{margin-bottom:6px}.mb2{margin-bottom:10px}.mb3{margin-bottom:14px}
+  .mt2{margin-top:10px}.mt3{margin-top:14px}
+  .tc{text-align:center}.tm{color:var(--muted);font-size:.78rem}
+  .sheet-footer{margin-top:40px;padding:16px 20px;border-radius:12px;background:rgba(11,99,206,.05);border:1px solid rgba(11,99,206,.12);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:.76rem;color:var(--muted)}
+</style>
+</head>
+<body>
 
+<!-- PRINT BAR -->
+<div class="print-bar no-print">
+  <div>
+    <div class="bar-title">🐍 Day 16 · Activity Sheet</div>
+    <div class="bar-sub">Python Image Edge Detection System · Ages 11–12</div>
+  </div>
+  <button class="btn-print" onclick="window.print()">🖨️ Print / Save as PDF</button>
+</div>
+
+<div class="page">
+
+<!-- ═══ HEADER ═══ -->
+<div class="sheet-header">
+  <div class="header-emoji">🐍📸</div>
+  <div class="header-day">Day 16 · AI for Images · Activity Sheet</div>
+  <div class="header-title">Build Your Own Python<br>Image Edge Detection System</div>
+  <div class="header-sub">From a 5×5 number grid → working filter → real edge detector</div>
+  <div class="header-pills">
+    <span class="header-pill">⏱ ~60 min</span>
+    <span class="header-pill">🐍 Python</span>
+    <span class="header-pill">Ages 11–12</span>
+    <span class="header-pill">Laplacian Filter</span>
+  </div>
+</div>
+
+<!-- ═══ STUDENT INFO ═══ -->
+<div class="student-info">
+  <div class="info-field">
+    <div class="info-label">👤 Your Name</div>
+    <input class="info-line" type="text" placeholder="First Last" />
+  </div>
+  <div class="info-field">
+    <div class="info-label">📅 Date</div>
+    <input class="info-line" type="text" placeholder="Month Day, Year" />
+  </div>
+  <div class="info-field">
+    <div class="info-label">🏫 Class / Period</div>
+    <input class="info-line" type="text" placeholder="Period ___" />
+  </div>
+</div>
+
+<!-- ═══ BEFORE YOU BEGIN ═══ -->
+<div class="section-label">🎯 Before You Begin</div>
+<div class="section-title">What This Activity Sheet Asks You to Build</div>
+<div class="g2 mb3">
+  <div class="card ab">
+    <div class="clabel b">🎯 Your Mission</div>
+    <p class="mb2">You will write a <strong>Python program</strong> that detects edges in an image — step by step, building from scratch.</p>
+    <div class="timeline">
+      <div class="tstep"><div class="tdot"></div><p><strong>Part 1</strong> — Vocabulary &amp; Formula Check</p></div>
+      <div class="tstep"><div class="tdot"></div><p><strong>Part 2</strong> — Fix the broken code (fill blanks)</p></div>
+      <div class="tstep"><div class="tdot"></div><p><strong>Part 3</strong> — Predict &amp; run filter on your own image</p></div>
+      <div class="tstep"><div class="tdot"></div><p><strong>Part 4</strong> — Write a <em>complete</em> edge detector in Python</p></div>
+      <div class="tstep" style="margin-bottom:0"><div class="tdot g"></div><p><strong>⭐ Part 5</strong> — Bonus: real image with <code>Pillow</code></p></div>
+    </div>
+  </div>
+  <div class="card ag">
+    <div class="clabel g">🔑 Key Formula</div>
+    <p class="mb2">Every answer today uses the <strong>Laplacian-style edge filter</strong>:</p>
+    <div class="fbox"><span style="color:#fcd34d">value</span> = <span style="color:#93c5fd">center × 4</span> − <span style="color:#fcd34d">(up + down + left + right)</span></div>
+    <ul style="list-style:disc;padding-left:18px">
+      <li><strong>Big positive value</strong> → edge detected 🔴</li>
+      <li><strong>Value near zero</strong> → flat region, no edge</li>
+      <li>We skip row / col 0 and the last row / col</li>
+    </ul>
+    <div class="tip b">💡 <strong>Predict before you run.</strong> If you can predict the output, you truly understand the code.</div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ═══ PART 1 ═══ -->
+<div class="section-label">📖 Part 1 of 5</div>
+<div class="section-title">Vocabulary &amp; Concept Check</div>
+
+<div class="g2 mb3">
+  <!-- MATCHING -->
+  <div class="card">
+    <div class="clabel b">🖼️ Match the Word</div>
+    <p class="mb2">Write the correct letter (A–E) next to each definition.</p>
+    <table style="width:100%;font-size:.83rem;border-collapse:collapse;margin-bottom:10px">
+      <tr><td style="padding:4px 0;font-weight:700;color:#0b63ce;width:36%">A. Pixel</td><td style="padding:4px 0;font-weight:700;color:#0b63ce">B. Grayscale Grid</td></tr>
+      <tr><td style="padding:4px 0;font-weight:700;color:#0b63ce">C. Edge</td><td style="padding:4px 0;font-weight:700;color:#0b63ce">D. Kernel / Filter</td></tr>
+      <tr><td colspan="2" style="padding:4px 0;font-weight:700;color:#0b63ce">E. Nested Loop</td></tr>
+    </table>
+    <table style="width:100%;font-size:.82rem;border-collapse:collapse">
+      <tr>
+        <td style="padding:5px 0;border-bottom:1px solid #f1f5f9;color:#374151;width:78%">A loop inside another loop that visits every pixel</td>
+        <td style="padding:5px 0;border-bottom:1px solid #f1f5f9"><input type="text" style="width:48px;text-align:center;border-radius:6px;padding:3px" placeholder="___" /></td>
+      </tr>
+      <tr>
+        <td style="padding:5px 0;border-bottom:1px solid #f1f5f9;color:#374151">Where brightness changes rapidly between neighbors</td>
+        <td style="padding:5px 0;border-bottom:1px solid #f1f5f9"><input type="text" style="width:48px;text-align:center;border-radius:6px;padding:3px" placeholder="___" /></td>
+      </tr>
+      <tr>
+        <td style="padding:5px 0;border-bottom:1px solid #f1f5f9;color:#374151">A 2D list of brightness numbers with no color</td>
+        <td style="padding:5px 0;border-bottom:1px solid #f1f5f9"><input type="text" style="width:48px;text-align:center;border-radius:6px;padding:3px" placeholder="___" /></td>
+      </tr>
+      <tr>
+        <td style="padding:5px 0;border-bottom:1px solid #f1f5f9;color:#374151">The smallest dot in a digital image (0–255)</td>
+        <td style="padding:5px 0;border-bottom:1px solid #f1f5f9"><input type="text" style="width:48px;text-align:center;border-radius:6px;padding:3px" placeholder="___" /></td>
+      </tr>
+      <tr>
+        <td style="padding:5px 0;color:#374151">A math operation slid over every pixel</td>
+        <td style="padding:5px 0"><input type="text" style="width:48px;text-align:center;border-radius:6px;padding:3px" placeholder="___" /></td>
+      </tr>
+    </table>
+  </div>
+  <!-- TRUE/FALSE -->
+  <div class="card">
+    <div class="clabel a">✏️ True or False</div>
+    <p class="mb2">Select <strong>T</strong> (True) or <strong>F</strong> (False) for each statement.</p>
+    <table style="width:100%;font-size:.82rem;border-collapse:collapse">
+      <tr>
+        <td style="padding:6px 0;border-bottom:1px solid #f1f5f9;color:#374151;width:80%">A pixel value of 0 means the pixel is pure white.</td>
+        <td style="padding:6px 0;border-bottom:1px solid #f1f5f9">
+          <select style="width:60px;padding:3px 4px;border-radius:6px">
+            <option value="">—</option><option>T</option><option>F</option>
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding:6px 0;border-bottom:1px solid #f1f5f9;color:#374151">We skip row 0 because it has no neighbor above it.</td>
+        <td style="padding:6px 0;border-bottom:1px solid #f1f5f9">
+          <select style="width:60px;padding:3px 4px;border-radius:6px">
+            <option value="">—</option><option>T</option><option>F</option>
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding:6px 0;border-bottom:1px solid #f1f5f9;color:#374151">A filtered value near zero means a strong edge was found.</td>
+        <td style="padding:6px 0;border-bottom:1px solid #f1f5f9">
+          <select style="width:60px;padding:3px 4px;border-radius:6px">
+            <option value="">—</option><option>T</option><option>F</option>
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding:6px 0;border-bottom:1px solid #f1f5f9;color:#374151">The Laplacian formula compares center to its 4 neighbors.</td>
+        <td style="padding:6px 0;border-bottom:1px solid #f1f5f9">
+          <select style="width:60px;padding:3px 4px;border-radius:6px">
+            <option value="">—</option><option>T</option><option>F</option>
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding:6px 0;color:#374151">Self-driving cars use edge detection in real time.</td>
+        <td style="padding:6px 0">
+          <select style="width:60px;padding:3px 4px;border-radius:6px">
+            <option value="">—</option><option>T</option><option>F</option>
+          </select>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+<!-- HAND CALCULATIONS -->
+<div class="card ab mb3">
+  <div class="clabel b">🧮 Quick-Calculate: Do It By Hand</div>
+  <div class="g2">
+    <div>
+      <p class="mb2">Formula: <code>value = center×4 − (up + down + left + right)</code></p>
+      <p class="mb2"><strong>Scenario A</strong> — center=<strong>5</strong>, all 4 neighbors=5</p>
+      <p style="font-size:.78rem;color:#64748b;margin-bottom:4px">Show your working:</p>
+      <input type="text" class="wline" placeholder="e.g.  5×4 − (5+5+5+5) = …" />
+      <input type="text" class="wline" placeholder="Value = ___   Edge? Yes / No" />
+    </div>
+    <div>
+      <p class="mb2"><strong>Scenario B</strong> — center=<strong>9</strong>, all 4 neighbors=5</p>
+      <p style="font-size:.78rem;color:#64748b;margin-bottom:4px">Show your working:</p>
+      <input type="text" class="wline" placeholder="e.g.  9×4 − (5+5+5+5) = …" />
+      <input type="text" class="wline" placeholder="Value = ___   Edge? Yes / No" />
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ═══ PART 2 ═══ -->
+<div class="section-label">🔧 Part 2 of 5</div>
+<div class="section-title">Fix the Broken Code — Fill in the Blanks</div>
+
+<div class="card aa mb2">
+  <div class="clabel a">📝 Your Task</div>
+  <p class="mb2">The code below has <strong>5 blanks</strong>. Fill each yellow box so the program correctly detects edges in the 5×5 image. Then predict the output before running.</p>
+
+  <div class="codeblock"><span class="kw">image</span> = [
+    [<span class="nb">0</span>, <span class="nb">0</span>, <span class="nb">0</span>, <span class="nb">0</span>, <span class="nb">0</span>],
+    [<span class="nb">0</span>, <span class="nb">7</span>, <span class="nb">7</span>, <span class="nb">7</span>, <span class="nb">0</span>],
+    [<span class="nb">0</span>, <span class="nb">7</span>, <span class="nb">7</span>, <span class="nb">7</span>, <span class="nb">0</span>],   <span class="cm"># bright square in the middle</span>
+    [<span class="nb">0</span>, <span class="nb">7</span>, <span class="nb">7</span>, <span class="nb">7</span>, <span class="nb">0</span>],
+    [<span class="nb">0</span>, <span class="nb">0</span>, <span class="nb">0</span>, <span class="nb">0</span>, <span class="nb">0</span>],
+]
+
+filtered = []
+<span class="kw">for</span> y <span class="kw">in</span> range(<input class="blankinput" id="b1" placeholder="?" title="Blank 1"/>, <input class="blankinput" id="b2" placeholder="?" title="Blank 2"/>):  <span class="cm"># Blank 1 &amp; 2: which rows?</span>
+    new_row = []
+    <span class="kw">for</span> x <span class="kw">in</span> range(1, 4):
+        center = image[y][x]
+        up     = image[<input class="blankinput" id="b3" placeholder="?" title="Blank 3"/>][x]   <span class="cm"># Blank 3: one row ABOVE y</span>
+        down   = image[<input class="blankinput" id="b4" placeholder="?" title="Blank 4"/>][x]   <span class="cm"># Blank 4: one row BELOW y</span>
+        left   = image[y][x-1]
+        right  = image[y][x+1]
+        value  = center*<input class="blankinput" id="b5" placeholder="?" title="Blank 5"/> - (up + down + left + right)
+        new_row.append(value)
+    filtered.append(new_row)
+
+<span class="kw">print</span>(filtered)</div>
+
+  <div class="tip a mb2" style="font-size:.78rem">🔑 <strong>Answer key</strong> (check after trying!): Blank 1 = <code>1</code> · Blank 2 = <code>4</code> · Blank 3 = <code>y-1</code> · Blank 4 = <code>y+1</code> · Blank 5 = <code>4</code></div>
+
+  <div class="g2">
+    <div>
+      <div class="clabel b mb1">💭 Predict the 3×3 output before running:</div>
+      <div class="pgrid pgrid3" style="grid-template-columns:repeat(3,56px)">
+        <input type="text" class="pred-input" placeholder="?" maxlength="4" />
+        <input type="text" class="pred-input" placeholder="?" maxlength="4" />
+        <input type="text" class="pred-input" placeholder="?" maxlength="4" />
+        <input type="text" class="pred-input" placeholder="?" maxlength="4" />
+        <input type="text" class="pred-input" placeholder="?" maxlength="4" />
+        <input type="text" class="pred-input" placeholder="?" maxlength="4" />
+        <input type="text" class="pred-input" placeholder="?" maxlength="4" />
+        <input type="text" class="pred-input" placeholder="?" maxlength="4" />
+        <input type="text" class="pred-input" placeholder="?" maxlength="4" />
+      </div>
+      <p class="tm tc mt2">Type your predicted values in each cell</p>
+    </div>
+    <div>
+      <div class="clabel g mb1">✅ Actual output after running:</div>
+      <textarea class="warea" placeholder="Paste or write the actual Python output here…"></textarea>
+      <p style="font-size:.8rem;color:#374151;margin-top:8px">Were you surprised? Which cells were highest? Why?</p>
+      <input type="text" class="wline mt2" placeholder="Your answer…" />
+      <input type="text" class="wline" placeholder="" />
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ═══ PART 3 ═══ -->
+<div class="section-label">🎨 Part 3 of 5</div>
+<div class="section-title">Design Your Own 5×5 Image &amp; Predict the Edges</div>
+
+<div class="card ag mb3">
+  <div class="clabel g">✏️ Step 1 — Type Your 5×5 Number Grid (use 0–9)</div>
+  <p class="mb2">Create a grayscale image with at least <strong>one clear edge</strong> (a region where numbers jump from low to high). Ideas: a stripe, a letter shape, a bright corner.</p>
+  <div class="g2">
+    <div>
+      <p style="font-size:.78rem;font-weight:700;color:#047857;margin-bottom:6px">📝 Your 5×5 image grid:</p>
+      <div class="pgrid pgrid5">
+        <input type="text" class="pxinput" maxlength="1" /><input type="text" class="pxinput" maxlength="1" /><input type="text" class="pxinput" maxlength="1" /><input type="text" class="pxinput" maxlength="1" /><input type="text" class="pxinput" maxlength="1" />
+        <input type="text" class="pxinput" maxlength="1" /><input type="text" class="pxinput" maxlength="1" /><input type="text" class="pxinput" maxlength="1" /><input type="text" class="pxinput" maxlength="1" /><input type="text" class="pxinput" maxlength="1" />
+        <input type="text" class="pxinput" maxlength="1" /><input type="text" class="pxinput" maxlength="1" /><input type="text" class="pxinput" maxlength="1" /><input type="text" class="pxinput" maxlength="1" /><input type="text" class="pxinput" maxlength="1" />
+        <input type="text" class="pxinput" maxlength="1" /><input type="text" class="pxinput" maxlength="1" /><input type="text" class="pxinput" maxlength="1" /><input type="text" class="pxinput" maxlength="1" /><input type="text" class="pxinput" maxlength="1" />
+        <input type="text" class="pxinput" maxlength="1" /><input type="text" class="pxinput" maxlength="1" /><input type="text" class="pxinput" maxlength="1" /><input type="text" class="pxinput" maxlength="1" /><input type="text" class="pxinput" maxlength="1" />
+      </div>
+      <p class="tm tc mt2">Each cell = one pixel value (0 = black, 9 = very bright)</p>
+    </div>
+    <div>
+      <p style="font-size:.78rem;font-weight:700;color:#0b63ce;margin-bottom:6px">💭 Predict your 3×3 filtered output:</p>
+      <div class="pgrid pgrid3" style="grid-template-columns:repeat(3,56px)">
+        <input type="text" class="pred-input" placeholder="?" maxlength="4" />
+        <input type="text" class="pred-input" placeholder="?" maxlength="4" />
+        <input type="text" class="pred-input" placeholder="?" maxlength="4" />
+        <input type="text" class="pred-input" placeholder="?" maxlength="4" />
+        <input type="text" class="pred-input" placeholder="?" maxlength="4" />
+        <input type="text" class="pred-input" placeholder="?" maxlength="4" />
+        <input type="text" class="pred-input" placeholder="?" maxlength="4" />
+        <input type="text" class="pred-input" placeholder="?" maxlength="4" />
+        <input type="text" class="pred-input" placeholder="?" maxlength="4" />
+      </div>
+      <p style="font-size:.78rem;font-weight:700;color:#047857;margin:10px 0 4px">✅ Actual output after running:</p>
+      <textarea class="warea" placeholder="Copy the printed output here…"></textarea>
+    </div>
+  </div>
+  <div class="mt3">
+    <div class="clabel a">🤔 Reflect — where were the highest values? Do they match where your numbers changed a lot?</div>
+    <input type="text" class="wline" placeholder="Your answer…" />
+    <input type="text" class="wline" placeholder="" />
+  </div>
+</div>
+
+<hr class="divider page-break">
+
+<!-- ═══ PART 4 ═══ -->
+<div class="section-label">🏗️ Part 4 of 5 — Main Project</div>
+<div class="section-title">Build Your Complete Python Edge Detection System</div>
+
+<div class="card ab mb2">
+  <div class="clabel b">📋 Requirements Checklist — check each box when done</div>
+  <ul class="checklist">
+    <li><input type="checkbox" style="width:17px;height:17px;accent-color:#0b63ce;flex-shrink:0" /> Define an <code>image</code> variable — a list of 5 rows, each with 5 numbers (0–9)</li>
+    <li><input type="checkbox" style="width:17px;height:17px;accent-color:#0b63ce;flex-shrink:0" /> Use a <strong>nested loop</strong> (<code>for y</code> / <code>for x</code>) to visit every inner pixel</li>
+    <li><input type="checkbox" style="width:17px;height:17px;accent-color:#0b63ce;flex-shrink:0" /> Correctly read <code>center</code>, <code>up</code>, <code>down</code>, <code>left</code>, <code>right</code></li>
+    <li><input type="checkbox" style="width:17px;height:17px;accent-color:#0b63ce;flex-shrink:0" /> Calculate <code>value = center*4 - (up + down + left + right)</code></li>
+    <li><input type="checkbox" style="width:17px;height:17px;accent-color:#0b63ce;flex-shrink:0" /> Store results in <code>new_row</code>, append rows to <code>filtered</code></li>
+    <li><input type="checkbox" style="width:17px;height:17px;accent-color:#0b63ce;flex-shrink:0" /> Print the full <code>filtered</code> 3×3 result</li>
+    <li><input type="checkbox" style="width:17px;height:17px;accent-color:#0b63ce;flex-shrink:0" /> Add a second loop: print <code>"EDGE!"</code> next to any value &gt; 10</li>
+    <li><input type="checkbox" style="width:17px;height:17px;accent-color:#0b63ce;flex-shrink:0" /> Add a <code>#</code> comment above each section explaining what it does</li>
+  </ul>
+</div>
+
+<!-- CODE WRITING SPACE -->
+<div class="card mb3">
+  <div class="clabel b">🐍 Write Your Complete Code Here</div>
+  <p class="mb2" style="font-size:.83rem">Write all three parts below. <strong>Predict the output first</strong>, then run!</p>
+  <textarea class="warea" style="min-height:340px;font-family:var(--fc);font-size:.82rem;background:#1e293b;color:#e2e8f0;border-color:#334155;border-radius:12px;padding:14px 18px;line-height:1.65" placeholder="# ── Your Python Edge Detection System ────────────────────────────────&#10;&#10;# Part A: Define the image&#10;image = [&#10;    [0, 0, 0, 0, 0],&#10;    ...&#10;]&#10;&#10;# Part B: Apply the filter&#10;filtered = []&#10;for y in range(   ,   ):&#10;    new_row = []&#10;    for x in range(1, 4):&#10;        center = image[y][x]&#10;        up     = image[   ][x]&#10;        ...&#10;&#10;# Part C: Print results&#10;print(filtered)&#10;&#10;# Part C+: Label edges&#10;for row in filtered:&#10;    for v in row:&#10;        if v > 10:&#10;            print('EDGE!', v)"></textarea>
+  <div class="g2 mt3">
+    <div>
+      <p style="font-size:.75rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:#0b63ce;margin-bottom:4px">💭 My predicted output:</p>
+      <textarea class="warea" placeholder="What do you think Python will print?"></textarea>
+    </div>
+    <div>
+      <p style="font-size:.75rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:#047857;margin-bottom:4px">✅ Actual output:</p>
+      <textarea class="warea" placeholder="Copy the real output from Python here…"></textarea>
+    </div>
+  </div>
+</div>
+
+<!-- DEBUGGING TABLE -->
+<div class="card ar mb3">
+  <div class="clabel r">🐛 If Your Code Has Errors — Debug It!</div>
+  <table class="rub">
+    <tr><th>Error You See</th><th>What It Means</th><th>How to Fix It</th></tr>
+    <tr>
+      <td><code>IndexError: list index out of range</code></td>
+      <td>Your loop is going outside the grid</td>
+      <td>Check <code>range()</code> — starts at 1, ends at 4 (not 5)</td>
+    </tr>
+    <tr>
+      <td><code>SyntaxError</code></td>
+      <td>Typo in your code</td>
+      <td>Check the line Python highlights. Look for missing <code>:</code> or <code>]</code></td>
+    </tr>
+    <tr>
+      <td><code>NameError: … not defined</code></td>
+      <td>Used a variable before creating it</td>
+      <td>Make sure <code>filtered = []</code> is before the loop</td>
+    </tr>
+    <tr>
+      <td>Output is all zeros</td>
+      <td>Your image may have the same value everywhere</td>
+      <td>Make sure your image has <em>different numbers</em></td>
+    </tr>
+  </table>
+  <p style="font-size:.8rem;color:#374151;margin-top:10px">Error I got (if any) and how I fixed it:</p>
+  <input type="text" class="wline mt2" placeholder="Describe the error…" />
+  <input type="text" class="wline" placeholder="How I fixed it…" />
+</div>
+
+<hr class="divider page-break">
+
+<!-- ═══ PART 5 BONUS ═══ -->
+<div class="section-label">⭐ Part 5 of 5 — Bonus</div>
+<div class="section-title">Extension Challenges: Go Further!</div>
+
+<!-- Challenge A -->
+<div class="card mb2">
+  <span class="cbadge">⭐ Challenge A — Threshold &amp; Label</span>
+  <div class="g2">
+    <div>
+      <div class="clabel b">📋 What to do</div>
+      <p class="mb2">After computing <code>filtered</code>, loop through each value and print a label:</p>
+      <ul style="list-style:disc;padding-left:18px;font-size:.83rem;color:#374151;line-height:1.7">
+        <li>value &gt; 15 → print <code>"STRONG EDGE"</code></li>
+        <li>value 5–15 → print <code>"WEAK EDGE"</code></li>
+        <li>value &lt; 5 → print <code>"flat"</code></li>
+      </ul>
+      <div class="tip b mt2">💡 You need an <code>if / elif / else</code> block inside a nested loop!</div>
+    </div>
+    <div>
+      <div class="clabel g">🐍 Your Challenge A code:</div>
+      <textarea class="warea" style="min-height:130px;font-family:var(--fc);font-size:.78rem;background:#1e293b;color:#e2e8f0;border-color:#334155;border-radius:10px;padding:12px 14px" placeholder="# Challenge A — threshold loop&#10;for row in filtered:&#10;    for v in row:&#10;        if v > 15:&#10;            ..."></textarea>
+    </div>
+  </div>
+</div>
+
+<!-- Challenge B -->
+<div class="card mb2">
+  <span class="cbadge" style="background:linear-gradient(135deg,#f59e0b,#0b63ce)">⭐⭐ Challenge B — Bigger Grid (7×7)</span>
+  <div class="g2">
+    <div>
+      <div class="clabel a">📋 What to do</div>
+      <p class="mb2">Upgrade your program to work on a <strong>7×7 image</strong>. Fill in the new range values:</p>
+      <div class="codeblock" style="font-size:.74rem">image = [ <span class="cm"># 7 rows of 7 numbers</span>
+    [<input class="blankinput wide" placeholder="0,0,0,0,0,0,0"/>],
+    [<input class="blankinput wide" placeholder="0,0,0,0,0,0,0"/>],
+    [<input class="blankinput wide" placeholder="0,8,8,8,8,8,0"/>],
+    [<input class="blankinput wide" placeholder="0,8,8,8,8,8,0"/>],
+    [<input class="blankinput wide" placeholder="0,8,8,8,8,8,0"/>],
+    [<input class="blankinput wide" placeholder="0,0,0,0,0,0,0"/>],
+    [<input class="blankinput wide" placeholder="0,0,0,0,0,0,0"/>],
+]
+<span class="kw">for</span> y <span class="kw">in</span> range(<input class="blankinput" style="width:35px" placeholder="?"/>, <input class="blankinput" style="width:35px" placeholder="?"/>): <span class="cm"># what goes here?</span>
+    <span class="kw">for</span> x <span class="kw">in</span> range(<input class="blankinput" style="width:35px" placeholder="?"/>, <input class="blankinput" style="width:35px" placeholder="?"/>):</div>
+      <p style="font-size:.78rem;color:#374151;margin-top:6px"><strong>Hint:</strong> For an N×N image, loop from 1 to N-1, producing (N-2)×(N-2) output.</p>
+    </div>
+    <div>
+      <div class="clabel g">✅ Output after running (should be 5×5):</div>
+      <textarea class="warea" placeholder="Paste output here…"></textarea>
+    </div>
+  </div>
+</div>
+
+<!-- Challenge C -->
+<div class="card ag mb3">
+  <span class="cbadge" style="background:linear-gradient(135deg,#10b981,#0b63ce)">⭐⭐⭐ Challenge C — Real Image with Pillow!</span>
+  <div class="g2">
+    <div>
+      <div class="clabel g">📋 Steps:</div>
+      <div class="timeline">
+        <div class="tstep"><div class="tdot g"></div><p>Install Pillow: <code>pip install Pillow</code></p></div>
+        <div class="tstep"><div class="tdot g"></div><p>Open a small image, convert to grayscale, resize to 10×10</p></div>
+        <div class="tstep"><div class="tdot g"></div><p>Convert pixel data to a Python 2D list</p></div>
+        <div class="tstep"><div class="tdot g"></div><p>Run your edge detection loop on the new grid</p></div>
+        <div class="tstep" style="margin-bottom:0"><div class="tdot g"></div><p>Count how many cells are <code>"EDGE!"</code></p></div>
+      </div>
+    </div>
+    <div>
+      <div class="clabel b">🐍 Starter code:</div>
+      <div class="codeblock" style="font-size:.72rem"><span class="kw">from</span> PIL <span class="kw">import</span> Image
+
+img = Image.open(<span class="st">"photo.jpg"</span>)
+img = img.convert(<span class="st">"L"</span>)      <span class="cm"># grayscale</span>
+img = img.resize((10, 10))  <span class="cm"># shrink!</span>
+
+pixels = list(img.getdata())
+image = []
+<span class="kw">for</span> row <span class="kw">in</span> range(10):
+    start = row * 10
+    image.append(pixels[start:start+10])
+
+<span class="cm"># Your edge filter code goes below:</span></div>
+      <div class="tip g" style="font-size:.75rem">💡 Try <code>resize((20,20))</code> once it works!</div>
+    </div>
+  </div>
+  <div class="mt3">
+    <div class="clabel b">✍️ What did you notice about the real image's edges?</div>
+    <input type="text" class="wline" placeholder="Your observation…" />
+    <input type="text" class="wline" placeholder="" />
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ═══ REFLECTION ═══ -->
+<div class="section-label">💬 Reflect</div>
+<div class="section-title">Thinking About Your Work</div>
+
+<div class="card mb3">
+  <div class="g2">
+    <div>
+      <div class="clabel b">🧠 Exit Ticket</div>
+      <p style="font-size:.8rem;font-weight:700;color:#374151;margin:8px 0 3px">1. What does the Laplacian formula <em>measure</em> in your own words?</p>
+      <input type="text" class="wline" placeholder="Your answer…" />
+      <input type="text" class="wline" placeholder="" />
+      <p style="font-size:.8rem;font-weight:700;color:#374151;margin:8px 0 3px">2. Why do we skip row 0 and the last row?</p>
+      <input type="text" class="wline" placeholder="Your answer…" />
+      <input type="text" class="wline" placeholder="" />
+      <p style="font-size:.8rem;font-weight:700;color:#374151;margin:8px 0 3px">3. Name one real AI system that uses edge detection and explain how.</p>
+      <input type="text" class="wline" placeholder="Your answer…" />
+      <input type="text" class="wline" placeholder="" />
+    </div>
+    <div>
+      <div class="clabel g">🌱 Growth Mindset Check</div>
+      <p style="font-size:.8rem;color:#374151;margin-bottom:8px">Select the one that describes how you felt today:</p>
+      <div style="display:flex;flex-direction:column;gap:7px;font-size:.83rem;color:#374151">
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="radio" name="mood" style="accent-color:#0b63ce"> 😤 I got stuck but kept trying</label>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="radio" name="mood" style="accent-color:#0b63ce"> 💡 I figured something out on my own</label>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="radio" name="mood" style="accent-color:#0b63ce"> 🤝 I helped a classmate understand</label>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="radio" name="mood" style="accent-color:#0b63ce"> 🚀 I finished early and tackled a bonus!</label>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="radio" name="mood" style="accent-color:#0b63ce"> 🌀 I'm still confused about…</label>
+      </div>
+      <p style="font-size:.78rem;font-weight:700;color:#0b63ce;margin:12px 0 4px">One thing I still want to learn:</p>
+      <input type="text" class="wline" placeholder="…" />
+      <p style="font-size:.78rem;font-weight:700;color:#047857;margin:8px 0 4px">One thing I did really well today:</p>
+      <input type="text" class="wline" placeholder="…" />
+    </div>
+  </div>
+</div>
+
+<!-- ═══ RUBRIC ═══ -->
+<div class="section-label">📊 For Teachers</div>
+<div class="section-title">Grading Rubric (20 Points Total)</div>
+<div class="card mb3">
+  <table class="rub">
+    <tr><th>Section</th><th>What to Look For</th><th class="pts">Points</th></tr>
+    <tr><td>Part 1 — Vocab &amp; Calculate</td><td>Correct matching; True/False; both calculations with working shown</td><td class="pts">4 pts</td></tr>
+    <tr><td>Part 2 — Fix the Code</td><td>All 5 blanks correct; prediction written; actual output recorded</td><td class="pts">4 pts</td></tr>
+    <tr><td>Part 3 — Own Image</td><td>5×5 image designed with edge; prediction attempted; output recorded; reflection written</td><td class="pts">3 pts</td></tr>
+    <tr><td>Part 4 — Complete System</td><td>Working nested loop; correct formula; "EDGE!" labels; comments; prediction &amp; actual both filled</td><td class="pts">7 pts</td></tr>
+    <tr><td>Reflection / Exit Ticket</td><td>Thoughtful written responses to all 3 questions</td><td class="pts">2 pts</td></tr>
+    <tr style="background:rgba(11,99,206,.06)"><td><strong>⭐ Bonus</strong></td><td>Challenge A (+2), Challenge B (+2), Challenge C with Pillow (+3)</td><td class="pts">+7 max</td></tr>
+  </table>
+  <div class="g2 mt3">
+    <div class="tip b">
+      <strong>Score: _____ / 20</strong><br>
+      Teacher Comments:<br>
+      <input type="text" class="wline mt2" placeholder="…" />
+      <input type="text" class="wline" placeholder="…" />
+    </div>
+    <div class="tip g">
+      <strong>Next Steps / Encouragement:</strong><br>
+      <input type="text" class="wline mt2" placeholder="…" />
+      <input type="text" class="wline" placeholder="…" />
+      <input type="text" class="wline" placeholder="…" />
+    </div>
+  </div>
+</div>
+
+<!-- ═══ ANSWER KEY ═══ -->
+<div class="section-label">📌 Teacher Reference</div>
+<div class="section-title">Complete Correct Solution — Part 4</div>
+<div class="card mb3">
+  <div class="clabel b">🔑 Only share after students have submitted!</div>
+  <div class="codeblock"><span class="cm"># Part A: Define a 5×5 grayscale image</span>
+image = [
+    [<span class="nb">0</span>, <span class="nb">0</span>, <span class="nb">0</span>, <span class="nb">0</span>, <span class="nb">0</span>],
+    [<span class="nb">0</span>, <span class="nb">8</span>, <span class="nb">8</span>, <span class="nb">8</span>, <span class="nb">0</span>],
+    [<span class="nb">0</span>, <span class="nb">8</span>, <span class="nb">8</span>, <span class="nb">8</span>, <span class="nb">0</span>],
+    [<span class="nb">0</span>, <span class="nb">8</span>, <span class="nb">8</span>, <span class="nb">8</span>, <span class="nb">0</span>],
+    [<span class="nb">0</span>, <span class="nb">0</span>, <span class="nb">0</span>, <span class="nb">0</span>, <span class="nb">0</span>],
+]
+
+<span class="cm"># Part B: Apply the Laplacian edge filter</span>
+filtered = []
+<span class="kw">for</span> y <span class="kw">in</span> range(<span class="nb">1</span>, <span class="nb">4</span>):         <span class="cm"># skip row 0 (no above) and row 4 (no below)</span>
+    new_row = []
+    <span class="kw">for</span> x <span class="kw">in</span> range(<span class="nb">1</span>, <span class="nb">4</span>):     <span class="cm"># skip col 0 and col 4</span>
+        center = image[y][x]
+        up     = image[y<span class="op">-1</span>][x]   <span class="cm"># one row above</span>
+        down   = image[y<span class="op">+1</span>][x]   <span class="cm"># one row below</span>
+        left   = image[y][x<span class="op">-1</span>]   <span class="cm"># one column left</span>
+        right  = image[y][x<span class="op">+1</span>]   <span class="cm"># one column right</span>
+        value  = center<span class="op">*</span><span class="nb">4</span> <span class="op">-</span> (up <span class="op">+</span> down <span class="op">+</span> left <span class="op">+</span> right)
+        new_row.append(value)
+    filtered.append(new_row)
+
+<span class="cm"># Part C: Print results</span>
+<span class="kw">print</span>(<span class="st">"Filtered grid:"</span>, filtered)
+
+<span class="cm"># Part C+: Label edges</span>
+<span class="kw">for</span> row <span class="kw">in</span> filtered:
+    <span class="kw">for</span> v <span class="kw">in</span> row:
+        <span class="kw">if</span> v <span class="op">&gt;</span> <span class="nb">10</span>:
+            <span class="kw">print</span>(<span class="st">"EDGE!"</span>, v)
+        <span class="kw">else</span>:
+            <span class="kw">print</span>(<span class="st">"flat"</span>, v)</div>
+</div>
+
+<!-- FOOTER -->
+<div class="sheet-footer">
+  <div><strong>Day 16 · AI for Images · Activity Sheet</strong> — Python Image Edge Detection System<br>Ages 11–12 · Laplacian Filter · Nested Loops · Computer Vision</div>
+  <div style="text-align:right">Spring 2026 · Mr. Hsiao / Hue Weng</div>
+</div>
+
+</div><!-- .page -->
+
+<script>
+// Live-color the pixel design grid cells based on value 0-9
+document.querySelectorAll('.pxinput').forEach(inp => {
+  inp.addEventListener('input', function() {
+    const v = parseInt(this.value);
+    if (isNaN(v) || v < 0 || v > 9) {
+      this.style.background = '#f8fafc';
+      this.style.color = '#374151';
+      return;
+    }
+    const t = v / 9;
+    const light = Math.round(248 - t * 220);
+    this.style.background = `rgb(${light}, ${Math.round(light * (1 - t * 0.5))}, ${Math.round(light * (1 - t * 0.8))})`;
+    this.style.color = t > 0.5 ? '#fff' : '#1e293b';
+    this.style.borderColor = t > 0.3 ? '#0b63ce' : '#cbd5e1';
+  });
+});
+</script>
+</body>
+</html>
