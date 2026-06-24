@@ -12,7 +12,7 @@
 | **16** | [AI for Images](https://hue881.github.io/mcs/2026/spring/16/3/index.html) | AI-3 | [Activity](https://hue881.github.io/mcs/2026/spring/16/3/activity/index.html) ||
 | **17** | [Language, Bots & the Limits of Pattern Matching](https://hue881.github.io/mcs/2026/spring/17/index.html) | -- | [Activity](https://hue881.github.io/mcs/2026/spring/17/activity/index.html) ||
 | **18** | [Data, Bias & Fairness](https://hue881.github.io/mcs/2026/spring/18/index.html) | -- | [Activity](https://hue881.github.io/mcs/2026/spring/18/activity/index.html) ||
-| **19** | [Final](https://hue881.github.io/mcs/2026/spring/final/1/index.html) | A1-1 | -- |152|
-| **19** | [Final](https://hue881.github.io/mcs/2026/spring/final/3/index.html) | A1-3 | -- |236|
+| **19** | [Final](https://hue881.github.io/mcs/2026/spring/final/1/index.html) | AI-1 | -- |152|
+| **19** | [Final](https://hue881.github.io/mcs/2026/spring/final/3/index.html) | AI-3 | -- |236|
 | **21** | [Three-Project Build Sprint](https://hue881.github.io/mcs/2026/spring/21/index.html) | -- | [Activity](https://hue881.github.io/mcs/2026/spring/21/activity/index.html) ||
 | **22** | [Game](https://hue881.github.io/mcs/2026/spring/game/index.html) | -- | -- ||
