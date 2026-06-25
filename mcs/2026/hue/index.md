@@ -5,7 +5,7 @@ Hi everyone! I'm Hsiao "Hue" Weng, and I'm so excited to be your teacher for the
 
 ### A Little About Me
 
-I'm a software engineer and teacher. I've spent years helping students of all ages turn tricky, confusing tech ideas into things that finally click and make sense. My favorite part of teaching is that "Ohhh, now I get it!" moment — and we're going to have a lot of those this summer. 😊
+I'm a software engineer and teacher. I've spent years helping students of all ages turn tricky, confusing tech ideas into things that finally click and make sense. My favorite part of teaching is that "Ohhh, now I get it!" moment — and we're going to have a lot of those this summer.
 
 I believe everyone can learn to code and understand AI. There are no silly questions in my class, mistakes are how we learn, and the best discoveries usually come from experimenting and being curious.
 
