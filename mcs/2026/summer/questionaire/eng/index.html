@@ -615,7 +615,7 @@
 <!-- Q5 — Rank -->
 <div class="card ap">
   <span class="clabel p"><span class="qnum">Q5</span> Rank your <strong>top 3 goals</strong> for your child in this program. <span class="q-hint">Write 1 (most important), 2, or 3 in the box. Leave the rest blank.</span></span>
-  <table class="rank">
+  <table id="q5-table" class="rank">
     <thead><tr><th>Goal for your child</th><th>Rank (1–3)</th></tr></thead>
     <tbody>
       <tr><td>Your child learns Python coding fundamentals</td><td><input class="rank-in" type="text" maxlength="1" placeholder="—"></td></tr>
@@ -803,5 +803,42 @@
 </div>
 
 </div><!-- /page -->
+
+<script>
+(function() {
+  var rankInputs = document.querySelectorAll('#q5-table .rank-in');
+
+  function updateRankInputs() {
+    var filled = 0;
+    rankInputs.forEach(function(inp) {
+      if (inp.value.trim() !== '') filled++;
+    });
+    rankInputs.forEach(function(inp) {
+      if (filled >= 3 && inp.value.trim() === '') {
+        inp.disabled = true;
+        inp.title = 'You have already ranked 3 goals. Clear one to change your selection.';
+        inp.style.opacity = '0.35';
+        inp.style.cursor = 'not-allowed';
+      } else {
+        inp.disabled = false;
+        inp.title = '';
+        inp.style.opacity = '';
+        inp.style.cursor = '';
+      }
+    });
+  }
+
+  rankInputs.forEach(function(inp) {
+    inp.addEventListener('input', function() {
+      // Only allow 1, 2, or 3
+      var val = inp.value.replace(/[^123]/g, '');
+      inp.value = val.slice(0, 1);
+      updateRankInputs();
+    });
+    inp.addEventListener('change', updateRankInputs);
+  });
+})();
+</script>
+
 </body>
 </html>
