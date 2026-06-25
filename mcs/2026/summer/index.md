@@ -1,4 +1,5 @@
-### 🏖️ Summer 2026: A.I. Coding Program, Python & Scatch -- Instructor: Hsiao "Hue" Weng
+### 🏖️ Summer 2026: A.I. Coding Program, Python & Scatch
+### Instructor: Hsiao "Hue" Weng
 
 ![Level](https://img.shields.io/badge/level-beginner%20to%20advanced-brightgreen)
 ![Updated](https://img.shields.io/badge/updated-Summer%202026-lightyellow)
