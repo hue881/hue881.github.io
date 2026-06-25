@@ -49,7 +49,6 @@ I believe everyone can learn to code and understand AI. 🚀 There are no silly 
 - I'm a huge **cat lover**! 🐾😻
 - My favorite movie is **Jurassic Park** 🦕🦖 — dinosaurs + cool science = the best!
 - I speak two languages — English 🇺🇸 and Mandarin Chinese 🇨🇳 🌏
-- Ask me anything about AI 🤖, coding 💻, or robots 🦾 — I never run out of cool facts! 🤓
 
 ### 🤝 My Promise to You
 
