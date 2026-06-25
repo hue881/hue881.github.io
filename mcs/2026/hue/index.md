@@ -22,7 +22,7 @@ I believe everyone can learn to code and understand AI. There are **no silly que
 
 ### What I Do
 
-**Digital SAT Facilitator at StudySmart Tutors** — I lead test-prep classes that teach students smart strategies and build their confidence.
+- **Digital SAT Facilitator at StudySmart Tutors** — I lead test-prep classes that teach students smart strategies and build their confidence.
 - **Instructor at Concorde Education** — I design and teach hands-on courses like **Robotics** and **Video Game Development** in after-school programs.
 - **Software Engineer for AI Training Data (Scale AI / Outlier)** — I worked on improving how AI learns from code, helping make AI smarter and more reliable.
 - **Tutor and teacher for over 10 years** — I've helped students with math, computer science, and more, building lessons and projects that make learning fun and clear.
