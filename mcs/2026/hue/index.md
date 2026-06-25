@@ -1,4 +1,3 @@
-### Meet Your Instructor — Hue! 👋
 
 Hi everyone! I'm **Hsiao "Hue" Weng**, and I'm so excited to be your teacher for the **AI Coding Summer 2026** camp. I love helping curious kids discover how computers and AI *really* work — not just how to use them, but how to build cool things with them. Let's have an awesome summer together!
 
