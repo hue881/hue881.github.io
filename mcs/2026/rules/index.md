@@ -1,4 +1,4 @@
-### Rules and Regulations
+## Rules and Regulations
 
 1. Be on time and prepared for class
 2. Do not run or scream in the classroom or the hallway
