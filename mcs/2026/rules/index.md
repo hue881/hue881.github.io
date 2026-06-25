@@ -1,3 +1,5 @@
+###Rules and Regulations
+
 1. Be on time and prepared for class
 2. Do not run or scream in the classroom or the hallway
 3. Do not play on the stairs or in the bathrooms
