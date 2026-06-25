@@ -41,9 +41,13 @@ I believe everyone can learn to code and understand AI. There are no silly quest
 - **Coding:** Python, Java, JavaScript, C/C++
 - **Computer Science:** Artificial Intelligence, algorithms, how computers think
 - **Making hard things simple:** turning big, complicated ideas into fun, step-by-step learning
-- **Languages:** English (fluent) and Mandarin Chinese (conversational)
 
+### Fun Facts About Hue 🐱
 
+- I'm a huge **cat lover**! 🐾
+- My favorite movie is **Jurassic Park** 🦕 — dinosaurs + cool science = the best!
+- I speak two languages — English and Mandarin Chinese 🌏
+- Ask me anything about AI, coding, or robots — I never run out of cool facts!
 
 ### My Promise to You
 
