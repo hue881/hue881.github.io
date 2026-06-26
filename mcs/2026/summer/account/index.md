@@ -11,7 +11,7 @@ Hi! We're so excited to start in 2 days 😊 So your child can save their projec
 
 ### 1. Google account (to save projects to Google Drive)
 
-If your child is under 13, this must be created by you using Google's free **Family Link** app (the official, safe way to set up a kids' account)  **You do not need to create an google account if your child already has a school nycstudents.net email account.**
+If your child is under 13, this must be created by you using Google's free **Family Link** app (the official, safe way to set up a kids' account).
 
 - Download Family Link: **https://familylink.google.com** (or search "Google Family Link" in your phone's App Store / Play Store)
 - Open it and tap **Add child → "No"** when asked if they already have an account
@@ -31,8 +31,14 @@ If your child is under 13, this must be created by you using Google's free **Fam
 
 > **No worries if you can't finish in time** — we'll have a temporary shared Drive folder and a backup Scratch login ready, so no child is blocked on day one.
 
-Questions or stuck? Text or email me. 
-Also happy to walk you through it! Thanks so much 😊
+Questions or stuck? Text or email me.
+Also happy to walk you through it on Zoom.  Feel free to join on Saturday or Sunday! Thanks so much 😊
+
+**10:00 AM EST Sunday, June 27, 2026 Google Drive & Scratch Setup Workshop**
+https://us06web.zoom.us/j/5868623415?pwd=sLubjTbBzk5BjqxwlWD2wFf6PLXHH9.1&omn=88609125460
+
+**7:00 PM EST Sunday, June 28, 2026 Google Drive & Scratch Setup Workshop**
+https://us06web.zoom.us/j/5868623415?pwd=sLubjTbBzk5BjqxwlWD2wFf6PLXHH9.1&omn=86543626258
 
 ## Backup Resources (keep on hand)
 
