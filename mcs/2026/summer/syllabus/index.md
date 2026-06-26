@@ -1,4 +1,4 @@
-# AI & Coding Summer Program — Syllabus
+# [AI & Coding Summer Program](https://hue881.github.io/mcs/2026/summer) — Syllabus
 **Modern Chinese School | Summer 2026**
 **Python, Scratch & Artificial Intelligence | Ages 7–13 (Grades 2–9)**
 
@@ -148,3 +148,4 @@ test or presentation anxiety may demonstrate learning through their project alon
 Field trips (no class): July 20 and August 3. Final showcase one day within Aug 10-13.
 
 *This schedule is a working plan and may shift week to week based on class pace.*
+[AI & Coding Summer Program](https://hue881.github.io/mcs/2026/summer)
