@@ -1,5 +1,5 @@
 
-# Pre-Program Setup Instructions for Parents 10-15 Minutes
+# 10-15 Minutes Pre-Program Setup for Parents 
 
 **Program:** AI Coding Summer Class — Python & Scratch
 **Action needed:** Create 2 free accounts before the first day.
