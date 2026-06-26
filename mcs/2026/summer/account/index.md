@@ -29,7 +29,7 @@ If your child is under 13, this must be created by you using Google's free **Fam
 
 **Please text or email Gmail address + Scratch username once done**, so we can get your child all set up before class.  This lets us add your class to our Scratch class studio ahead of time, so they can start coding right away on day one and easily share projects with the group. It also means if they ever forget their login, we can help them back in quickly. 😊 
 
-> **No worries if you can't finish in time** — we'll have a temporary shared Drive folder and a backup Scratch login ready, so no child is blocked on day one.
+**No worries if you can't finish in time** — we'll have a temporary shared Drive folder and a backup Scratch login ready, so no child is blocked on day one.
 
 Questions or stuck? Text or email me.
 Also happy to walk you through it on Zoom.  Feel free to join on Saturday or Sunday! Thanks so much 😊
