@@ -28,7 +28,7 @@ If your child is under 13, this must be created by you using Google's free **Fam
 - When asked, enter **your child's (or your) email** — it's just to confirm the account
 - Help guide: **https://en.scratch-wiki.info/wiki/Creating_an_Account**
 
-✅ **Please reply with the Gmail address + Scratch username once done**, so we can get your child all set up before class.
+**Please reply with the Gmail address + Scratch username once done**, so we can get your child all set up before class.
 
 > **No worries if you can't finish in time** — we'll have a temporary shared Drive folder and a backup Scratch login ready, so no child is blocked on day one.
 
