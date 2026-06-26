@@ -93,6 +93,7 @@ There is no textbook. All materials are provided in class. Students should have 
 - The course's printed handouts and reference sheets (provided each week).
 - Scratch (https://scratch.mit.edu) — free, browser-based.
 - Python Playground (https://playcode.io/python-playground) — free, browser-based.
+- Google Drive (https://drive.google.com) — free, browser-based.
 - Google Teachable Machine (teachablemachine.withgoogle.com) — used for live AI demos.
 
 Optional at-home enrichment may be suggested week to week, but nothing outside class
