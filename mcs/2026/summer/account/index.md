@@ -1,8 +1,8 @@
 
-# Pre-Program Setup Instructions for Parents
+# Pre-Program Setup Instructions for Parents 10-15 Minutes
 
 **Program:** AI Coding Summer Class — Python & Scratch
-**Action needed:** Create 2 free accounts before the first day
+**Action needed:** Create 2 free accounts before the first day.
 
 **2 quick setup steps before your child's coding class starts June 29, 2026!** 💻
 
@@ -26,7 +26,7 @@ If your child is under 13, this must be created by you using Google's free **Fam
 - When asked, enter **your child's (or your) email** — it's just to confirm the account
 - Help guide: **https://en.scratch-wiki.info/wiki/Creating_an_Account**
 
-**Please reply with the Gmail address + Scratch username once done**, so we can get your child all set up before class.
+**Please text or email Gmail address + Scratch username once done**, so we can get your child all set up before class.  
 
 > **No worries if you can't finish in time** — we'll have a temporary shared Drive folder and a backup Scratch login ready, so no child is blocked on day one.
 
