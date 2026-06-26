@@ -8,7 +8,7 @@
 
 **Subject:** 2 quick setup steps before [child]'s coding class starts [date]! 💻
 
-Hi Everyone! We're so excited to start in 2 days 😊 So your child can save their projects and jump into Scratch on day one, please set up two free accounts before then. Both are quick — here's exactly how:
+Hi! We're so excited to start in 2 days 😊 So your child can save their projects and jump into Scratch on day one, please set up two free accounts before then. Both are quick — here's exactly how:
 
 ### 1. Google account (to save projects to Google Drive)
 
