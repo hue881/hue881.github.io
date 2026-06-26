@@ -150,4 +150,4 @@ Field trips (no class): July 20 and August 3. Final showcase one day within Aug 
 
 *This schedule is a working plan and may shift week to week based on class pace.* 
 
-[AI & Coding Summer Program](https://hue881.github.io/mcs/2026/summer)
+[Summer 2026 AI & Coding Program](https://hue881.github.io/mcs/2026/summer)
