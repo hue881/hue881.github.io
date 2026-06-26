@@ -34,10 +34,12 @@ If your child is under 13, this must be created by you using Google's free **Fam
 Questions or stuck? Text or email me.
 Also happy to walk you through it on Zoom.  Feel free to join on Saturday or Sunday! Thanks so much 😊
 
-**10:00 AM EST Saturday, June 27, 2026 Google Drive & Scratch Setup Workshop**  
+### 3. Google Drive & Scratch Setup Workshop (Optional)
+
+**10:00 AM EST Saturday, June 27, 2026**
 [Saturday Zoom Link](https://us06web.zoom.us/j/5868623415?pwd=sLubjTbBzk5BjqxwlWD2wFf6PLXHH9.1&omn=88609125460)
 
-**7:00 PM EST Sunday, June 28, 2026 Google Drive & Scratch Setup Workshop**  
+**7:00 PM EST Sunday, June 28, 2026**  
 [Sunday Zoom Link](https://us06web.zoom.us/j/5868623415?pwd=sLubjTbBzk5BjqxwlWD2wFf6PLXHH9.1&omn=86543626258)
 
 ## Backup Resources (keep on hand)
