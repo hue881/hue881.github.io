@@ -20,7 +20,7 @@ Hi! We're so excited to start in 2 days 😊 So your child can save their projec
 Questions or stuck? Text or email me.
 Also happy to walk you through it on Zoom.  Feel free to join on Sunday! Thanks so much 😊
 
-### 3. Scratch Setup Workshop (Optional)
+### 3. 15 Min Scratch Setup Workshop (Optional)
 
 - 5:00 PM EST Sunday, June 28, 2026
 - [5 PM Zoom Link](https://us06web.zoom.us/j/5868623415?pwd=sLubjTbBzk5BjqxwlWD2wFf6PLXHH9.1&omn=88609125460)
