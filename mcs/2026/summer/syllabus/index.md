@@ -1,6 +1,6 @@
 # AI & Coding Summer Program — Syllabus
 **Modern Chinese School | Summer 2026**
-**Python, Scratch & Artificial Intelligence | Ages 7–13 (Grades 2–9) | 19 Students**
+**Python, Scratch & Artificial Intelligence | Ages 7–13 (Grades 2–9)**
 
 ---
 
