@@ -6,7 +6,7 @@
 
 ## Email/Message to Parents
 
-**Subject:** 2 quick setup steps before [child]'s coding class starts [date]! 💻
+**Subject:** 2 quick setup steps before your child's coding class starts June 29, 2026! 💻
 
 Hi! We're so excited to start in 2 days 😊 So your child can save their projects and jump into Scratch on day one, please set up two free accounts before then. Both are quick — here's exactly how:
 
