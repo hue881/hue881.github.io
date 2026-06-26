@@ -25,9 +25,6 @@ Also happy to walk you through it on Zoom.  Feel free to join on Sunday! Thanks 
 - 5:00 PM EST Sunday, June 28, 2026
 - [5 PM Zoom Link](https://us06web.zoom.us/j/5868623415?pwd=sLubjTbBzk5BjqxwlWD2wFf6PLXHH9.1&omn=88609125460)
 
-- 7:00 PM EST Sunday, June 28, 2026
-- [7 PM Zoom Link](https://us06web.zoom.us/j/5868623415?pwd=sLubjTbBzk5BjqxwlWD2wFf6PLXHH9.1&omn=86543626258)
-
 ## Backup Resources (keep on hand)
 
 - [Scratch account creation wiki](https://en.scratch-wiki.info/wiki/Creating_an_Account)
