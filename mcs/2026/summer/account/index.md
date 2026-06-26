@@ -36,7 +36,7 @@ Also happy to walk you through it on Zoom.  Feel free to join on Saturday or Sun
 
 ### 3. Google Drive & Scratch Setup Workshop (Optional)
 
-- 10:00 AM EST Saturday, June 27, 2026
+- 5:00 PM EST Sunday, June 28, 2026
 
 [Saturday Zoom Link](https://us06web.zoom.us/j/5868623415?pwd=sLubjTbBzk5BjqxwlWD2wFf6PLXHH9.1&omn=88609125460)
 
