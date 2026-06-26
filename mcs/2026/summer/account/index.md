@@ -23,7 +23,7 @@ If your child is under 13, this must be created by you using Google's free **Fam
 ### 2. Scratch account (for coding activities)
 
 - Go to **https://scratch.mit.edu** and click **"Join Scratch"** (top right)
-- Choose a **username + password** (please **don't use your child's real full name**, for privacy)
+- Choose a **username + password** (please **don't use your child's real full name**, for safety and privacy)
 - When asked, enter **your child's (or your) email** — it's just to confirm the account
 - Help guide: **https://en.scratch-wiki.info/wiki/Creating_an_Account**
 
