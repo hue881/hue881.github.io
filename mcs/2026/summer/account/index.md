@@ -4,13 +4,14 @@
 **Program:** AI Coding Summer Class — Python & Scratch
 **Action needed:** Create 2 free accounts before the first day.
 
+
 **2 quick setup steps before your child's coding class starts June 29, 2026!** 💻
 
 Hi! We're so excited to start in 2 days 😊 So your child can save their projects and jump into Scratch on day one, please set up two free accounts before then. Both are quick — here's exactly how:
 
 ### 1. Google account (to save projects to Google Drive)
 
-If your child is under 13, this must be created by you using Google's free **Family Link** app (the official, safe way to set up a kids' account).
+If your child is under 13, this must be created by you using Google's free **Family Link** app (the official, safe way to set up a kids' account)  **You do not need to create an google account if your child already has a school nycstudents.net email account.**
 
 - Download Family Link: **https://familylink.google.com** (or search "Google Family Link" in your phone's App Store / Play Store)
 - Open it and tap **Add child → "No"** when asked if they already have an account
@@ -26,7 +27,7 @@ If your child is under 13, this must be created by you using Google's free **Fam
 - When asked, enter **your child's (or your) email** — it's just to confirm the account
 - Help guide: **https://en.scratch-wiki.info/wiki/Creating_an_Account**
 
-**Please text or email Gmail address + Scratch username once done**, so we can get your child all set up before class.  
+**Please text or email Gmail address + Scratch username once done**, so we can get your child all set up before class.  This lets us add your class to our Scratch class studio ahead of time, so they can start coding right away on day one and easily share projects with the group. It also means if they ever forget their login, we can help them back in quickly. 😊 
 
 > **No worries if you can't finish in time** — we'll have a temporary shared Drive folder and a backup Scratch login ready, so no child is blocked on day one.
 
