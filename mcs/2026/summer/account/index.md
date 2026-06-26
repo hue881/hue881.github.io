@@ -32,7 +32,8 @@ If your child is under 13, this must be created by you using Google's free **Fam
 
 > **No worries if you can't finish in time** — we'll have a temporary shared Drive folder and a backup Scratch login ready, so no child is blocked on day one.
 
-Questions or stuck? Just reply here — happy to walk you through it! Thanks so much 😊
+Questions or stuck? Text or email me. 
+Also happy to walk you through it! Thanks so much 😊
 
 ## Backup Resources (keep on hand)
 
