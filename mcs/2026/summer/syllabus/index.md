@@ -2,7 +2,7 @@
 **Modern Chinese School | Summer 2026**
 **Python, Scratch & Artificial Intelligence | Ages 7–13 (Grades 2–9)**
 
----
+
 
 ## Course Description
 
@@ -20,7 +20,7 @@ The program runs Monday through Thursday, June 29 through August 14, 2026, in th
 mixed-age sections of about 110 minutes each. The format is mixed: structured
 instruction paired with open, hands-on creative time.
 
----
+
 
 ## Student Learning Objectives
 
@@ -37,7 +37,7 @@ By the end of the program, students will be able to:
 8. Discuss, at an age-appropriate level, when AI can be wrong and why that matters.
 9. Complete and present a capstone project to a partner or family member.
 
----
+
 
 ## Course Etiquette
 
@@ -48,7 +48,7 @@ By the end of the program, students will be able to:
 - Take movement breaks when offered, and help a neighbor when you can.
 - Phones and outside devices are put away during instruction time.
 
----
+
 
 ## Class Participation / Effort
 
@@ -63,7 +63,7 @@ most advanced. Students are expected to:
 Effort is celebrated. Students who finish early are encouraged to attempt the
 "challenge path" or to mentor a younger classmate rather than wait.
 
----
+
 
 ## Course Format
 
@@ -84,7 +84,7 @@ Every lesson runs on three parallel tracks so the wide age range stays engaged:
 (Note: the 10:30 AM section ends at lunch (~11:45), so it runs a shorter version —
 core instruction and guided practice, with open project time moved to homework.)
 
----
+
 
 ## Required Readings
 
@@ -98,7 +98,7 @@ There is no textbook. All materials are provided in class. Students should have 
 Optional at-home enrichment may be suggested week to week, but nothing outside class
 is mandatory.
 
----
+
 
 ## Evaluation
 
@@ -115,7 +115,7 @@ Students are evaluated on growth and completion, not on competing with one anoth
 Assessments are designed to be low-pressure and confidence-building. Students with
 test or presentation anxiety may demonstrate learning through their project alone.
 
----
+
 
 ## AI Policy
 
@@ -130,7 +130,7 @@ test or presentation anxiety may demonstrate learning through their project alon
 - Weekly parent email updates will be sent; families may request immediate contact
   if a student is struggling.
 
----
+
 
 ## Schedule (Tentative — adjustable week to week)
 
