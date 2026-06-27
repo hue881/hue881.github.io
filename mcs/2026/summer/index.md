@@ -8,7 +8,7 @@
 
 | Week-Day | Lesson | Activity | Homework | Class | Notes |
 |:-----:|:----------|:---------------:|:-------|:-------|:----------|
-| **1-1** | [Welcome to Summer 2026: A.I. Coding Program, Python & Scratch](https://hue881.github.io/mcs/2026/summer/1/1) | -- | -- | -- ||
+| **1-1** | [Welcome! What is Computer Thinking?](https://hue881.github.io/mcs/2026/summer/1/1) | -- | -- | -- ||
 
 
   
