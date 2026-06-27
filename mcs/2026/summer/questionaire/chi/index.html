@@ -518,7 +518,7 @@
     inputs.forEach(function(i){
       if(i.value.trim() === ''){
         i.disabled = filled >= MAX;
-        i.placeholder = filled >= MAX ? '✕' : '—';
+        i.placeholder = filled >= MAX ? '-' : '—';
       } else {
         i.disabled = false;
         i.placeholder = '—';
