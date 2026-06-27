@@ -102,9 +102,9 @@ Structure is the backbone, with exploration and friendly challenge layered in, p
 | 30–40 min | **Open build + challenge cards** | Apply concept to own project; explore & stretch |
 | 10 min | **Share-out** — 1–2 volunteers or "show your neighbor" | Low-stakes, opt-in, warm |
 
-> **🤖 AI Moment (built into every day):** Each session has a 5–10 minute AI tie-in folded into the mini-lesson or warm-up — never a separate lecture. It connects that day's coding concept to how AI actually works (data, patterns, rules, prediction, bias, ethics). These are marked **🤖** throughout the schedule.
+**🤖 AI Moment (built into every day):** Each session has a 5–10 minute AI tie-in folded into the mini-lesson or warm-up — never a separate lecture. It connects that day's coding concept to how AI actually works (data, patterns, rules, prediction, bias, ethics). These are marked **🤖** throughout the schedule.
 
-> **Section 1 compression (75 min):** Warm-up (5) → Mini-lesson + 🤖 AI Moment (15) → Guided build (20) → Brain break (5) → Open build (25) → Quick share (5). Homework is the same as other sections.
+**Section 1 compression (75 min):** Warm-up (5) → Mini-lesson + 🤖 AI Moment (15) → Guided build (20) → Brain break (5) → Open build (25) → Quick share (5). Homework is the same as other sections.
 
 
 
