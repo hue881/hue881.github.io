@@ -11,10 +11,10 @@
 | **Dates** | Monday June 29 – Thursday August 14, 2026 |
 | **Days** | Monday through Thursday |
 | **Total class sessions** | **26** (28 instructional days minus 2 field-trip days) |
-| **Section 1** | 10:30 AM – 11:45 AM *(shortened — breaks for lunch ~11:45)* |
-| **Section 2** | 1:00 PM – 2:50 PM (1 hr 50 min) |
-| **Section 3** | 3:00 PM – 4:50 PM (1 hr 50 min) |
-| **Students** | 19 (≈62% of student body), split across 3 mixed-tier sections |
+| **AM-AI2** | 10:30 AM – 11:45 AM *(shortened — breaks for lunch ~11:45)* |
+| **PM-AI1** | 1:00 PM – 2:50 PM (1 hr 50 min) |
+| **PM-AI2** | 3:00 PM – 4:50 PM (1 hr 50 min) |
+| **Students** | split across 3 mixed-tier sections |
 | **Midterm** | **Wednesday, July 15** (within the July 13–16 window) |
 | **Final / Showcase** | **Tuesday, August 4** (within the Aug 3–6 window) |
 | **Field trips (no class)** | **Monday July 20** and **Monday August 3** |
@@ -29,7 +29,7 @@
 
 ## Course Description
 
-This summer program introduces students ages 7–13 to computer programming and artificial intelligence using Scratch (block-based coding) and Python (text-based coding). Designed directly from a survey intake analysis, the cohort spans Grade 1 to Grade 9 and is all-new in Python (82% never tried) and AI (68% never tried). The course begins at absolute zero and builds step by step toward a real project each student can show their family.
+This summer program introduces students ages 7–13 to computer programming and artificial intelligence using Scratch (block-based coding) and Python (text-based coding). The course begins at absolute zero and builds step by step toward a real project each student can show their family.
 
 Students start in Scratch to learn coding logic without syntax stress, bridge into Python fundamentals, and end by building simple AI programs such as rule-based chatbots and keyword classifiers. AI is treated not as magic but as algorithms — clear sets of rules a computer follows — and is woven into every single session. All Python work uses the standard library only, with no outside packages required.
 
@@ -55,7 +55,7 @@ By the end of the program, students will be able to:
 
 ## The Three Tiers (same project, three entry points)
 
-Every section contains a mix of all three tiers. Students get the **same daily concept and the same project**, with three on-ramps. **Challenge cards** (an optional harder version of each task) allow fast finishers to extend instead of waiting — resolving the survey's central tension: 43% fear *falling behind* while 18% fear *boredom*.
+Every section contains a mix of all three tiers. Students get the **same daily concept and the same project**, with three on-ramps. **Challenge cards** (an optional harder version of each task) allow fast finishers to extend instead of waiting.
 
 | Tier | Who | How they work |
 |---|---|---|
@@ -91,7 +91,7 @@ Effort is celebrated. Students who finish early are encouraged to attempt the "c
 
 ## Daily Rhythm (every session, all three sections)
 
-Structure is the backbone (68% of students want structure), with exploration (50%) and friendly challenge (46%) layered in, plus movement breaks built in for students who can't sit for long stretches.
+Structure is the backbone, with exploration and friendly challenge layered in, plus movement breaks built in for students who can't sit for long stretches.
 
 | Time | Block | Purpose |
 |---|---|---|
@@ -127,8 +127,9 @@ There is no textbook. All materials are provided in class. Students should have 
 - The course's printed handouts and reference sheets (provided each week, bilingual English + Chinese).
 - [Scratch](https://scratch.mit.edu) — free, browser-based.
 - [Python Playground](https://playcode.io/python-playground) — free, browser-based.
-- [Google Drive](https://drive.google.com) — free, browser-based.
 - [Google Teachable Machine](https://teachablemachine.withgoogle.com) — used for live AI demos, in-browser, no install.
+- [Google Drive](https://drive.google.com) — free, browser-based (optional)
+- USB Drive (optional)
 
 **No external Python libraries.** Everything uses the standard library (`turtle`, `random`, `math`, etc.) so any computer with Python runs every activity with zero setup beyond Python itself. Optional at-home enrichment may be suggested week to week, but nothing outside class is mandatory.
 
@@ -220,6 +221,6 @@ Field trips (no class): July 20 and August 3. Showcase: within Aug 10–13.
 
 ---
 
-*Built from 28 parent intake surveys. Curriculum sequence and supports follow the survey analysis: spiral project-first design, three tiers, structure-with-exploration daily rhythm, AI woven into every session, Python standard library only, and 30-minute nightly homework — for ages 7–13 across three mixed-tier sections, June 29 – August 14, 2026.*
+*Curriculum sequence and supports follow the survey analysis: spiral project-first design, three tiers, structure-with-exploration daily rhythm, AI woven into every session, Python standard library only, and 30-minute nightly homework — for ages 7–13 across three mixed-tier sections, June 29 – August 14, 2026.*
 
 [Summer 2026 AI & Coding Program](https://hue881.github.io/mcs/2026/summer)
