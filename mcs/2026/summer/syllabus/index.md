@@ -58,9 +58,9 @@ Every section contains a mix of all three tiers. Students get the **same daily c
 
 | Tier | Who | How they work |
 |---|---|---|
-| **Tier A — Foundations** | no experience | More scaffolding, stay in Scratch longer, paired with a buddy, Python introduced gently through `turtle`. Start with internet safety + responsible-AI basics. Encouragement-first; never criticized publicly. |
-| **Tier B — Core** | some Scratch | The main track exactly as sequenced. This is the majority of the room (~54% are Grades 3–4). |
-| **Tier C — Accelerated** | Python-curious | Move to Python faster, always take the challenge card, get stretch goals and a light intro to project tooling (file organization, a gentle GitHub peek for advanced students). |
+| **Tier A — Foundations** | no experience | Stay in Scratch longer, paired with a buddy, Python introduced gently through `turtle`. Start with internet safety + responsible-AI basics. |
+| **Tier B — Core** | some Scratch | The main track exactly as sequenced. |
+| **Tier C — Accelerated** | Python-curious | Move to Python faster, always take the challenge card. |
 
 
 
