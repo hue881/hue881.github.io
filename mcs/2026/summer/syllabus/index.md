@@ -220,6 +220,4 @@ Field trips (no class): July 20 and August 3. Showcase: within Aug 10–13.
 
 ---
 
-*Curriculum sequence and supports follow the survey analysis: spiral project-first design, three tiers, structure-with-exploration daily rhythm, AI woven into every session, Python standard library only, and 30-minute nightly homework — for ages 7–13 across three mixed-tier sections, June 29 – August 14, 2026.*
-
 [Summer 2026 AI & Coding Program](https://hue881.github.io/mcs/2026/summer)
