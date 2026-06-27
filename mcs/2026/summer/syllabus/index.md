@@ -14,7 +14,6 @@
 | **AM-AI2** | 10:30 AM – 11:45 AM *(shortened — breaks for lunch ~11:45)* |
 | **PM-AI1** | 1:00 PM – 2:50 PM (1 hr 50 min) |
 | **PM-AI2** | 3:00 PM – 4:50 PM (1 hr 50 min) |
-| **Students** | split across 3 mixed-tier sections |
 | **Midterm** | **Wednesday, July 15** (within the July 13–16 window) |
 | **Final / Showcase** | **Tuesday, August 4** (within the Aug 3–6 window) |
 | **Field trips (no class)** | **Monday July 20** and **Monday August 3** |
