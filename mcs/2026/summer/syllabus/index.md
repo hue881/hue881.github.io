@@ -94,9 +94,9 @@ Structure is the backbone, with exploration and friendly challenge layered in, p
 
 | Time | Block | Purpose |
 |---|---|---|
-| 10 min | **Warm-up** — unplugged logic puzzle or "code of the day," no screen | Brains on; leans on the math/logic strength |
-| 15–20 min | **Mini-lesson** — one concept, demoed live, kept short | Low cognitive load, one idea at a time |
-| 20 min | **Guided build** — everyone builds it together, step by step | Structure; guaranteed early success |
+| 10 min | **Warm-up** — unplugged logic puzzle or "code of the day," no screen | leans on the math/logic strength |
+| 15–20 min | **Mini-lesson** — one concept, demoed live, kept short | one idea at a time |
+| 20 min | **Guided build** — everyone builds it together, step by step | Structure |
 | 5 min | **Movement / brain break** | Essential focus support |
 | 30–40 min | **Open build + challenge cards** | Apply concept to own project; explore & stretch |
 | 10 min | **Share-out** — 1–2 volunteers or "show your neighbor" | Low-stakes, opt-in, warm |
