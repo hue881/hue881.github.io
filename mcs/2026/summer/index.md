@@ -1,5 +1,8 @@
 ### 🏖️ Summer 2026: A.I. Coding Program, Python & Scatch
 
+![Level](https://img.shields.io/badge/level-beginner%20to%20advanced-brightgreen)
+![Updated](https://img.shields.io/badge/updated-Summer%202026-lightyellow)
+
 <details>
   <summary>Welcome to the Summer 2026 AI & Coding Program at Modern Chinese School!</summary>  
   
@@ -22,8 +25,7 @@ Summer 2026 AI & Coding Program
 Modern Chinese School
 </details>
 
-![Level](https://img.shields.io/badge/level-beginner%20to%20advanced-brightgreen)
-![Updated](https://img.shields.io/badge/updated-Summer%202026-lightyellow)
+
 
 [Syllabus](https://hue881.github.io/mcs/2026/summer/syllabus)  
 [Rules and Regulations](https://hue881.github.io/mcs/2026/rules)
