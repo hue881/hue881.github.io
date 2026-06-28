@@ -1,1 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Session 1 · Activity Sheet — Welcome &amp; What Is a Computer Thinking?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#f4fbff;--surface:rgba(255,255,255,0.97);--text:#1f2a37;--text2:#374151;
+  --muted:#5b6b7e;--a1:#0b63ce;--a2:#10b981;--a3:#f59e0b;--ar:#ef4444;
+  --tier-a:#6366f1;--tier-b:#0b63ce;--tier-c:#10b981;
+  --fd:"Fredoka","Trebuchet MS",sans-serif;
+  --fb:"Nunito",Arial,sans-serif;
+  --fc:"Fira Code",Consolas,monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased;scroll-behavior:smooth}
+body{font-family:var(--fb);color:var(--text);
+  background:radial-gradient(circle at top left,rgba(56,189,248,.12),transparent 40%),
+             radial-gradient(circle at bottom right,rgba(16,185,129,.09),transparent 40%),var(--bg);
+  min-height:100vh}
+@media print{
+  .no-print{display:none!important}
+  .page-break{page-break-before:always}
+  body{background:#fff!important}
+  .card{box-shadow:none!important;border:1.5px solid #d1d5db!important}
+  .draw-toolbar{display:none!important}
+  .draw-canvas{border:1.5px solid #d1d5db!important}
+}
+/* ── STICKY BAR ── */
+.bar{background:rgba(255,255,255,.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(148,163,184,.3);padding:10px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;gap:12px;flex-wrap:wrap}
+.bar-title{font-family:var(--fd);font-size:1.05rem;font-weight:700;color:var(--a1)}
+.bar-sub{font-size:.75rem;color:var(--muted)}
+.btn-print{background:var(--a1);color:#fff;border:none;padding:8px 20px;border-radius:999px;font-family:var(--fb);font-size:.8rem;font-weight:800;cursor:pointer;letter-spacing:.05em;transition:background .2s,transform .15s}
+.btn-print:hover{background:#0952b0;transform:translateY(-1px)}
+/* ── PAGE ── */
+.page{max-width:940px;margin:0 auto;padding:28px 20px 60px}
+/* ── HEADER ── */
+.sheet-header{background:linear-gradient(135deg,#0b63ce 0%,#10b981 55%,#f59e0b 100%);border-radius:20px;padding:28px 32px 24px;color:#fff;margin-bottom:26px;position:relative;overflow:hidden}
+.sheet-header::before{content:"";position:absolute;top:-50px;right:-50px;width:180px;height:180px;background:rgba(255,255,255,.07);border-radius:50%}
+.sheet-header::after{content:"";position:absolute;bottom:-36px;left:-36px;width:130px;height:130px;background:rgba(255,255,255,.05);border-radius:50%}
+.hdr-day{font-size:.7rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;opacity:.85;margin-bottom:4px}
+.hdr-title{font-family:var(--fd);font-size:clamp(1.7rem,4vw,2.5rem);font-weight:700;line-height:1.1;margin-bottom:6px}
+.hdr-sub{font-size:.88rem;opacity:.88;margin-bottom:14px}
+.hdr-pills{display:flex;gap:8px;flex-wrap:wrap}
+.hpill{background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:4px 13px;font-size:.7rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+/* ── STUDENT INFO ── */
+.sinfo{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:26px}
+@media(max-width:580px){.sinfo{grid-template-columns:1fr}}
+.sfield{background:var(--surface);border-radius:12px;padding:11px 14px;border:1.5px solid rgba(11,99,206,.13);box-shadow:0 2px 8px rgba(15,23,42,.05)}
+.slabel{font-size:.62rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--a1);margin-bottom:5px}
+.sfield input{width:100%;border:none;border-bottom:1.5px solid #cbd5e1;background:transparent;font-family:var(--fb);font-size:.88rem;color:var(--text);outline:none;padding:3px 2px;transition:border-color .2s}
+.sfield input:focus{border-bottom-color:var(--a1)}
+/* ── SECTION LABELS ── */
+.sec-label{display:inline-flex;align-items:center;gap:8px;padding:5px 15px;border-radius:999px;border:1px solid rgba(148,163,184,.4);background:rgba(255,255,255,.9);font-size:.7rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--a1);margin-bottom:9px}
+.sec-title{font-family:var(--fd);font-size:clamp(1.25rem,2.5vw,1.75rem);font-weight:700;margin-bottom:15px;color:var(--text);line-height:1.2}
+/* ── CARDS ── */
+.card{background:var(--surface);border-radius:16px;padding:17px 19px;box-shadow:0 4px 18px rgba(15,23,42,.07);border:1px solid rgba(255,255,255,.7);margin-bottom:14px}
+.card.ab{border-left:4px solid var(--a1)}.card.ag{border-left:4px solid var(--a2)}.card.aa{border-left:4px solid var(--a3)}.card.ar{border-left:4px solid var(--ar)}
+.card.tier-a-card{border-left:4px solid var(--tier-a)}.card.tier-b-card{border-left:4px solid var(--tier-b)}.card.tier-c-card{border-left:4px solid var(--tier-c)}
+.clabel{font-size:.65rem;font-weight:800;letter-spacing:.13em;text-transform:uppercase;margin-bottom:7px}
+.clabel.b{color:var(--a1)}.clabel.g{color:#047857}.clabel.a{color:#b45309}.clabel.r{color:#b91c1c}
+/* ── GRIDS ── */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:13px}
+@media(max-width:640px){.g2,.g3{grid-template-columns:1fr}}
+/* ── INPUTS ── */
+input[type=text],textarea,select{font-family:var(--fb);font-size:.86rem;color:var(--text);background:#fff;border:1.5px solid #cbd5e1;border-radius:7px;outline:none;width:100%;transition:border-color .2s,box-shadow .2s}
+input[type=text]:focus,textarea:focus{border-color:var(--a1);box-shadow:0 0 0 3px rgba(11,99,206,.1)}
+.wline{display:block;width:100%;padding:5px 8px;margin-bottom:8px;border:none;border-bottom:1.5px solid #cbd5e1;border-radius:0;background:transparent;font-family:var(--fb);font-size:.84rem;color:var(--text);outline:none;transition:border-color .2s}
+.wline:focus{border-bottom-color:var(--a1)}
+.wline::placeholder{color:#94a3b8;font-size:.78rem}
+.warea{display:block;width:100%;padding:9px 11px;min-height:74px;resize:vertical;background:#f8fafc;border-radius:8px;font-family:var(--fb);font-size:.83rem;color:var(--text);line-height:1.55}
+.warea::placeholder{color:#94a3b8;font-size:.78rem}
+/* ── MISC ── */
+.divider{border:none;border-top:2px dashed #dde6f0;margin:26px 0}
+.tip{border-radius:10px;padding:9px 13px;font-size:.79rem;line-height:1.5;margin-top:9px}
+.tip.b{background:rgba(11,99,206,.07);color:#1e40af}.tip.g{background:rgba(16,185,129,.07);color:#065f46}
+.tip.a{background:rgba(245,158,11,.07);color:#92400e}.tip.p{background:rgba(99,102,241,.07);color:#3730a3}
+.mt1{margin-top:5px}.mt2{margin-top:9px}.mt3{margin-top:13px}
+.mb1{margin-bottom:5px}.mb2{margin-bottom:9px}.mb3{margin-bottom:13px}
+p,li{font-size:.86rem;color:var(--text2);line-height:1.55}
+strong{color:var(--text)}
+code{background:#e0f2ff;padding:1px 5px;border-radius:4px;font-family:var(--fc);font-size:.8em;color:#0b63ce}
+table.rub{width:100%;border-collapse:collapse;font-size:.8rem;margin-top:7px}
+table.rub th{background:#1e293b;color:#e2e8f0;padding:8px 10px;text-align:left;font-weight:700;letter-spacing:.05em}
+table.rub td{padding:8px 10px;border-bottom:1px solid #e2e8f0;vertical-align:top;color:var(--text2)}
+table.rub tr:nth-child(even) td{background:rgba(241,245,249,.6)}
+table.rub td:first-child{font-weight:700;color:var(--text)}
+.pts{font-family:var(--fc);font-size:.73rem;font-weight:800;color:var(--a1);white-space:nowrap}
+.cklist{list-style:none;padding:0}
+.cklist li{display:flex;align-items:flex-start;gap:8px;font-size:.84rem;color:var(--text2);margin-bottom:8px;line-height:1.45}
+.sheet-footer{margin-top:38px;padding:14px 18px;border-radius:12px;background:rgba(11,99,206,.05);border:1px solid rgba(11,99,206,.11);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:.73rem;color:var(--muted)}
+.tier-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 11px;border-radius:999px;font-size:.65rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px}
+.tier-badge.ta{background:rgba(99,102,241,.12);color:#3730a3;border:1px solid rgba(99,102,241,.3)}
+.tier-badge.tb{background:rgba(11,99,206,.12);color:#1e40af;border:1px solid rgba(11,99,206,.3)}
+.tier-badge.tc{background:rgba(16,185,129,.12);color:#065f46;border:1px solid rgba(16,185,129,.3)}
+.rhythm-bar{display:flex;gap:0;margin-bottom:18px;border-radius:12px;overflow:hidden;border:1px solid rgba(148,163,184,.25)}
+.rhythm-step{flex:1;padding:10px 6px;text-align:center;font-size:.65rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;line-height:1.3}
+.rhythm-step.active{background:var(--a1);color:#fff}
+.rhythm-step:not(.active){background:rgba(255,255,255,.7);color:var(--muted)}
+.step-num{display:block;font-family:var(--fd);font-size:1.1rem;font-weight:700;margin-bottom:2px}
+.robot-box{background:linear-gradient(135deg,rgba(11,99,206,.06),rgba(16,185,129,.06));border:1.5px solid rgba(11,99,206,.18);border-radius:14px;padding:14px 17px;margin-bottom:14px}
+.alg-steps{counter-reset:step;list-style:none;padding:0}
+.alg-steps li{counter-increment:step;display:flex;align-items:flex-start;gap:10px;padding:6px 0;border-bottom:1px solid #f1f5f9;font-size:.83rem;color:var(--text2);line-height:1.45}
+.alg-steps li:last-child{border-bottom:none}
+.alg-steps li::before{content:counter(step);display:inline-flex;align-items:center;justify-content:center;min-width:22px;height:22px;border-radius:999px;background:var(--a1);color:#fff;font-size:.7rem;font-weight:800;flex-shrink:0;margin-top:1px}
 
+/* ═══════════════════════════════════════════════════════════
+   DRAWING CANVAS STYLES
+   ═══════════════════════════════════════════════════════════ */
+.draw-wrap{
+  position:relative;
+  border:2px dashed #c7d2fe;
+  border-radius:12px;
+  background:#fafafe;
+  overflow:hidden;
+  /* resizable vertically by user */
+  resize:vertical;
+  min-height:120px;
+  max-height:600px;
+}
+.draw-wrap.green-border{border-color:#a7f3d0}
+.draw-wrap.amber-border{border-color:#fde68a}
+.draw-canvas{
+  display:block;
+  width:100%;
+  height:100%;
+  touch-action:none;
+  cursor:crosshair;
+  background:transparent;
+}
+.draw-toolbar{
+  position:absolute;top:6px;right:6px;
+  display:flex;align-items:center;gap:5px;
+  background:rgba(255,255,255,.92);
+  border:1px solid rgba(148,163,184,.35);
+  border-radius:999px;
+  padding:4px 8px;
+  z-index:10;
+  flex-wrap:wrap;
+  backdrop-filter:blur(6px);
+}
+.draw-toolbar button{
+  border:none;background:none;cursor:pointer;
+  font-size:.9rem;padding:2px 4px;border-radius:6px;
+  transition:background .15s;line-height:1;
+}
+.draw-toolbar button:hover{background:rgba(11,99,206,.1)}
+.draw-toolbar button.active-tool{background:rgba(11,99,206,.18);outline:2px solid var(--a1)}
+.draw-color{
+  width:20px;height:20px;border-radius:50%;border:2px solid #fff;
+  outline:1px solid #cbd5e1;cursor:pointer;padding:0;
+  transition:outline-color .15s;
+}
+.draw-color.active-color{outline:2px solid var(--a1);outline-offset:1px}
+.draw-size{
+  width:60px;height:20px;cursor:pointer;accent-color:var(--a1);
+}
+.draw-label{font-size:.62rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:0 2px}
+/* placeholder text shown before any drawing */
+.draw-placeholder{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  pointer-events:none;color:#c7d2fe;font-size:.78rem;font-weight:700;
+  font-family:var(--fb);transition:opacity .3s;
+}
+.draw-wrap.has-strokes .draw-placeholder{opacity:0}
+</style>
+</head>
+<body>
+
+<!-- PRINT BAR -->
+<div class="bar no-print">
+  <div>
+    <div class="bar-title">🤖 Session 1 · Activity Sheet</div>
+    <div class="bar-sub">Welcome &amp; "What Is a Computer Thinking?" · Mon Jun 29</div>
+  </div>
+  <button class="btn-print" onclick="window.print()">🖨️ Print / Save as PDF</button>
+</div>
+
+<div class="page">
+
+<!-- HEADER -->
+<div class="sheet-header">
+  <div style="font-size:2.6rem;margin-bottom:5px">🤖✨</div>
+  <div class="hdr-day">Session 1 · Mon Jun 29 · Week 1 · In-Class Activity Sheet</div>
+  <div class="hdr-title">Welcome! What Is a<br>Computer Thinking?</div>
+  <div class="hdr-sub">Icebreakers, algorithms, and one surprising sandwich</div>
+  <div class="hdr-pills">
+    <span class="hpill">⏱ ~75–110 min</span>
+    <span class="hpill">🌱 No coding yet</span>
+    <span class="hpill">Ages 7–13</span>
+    <span class="hpill">3 Tiers</span>
+    <span class="hpill">Algorithms</span>
+  </div>
+</div>
+
+<!-- STUDENT INFO -->
+<div class="sinfo">
+  <div class="sfield"><div class="slabel">👤 Your Name</div><input type="text" placeholder="First Last" /></div>
+  <div class="sfield"><div class="slabel">📅 Date</div><input type="text" placeholder="Jun 29, 2026" /></div>
+  <div class="sfield"><div class="slabel">🏫 Section / Period</div><input type="text" placeholder="Section 1 / 2 / 3" /></div>
+</div>
+
+<!-- TODAY'S RHYTHM -->
+<div class="sec-label">🗓️ Today's Rhythm</div>
+<div class="sec-title">What We're Doing — Step by Step</div>
+<div class="rhythm-bar">
+  <div class="rhythm-step active"><span class="step-num">1</span>Warm-Up<br>10 min</div>
+  <div class="rhythm-step active"><span class="step-num">2</span>Mini-Lesson<br>15–20 min</div>
+  <div class="rhythm-step active"><span class="step-num">3</span>Guided Build<br>20 min</div>
+  <div class="rhythm-step"><span class="step-num">🧠</span>Brain<br>Break</div>
+  <div class="rhythm-step active"><span class="step-num">4</span>Open Build<br>30–40 min</div>
+  <div class="rhythm-step active"><span class="step-num">5</span>Share-Out<br>10 min</div>
+</div>
+
+<!-- WARM-UP -->
+<div class="sec-label">🔥 Warm-Up · 10 min · No Screens</div>
+<div class="sec-title">Robot Shoes: A Brains-On Puzzle</div>
+
+<div class="card ab mb2">
+  <div class="clabel b">🤔 Think About This</div>
+  <p class="mb2">A robot wants to put on its shoes. A human would say: <strong>"Put on your shoes."</strong><br>
+  But a robot needs <em>every single tiny step spelled out</em>. What are those steps?</p>
+  <p><strong>Turn to a neighbor and share your ideas — then write or draw your best answer below.</strong></p>
+</div>
+
+<div class="g2 mb3">
+  <!-- TIER A -->
+  <div class="card tier-a-card">
+    <div class="tier-badge ta">⭐ Tier A — Foundations (Grades 1–3)</div>
+    <div class="clabel" style="color:var(--tier-a)">Draw OR Write 3 Steps</div>
+    <p class="mb2">Pick ONE step from "put on your shoes" and draw it, or write it. Make it so clear a robot could follow it!</p>
+    <!-- DRAWING CANVAS -->
+    <div class="draw-wrap" style="height:130px;margin-bottom:10px" data-color="#6366f1">
+      <canvas class="draw-canvas"></canvas>
+      <div class="draw-placeholder">✏️ Draw here — drag to resize</div>
+      <div class="draw-toolbar no-print">
+        <span class="draw-label">✏️</span>
+        <input type="range" class="draw-size" min="1" max="20" value="3" title="Brush size">
+        <button class="draw-color active-color" style="background:#1e293b" data-col="#1e293b" title="Black"></button>
+        <button class="draw-color" style="background:#6366f1" data-col="#6366f1" title="Purple"></button>
+        <button class="draw-color" style="background:#ef4444" data-col="#ef4444" title="Red"></button>
+        <button class="draw-color" style="background:#10b981" data-col="#10b981" title="Green"></button>
+        <button class="draw-color" style="background:#f59e0b" data-col="#f59e0b" title="Amber"></button>
+        <button title="Eraser" data-tool="erase">🧹</button>
+        <button title="Clear canvas" data-tool="clear">🗑️</button>
+      </div>
+    </div>
+    <input type="text" class="wline" placeholder="Step 1:" />
+    <input type="text" class="wline" placeholder="Step 2:" />
+    <input type="text" class="wline" placeholder="Step 3:" />
+  </div>
+
+  <div>
+    <!-- TIER B -->
+    <div class="card tier-b-card mb2">
+      <div class="tier-badge tb">🔷 Tier B — Core (Grades 3–5)</div>
+      <div class="clabel b">Write 5 Robot Steps</div>
+      <p class="mb2">Write 5 steps so precise a robot can follow them. Which shoe? Which hand?</p>
+      <ol class="alg-steps">
+        <li><input type="text" class="wline" placeholder="…" style="margin:0;flex:1" /></li>
+        <li><input type="text" class="wline" placeholder="…" style="margin:0;flex:1" /></li>
+        <li><input type="text" class="wline" placeholder="…" style="margin:0;flex:1" /></li>
+        <li><input type="text" class="wline" placeholder="…" style="margin:0;flex:1" /></li>
+        <li><input type="text" class="wline" placeholder="…" style="margin:0;flex:1" /></li>
+      </ol>
+    </div>
+    <!-- TIER C -->
+    <div class="card tier-c-card">
+      <div class="tier-badge tc">🚀 Tier C — Accelerated (Grades 6–9)</div>
+      <div class="clabel g">Add a Decision Point</div>
+      <p class="mb2">After your 5 steps, add an <code>if</code> step. What should the robot do if the shoe is on the <em>wrong foot</em>?</p>
+      <input type="text" class="wline" placeholder="If… then…" />
+      <input type="text" class="wline" placeholder="Otherwise…" />
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- MINI-LESSON -->
+<div class="sec-label">📖 Mini-Lesson · 15–20 min</div>
+<div class="sec-title">One Big Idea: Algorithm 🤖</div>
+
+<div class="robot-box mb3">
+  <div style="font-size:.7rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--a1);margin-bottom:6px">🤖 AI Moment — "Are You Smarter Than a Computer?"</div>
+  <p>A computer can only do <strong>exactly</strong> what it is told — one step at a time, in order. AI is the same: it follows patterns and rules. The smarter your instructions, the smarter the result.</p>
+  <div class="tip b mt2">💡 A precise, ordered list of steps a computer follows is called an <strong>ALGORITHM</strong>.</div>
+</div>
+
+<div class="g3 mb3">
+  <div class="card" style="text-align:center;padding:16px 12px">
+    <div style="font-size:2rem;margin-bottom:6px">📜</div>
+    <div style="font-family:var(--fd);font-size:1rem;font-weight:700;color:var(--a1);margin-bottom:4px">Algorithm</div>
+    <p style="font-size:.8rem">A <strong>precise list of steps</strong>, in order, that solves a task. A recipe is an algorithm for food!</p>
+  </div>
+  <div class="card" style="text-align:center;padding:16px 12px">
+    <div style="font-size:2rem;margin-bottom:6px">⚡</div>
+    <div style="font-family:var(--fd);font-size:1rem;font-weight:700;color:var(--a2);margin-bottom:4px">Instruction</div>
+    <p style="font-size:.8rem">One single step in the list. Computers do each instruction <strong>exactly</strong> and in order.</p>
+  </div>
+  <div class="card" style="text-align:center;padding:16px 12px">
+    <div style="font-size:2rem;margin-bottom:6px">🐞</div>
+    <div style="font-family:var(--fd);font-size:1rem;font-weight:700;color:var(--a3);margin-bottom:4px">Bug</div>
+    <p style="font-size:.8rem">A mistake in your steps that causes things to go wrong. Bugs are <strong>normal</strong> — we fix them!</p>
+  </div>
+</div>
+
+<!-- VOCAB CHECK -->
+<div class="sec-label">📖 Vocabulary Check</div>
+<div class="sec-title">4 Words for Today</div>
+
+<div class="g2 mb3">
+  <div class="card ab">
+    <div class="clabel b">🔤 Match the Word to the Meaning</div>
+    <p class="mb2">Draw a line OR write the letter of the matching definition next to each word.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 16px;font-size:.81rem;margin-bottom:10px">
+      <div>
+        <p style="font-weight:800;color:var(--a1);margin-bottom:2px">1. Algorithm</p>
+        <p style="font-weight:800;color:var(--a1);margin-bottom:2px">2. Instruction</p>
+        <p style="font-weight:800;color:var(--a1);margin-bottom:2px">3. AI</p>
+        <p style="font-weight:800;color:var(--a1)">4. Bug</p>
+      </div>
+      <div>
+        <p style="color:var(--text2);margin-bottom:2px"><strong>A.</strong> A mistake in your steps</p>
+        <p style="color:var(--text2);margin-bottom:2px"><strong>B.</strong> One single precise step</p>
+        <p style="color:var(--text2);margin-bottom:2px"><strong>C.</strong> Programs that spot patterns</p>
+        <p style="color:var(--text2)"><strong>D.</strong> A precise ordered list of steps</p>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+      <div><div style="font-size:.7rem;font-weight:800;color:var(--muted);margin-bottom:3px">1 →</div><input type="text" style="width:100%;text-align:center;border-radius:6px;padding:5px;border:1.5px solid #cbd5e1" placeholder="?" /></div>
+      <div><div style="font-size:.7rem;font-weight:800;color:var(--muted);margin-bottom:3px">2 →</div><input type="text" style="width:100%;text-align:center;border-radius:6px;padding:5px;border:1.5px solid #cbd5e1" placeholder="?" /></div>
+      <div><div style="font-size:.7rem;font-weight:800;color:var(--muted);margin-bottom:3px">3 →</div><input type="text" style="width:100%;text-align:center;border-radius:6px;padding:5px;border:1.5px solid #cbd5e1" placeholder="?" /></div>
+      <div><div style="font-size:.7rem;font-weight:800;color:var(--muted);margin-bottom:3px">4 →</div><input type="text" style="width:100%;text-align:center;border-radius:6px;padding:5px;border:1.5px solid #cbd5e1" placeholder="?" /></div>
+    </div>
+  </div>
+
+  <div class="card aa">
+    <div class="clabel a">✅ True or False?</div>
+    <p class="mb2">Select <strong>T</strong> (True) or <strong>F</strong> (False) for each statement.</p>
+    <table style="width:100%;font-size:.81rem;border-collapse:collapse">
+      <tr><td style="padding:7px 0;border-bottom:1px solid #f1f5f9;color:var(--text2);width:80%">A computer can guess what you mean even if you skip a step.</td><td style="padding:7px 0;border-bottom:1px solid #f1f5f9"><select style="width:58px;padding:3px 4px;border-radius:6px;border:1.5px solid #cbd5e1"><option value="">—</option><option>T</option><option>F</option></select></td></tr>
+      <tr><td style="padding:7px 0;border-bottom:1px solid #f1f5f9;color:var(--text2)">Algorithms are used in cooking, sports, and AI.</td><td style="padding:7px 0;border-bottom:1px solid #f1f5f9"><select style="width:58px;padding:3px 4px;border-radius:6px;border:1.5px solid #cbd5e1"><option value="">—</option><option>T</option><option>F</option></select></td></tr>
+      <tr><td style="padding:7px 0;border-bottom:1px solid #f1f5f9;color:var(--text2)">A bug means the programmer is bad at coding.</td><td style="padding:7px 0;border-bottom:1px solid #f1f5f9"><select style="width:58px;padding:3px 4px;border-radius:6px;border:1.5px solid #cbd5e1"><option value="">—</option><option>T</option><option>F</option></select></td></tr>
+      <tr><td style="padding:7px 0;color:var(--text2)">AI is magic — it doesn't follow any rules.</td><td style="padding:7px 0"><select style="width:58px;padding:3px 4px;border-radius:6px;border:1.5px solid #cbd5e1"><option value="">—</option><option>T</option><option>F</option></select></td></tr>
+    </table>
+    <div class="tip a mt2" style="font-size:.76rem">🎯 Answers: F · T · F · F</div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- GUIDED BUILD -->
+<div class="sec-label">🏗️ Guided Build · 20 min</div>
+<div class="sec-title">The Sandwich Algorithm Challenge</div>
+
+<div class="card ab mb2">
+  <div class="clabel b">📋 The Challenge (Whole Class Together)</div>
+  <p class="mb2">Your teacher will follow <em>only</em> the steps you give — like a robot. After the class demo, write or draw the <strong>best 5-step sandwich algorithm</strong> you come up with as a group:</p>
+</div>
+
+<div class="g2 mb3">
+  <!-- TIER A GUIDED -->
+  <div class="card tier-a-card">
+    <div class="tier-badge ta">⭐ Tier A</div>
+    <div class="clabel" style="color:var(--tier-a)">Fill in the blanks + Draw!</div>
+    <ol style="list-style:none;padding:0;counter-reset:s">
+      <li style="counter-increment:s;display:flex;align-items:center;gap:8px;margin-bottom:10px;font-size:.83rem"><span style="display:inline-flex;align-items:center;justify-content:center;min-width:24px;height:24px;border-radius:999px;background:var(--tier-a);color:#fff;font-size:.7rem;font-weight:800">1</span>Pick up the <input type="text" style="display:inline;width:90px;border:none;border-bottom:1.5px solid #cbd5e1;background:transparent;padding:2px 4px;font-size:.83rem" placeholder="____" />.</li>
+      <li style="counter-increment:s;display:flex;align-items:center;gap:8px;margin-bottom:10px;font-size:.83rem"><span style="display:inline-flex;align-items:center;justify-content:center;min-width:24px;height:24px;border-radius:999px;background:var(--tier-a);color:#fff;font-size:.7rem;font-weight:800">2</span>Open the <input type="text" style="display:inline;width:90px;border:none;border-bottom:1.5px solid #cbd5e1;background:transparent;padding:2px 4px;font-size:.83rem" placeholder="____" />.</li>
+      <li style="counter-increment:s;display:flex;align-items:center;gap:8px;margin-bottom:10px;font-size:.83rem"><span style="display:inline-flex;align-items:center;justify-content:center;min-width:24px;height:24px;border-radius:999px;background:var(--tier-a);color:#fff;font-size:.7rem;font-weight:800">3</span>Spread <input type="text" style="display:inline;width:70px;border:none;border-bottom:1.5px solid #cbd5e1;background:transparent;padding:2px 4px;font-size:.83rem" placeholder="____" /> on the bread.</li>
+      <li style="counter-increment:s;display:flex;align-items:center;gap:8px;margin-bottom:10px;font-size:.83rem"><span style="display:inline-flex;align-items:center;justify-content:center;min-width:24px;height:24px;border-radius:999px;background:var(--tier-a);color:#fff;font-size:.7rem;font-weight:800">4</span>Place the <input type="text" style="display:inline;width:70px;border:none;border-bottom:1.5px solid #cbd5e1;background:transparent;padding:2px 4px;font-size:.83rem" placeholder="____" /> slice on top.</li>
+      <li style="counter-increment:s;display:flex;align-items:center;gap:8px;font-size:.83rem"><span style="display:inline-flex;align-items:center;justify-content:center;min-width:24px;height:24px;border-radius:999px;background:var(--tier-a);color:#fff;font-size:.7rem;font-weight:800">5</span><input type="text" class="wline" style="margin:0;flex:1" placeholder="Your final step!" /></li>
+    </ol>
+    <p style="font-size:.76rem;font-weight:800;color:var(--tier-a);margin-top:10px;margin-bottom:5px">🎨 Draw your sandwich here:</p>
+    <div class="draw-wrap green-border" style="height:120px" data-color="#6366f1">
+      <canvas class="draw-canvas"></canvas>
+      <div class="draw-placeholder">✏️ Draw your sandwich — drag bottom edge to resize</div>
+      <div class="draw-toolbar no-print">
+        <input type="range" class="draw-size" min="1" max="20" value="3" title="Brush size">
+        <button class="draw-color active-color" style="background:#1e293b" data-col="#1e293b" title="Black"></button>
+        <button class="draw-color" style="background:#f59e0b" data-col="#f59e0b" title="Amber"></button>
+        <button class="draw-color" style="background:#10b981" data-col="#10b981" title="Green"></button>
+        <button class="draw-color" style="background:#ef4444" data-col="#ef4444" title="Red"></button>
+        <button class="draw-color" style="background:#6366f1" data-col="#6366f1" title="Purple"></button>
+        <button title="Eraser" data-tool="erase">🧹</button>
+        <button title="Clear" data-tool="clear">🗑️</button>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <div class="card tier-b-card mb2">
+      <div class="tier-badge tb">🔷 Tier B</div>
+      <div class="clabel b">Write Your Own 5-Step Algorithm</div>
+      <p class="mb2">Write the group's best version. Be precise enough for a robot!</p>
+      <ol class="alg-steps">
+        <li><input type="text" class="wline" placeholder="…" style="margin:0;flex:1" /></li>
+        <li><input type="text" class="wline" placeholder="…" style="margin:0;flex:1" /></li>
+        <li><input type="text" class="wline" placeholder="…" style="margin:0;flex:1" /></li>
+        <li><input type="text" class="wline" placeholder="…" style="margin:0;flex:1" /></li>
+        <li><input type="text" class="wline" placeholder="…" style="margin:0;flex:1" /></li>
+      </ol>
+      <p style="font-size:.78rem;color:var(--muted);margin-top:6px">⚠️ Which step caused the most trouble during the demo?</p>
+      <input type="text" class="wline mt1" placeholder="The tricky step was…" />
+    </div>
+    <div class="card tier-c-card">
+      <div class="tier-badge tc">🚀 Tier C</div>
+      <div class="clabel g">Debug + Add Decision Logic</div>
+      <p class="mb2">Write the algorithm AND find the bug. Then add one <code>if</code> decision.</p>
+      <input type="text" class="wline" placeholder="Bug I spotted: …" />
+      <input type="text" class="wline" placeholder="If [condition]… then [step]…" />
+      <input type="text" class="wline" placeholder="Otherwise… [alternative step]" />
+    </div>
+  </div>
+</div>
+
+<hr class="divider page-break">
+
+<!-- OPEN BUILD -->
+<div class="sec-label">🛠️ Open Build · 30–40 min</div>
+<div class="sec-title">Create YOUR Own Algorithm</div>
+
+<div class="card ab mb3">
+  <div class="clabel b">🎯 Your Mission</div>
+  <p>Pick something you do every day. Write an algorithm so precise that a robot could follow it perfectly. Use your tier's section below. You can write <em>and</em> draw!</p>
+</div>
+
+<!-- TIER A OPEN BUILD -->
+<div class="card tier-a-card mb2">
+  <div class="tier-badge ta">⭐ Tier A — Foundations</div>
+  <div class="clabel" style="color:var(--tier-a)">Draw + Write a 4-Step Algorithm</div>
+  <p class="mb2">Choose: brushing teeth, feeding a pet, making a snack. Draw each step AND write a label.</p>
+  <div style="margin-bottom:8px;font-size:.8rem;font-weight:800;color:var(--tier-a)">My task: <input type="text" style="display:inline;width:180px;border:none;border-bottom:1.5px solid #c7d2fe;background:transparent;padding:2px 4px;font-size:.8rem" placeholder="______________" /></div>
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:10px">
+    <div>
+      <div style="font-size:.65rem;font-weight:800;color:var(--tier-a);margin-bottom:3px;text-align:center">STEP 1</div>
+      <div class="draw-wrap" style="height:100px">
+        <canvas class="draw-canvas"></canvas>
+        <div class="draw-placeholder" style="font-size:.7rem">✏️</div>
+        <div class="draw-toolbar no-print" style="padding:2px 5px;gap:3px">
+          <input type="range" class="draw-size" min="1" max="14" value="3" style="width:44px">
+          <button class="draw-color active-color" style="background:#1e293b;width:16px;height:16px" data-col="#1e293b"></button>
+          <button class="draw-color" style="background:#6366f1;width:16px;height:16px" data-col="#6366f1"></button>
+          <button class="draw-color" style="background:#ef4444;width:16px;height:16px" data-col="#ef4444"></button>
+          <button data-tool="clear" style="font-size:.75rem">🗑️</button>
+        </div>
+      </div>
+      <input type="text" class="wline mt1" placeholder="Label:" />
+    </div>
+    <div>
+      <div style="font-size:.65rem;font-weight:800;color:var(--tier-a);margin-bottom:3px;text-align:center">STEP 2</div>
+      <div class="draw-wrap" style="height:100px">
+        <canvas class="draw-canvas"></canvas>
+        <div class="draw-placeholder" style="font-size:.7rem">✏️</div>
+        <div class="draw-toolbar no-print" style="padding:2px 5px;gap:3px">
+          <input type="range" class="draw-size" min="1" max="14" value="3" style="width:44px">
+          <button class="draw-color active-color" style="background:#1e293b;width:16px;height:16px" data-col="#1e293b"></button>
+          <button class="draw-color" style="background:#6366f1;width:16px;height:16px" data-col="#6366f1"></button>
+          <button class="draw-color" style="background:#ef4444;width:16px;height:16px" data-col="#ef4444"></button>
+          <button data-tool="clear" style="font-size:.75rem">🗑️</button>
+        </div>
+      </div>
+      <input type="text" class="wline mt1" placeholder="Label:" />
+    </div>
+    <div>
+      <div style="font-size:.65rem;font-weight:800;color:var(--tier-a);margin-bottom:3px;text-align:center">STEP 3</div>
+      <div class="draw-wrap" style="height:100px">
+        <canvas class="draw-canvas"></canvas>
+        <div class="draw-placeholder" style="font-size:.7rem">✏️</div>
+        <div class="draw-toolbar no-print" style="padding:2px 5px;gap:3px">
+          <input type="range" class="draw-size" min="1" max="14" value="3" style="width:44px">
+          <button class="draw-color active-color" style="background:#1e293b;width:16px;height:16px" data-col="#1e293b"></button>
+          <button class="draw-color" style="background:#6366f1;width:16px;height:16px" data-col="#6366f1"></button>
+          <button class="draw-color" style="background:#ef4444;width:16px;height:16px" data-col="#ef4444"></button>
+          <button data-tool="clear" style="font-size:.75rem">🗑️</button>
+        </div>
+      </div>
+      <input type="text" class="wline mt1" placeholder="Label:" />
+    </div>
+    <div>
+      <div style="font-size:.65rem;font-weight:800;color:var(--tier-a);margin-bottom:3px;text-align:center">STEP 4</div>
+      <div class="draw-wrap" style="height:100px">
+        <canvas class="draw-canvas"></canvas>
+        <div class="draw-placeholder" style="font-size:.7rem">✏️</div>
+        <div class="draw-toolbar no-print" style="padding:2px 5px;gap:3px">
+          <input type="range" class="draw-size" min="1" max="14" value="3" style="width:44px">
+          <button class="draw-color active-color" style="background:#1e293b;width:16px;height:16px" data-col="#1e293b"></button>
+          <button class="draw-color" style="background:#6366f1;width:16px;height:16px" data-col="#6366f1"></button>
+          <button class="draw-color" style="background:#ef4444;width:16px;height:16px" data-col="#ef4444"></button>
+          <button data-tool="clear" style="font-size:.75rem">🗑️</button>
+        </div>
+      </div>
+      <input type="text" class="wline mt1" placeholder="Label:" />
+    </div>
+  </div>
+  <div class="tip p">🌟 Bonus: swap with a buddy and act out their algorithm like a robot!</div>
+</div>
+
+<!-- TIER B OPEN BUILD -->
+<div class="card tier-b-card mb2">
+  <div class="tier-badge tb">🔷 Tier B — Core</div>
+  <div class="clabel b">Write a 6-Step Algorithm + Find a Bug</div>
+  <p class="mb2">Choose a daily task. Write 6 precise steps. Then swap with a neighbor and circle any imprecise step.</p>
+  <div style="margin-bottom:10px;font-size:.8rem;font-weight:800;color:var(--a1)">My task: <input type="text" style="display:inline;width:200px;border:none;border-bottom:1.5px solid #cbd5e1;background:transparent;padding:2px 6px;font-size:.8rem" placeholder="______________" /></div>
+  <div class="g2">
+    <ol class="alg-steps">
+      <li><input type="text" class="wline" placeholder="Step 1…" style="margin:0;flex:1" /></li>
+      <li><input type="text" class="wline" placeholder="Step 2…" style="margin:0;flex:1" /></li>
+      <li><input type="text" class="wline" placeholder="Step 3…" style="margin:0;flex:1" /></li>
+      <li><input type="text" class="wline" placeholder="Step 4…" style="margin:0;flex:1" /></li>
+      <li><input type="text" class="wline" placeholder="Step 5…" style="margin:0;flex:1" /></li>
+      <li><input type="text" class="wline" placeholder="Step 6…" style="margin:0;flex:1" /></li>
+    </ol>
+    <div>
+      <p style="font-size:.76rem;font-weight:800;color:var(--a1);margin-bottom:6px">🎨 Optional: sketch the task or a key step:</p>
+      <div class="draw-wrap" style="height:150px">
+        <canvas class="draw-canvas"></canvas>
+        <div class="draw-placeholder">✏️ Draw here — drag to resize</div>
+        <div class="draw-toolbar no-print">
+          <input type="range" class="draw-size" min="1" max="20" value="3">
+          <button class="draw-color active-color" style="background:#1e293b" data-col="#1e293b"></button>
+          <button class="draw-color" style="background:#0b63ce" data-col="#0b63ce"></button>
+          <button class="draw-color" style="background:#ef4444" data-col="#ef4444"></button>
+          <button class="draw-color" style="background:#10b981" data-col="#10b981"></button>
+          <button class="draw-color" style="background:#f59e0b" data-col="#f59e0b"></button>
+          <button data-tool="erase">🧹</button>
+          <button data-tool="clear">🗑️</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="tip b mt2">🐛 <strong>Bug swap:</strong> swap sheets. Which step is not precise? Circle it and write the fix: <input type="text" class="wline mt1" placeholder="Bug at step #__: …  Better: …" /></div>
+</div>
+
+<!-- TIER C OPEN BUILD -->
+<div class="card tier-c-card mb3">
+  <div class="tier-badge tc">🚀 Tier C — Accelerated</div>
+  <div class="clabel g">Algorithm with Conditionals + AI Connection</div>
+  <p class="mb2">Write a 6+ step algorithm with at least <strong>TWO if/else</strong> decision points, then connect it to AI.</p>
+  <div style="margin-bottom:10px;font-size:.8rem;font-weight:800;color:var(--a2)">My task: <input type="text" style="display:inline;width:200px;border:none;border-bottom:1.5px solid #a7f3d0;background:transparent;padding:2px 6px;font-size:.8rem" placeholder="______________" /></div>
+  <ol class="alg-steps mb2">
+    <li><input type="text" class="wline" placeholder="Step 1…" style="margin:0;flex:1" /></li>
+    <li><input type="text" class="wline" placeholder="Step 2…" style="margin:0;flex:1" /></li>
+    <li><input type="text" class="wline" placeholder="If [condition 1]… then… else…" style="margin:0;flex:1" /></li>
+    <li><input type="text" class="wline" placeholder="Step 4…" style="margin:0;flex:1" /></li>
+    <li><input type="text" class="wline" placeholder="If [condition 2]… then… else…" style="margin:0;flex:1" /></li>
+    <li><input type="text" class="wline" placeholder="Step 6…" style="margin:0;flex:1" /></li>
+  </ol>
+  <div class="robot-box mt2">
+    <div style="font-size:.7rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--a2);margin-bottom:5px">🤖 AI Connection</div>
+    <p class="mb2" style="font-size:.82rem">How is your algorithm similar to how a recommendation AI works?</p>
+    <textarea class="warea" placeholder="My algorithm is similar to AI because…"></textarea>
+  </div>
+</div>
+
+<!-- SHARE-OUT -->
+<div class="sec-label">🙋 Share-Out · 10 min</div>
+<div class="sec-title">Show Your Neighbor!</div>
+
+<div class="g2 mb3">
+  <div class="card ag">
+    <div class="clabel g">📢 Share + Peer Feedback</div>
+    <p class="mb2">Read your algorithm aloud while your neighbor acts like a robot. Find bugs together!</p>
+    <p style="font-size:.8rem;font-weight:800;color:#047857;margin-bottom:4px">One thing my neighbor's algorithm did well:</p>
+    <input type="text" class="wline" placeholder="…" />
+    <p style="font-size:.8rem;font-weight:800;color:#047857;margin-top:8px;margin-bottom:4px">One bug we found together:</p>
+    <input type="text" class="wline" placeholder="…" />
+  </div>
+  <div class="card aa">
+    <div class="clabel a">💭 Exit Ticket — 3 Questions</div>
+    <p style="font-size:.79rem;font-weight:700;margin-bottom:4px">1. What is an algorithm? (one sentence)</p>
+    <input type="text" class="wline" placeholder="An algorithm is…" />
+    <p style="font-size:.79rem;font-weight:700;margin-top:8px;margin-bottom:4px">2. Name one place AI shows up in your life:</p>
+    <input type="text" class="wline" placeholder="AI shows up when I…" />
+    <p style="font-size:.79rem;font-weight:700;margin-top:8px;margin-bottom:4px">3. One question you still have:</p>
+    <input type="text" class="wline" placeholder="I'm wondering…" />
+  </div>
+</div>
+
+<!-- RUBRIC -->
+<div class="sec-label">📊 For Teachers</div>
+<div class="sec-title">Grading Rubric (10 Points)</div>
+<div class="card mb3">
+  <table class="rub">
+    <tr><th>Section</th><th>What to Look For</th><th class="pts">Points</th></tr>
+    <tr><td>Warm-Up (Robot Shoes)</td><td>Attempted; shows awareness robots need precise steps; Tier A: 3+ steps or drawing; Tier B/C: 5+ precise steps</td><td class="pts">2 pts</td></tr>
+    <tr><td>Vocab &amp; True/False</td><td>Correct matching (1→D,2→B,3→C,4→A); True/False: F,T,F,F</td><td class="pts">2 pts</td></tr>
+    <tr><td>Sandwich Algorithm (Guided)</td><td>Completed collaboratively; Tier A: blanks filled + drawing attempted; Tier C: if/else added</td><td class="pts">2 pts</td></tr>
+    <tr><td>Own Algorithm (Open Build)</td><td>Task named; required steps written; drawings accepted for Tier A; bug swap attempted (Tier B)</td><td class="pts">3 pts</td></tr>
+    <tr><td>Exit Ticket</td><td>All 3 answered in student's own words; algorithm definition shows understanding</td><td class="pts">1 pt</td></tr>
+    <tr style="background:rgba(11,99,206,.06)"><td><strong>⭐ Tier C Bonus</strong></td><td>Two if/else points + genuine AI connection response</td><td class="pts">+2 max</td></tr>
+  </table>
+  <div class="g2 mt3">
+    <div class="tip b"><strong>Score: _____ / 10</strong><br>Teacher Comments:<br><input type="text" class="wline mt2" placeholder="…" /><input type="text" class="wline" placeholder="…" /></div>
+    <div class="tip g"><strong>Next Steps:</strong><br><input type="text" class="wline mt2" placeholder="…" /><input type="text" class="wline" placeholder="…" /></div>
+  </div>
+</div>
+
+<div class="sheet-footer">
+  <div><strong>Session 1 · In-Class Activity Sheet</strong> — Welcome &amp; "What Is a Computer Thinking?"<br>Modern Chinese School · Summer 2026 · Ages 7–13 · Three Tiers · Mon Jun 29</div>
+  <div style="text-align:right">🤖 Every expert was once a beginner · 🌟 Keep asking questions</div>
+</div>
+
+</div><!-- .page -->
+
+<!-- ═══════════════════════════════════════════════════════
+     DRAWING ENGINE — shared across all canvases
+     ═══════════════════════════════════════════════════════ -->
+<script>
+(function(){
+  'use strict';
+
+  function initCanvas(wrap){
+    const canvas = wrap.querySelector('.draw-canvas');
+    const toolbar = wrap.querySelector('.draw-toolbar');
+    if(!canvas) return;
+
+    let painting = false;
+    let tool = 'pen';   // 'pen' | 'erase'
+    let color = '#1e293b';
+    let size = 3;
+    const ctx = canvas.getContext('2d');
+
+    /* ── Resize canvas to match CSS size ── */
+    function resize(){
+      // Preserve existing drawing
+      const tmp = document.createElement('canvas');
+      tmp.width = canvas.width; tmp.height = canvas.height;
+      tmp.getContext('2d').drawImage(canvas, 0, 0);
+      canvas.width = wrap.clientWidth;
+      canvas.height = wrap.clientHeight;
+      ctx.drawImage(tmp, 0, 0);
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+    }
+    resize();
+    new ResizeObserver(resize).observe(wrap);
+
+    /* ── Pointer helpers ── */
+    function pos(e){
+      const r = canvas.getBoundingClientRect();
+      const src = e.touches ? e.touches[0] : e;
+      return {x: src.clientX - r.left, y: src.clientY - r.top};
+    }
+
+    function startDraw(e){
+      e.preventDefault();
+      painting = true;
+      const {x,y} = pos(e);
+      ctx.beginPath();
+      ctx.moveTo(x,y);
+      applyTool(x,y);
+      wrap.classList.add('has-strokes');
+    }
+    function draw(e){
+      if(!painting) return;
+      e.preventDefault();
+      const {x,y} = pos(e);
+      applyTool(x,y);
+    }
+    function stopDraw(){ painting = false; ctx.beginPath(); }
+
+    function applyTool(x,y){
+      if(tool==='erase'){
+        ctx.globalCompositeOperation='destination-out';
+        ctx.strokeStyle='rgba(0,0,0,1)';
+        ctx.lineWidth = size * 4;
+      } else {
+        ctx.globalCompositeOperation='source-over';
+        ctx.strokeStyle = color;
+        ctx.lineWidth = size;
+      }
+      ctx.lineTo(x,y);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(x,y);
+    }
+
+    canvas.addEventListener('mousedown', startDraw);
+    canvas.addEventListener('mousemove', draw);
+    canvas.addEventListener('mouseup', stopDraw);
+    canvas.addEventListener('mouseleave', stopDraw);
+    canvas.addEventListener('touchstart', startDraw, {passive:false});
+    canvas.addEventListener('touchmove', draw, {passive:false});
+    canvas.addEventListener('touchend', stopDraw);
+
+    /* ── Toolbar wiring ── */
+    if(!toolbar) return;
+
+    /* color buttons */
+    toolbar.querySelectorAll('.draw-color').forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        color = btn.dataset.col;
+        tool = 'pen';
+        toolbar.querySelectorAll('.draw-color').forEach(b=>b.classList.remove('active-color'));
+        btn.classList.add('active-color');
+      });
+    });
+
+    /* size slider */
+    const sizeSlider = toolbar.querySelector('.draw-size');
+    if(sizeSlider){
+      sizeSlider.addEventListener('input',()=>{ size = parseInt(sizeSlider.value); });
+    }
+
+    /* action buttons */
+    toolbar.querySelectorAll('button[data-tool]').forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        if(btn.dataset.tool==='clear'){
+          ctx.clearRect(0,0,canvas.width,canvas.height);
+          wrap.classList.remove('has-strokes');
+        } else if(btn.dataset.tool==='erase'){
+          tool = tool==='erase' ? 'pen' : 'erase';
+          toolbar.querySelectorAll('button[data-tool=erase]').forEach(b=>{
+            b.classList.toggle('active-tool', tool==='erase');
+          });
+        }
+      });
+    });
+  }
+
+  /* Init all canvases on page */
+  document.querySelectorAll('.draw-wrap').forEach(initCanvas);
+})();
+</script>
+</body>
+</html>
