@@ -25,8 +25,7 @@ Summer 2026 AI & Coding Program
 <br>
 Modern Chinese School
 </details>
-
-
+  
 
 [Syllabus](https://hue881.github.io/mcs/2026/summer/syllabus)  
 [Rules and Regulations](https://hue881.github.io/mcs/2026/rules)
