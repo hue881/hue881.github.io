@@ -2,7 +2,7 @@
 
 <details>
   <summary>Welcome to the Summer 2026 AI & Coding Program at Modern Chinese School!</summary>  
-  
+  <br>
   Dear Parents,  
   
 It is a true joy to welcome your children into our Summer 2026 Python, Scratch & Artificial Intelligence program, running Monday through Thursday from June 29 through August 14. Whether your child has never touched a line of code or already loves tinkering with computers, they belong here — this course begins at absolute zero and builds, step by step, toward a real project each student will be proud to show their family. We designed every part of this program directly from your responses across 28 parent intake surveys, so the structure, pacing, and support you hoped for are built right into our daily rhythm.  
