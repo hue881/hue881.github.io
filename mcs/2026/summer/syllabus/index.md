@@ -196,20 +196,6 @@ Field trips (no class): July 20 and August 3. Showcase: within Aug 10–13.
 
 *This schedule is a working plan and may shift week to week based on class pace.*
 
-
-
-## Differentiation & Individual Support
-
-- **Encouragement-first culture.** Praise effort and process publicly; give corrections privately. Students who are sensitive to criticism get gentle, private feedback only.
-- **Focus supports.** Short tasks, the built-in movement break, fidget-friendly seating, and on-screen checklists for students who need focus support (those who need to stand periodically are accommodated).
-- **Low-stakes sharing.** Default to pair-sharing; never cold-call. Presenting is always opt-in (only 21% enjoy it; 36% are "nervous but willing").
-- **Mixed group work.** Short bursts of pair programming inside independent build time (75% want a blend). Pair distracted students with focused partners; gifted students always get challenge cards.
-- **Advanced learners.** Always offer the challenge card and Tier C stretch goals so the 18% boredom risk is covered. Light intro to project tooling and GitHub for the most advanced students.
-- **Youngest learners.** Grade 1–2 students start with internet safety, responsible AI, and confidence basics; buddy pairing; Scratch longer before Python.
-- **Bilingual support.** 18% of families wrote in Chinese — provide key handouts and instructions in **English and Chinese**, and confirm the youngest/newest students understand directions.
-
-
-
 ## Materials & Logistics (for families)
 
 - **Computers:** All software used is **free and browser-based or built into Python** — Scratch (online or offline editor), Python (standard library only, no `pip install` needed), and Teachable Machine (in-browser). The school provides computers.
