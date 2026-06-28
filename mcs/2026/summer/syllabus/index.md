@@ -212,7 +212,7 @@ Field trips (no class): July 20 and August 3. Showcase: within Aug 10–13.
 
 ## Materials & Logistics (for families)
 
-- **Computers:** All software used is **free and browser-based or built into Python** — Scratch (online or offline editor), Python (standard library only, no `pip install` needed), and Teachable Machine (in-browser). Confirm whether the school provides computers or students bring their own.
+- **Computers:** All software used is **free and browser-based or built into Python** — Scratch (online or offline editor), Python (standard library only, no `pip install` needed), and Teachable Machine (in-browser). The school provides computers.
 - **No external Python libraries.** Everything uses the standard library, so any computer with Python runs every activity with zero setup.
 - **Screen-time-conscious framing** (18% concern): emphasize unplugged warm-ups, the daily movement break, and that screen time here is **creative and productive**, not passive.
 - **Bilingual handouts** for key instructions, homework, and showcase signage (English + Chinese).
