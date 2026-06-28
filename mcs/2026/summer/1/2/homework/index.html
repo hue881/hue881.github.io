@@ -1,1 +1,799 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Session 2 · Homework — Internet Safety &amp; My First Algorithm</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<style>
 
+/* ─── DESIGN TOKENS (matching index.html exactly) ─────────────── */
+:root {
+  --bg:        #f4fbff;
+  --bg-deep:   #e0f2ff;
+  --surface:   rgba(255,255,255,0.97);
+  --text:      #1f2a37;
+  --text2:     #374151;
+  --muted:     #5b6b7e;
+  --a1:        #0b63ce;   /* blue */
+  --a2:        #10b981;   /* green */
+  --a3:        #f59e0b;   /* amber */
+  --ar:        #ef4444;   /* red */
+  --glass-bg:  rgba(255,255,255,0.88);
+  --glass-bd:  rgba(11,99,206,0.16);
+  --fd: "Fredoka","Trebuchet MS",sans-serif;
+  --fb: "Nunito",Arial,sans-serif;
+  --fc: "Fira Code",Consolas,monospace;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased;scroll-behavior:smooth}
+body{
+  font-family:var(--fb);color:var(--text);
+  background:radial-gradient(circle at top left,rgba(56,189,248,.12),transparent 40%),
+             radial-gradient(circle at bottom right,rgba(16,185,129,.09),transparent 40%),
+             var(--bg);
+  min-height:100vh;
+}
+
+/* ─── PRINT ──────────────────────────────────────────────────── */
+@media print{
+  .no-print{display:none!important}
+  .page-break{page-break-before:always}
+  body{background:#fff!important}
+  .slide-card{box-shadow:none!important;border:1.5px solid #d1d5db!important}
+}
+
+/* ─── STICKY BAR ─────────────────────────────────────────────── */
+.bar{
+  background:rgba(255,255,255,.92);backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(148,163,184,.3);
+  padding:10px 24px;display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:100;gap:12px;flex-wrap:wrap;
+}
+.bar-title{font-family:var(--fd);font-size:1.05rem;font-weight:700;color:var(--a1)}
+.bar-sub{font-size:.75rem;color:var(--muted)}
+.btn-print{
+  background:var(--a1);color:#fff;border:none;padding:8px 20px;
+  border-radius:999px;font-family:var(--fb);font-size:.8rem;font-weight:800;
+  cursor:pointer;letter-spacing:.05em;transition:background .2s,transform .15s;
+}
+.btn-print:hover{background:#0952b0;transform:translateY(-1px)}
+
+/* ─── PAGE ───────────────────────────────────────────────────── */
+.page{max-width:940px;margin:0 auto;padding:28px 20px 60px}
+
+/* ─── HERO HEADER ────────────────────────────────────────────── */
+.sheet-header{
+  background:linear-gradient(135deg,#0b63ce 0%,#10b981 55%,#f59e0b 100%);
+  border-radius:20px;padding:28px 32px 24px;color:#fff;
+  margin-bottom:26px;position:relative;overflow:hidden;
+}
+.sheet-header::before{content:"";position:absolute;top:-50px;right:-50px;width:180px;height:180px;background:rgba(255,255,255,.07);border-radius:50%}
+.sheet-header::after{content:"";position:absolute;bottom:-36px;left:-36px;width:130px;height:130px;background:rgba(255,255,255,.05);border-radius:50%}
+.hdr-day{font-size:.7rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;opacity:.85;margin-bottom:4px}
+.hdr-title{font-family:var(--fd);font-size:clamp(1.7rem,4vw,2.5rem);font-weight:700;line-height:1.1;margin-bottom:6px}
+.hdr-sub{font-size:.88rem;opacity:.88;margin-bottom:14px}
+.hdr-pills{display:flex;gap:8px;flex-wrap:wrap}
+.hpill{background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:4px 13px;font-size:.7rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+
+/* ─── STUDENT INFO ───────────────────────────────────────────── */
+.sinfo{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:26px}
+@media(max-width:580px){.sinfo{grid-template-columns:1fr}}
+.sfield{background:var(--surface);border-radius:12px;padding:11px 14px;border:1.5px solid rgba(11,99,206,.13);box-shadow:0 2px 8px rgba(15,23,42,.05)}
+.slabel{font-size:.62rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--a1);margin-bottom:5px}
+.sfield input{width:100%;border:none;border-bottom:1.5px solid #cbd5e1;background:transparent;font-family:var(--fb);font-size:.88rem;color:var(--text);outline:none;padding:3px 2px;transition:border-color .2s}
+.sfield input:focus{border-bottom-color:var(--a1)}
+
+/* ─── SECTION LABELS ─────────────────────────────────────────── */
+.sec-label{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:5px 15px;border-radius:999px;
+  border:1px solid rgba(148,163,184,.4);background:rgba(255,255,255,.9);
+  font-size:.7rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--a1);margin-bottom:9px
+}
+.sec-title{font-family:var(--fd);font-size:clamp(1.25rem,2.5vw,1.75rem);font-weight:700;margin-bottom:15px;color:var(--text);line-height:1.2}
+
+/* ─── CARDS ──────────────────────────────────────────────────── */
+.card{
+  background:var(--surface);border-radius:16px;padding:17px 19px;
+  box-shadow:0 4px 18px rgba(15,23,42,.07);border:1px solid rgba(255,255,255,.7);
+  margin-bottom:14px;
+}
+.card.ab{border-left:4px solid var(--a1)}
+.card.ag{border-left:4px solid var(--a2)}
+.card.aa{border-left:4px solid var(--a3)}
+.card.ar{border-left:4px solid var(--ar)}
+.clabel{font-size:.65rem;font-weight:800;letter-spacing:.13em;text-transform:uppercase;margin-bottom:7px}
+.clabel.b{color:var(--a1)}.clabel.g{color:#047857}.clabel.a{color:#b45309}.clabel.r{color:#b91c1c}
+
+/* ─── GRIDS ──────────────────────────────────────────────────── */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:13px}
+@media(max-width:640px){.g2,.g3{grid-template-columns:1fr}}
+
+/* ─── INPUT ELEMENTS ─────────────────────────────────────────── */
+input[type=text],textarea,select{
+  font-family:var(--fb);font-size:.86rem;color:var(--text);background:#fff;
+  border:1.5px solid #cbd5e1;border-radius:7px;outline:none;width:100%;
+  transition:border-color .2s,box-shadow .2s;
+}
+input[type=text]:focus,textarea:focus{border-color:var(--a1);box-shadow:0 0 0 3px rgba(11,99,206,.1)}
+
+/* write-on line */
+.wline{
+  display:block;width:100%;padding:5px 8px;margin-bottom:8px;
+  border:none;border-bottom:1.5px solid #cbd5e1;border-radius:0;
+  background:transparent;font-family:var(--fb);font-size:.84rem;color:var(--text);
+  outline:none;transition:border-color .2s;
+}
+.wline:focus{border-bottom-color:var(--a1)}
+.wline::placeholder{color:#94a3b8;font-size:.78rem}
+
+/* multi-line textarea */
+.warea{
+  display:block;width:100%;padding:9px 11px;min-height:74px;resize:vertical;
+  background:#f8fafc;border-radius:8px;
+  font-family:var(--fb);font-size:.83rem;color:var(--text);line-height:1.55;
+}
+.warea::placeholder{color:#94a3b8;font-size:.78rem}
+
+/* code-inline blanks */
+.blankinput{
+  display:inline-block;vertical-align:middle;margin:0 2px;
+  background:rgba(251,191,36,.13);border:none;border-bottom:2px solid #f59e0b;
+  border-radius:3px;padding:1px 5px;font-family:var(--fc);font-size:.76rem;
+  color:#fcd34d;outline:none;text-align:center;
+}
+.blankinput:focus{background:rgba(251,191,36,.25);border-bottom-color:#d97706}
+
+/* prediction grid cells */
+.pcell-input{
+  width:52px;height:50px;text-align:center;
+  font-family:var(--fc);font-size:.9rem;font-weight:700;
+  border:2px dashed #cbd5e1;border-radius:8px;background:#f8fafc;
+  color:var(--text);padding:0;
+  transition:border-color .2s,background .2s;
+}
+.pcell-input:focus{border-color:var(--a1);border-style:solid;background:#eff6ff}
+
+/* pixel design grid */
+.pxcell{
+  width:46px;height:46px;text-align:center;
+  font-family:var(--fc);font-size:.88rem;font-weight:700;
+  border:2px dashed #cbd5e1;border-radius:8px;background:#f8fafc;
+  color:var(--text);padding:0;
+  transition:background .35s,color .35s,border-color .25s;
+}
+.pxcell:focus{border-color:var(--a1);border-style:solid}
+
+/* ─── PIXEL-GRID CONTAINER ───────────────────────────────────── */
+.pgrid{display:grid;gap:4px;width:fit-content;margin:0 auto 8px}
+.pgrid-5{grid-template-columns:repeat(5,46px)}
+.pgrid-3{grid-template-columns:repeat(3,52px)}
+
+/* ─── CODE BLOCK ─────────────────────────────────────────────── */
+.codeblock{
+  background:#1e293b;color:#e2e8f0;border-radius:12px;
+  padding:13px 17px;font-family:var(--fc);font-size:clamp(.65rem,1.1vw,.8rem);
+  line-height:1.65;overflow-x:auto;
+  border:1px solid rgba(255,255,255,.06);margin-bottom:11px;
+  white-space:pre;
+}
+.kw{color:#93c5fd}.nb{color:#fcd34d}.st{color:#86efac}.cm{color:#64748b;font-style:italic}.op{color:#93c5fd}
+
+/* ─── PILL / TAG ─────────────────────────────────────────────── */
+.pill{display:inline-flex;align-items:center;gap:6px;padding:4px 13px;border-radius:999px;border:1px solid rgba(148,163,184,.5);background:rgba(255,255,255,.9);font-size:.7rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--a1)}
+.badge{display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff;padding:4px 13px;border-radius:999px;font-size:.7rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px}
+.vocab-tag{display:inline-flex;align-items:center;padding:3px 10px;border-radius:999px;background:rgba(15,23,42,.04);font-size:.78rem;font-weight:700;color:var(--a1)}
+
+/* ─── TIMELINE ───────────────────────────────────────────────── */
+.timeline{position:relative;padding-left:22px}
+.timeline::before{content:"";position:absolute;left:8px;top:4px;bottom:4px;width:3px;border-radius:999px;background:linear-gradient(to bottom,#0b63ce,#10b981)}
+.tstep{position:relative;margin-bottom:10px}
+.tdot{position:absolute;left:-15px;top:5px;width:12px;height:12px;border-radius:999px;border:2px solid var(--bg);background:#0b63ce;box-shadow:0 0 0 3px rgba(11,99,206,.18)}
+.tdot.g{background:#10b981}.tdot.a{background:#f59e0b}
+
+/* ─── TIP BOX ────────────────────────────────────────────────── */
+.tip{border-radius:10px;padding:9px 13px;font-size:.79rem;line-height:1.5;margin-top:9px}
+.tip.b{background:rgba(11,99,206,.07);color:#1e40af}
+.tip.g{background:rgba(16,185,129,.07);color:#065f46}
+.tip.a{background:rgba(245,158,11,.07);color:#92400e}
+.tip.r{background:rgba(239,68,68,.07);color:#991b1b}
+
+/* ─── FORMULA BOX ────────────────────────────────────────────── */
+.fbox{background:#1e293b;color:#e2e8f0;border-radius:10px;padding:10px 16px;font-family:var(--fc);font-size:.9rem;text-align:center;margin-bottom:10px}
+
+/* ─── RUBRIC TABLE ───────────────────────────────────────────── */
+table.rub{width:100%;border-collapse:collapse;font-size:.8rem;margin-top:7px}
+table.rub th{background:#1e293b;color:#e2e8f0;padding:8px 10px;text-align:left;font-weight:700;letter-spacing:.05em}
+table.rub td{padding:8px 10px;border-bottom:1px solid #e2e8f0;vertical-align:top;color:var(--text2)}
+table.rub tr:nth-child(even) td{background:rgba(241,245,249,.6)}
+table.rub td:first-child{font-weight:700;color:var(--text)}
+.pts{font-family:var(--fc);font-size:.73rem;font-weight:800;color:var(--a1);white-space:nowrap}
+
+/* ─── CHECKLIST ──────────────────────────────────────────────── */
+.cklist{list-style:none;padding:0}
+.cklist li{display:flex;align-items:flex-start;gap:8px;font-size:.84rem;color:var(--text2);margin-bottom:8px;line-height:1.45}
+
+/* ─── MISC ───────────────────────────────────────────────────── */
+.divider{border:none;border-top:2px dashed #dde6f0;margin:26px 0}
+.grad-text{background:linear-gradient(135deg,#0b63ce 0%,#10b981 50%,#f59e0b 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.mt1{margin-top:5px}.mt2{margin-top:9px}.mt3{margin-top:13px}
+.mb1{margin-bottom:5px}.mb2{margin-bottom:9px}.mb3{margin-bottom:13px}
+.tc{text-align:center}.tm{color:var(--muted);font-size:.74rem}
+p,li{font-size:.86rem;color:var(--text2);line-height:1.55}
+strong{color:var(--text)}
+code{background:#e0f2ff;padding:1px 5px;border-radius:4px;font-family:var(--fc);font-size:.8em;color:#0b63ce}
+.sheet-footer{margin-top:38px;padding:14px 18px;border-radius:12px;background:rgba(11,99,206,.05);border:1px solid rgba(11,99,206,.11);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:.73rem;color:var(--muted)}
+.question-chip{display:inline-flex;align-items:center;gap:8px;padding:6px 13px;border-radius:999px;background:rgba(245,158,11,.09);color:#92400e;font-size:.78rem;font-weight:700}
+.question-chip .icon{display:inline-flex;align-items:center;justify-content:center;width:17px;height:17px;border-radius:999px;background:rgba(245,158,11,.95);color:#fff;font-size:.74rem}
+
+/* ─── DRAWING CANVAS ─────────────────────────────────────────── */
+.draw-wrap{background:#fff;border:2px dashed #a5b4d0;border-radius:14px;overflow:hidden;position:relative;margin-bottom:8px}
+.draw-toolbar{display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding:7px 10px;background:#f1f5f9;border-bottom:1px solid #e2e8f0}
+.draw-toolbar label{font-size:.65rem;font-weight:800;color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
+.draw-toolbar input[type=color]{width:28px;height:28px;border:none;border-radius:6px;cursor:pointer;padding:0;background:none}
+.draw-toolbar input[type=range]{width:72px;accent-color:var(--a1)}
+.draw-btn{font-size:.7rem;font-weight:800;padding:4px 10px;border-radius:999px;border:1.5px solid #cbd5e1;background:#fff;color:var(--text);cursor:pointer;transition:background .15s,border-color .15s}
+.draw-btn:hover{background:#eff6ff;border-color:var(--a1)}
+.draw-btn.active{background:var(--a1);color:#fff;border-color:var(--a1)}
+.draw-canvas{display:block;width:100%;cursor:crosshair;touch-action:none}
+.draw-hint{font-size:.65rem;color:var(--muted);text-align:center;padding:3px 0 4px;background:#f8fafc;border-top:1px solid #e2e8f0}
+@media print{.draw-toolbar,.draw-hint{display:none!important}.draw-wrap{border:1.5px solid #cbd5e1}}
+
+/* ─── TRUE / FALSE TOGGLE BUTTONS ───────────────────────────── */
+.tf-group{display:inline-flex;gap:5px;vertical-align:middle}
+.tf-btn{
+  font-size:.75rem;font-weight:800;padding:4px 13px;border-radius:999px;
+  border:2px solid #e2e8f0;background:#f8fafc;color:var(--muted);
+  cursor:pointer;transition:all .18s;letter-spacing:.04em;
+  user-select:none;-webkit-user-select:none;
+}
+.tf-btn:hover{border-color:#94a3b8;color:var(--text)}
+.tf-btn.sel-true{background:#22c55e;border-color:#16a34a;color:#fff}
+.tf-btn.sel-false{background:#ef4444;border-color:#dc2626;color:#fff}
+@media print{
+  .tf-btn{border:1.5px solid #cbd5e1!important;background:#fff!important;color:#374151!important;font-size:.7rem}
+  .tf-btn.sel-true{background:#d1fae5!important;border-color:#22c55e!important;color:#14532d!important}
+  .tf-btn.sel-false{background:#fee2e2!important;border-color:#ef4444!important;color:#991b1b!important}
+}
+
+/* ─── SAFE / NOT SAFE TOGGLE BUTTONS ────────────────────────── */
+.sns-group{display:inline-flex;gap:5px;vertical-align:middle}
+.sns-btn{
+  font-size:.73rem;font-weight:800;padding:4px 11px;border-radius:999px;
+  border:2px solid #e2e8f0;background:#f8fafc;color:var(--muted);
+  cursor:pointer;transition:all .18s;
+  user-select:none;-webkit-user-select:none;
+}
+.sns-btn:hover{border-color:#94a3b8;color:var(--text)}
+.sns-btn.sel-safe{background:#22c55e;border-color:#16a34a;color:#fff}
+.sns-btn.sel-notsafe{background:#ef4444;border-color:#dc2626;color:#fff}
+@media print{
+  .sns-btn{border:1.5px solid #cbd5e1!important;background:#fff!important;color:#374151!important}
+  .sns-btn.sel-safe{background:#d1fae5!important;border-color:#22c55e!important;color:#14532d!important}
+  .sns-btn.sel-notsafe{background:#fee2e2!important;border-color:#ef4444!important;color:#991b1b!important}
+}
+
+.mb1{margin-bottom:6px}.mb2{margin-bottom:12px}.mb3{margin-bottom:20px}
+.mt2{margin-top:12px}.mt3{margin-top:20px}
+.divider{border:none;border-top:2px dashed #e2e8f0;margin:24px 0}
+.tip{border-radius:10px;padding:9px 13px;font-size:.8rem;line-height:1.5;margin-top:8px}
+.tip.a{background:#fef9ee;border-left:3px solid var(--a3);color:#7c5a10}
+.tip.b{background:#eff6ff;border-left:3px solid var(--a1);color:#1e40af}
+.tip.g{background:#f0fdf4;border-left:3px solid var(--a2);color:#14532d}
+.tip.r{background:#fef2f2;border-left:3px solid var(--ar);color:#991b1b}
+.tier-wrap{border-radius:12px;padding:12px 15px;margin-bottom:10px}
+.tier-a{background:#f0fdf4;border:1.5px solid #86efac}
+.tier-b{background:#eff6ff;border:1.5px solid #93c5fd}
+.tier-c{background:#fdf2f8;border:1.5px solid #d8b4fe}
+.tier-label{display:inline-flex;align-items:center;gap:5px;font-size:.68rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;border-radius:999px;padding:3px 10px;margin-bottom:8px}
+.tl-a{background:#22c55e;color:#fff}.tl-b{background:#3b82f6;color:#fff}.tl-c{background:#a855f7;color:#fff}
+.algo-row{display:flex;align-items:flex-start;gap:10px;margin-bottom:8px}
+.algo-num{min-width:26px;height:26px;border-radius:50%;background:var(--a1);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.8rem;flex-shrink:0;margin-top:1px}
+.algo-line{flex:1;border:none;border-bottom:1.5px solid #cbd5e1;background:transparent;font-family:var(--fb);font-size:.84rem;color:var(--text);outline:none;padding:2px 4px}
+.algo-line:focus{border-bottom-color:var(--a1)}
+.rule-row{display:flex;align-items:flex-start;gap:10px;padding:7px 0;border-bottom:1px solid #f1f5f9}
+.rule-num{min-width:22px;height:22px;border-radius:50%;background:var(--a2);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.74rem;flex-shrink:0;margin-top:1px}
+.scenario{border-radius:12px;padding:10px 14px;background:#f8fafc;border:1.5px solid #e2e8f0;margin-bottom:8px;font-size:.83rem}
+.robot-card{border-radius:12px;padding:12px;font-size:.82rem}
+.robot-good{background:#f0fdf4;border:2px solid #22c55e}
+.robot-bad{background:#fef2f2;border:2px solid #ef4444}
+.parent-box{background:#fffbeb;border:2px solid #fcd34d;border-radius:14px;padding:16px 18px;margin-top:20px}
+.parent-box .clabel{color:#b45309}
+
+</style>
+</head>
+<body>
+
+<div class="bar no-print">
+  <div>
+    <div class="bar-title">Session 2 · Homework</div>
+    <div class="bar-sub">Internet Safety &amp; My First Algorithm · Due Thu Jul 2 · ~30 min</div>
+  </div>
+  <button class="btn-print" onclick="window.print()">🖨️ Print</button>
+</div>
+
+<div class="page">
+
+<div class="sheet-header" style="background:linear-gradient(135deg,#0b63ce 0%,#a855f7 55%,#f59e0b 100%);">
+  <div class="hdr-day">Session 2 Homework · Due Thursday, Jul 2 · ~30 Minutes</div>
+  <div class="hdr-title">Internet Safety &amp; My First Algorithm</div>
+  <div class="hdr-sub">Practice what you learned — complete all sections for your tier!</div>
+  <div class="hdr-pills">
+    <span class="hpill">🌱 Tier A — Draw + Label</span>
+    <span class="hpill">🔷 Tier B — Write + IF/ELSE</span>
+    <span class="hpill">🚀 Tier C — Full System + Pseudocode</span>
+    <span class="hpill">⏱ ~30 min</span>
+  </div>
+</div>
+
+<div class="sinfo mb3">
+  <div class="sfield"><div class="slabel">Name</div><input type="text" placeholder="Your full name"/></div>
+  <div class="sfield"><div class="slabel">Grade &amp; Tier</div><input type="text" placeholder="e.g. Grade 4 · Tier B"/></div>
+  <div class="sfield"><div class="slabel">Due Date</div><input type="text" placeholder="Thu, Jul 2, 2026"/></div>
+</div>
+
+<!-- ══ SECTION 1 — SAFETY REVIEW ════════════════════════════════ -->
+<div class="sec-label">🛡️ Section 1 · ~5 min · All Tiers</div>
+<div class="sec-title">Internet Safety From Memory</div>
+
+<div class="card ab mb2">
+  <div class="clabel b mb1">📋 Write the 5 Rules from Memory</div>
+  <p style="font-size:.82rem;color:var(--text2);margin-bottom:10px;">Close your notes and write the 5 Internet Safety rules in your own words!</p>
+  <div class="rule-row"><div class="rule-num">1</div><input type="text" class="wline" placeholder="Rule 1..."></div>
+  <div class="rule-row"><div class="rule-num">2</div><input type="text" class="wline" placeholder="Rule 2..."></div>
+  <div class="rule-row"><div class="rule-num">3</div><input type="text" class="wline" placeholder="Rule 3..."></div>
+  <div class="rule-row"><div class="rule-num">4</div><input type="text" class="wline" placeholder="Rule 4..."></div>
+  <div class="rule-row"><div class="rule-num">5</div><input type="text" class="wline" placeholder="Rule 5..."></div>
+</div>
+
+<!-- TRUE / FALSE — Safety Review -->
+<div class="card aa mb2">
+  <div class="clabel a">✅ Safety True or False? — Click your answer!</div>
+  <p style="font-size:.82rem;color:var(--text2);margin-bottom:10px;">Think carefully — then click <strong>TRUE</strong> or <strong>FALSE</strong> for each statement.</p>
+  <table style="width:100%;font-size:.82rem;border-collapse:collapse;">
+    <tr>
+      <td style="padding:9px 0;border-bottom:1px solid #f1f5f9;color:var(--text2);width:72%;">Your password should be easy to remember, so use your pet's name.</td>
+      <td style="padding:9px 0;border-bottom:1px solid #f1f5f9;text-align:right;"><span class="tf-group" data-name="hw-tf-1"><button class="tf-btn" data-val="true">TRUE</button><button class="tf-btn" data-val="false">FALSE</button></span></td>
+    </tr>
+    <tr>
+      <td style="padding:9px 0;border-bottom:1px solid #f1f5f9;color:var(--text2);">Screenshots of private messages can be shared with others without permission.</td>
+      <td style="padding:9px 0;border-bottom:1px solid #f1f5f9;text-align:right;"><span class="tf-group" data-name="hw-tf-2"><button class="tf-btn" data-val="true">TRUE</button><button class="tf-btn" data-val="false">FALSE</button></span></td>
+    </tr>
+    <tr>
+      <td style="padding:9px 0;border-bottom:1px solid #f1f5f9;color:var(--text2);">You should only click links from websites or people you trust.</td>
+      <td style="padding:9px 0;border-bottom:1px solid #f1f5f9;text-align:right;"><span class="tf-group" data-name="hw-tf-3"><button class="tf-btn" data-val="true">TRUE</button><button class="tf-btn" data-val="false">FALSE</button></span></td>
+    </tr>
+    <tr>
+      <td style="padding:9px 0;border-bottom:1px solid #f1f5f9;color:var(--text2);">Being kind online matters just as much as being kind in person.</td>
+      <td style="padding:9px 0;border-bottom:1px solid #f1f5f9;text-align:right;"><span class="tf-group" data-name="hw-tf-4"><button class="tf-btn" data-val="true">TRUE</button><button class="tf-btn" data-val="false">FALSE</button></span></td>
+    </tr>
+    <tr>
+      <td style="padding:9px 0;color:var(--text2);">Private information includes your full name, home address, and phone number.</td>
+      <td style="padding:9px 0;text-align:right;"><span class="tf-group" data-name="hw-tf-5"><button class="tf-btn" data-val="true">TRUE</button><button class="tf-btn" data-val="false">FALSE</button></span></td>
+    </tr>
+  </table>
+</div>
+
+<div class="card ab mb3">
+  <div class="clabel b">🏠 Real-Life Scenarios at Home</div>
+  <p style="font-size:.82rem;color:var(--text2);margin-bottom:10px;">Click Safe or Not Safe, then write what you would do.</p>
+  <div class="scenario">
+    <strong>Scenario 1:</strong> A game app asks you to enter your real name and school to create your profile.<br>
+    <div style="margin:7px 0;"><span class="sns-group" data-name="hw-sns-1"><button class="sns-btn" data-val="safe">✅ SAFE</button><button class="sns-btn" data-val="notsafe">⛔ NOT SAFE</button></span></div>
+    <textarea class="warea" rows="2" placeholder="I would..."></textarea>
+  </div>
+  <div class="scenario">
+    <strong>Scenario 2:</strong> A person in an online game says they go to your school and asks where you live.<br>
+    <div style="margin:7px 0;"><span class="sns-group" data-name="hw-sns-2"><button class="sns-btn" data-val="safe">✅ SAFE</button><button class="sns-btn" data-val="notsafe">⛔ NOT SAFE</button></span></div>
+    <textarea class="warea" rows="2" placeholder="I would..."></textarea>
+  </div>
+  <div class="scenario">
+    <strong>Scenario 3:</strong> You see a mean comment about your friend on a class chat.<br>
+    <div style="margin:7px 0;"><span class="sns-group" data-name="hw-sns-3"><button class="sns-btn" data-val="safe">✅ SAFE</button><button class="sns-btn" data-val="notsafe">⛔ NOT SAFE</button></span></div>
+    <textarea class="warea" rows="2" placeholder="I would..."></textarea>
+  </div>
+</div>
+
+<div class="clabel b mb1">✏️ Design a "Stay Safe Online!" mini-poster:</div>
+<div class="draw-wrap">
+  <div class="draw-toolbar">
+    <label>Color</label><input type="color" class="color-pick" value="#1e293b">
+    <label>Size</label><input type="range" class="size-pick" min="1" max="12" value="3">
+    <button class="draw-btn btn-pen active">✏️ Pen</button>
+    <button class="draw-btn btn-erase">⬜ Eraser</button>
+    <button class="draw-btn btn-clear">🗑️ Clear</button>
+  </div>
+  <canvas class="draw-canvas" height="200" style="background:#fff;"></canvas>
+  <div class="draw-hint">Draw your safety poster — add a slogan, a character, or a symbol!</div>
+</div>
+
+<hr class="divider page-break">
+
+<!-- ══ SECTION 2 — ALGORITHM (Tiered) ═══════════════════════════ -->
+<div class="sec-label">⚙️ Section 2 · Tiered · ~10–15 min</div>
+<div class="sec-title">Write Your Own Algorithm!</div>
+
+<div class="tip b mb3">📌 <strong>Choose a task from home:</strong> brushing teeth, feeding a pet, making a snack, packing your bag, getting ready for bed, or your own idea! <strong>Do your tier only.</strong></div>
+
+<!-- TIER A -->
+<div class="tier-wrap tier-a mb3">
+  <div class="tier-label tl-a">🌱 Tier A — Grades 1–3 · ~10 min</div>
+  <div class="clabel g">Draw &amp; Label a 4–6 Step Algorithm</div>
+  <p style="font-size:.83rem;color:var(--text2);margin-bottom:10px;">Pick a home task and draw each step. Label every step with 1–3 words. Then test it with a family member!</p>
+  <p style="font-size:.82rem;font-weight:700;color:#15803d;margin-bottom:10px;">My algorithm is for: <input type="text" style="width:180px;border:none;border-bottom:1.5px solid #22c55e;font-family:var(--fb);background:transparent;outline:none;" placeholder="e.g. feeding my cat"></p>
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:10px;">
+    <div><div class="clabel g mb1">Step 1:</div><div class="draw-wrap">
+  <div class="draw-toolbar">
+    <label>Color</label><input type="color" class="color-pick" value="#1e293b">
+    <label>Size</label><input type="range" class="size-pick" min="1" max="12" value="3">
+    <button class="draw-btn btn-pen active">✏️ Pen</button>
+    <button class="draw-btn btn-erase">⬜ Eraser</button>
+    <button class="draw-btn btn-clear">🗑️ Clear</button>
+  </div>
+  <canvas class="draw-canvas" height="120" style="background:#fff;"></canvas>
+  <div class="draw-hint">Draw step 1!</div>
+</div><input type="text" class="wline" placeholder="Label: e.g. Get bowl"></div>
+    <div><div class="clabel g mb1">Step 2:</div><div class="draw-wrap">
+  <div class="draw-toolbar">
+    <label>Color</label><input type="color" class="color-pick" value="#1e293b">
+    <label>Size</label><input type="range" class="size-pick" min="1" max="12" value="3">
+    <button class="draw-btn btn-pen active">✏️ Pen</button>
+    <button class="draw-btn btn-erase">⬜ Eraser</button>
+    <button class="draw-btn btn-clear">🗑️ Clear</button>
+  </div>
+  <canvas class="draw-canvas" height="120" style="background:#fff;"></canvas>
+  <div class="draw-hint">Draw step 2!</div>
+</div><input type="text" class="wline" placeholder="Label:"></div>
+    <div><div class="clabel g mb1">Step 3:</div><div class="draw-wrap">
+  <div class="draw-toolbar">
+    <label>Color</label><input type="color" class="color-pick" value="#1e293b">
+    <label>Size</label><input type="range" class="size-pick" min="1" max="12" value="3">
+    <button class="draw-btn btn-pen active">✏️ Pen</button>
+    <button class="draw-btn btn-erase">⬜ Eraser</button>
+    <button class="draw-btn btn-clear">🗑️ Clear</button>
+  </div>
+  <canvas class="draw-canvas" height="120" style="background:#fff;"></canvas>
+  <div class="draw-hint">Draw step 3!</div>
+</div><input type="text" class="wline" placeholder="Label:"></div>
+    <div><div class="clabel g mb1">Step 4:</div><div class="draw-wrap">
+  <div class="draw-toolbar">
+    <label>Color</label><input type="color" class="color-pick" value="#1e293b">
+    <label>Size</label><input type="range" class="size-pick" min="1" max="12" value="3">
+    <button class="draw-btn btn-pen active">✏️ Pen</button>
+    <button class="draw-btn btn-erase">⬜ Eraser</button>
+    <button class="draw-btn btn-clear">🗑️ Clear</button>
+  </div>
+  <canvas class="draw-canvas" height="120" style="background:#fff;"></canvas>
+  <div class="draw-hint">Draw step 4!</div>
+</div><input type="text" class="wline" placeholder="Label:"></div>
+    <div><div class="clabel g mb1">Step 5:</div><div class="draw-wrap">
+  <div class="draw-toolbar">
+    <label>Color</label><input type="color" class="color-pick" value="#1e293b">
+    <label>Size</label><input type="range" class="size-pick" min="1" max="12" value="3">
+    <button class="draw-btn btn-pen active">✏️ Pen</button>
+    <button class="draw-btn btn-erase">⬜ Eraser</button>
+    <button class="draw-btn btn-clear">🗑️ Clear</button>
+  </div>
+  <canvas class="draw-canvas" height="120" style="background:#fff;"></canvas>
+  <div class="draw-hint">Draw step 5!</div>
+</div><input type="text" class="wline" placeholder="Label:"></div>
+    <div><div class="clabel g mb1">Step 6 (bonus):</div><div class="draw-wrap">
+  <div class="draw-toolbar">
+    <label>Color</label><input type="color" class="color-pick" value="#1e293b">
+    <label>Size</label><input type="range" class="size-pick" min="1" max="12" value="3">
+    <button class="draw-btn btn-pen active">✏️ Pen</button>
+    <button class="draw-btn btn-erase">⬜ Eraser</button>
+    <button class="draw-btn btn-clear">🗑️ Clear</button>
+  </div>
+  <canvas class="draw-canvas" height="120" style="background:#fff;"></canvas>
+  <div class="draw-hint">Draw bonus step!</div>
+</div><input type="text" class="wline" placeholder="Label:"></div>
+  </div>
+  <div>
+    <div class="clabel g mb1">👨‍👩‍👧 Family Test:</div>
+    <div style="font-size:.83rem;margin-bottom:6px;">Did they get confused? <input type="text" class="wline" placeholder="They got confused at step..."> What did you fix? <input type="text" class="wline" placeholder="I fixed step..."></div>
+  </div>
+  <div class="clabel g mb1 mt2">✏️ Draw your family member trying to follow your algorithm:</div>
+  <div class="draw-wrap">
+  <div class="draw-toolbar">
+    <label>Color</label><input type="color" class="color-pick" value="#1e293b">
+    <label>Size</label><input type="range" class="size-pick" min="1" max="12" value="3">
+    <button class="draw-btn btn-pen active">✏️ Pen</button>
+    <button class="draw-btn btn-erase">⬜ Eraser</button>
+    <button class="draw-btn btn-clear">🗑️ Clear</button>
+  </div>
+  <canvas class="draw-canvas" height="130" style="background:#fff;"></canvas>
+  <div class="draw-hint">Draw a funny scene of them following your steps!</div>
+</div>
+</div>
+
+<!-- TIER B -->
+<div class="tier-wrap tier-b mb3">
+  <div class="tier-label tl-b">🔷 Tier B — Grades 3–5 · ~12 min</div>
+  <div class="clabel b">Precise 6-Step Algorithm + IF/ELSE + Family Debug Test</div>
+  <p style="font-size:.83rem;color:var(--text2);margin-bottom:10px;">Write a <strong>precise</strong> algorithm with <strong>1 IF/ELSE decision</strong>. Test it with a family member.</p>
+  <p style="font-size:.82rem;font-weight:700;color:var(--a1);margin-bottom:10px;">My algorithm is for: <input type="text" style="width:200px;border:none;border-bottom:1.5px solid var(--a1);font-family:var(--fb);background:transparent;outline:none;font-size:.84rem;" placeholder="e.g. making a peanut butter sandwich"></p>
+  <div class="algo-row"><div class="algo-num">1</div><input type="text" class="algo-line" placeholder="Step 1 — INPUT: Get..."></div>
+  <div class="algo-row"><div class="algo-num">2</div><input type="text" class="algo-line" placeholder="Step 2..."></div>
+  <div class="algo-row"><div class="algo-num">3</div><input type="text" class="algo-line" placeholder="Step 3..."></div>
+  <div class="algo-row"><div class="algo-num">4</div><input type="text" class="algo-line" placeholder="Step 4..."></div>
+  <div class="algo-row"><div class="algo-num">5</div><input type="text" class="algo-line" placeholder="Step 5..."></div>
+  <div class="algo-row"><div class="algo-num">6</div><input type="text" class="algo-line" placeholder="Step 6 — OUTPUT: Done!"></div>
+  <div style="margin-top:10px;margin-bottom:10px;">
+    <div class="clabel b mb1">🔀 My IF/ELSE Decision:</div>
+    <textarea class="warea" rows="3" placeholder="IF [something is true]&#10;THEN [do this action]&#10;ELSE [do this other action instead]"></textarea>
+  </div>
+  <div><div class="clabel b mb1">✏️ Draw a flowchart of your algorithm:</div><div class="draw-wrap">
+  <div class="draw-toolbar">
+    <label>Color</label><input type="color" class="color-pick" value="#1e293b">
+    <label>Size</label><input type="range" class="size-pick" min="1" max="12" value="3">
+    <button class="draw-btn btn-pen active">✏️ Pen</button>
+    <button class="draw-btn btn-erase">⬜ Eraser</button>
+    <button class="draw-btn btn-clear">🗑️ Clear</button>
+  </div>
+  <canvas class="draw-canvas" height="180" style="background:#fff;"></canvas>
+  <div class="draw-hint">Rectangles = steps, diamonds = IF/ELSE decisions, arrows show the order!</div>
+</div></div>
+  <div style="margin-top:10px;">
+    <div class="clabel b mb1">👨‍👩‍👧 Family Debug Test:</div>
+    <p style="font-size:.82rem;color:var(--text2);margin-bottom:6px;">Ask a family member to follow your algorithm exactly — where did they get stuck?</p>
+    <div class="algo-row" style="margin-bottom:5px;"><div style="min-width:70px;font-size:.8rem;font-weight:700;color:var(--muted);">Got confused at:</div><input type="text" class="algo-line" placeholder="e.g. step 3 — I forgot to say how much..."></div>
+    <div class="algo-row"><div style="min-width:70px;font-size:.8rem;font-weight:700;color:var(--muted);">My fix:</div><input type="text" class="algo-line" placeholder="I changed step 3 to say..."></div>
+    <div class="clabel b mb1 mt2">✏️ Draw your family member attempting your algorithm:</div>
+    <div class="draw-wrap">
+  <div class="draw-toolbar">
+    <label>Color</label><input type="color" class="color-pick" value="#1e293b">
+    <label>Size</label><input type="range" class="size-pick" min="1" max="12" value="3">
+    <button class="draw-btn btn-pen active">✏️ Pen</button>
+    <button class="draw-btn btn-erase">⬜ Eraser</button>
+    <button class="draw-btn btn-clear">🗑️ Clear</button>
+  </div>
+  <canvas class="draw-canvas" height="140" style="background:#fff;"></canvas>
+  <div class="draw-hint">Draw them following your steps — show the bug and the fix!</div>
+</div>
+  </div>
+  <div style="margin-top:8px;"><div class="clabel b mb1">💭 Reflection:</div><textarea class="warea" rows="2" placeholder="What I learned from testing with my family: ..."></textarea></div>
+</div>
+
+<!-- TIER C -->
+<div class="tier-wrap tier-c mb3">
+  <div class="tier-label tl-c">🚀 Tier C — Grades 6–9 · ~15 min</div>
+  <div class="clabel" style="color:#a855f7;">Full Algorithm: IF/ELSE + WHILE Loop + Python Pseudocode</div>
+  <p style="font-size:.83rem;color:var(--text2);margin-bottom:10px;">Write an <strong>8+ step algorithm</strong> with <strong>2 decision points</strong> and a <strong>WHILE loop</strong>. Convert to Python pseudocode.</p>
+  <p style="font-size:.82rem;font-weight:700;color:#a855f7;margin-bottom:10px;">My algorithm is for: <input type="text" style="width:200px;border:none;border-bottom:1.5px solid #a855f7;font-family:var(--fb);background:transparent;outline:none;font-size:.84rem;" placeholder="e.g. watering all plants in the house"></p>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+    <div>
+      <div class="algo-row"><div class="algo-num" style="background:#a855f7;">1</div><input type="text" class="algo-line" placeholder="INPUT: Start with..."></div>
+      <div class="algo-row"><div class="algo-num" style="background:#a855f7;">2</div><input type="text" class="algo-line" placeholder="Step 2..."></div>
+      <div class="algo-row"><div class="algo-num" style="background:#a855f7;">3</div><input type="text" class="algo-line" placeholder="IF ... THEN ..."></div>
+      <div class="algo-row"><div class="algo-num" style="background:#a855f7;">4</div><input type="text" class="algo-line" placeholder="ELSE ..."></div>
+      <div class="algo-row"><div class="algo-num" style="background:#a855f7;">5</div><input type="text" class="algo-line" placeholder="WHILE ... DO ..."></div>
+    </div>
+    <div>
+      <div class="algo-row"><div class="algo-num" style="background:#a855f7;">6</div><input type="text" class="algo-line" placeholder="Step 6..."></div>
+      <div class="algo-row"><div class="algo-num" style="background:#a855f7;">7</div><input type="text" class="algo-line" placeholder="END WHILE"></div>
+      <div class="algo-row"><div class="algo-num" style="background:#a855f7;">8</div><input type="text" class="algo-line" placeholder="IF ... THEN ..."></div>
+      <div class="algo-row"><div class="algo-num" style="background:#a855f7;">9</div><input type="text" class="algo-line" placeholder="ELSE ..."></div>
+      <div class="algo-row"><div class="algo-num" style="background:#a855f7;">10</div><input type="text" class="algo-line" placeholder="OUTPUT: Done!"></div>
+    </div>
+  </div>
+  <div><div class="clabel mb1" style="color:#a855f7;">✏️ Draw your full flowchart (rectangles + decision diamonds + arrows):</div><div class="draw-wrap">
+  <div class="draw-toolbar">
+    <label>Color</label><input type="color" class="color-pick" value="#1e293b">
+    <label>Size</label><input type="range" class="size-pick" min="1" max="12" value="3">
+    <button class="draw-btn btn-pen active">✏️ Pen</button>
+    <button class="draw-btn btn-erase">⬜ Eraser</button>
+    <button class="draw-btn btn-clear">🗑️ Clear</button>
+  </div>
+  <canvas class="draw-canvas" height="210" style="background:#fff;"></canvas>
+  <div class="draw-hint">Rect = step, Diamond = IF/ELSE, Parallelogram = input/output, Arrows = flow order</div>
+</div></div>
+  <div style="margin-top:10px;">
+    <div class="clabel mb1" style="color:#a855f7;">🐍 Python Pseudocode:</div>
+    <textarea class="warea" rows="8" style="font-family:var(--fc);font-size:.82rem;" placeholder="# My algorithm in Python pseudocode&#10;&#10;i = 0&#10;while i < num_items:&#10;    if condition:&#10;        do_something&#10;    else:&#10;        do_other_thing&#10;    i = i + 1&#10;&#10;print('Done!')"></textarea>
+  </div>
+  <div class="tip" style="background:#fdf4ff;border-left:3px solid #a855f7;color:#6b21a8;margin-top:8px;"><strong>Reflection:</strong> What was hardest? What would break without the WHILE loop?</div>
+  <textarea class="warea mt2" rows="2" placeholder="The hardest part was... The WHILE loop matters because..."></textarea>
+</div>
+
+<hr class="divider page-break">
+
+<!-- ══ SECTION 3 — RESPONSIBLE AI ═══════════════════════════════ -->
+<div class="sec-label">🤖 Section 3 · ~5 min · All Tiers</div>
+<div class="sec-title">Responsible AI Review</div>
+
+<!-- AI TRUE / FALSE with buttons -->
+<div class="card ab mb2">
+  <div class="clabel b">🧠 AI True or False? — Click your answer!</div>
+  <p style="font-size:.82rem;color:var(--text2);margin-bottom:10px;">What do you know about AI? Click TRUE or FALSE — it will highlight green or red.</p>
+  <table style="width:100%;font-size:.82rem;border-collapse:collapse;">
+    <tr>
+      <td style="padding:9px 0;border-bottom:1px solid #f1f5f9;color:var(--text2);width:72%;">AI always gives correct answers.</td>
+      <td style="padding:9px 0;border-bottom:1px solid #f1f5f9;text-align:right;"><span class="tf-group" data-name="hw-ai-1"><button class="tf-btn" data-val="true">TRUE</button><button class="tf-btn" data-val="false">FALSE</button></span></td>
+    </tr>
+    <tr>
+      <td style="padding:9px 0;border-bottom:1px solid #f1f5f9;color:var(--text2);">AI learns from examples that might contain mistakes.</td>
+      <td style="padding:9px 0;border-bottom:1px solid #f1f5f9;text-align:right;"><span class="tf-group" data-name="hw-ai-2"><button class="tf-btn" data-val="true">TRUE</button><button class="tf-btn" data-val="false">FALSE</button></span></td>
+    </tr>
+    <tr>
+      <td style="padding:9px 0;border-bottom:1px solid #f1f5f9;color:var(--text2);">You should always check important AI answers with a trusted source.</td>
+      <td style="padding:9px 0;border-bottom:1px solid #f1f5f9;text-align:right;"><span class="tf-group" data-name="hw-ai-3"><button class="tf-btn" data-val="true">TRUE</button><button class="tf-btn" data-val="false">FALSE</button></span></td>
+    </tr>
+    <tr>
+      <td style="padding:9px 0;border-bottom:1px solid #f1f5f9;color:var(--text2);">It is fine to share your home address with an AI chatbot.</td>
+      <td style="padding:9px 0;border-bottom:1px solid #f1f5f9;text-align:right;"><span class="tf-group" data-name="hw-ai-4"><button class="tf-btn" data-val="true">TRUE</button><button class="tf-btn" data-val="false">FALSE</button></span></td>
+    </tr>
+    <tr>
+      <td style="padding:9px 0;color:var(--text2);">AI can write things that sound true but are actually made up.</td>
+      <td style="padding:9px 0;text-align:right;"><span class="tf-group" data-name="hw-ai-5"><button class="tf-btn" data-val="true">TRUE</button><button class="tf-btn" data-val="false">FALSE</button></span></td>
+    </tr>
+  </table>
+</div>
+
+<div class="card aa mb3">
+  <div class="clabel a">📜 Write Your Own 3 AI Safety Rules</div>
+  <p style="font-size:.82rem;color:var(--text2);margin-bottom:8px;">Based on today's lesson, what are YOUR personal rules for using AI safely?</p>
+  <div class="rule-row"><div class="rule-num" style="background:var(--a3);color:#fff;">1</div><input type="text" class="wline" placeholder="When using AI, I will always..."></div>
+  <div class="rule-row"><div class="rule-num" style="background:var(--a3);color:#fff;">2</div><input type="text" class="wline" placeholder="I will never..."></div>
+  <div class="rule-row"><div class="rule-num" style="background:var(--a3);color:#fff;">3</div><input type="text" class="wline" placeholder="If AI says something that seems wrong, I will..."></div>
+  <div class="clabel a mb1 mt2">✏️ Design a "Responsible AI" badge — what would it look like?</div>
+  <div class="draw-wrap">
+  <div class="draw-toolbar">
+    <label>Color</label><input type="color" class="color-pick" value="#1e293b">
+    <label>Size</label><input type="range" class="size-pick" min="1" max="12" value="3">
+    <button class="draw-btn btn-pen active">✏️ Pen</button>
+    <button class="draw-btn btn-erase">⬜ Eraser</button>
+    <button class="draw-btn btn-clear">🗑️ Clear</button>
+  </div>
+  <canvas class="draw-canvas" height="180" style="background:#fff;"></canvas>
+  <div class="draw-hint">Draw a badge, shield, or logo for responsible AI use — add your 3 rules inside!</div>
+</div>
+</div>
+
+<!-- ══ SECTION 4 — VOCABULARY (B + C only) ══════════════════════ -->
+<div class="sec-label">📚 Section 4 · Tiers B &amp; C Only · ~5 min</div>
+<div class="sec-title">Vocabulary in Your Own Words</div>
+
+<div class="card ab mb3">
+  <div class="clabel b mb1">Write a definition AND use each word in a sentence from your own life:</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+    <div>
+      <p style="font-weight:800;font-size:.88rem;color:var(--a1);margin-bottom:4px;">Algorithm</p>
+      <textarea class="warea" rows="2" placeholder="Definition: An algorithm is..."></textarea>
+      <textarea class="warea mt2" rows="2" placeholder="My sentence: Every morning I follow an algorithm when..."></textarea>
+    </div>
+    <div>
+      <p style="font-weight:800;font-size:.88rem;color:var(--a1);margin-bottom:4px;">Debug</p>
+      <textarea class="warea" rows="2" placeholder="Definition: To debug means..."></textarea>
+      <textarea class="warea mt2" rows="2" placeholder="My sentence: I had to debug my instructions when..."></textarea>
+    </div>
+    <div>
+      <p style="font-weight:800;font-size:.88rem;color:var(--a1);margin-bottom:4px;">Private Information</p>
+      <textarea class="warea" rows="2" placeholder="Definition: Private information is..."></textarea>
+      <textarea class="warea mt2" rows="2" placeholder="My sentence: An example of private information is..."></textarea>
+    </div>
+    <div>
+      <p style="font-weight:800;font-size:.88rem;color:var(--a1);margin-bottom:4px;">Artificial Intelligence (AI)</p>
+      <textarea class="warea" rows="2" placeholder="Definition: AI is..."></textarea>
+      <textarea class="warea mt2" rows="2" placeholder="My sentence: AI is like... because..."></textarea>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ══ REFLECTION + PARENT SIGN-OFF ══════════════════════════════ -->
+<div class="sec-label">💭 Reflection · All Tiers</div>
+<div class="sec-title">Look Back, Look Forward</div>
+
+<div class="card ag mb3">
+  <div class="g2">
+    <div>
+      <div class="clabel g mb1">🌟 The most interesting thing I learned:</div>
+      <textarea class="warea" rows="2" placeholder="I was surprised to learn that..."></textarea>
+      <div class="clabel g mb1 mt2">❓ A question I still have:</div>
+      <textarea class="warea" rows="2" placeholder="I still wonder..."></textarea>
+    </div>
+    <div>
+      <div class="clabel g mb1">💪 One thing I am proud of:</div>
+      <textarea class="warea" rows="2" placeholder="I am proud that I..."></textarea>
+      <div class="clabel g mb1 mt2">⭐ My effort on this homework:</div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;font-size:.88rem;font-weight:700;margin-top:4px;">
+        <label><input type="radio" name="effort"> 😴 Rushed it</label>
+        <label><input type="radio" name="effort"> 🙂 Tried my best</label>
+        <label><input type="radio" name="effort"> 🤩 Extra effort!</label>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="clabel b mb1">✏️ Draw one thing you want to learn more about in this class:</div>
+<div class="draw-wrap">
+  <div class="draw-toolbar">
+    <label>Color</label><input type="color" class="color-pick" value="#1e293b">
+    <label>Size</label><input type="range" class="size-pick" min="1" max="12" value="3">
+    <button class="draw-btn btn-pen active">✏️ Pen</button>
+    <button class="draw-btn btn-erase">⬜ Eraser</button>
+    <button class="draw-btn btn-clear">🗑️ Clear</button>
+  </div>
+  <canvas class="draw-canvas" height="180" style="background:#fff;"></canvas>
+  <div class="draw-hint">Draw anything — a robot, a computer, a game, a project idea — whatever you're most curious about!</div>
+</div>
+
+<!-- PARENT SIGN-OFF -->
+<div class="parent-box">
+  <div class="clabel a">👨‍👩‍👧 Parent / Guardian Section</div>
+  <p style="font-size:.82rem;color:var(--text2);margin-bottom:12px;">Your child just learned about <strong>Internet Safety</strong>, <strong>Responsible AI</strong>, and how to write an <strong>algorithm</strong>. A great follow-up: ask them to teach you their algorithm!</p>
+  <div class="g2">
+    <div>
+      <div class="slabel">Parent / Guardian Name</div>
+      <input type="text" style="width:100%;border:none;border-bottom:1.5px solid #fcd34d;background:transparent;font-family:var(--fb);font-size:.88rem;color:var(--text);outline:none;padding:3px 2px;" placeholder="Print name">
+    </div>
+    <div>
+      <div class="slabel">Signature &amp; Date</div>
+      <input type="text" style="width:100%;border:none;border-bottom:1.5px solid #fcd34d;background:transparent;font-family:var(--fb);font-size:.88rem;color:var(--text);outline:none;padding:3px 2px;" placeholder="Signature · Jul __, 2026">
+    </div>
+  </div>
+  <div style="margin-top:10px;">
+    <div class="slabel">Comments for the teacher (optional):</div>
+    <textarea class="warea mt2" rows="2" placeholder="My child found _____ challenging / enjoyed _____..."></textarea>
+  </div>
+</div>
+
+</div>
+
+<script>
+
+(function(){
+  function initCanvas(wrap){
+    var canvas=wrap.querySelector('.draw-canvas'),ctx=canvas.getContext('2d');
+    var cp=wrap.querySelector('.color-pick'),sp=wrap.querySelector('.size-pick');
+    var btnP=wrap.querySelector('.btn-pen'),btnE=wrap.querySelector('.btn-erase'),btnC=wrap.querySelector('.btn-clear');
+    var drawing=false,mode='pen',lx=0,ly=0;
+    function resize(){var d=ctx.getImageData(0,0,canvas.width,canvas.height);canvas.width=canvas.offsetWidth;canvas.height=canvas.offsetHeight;ctx.fillStyle='#fff';ctx.fillRect(0,0,canvas.width,canvas.height);try{ctx.putImageData(d,0,0)}catch(e){}}
+    resize();
+    function pos(e){var r=canvas.getBoundingClientRect(),s=e.touches?e.touches[0]:e;return{x:(s.clientX-r.left)*(canvas.width/r.width),y:(s.clientY-r.top)*(canvas.height/r.height)}}
+    function start(e){e.preventDefault();drawing=true;var p=pos(e);lx=p.x;ly=p.y}
+    function move(e){if(!drawing)return;e.preventDefault();var p=pos(e);ctx.beginPath();ctx.lineWidth=mode==='eraser'?parseInt(sp.value)*4:parseInt(sp.value);ctx.strokeStyle=mode==='eraser'?'#fff':cp.value;ctx.lineCap='round';ctx.lineJoin='round';ctx.moveTo(lx,ly);ctx.lineTo(p.x,p.y);ctx.stroke();lx=p.x;ly=p.y}
+    function stop(){drawing=false}
+    canvas.addEventListener('mousedown',start);canvas.addEventListener('mousemove',move);canvas.addEventListener('mouseup',stop);canvas.addEventListener('mouseleave',stop);
+    canvas.addEventListener('touchstart',start,{passive:false});canvas.addEventListener('touchmove',move,{passive:false});canvas.addEventListener('touchend',stop);
+    btnP&&btnP.addEventListener('click',function(){mode='pen';btnP.classList.add('active');btnE&&btnE.classList.remove('active')});
+    btnE&&btnE.addEventListener('click',function(){mode='eraser';btnE.classList.add('active');btnP&&btnP.classList.remove('active')});
+    btnC&&btnC.addEventListener('click',function(){ctx.fillStyle='#fff';ctx.fillRect(0,0,canvas.width,canvas.height)});
+    window.addEventListener('resize',function(){setTimeout(resize,100)});
+  }
+  document.querySelectorAll('.draw-wrap').forEach(initCanvas);
+})();
+
+
+// True / False toggle buttons
+document.querySelectorAll('.tf-group').forEach(function(g){
+  g.querySelectorAll('.tf-btn').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var isTrue=btn.dataset.val==='true';
+      g.querySelectorAll('.tf-btn').forEach(function(b){b.classList.remove('sel-true','sel-false')});
+      btn.classList.add(isTrue?'sel-true':'sel-false');
+    });
+  });
+});
+// Safe / Not Safe toggle buttons
+document.querySelectorAll('.sns-group').forEach(function(g){
+  g.querySelectorAll('.sns-btn').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var isSafe=btn.dataset.val==='safe';
+      g.querySelectorAll('.sns-btn').forEach(function(b){b.classList.remove('sel-safe','sel-notsafe')});
+      btn.classList.add(isSafe?'sel-safe':'sel-notsafe');
+    });
+  });
+});
+
+</script>
+</body>
+</html>
