@@ -17,7 +17,7 @@ With warmth and excitement,
 <br>
 Hue
 <br>
-Summer 2026 AI & Coding Program Team
+Summer 2026 AI & Coding Program 
 <br>
 Modern Chinese School
 </details>
