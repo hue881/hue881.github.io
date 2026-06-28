@@ -1,1 +1,172 @@
+================================================================================
+SUMMER 2026 AI & CODING PROGRAM  ·  Modern Chinese School
+TEACHING SCRIPT  ·  SESSION 1  ·  Mon Jun 29, 2026
+"Welcome, Icebreakers & What Is a Computer Thinking?"
+Ages 7-13 (Grades 1-9)  ·  Mixed-tier (A/B/C)  ·  Python stdlib + Scratch
+--------------------------------------------------------------------------------
+PACING TARGET: Sections 2 & 3 = 110 min.  Section 1 = 75 min (see COMPRESSION
+NOTES in each block).  Daily rhythm: Warm-up -> Mini-lesson(+AI) -> Guided build
+-> Brain break -> Open build+challenge -> Share-out.
+SESSION GOAL: Every student feels welcome, safe, and curious; everyone leaves
+saying "a computer only does EXACTLY what you tell it." Seed of AI = instructions.
+MATERIALS: Name tents, markers, "sandwich robot" prop (bread/jar/knife optional),
+projector, Scratch (scratch.mit.edu), account slips, AI scavenger-hunt homework
+handout (bilingual EN/中文).
+================================================================================
 
+[ 00:00 - 00:10 ]  WARM-UP  (unplugged, no screens)  ── 10 min
+--------------------------------------------------------------------------------
+[STAGE] Greet students at the door. Hand each a name tent + marker. Screens DOWN.
+
+(SAY, warm, slow):
+  "Welcome! You are now officially computer programmers and AI builders. I mean
+   that - by the end of this summer you will BUILD a real project you can show
+   your family. Today there is one rule: it is impossible to fail. Everyone in
+   this room is a beginner, including the kid who has coded before."
+
+[DO] Icebreaker: "Two Truths and a Robot Lie."
+  - Each student says 3 things about themselves: 2 true, 1 a "robot lie" (silly/
+    obviously fake). The group guesses the lie.
+  - Model it yourself first: "I have a dog. I teach coding. I am secretly 4,000
+    robots in a coat." Let them catch the lie - laughter lowers the stakes.
+
+[TIER A note] Youngest kids: let them whisper to a buddy or just say ONE true
+  thing. Never force a turn.
+[COMPRESSION - Section 1] Keep to 5 min: only ~6 volunteers share, then move on.
+
+(TRANSITION SAY):
+  "Great - you just did something a computer CANNOT do easily: you guessed what
+   was true using a hunch. Hold that thought. Let's meet the machine."
+
+
+[ 00:10 - 00:30 ]  MINI-LESSON + AI MOMENT  ── 15-20 min
+--------------------------------------------------------------------------------
+TOPIC: A computer does EXACTLY what it is told - nothing more, nothing less.
+       (This is the seed of every AI idea this summer.)
+
+(SAY):
+  "Here is the biggest secret in this whole class. A computer is not smart. It
+   is not magic. It does EXACTLY what you tell it - and ONLY that. If you forget
+   a step, it does not guess. It just... breaks. Let me prove it."
+
+>>> AI MOMENT (the 'Are You Smarter Than a Computer?' sandwich demo) <<<
+[DO] You are the robot. Students are the programmers. Ask them to give you
+  step-by-step instructions to make a peanut-butter sandwich. Follow them
+  LITERALLY and badly:
+  - "Put peanut butter on the bread." -> Place the CLOSED jar on top of the bag
+    of bread. Look up innocently. "Done!"
+  - "Open the jar!" -> Try to open it by tapping it. "You didn't say HOW."
+  - Keep going until they spell out: pick up jar, twist lid, pick up knife, etc.
+
+(SAY, after the laughter):
+  "See? I only did EXACTLY what you said. That is a computer. That is also AI.
+   People think AI 'thinks' - but underneath, it is still just following
+   instructions and patterns that humans gave it. All summer, every single day,
+   we'll connect what we build to how AI really works. AI is not magic. It's
+   instructions and patterns. Say it with me: 'instructions and patterns.'"
+
+[BOARD] Write the class motto: "A computer does EXACTLY what you tell it."
+[CHECK FOR UNDERSTANDING] "Thumbs up if a computer can guess what you MEANT."
+  (Answer: thumbs DOWN - it can't. Celebrate the kids who got it.)
+
+[TIER C stretch aside] To the older/curious kids quietly: "Even ChatGPT is doing
+  a giant version of this - predicting the next word from patterns. We'll see how
+  by August."
+[COMPRESSION - Section 1] Hold to 15 min total incl. AI moment; cut the second
+  failed sandwich attempt.
+
+
+[ 00:30 - 00:50 ]  GUIDED BUILD  (tour + accounts, together)  ── 20 min
+--------------------------------------------------------------------------------
+GOAL: Everyone successfully opens the tools and gets a Scratch account ready.
+[STAGE] Screens UP now. Go slow; wait for the slowest screen before each step.
+
+(SAY): "Let's tour our workshop. Three tools, all free, all in the browser."
+[DO - project each, 1 min each]
+  1. Scratch (scratch.mit.edu) - "blocks you snap together like LEGO."
+  2. Python Playground - "typing code; we get here in a few weeks."
+  3. Teachable Machine - "where we'll TRAIN an AI with our own camera. Later!"
+
+[DO - Account setup, step-by-step, in unison]:
+  - "Go to scratch.mit.edu. Click Join Scratch."
+  - Read each field aloud; wait. Use the class account-naming convention on the
+    slip (no real last names / no personal info - tie to internet safety, S2).
+  - PAIR RULE: if your neighbor is stuck, help them - that's our culture.
+
+[TIER A] Buddy-pair every young student with a calmer partner for setup.
+[TIER C challenge card] "Already have Scratch? Explore the block palette and find
+  ONE block you've never used. Be ready to tell us what you think it does."
+[COMPRESSION - Section 1] 20 min still fits; if accounts lag, finish setup as the
+  first 5 min of the open build.
+
+[CHECK] Walk the room. Every screen should show a logged-in Scratch editor.
+  Quietly fix stragglers; praise effort out loud, correct privately.
+
+
+[ 00:50 - 00:55 ]  MOVEMENT / BRAIN BREAK  ── 5 min
+--------------------------------------------------------------------------------
+[DO] "Robot vs Human" stretch game: When I say "HUMAN," move freely. When I say
+  "ROBOT," you may ONLY do the exact move I program: "arms up... arms down."
+  Ties back to the lesson AND lets the wigglers move. Standing encouraged.
+[COMPRESSION - Section 1] Keep full 5 min - the break is non-negotiable for focus.
+
+
+[ 00:55 - 01:35 ]  OPEN BUILD + CHALLENGE CARDS  ── 30-40 min
+--------------------------------------------------------------------------------
+TASK: "Meet your sprite." In Scratch, make the cat sprite SAY your name when the
+  green flag is clicked. (Pure first-win; deep Scratch starts Session 3.)
+[DO - minimal guided start, then release]:
+  - "Drag a 'when green flag clicked' block. Snap a 'say [Hello!]' block under
+    it. Change 'Hello!' to your name. Click the flag. It talked! You coded!"
+[STAGE] Then circulate. Conference briefly with each student. Pair-program in
+  short bursts. Keep on-screen checklist visible for focus-need students:
+     [ ] Logged in   [ ] Green-flag block   [ ] Say block   [ ] It runs
+
+CHALLENGE CARDS (fast finishers - explore, don't wait):
+  - [Tier B] Make the sprite also CHANGE COSTUME or make a sound.
+  - [Tier C] Make it say two different things in a row (intro to sequence -
+    previews Session 3). Ask: "What happens if you swap the order?"
+  - [Tier A] Just change the sprite's color or pick a new sprite you like.
+
+AI TIE-BACK (drop while circulating):
+  "Your sprite said your name because you told it to - EXACTLY. It didn't choose
+   your name. Remember our motto?" (Let them answer.)
+[COMPRESSION - Section 1] Shorten to 25 min; skip Tier C two-line extension,
+  keep the core one-line "say my name" win for everyone.
+
+
+[ 01:35 - 01:45 ]  SHARE-OUT  (opt-in, warm)  ── 10 min
+--------------------------------------------------------------------------------
+[DO] "Show your neighbor" first - everyone turns a screen to one partner. Then:
+  "Two brave volunteers - who wants to show the whole class?" NEVER cold-call.
+(SAY, to close): "Today you proved you can make a computer do EXACTLY what you
+  say. That is the entire job. Tomorrow we learn the secret word for it: an
+  ALGORITHM. And we'll talk about staying safe online and being smart about AI."
+[COMPRESSION - Section 1] 5 min: neighbor-share only + one optional volunteer.
+
+
+[ HOMEWORK  ·  ~30 min ]
+--------------------------------------------------------------------------------
+"MY AI SCAVENGER HUNT" (bilingual handout):
+  Find 3 places AI shows up at home (e.g., video recommendations, a voice
+  assistant, phone autocomplete). Write ONE sentence about each.
+  Bring it tomorrow for our Session 2 warm-up.
+[TEACHER] Send the Day-1 parent welcome email tonight: tools are free/browser-
+  based, encouragement-first culture, field-trip dates (Jul 20, Aug 3), and the
+  "screen time here is creative, not passive" framing.
+
+
+================================================================================
+TEACHER QUICK-REFERENCE (do-not-read; for your eyes)
+--------------------------------------------------------------------------------
+SUCCESS CRITERIA: (1) Every student logged into Scratch. (2) Every student made
+  the sprite say their name. (3) Every student can say the motto: "A computer
+  does EXACTLY what you tell it." (4) Room feels safe and fun.
+EQUITY/CULTURE: Praise effort publicly; correct privately. Sharing is opt-in.
+  Buddy-pair the youngest. Always have a challenge card ready for the bored.
+IF AHEAD: Let Tier C explore the block palette / preview a second 'say' block.
+IF BEHIND: Drop the second sandwich attempt and the whole-class volunteer share;
+  protect the brain break and the "say my name" win - those are the core.
+TOMORROW (S2, Tue Jun 30): Algorithm = precise steps; internet safety +
+  responsible AI ("good robot / bad robot"); build a 'morning routine' algorithm.
+================================================================================
