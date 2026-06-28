@@ -214,9 +214,8 @@ Field trips (no class): July 20 and August 3. Showcase: within Aug 10–13.
 
 - **Computers:** All software used is **free and browser-based or built into Python** — Scratch (online or offline editor), Python (standard library only, no `pip install` needed), and Teachable Machine (in-browser). The school provides computers.
 - **No external Python libraries.** Everything uses the standard library, so any computer with Python runs every activity with zero setup.
-- **Screen-time-conscious framing** (18% concern): emphasize unplugged warm-ups, the daily movement break, and that screen time here is **creative and productive**, not passive.
-- **Bilingual handouts** for key instructions, homework, and showcase signage (English + Chinese).
-- **Welcome note** covers: computer/BYO policy, materials, daily schedule, the encouragement-first culture, and the field-trip dates (Jul 20, Aug 3).
+- **Screen-time** Unplugged warm-ups, the daily movement break, and that screen time here is **creative and productive**, not passive.
+- **Welcome note** computer/BYO policy, materials, daily schedule, the encouragement-first culture, and the field-trip dates (Jul 20, Aug 3).
 
 ---
 
