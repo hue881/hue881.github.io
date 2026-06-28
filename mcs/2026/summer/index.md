@@ -5,6 +5,7 @@
     <br>
   Dear Parents,
 <br>
+  <br>
 It is a true joy to welcome your children into our Summer 2026 Python, Scratch & Artificial Intelligence program, running Monday through Thursday from June 29 through August 14. Whether your child has never touched a line of code or already loves tinkering with computers, they belong here — this course begins at absolute zero and builds, step by step, toward a real project each student will be proud to show their family. We designed every part of this program directly from your responses across 28 parent intake surveys, so the structure, pacing, and support you hoped for are built right into our daily rhythm.
 
 Our approach is simple and deliberate: students begin in Scratch to learn the logic of coding without the stress of typing syntax, then bridge naturally into Python, and finish by building their own simple AI programs like rule-based chatbots and keyword classifiers. Throughout, we treat artificial intelligence not as magic but as algorithms — clear sets of rules a computer follows — and we weave a short, hands-on "AI Moment" into every single session rather than lecturing about it. Because our learners span Grades 1 through 9, every class is taught at three gentle entry points, so each child is met exactly where they are: more scaffolding and buddy support for our youngest, the core track for the middle of the room, and optional challenge cards and stretch goals so no one is ever bored or left behind.
