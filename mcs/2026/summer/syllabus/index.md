@@ -121,7 +121,7 @@ The sequence moves from visual/concrete to text to abstract, matching comfort da
 
 ## Required Materials
 
-There is no textbook. All materials are provided in class. Students should have access to:
+There is no textbook.  All materials, including computers are provided in class. Students should have access to:
 
 - The course's printed handouts and reference sheets (provided each week, bilingual English + Chinese).
 - [Scratch](https://scratch.mit.edu) — free, browser-based.
