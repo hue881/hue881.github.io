@@ -5,7 +5,7 @@
 
 <details>
   <summary>Welcome to the Summer 2026 AI & Coding Program at Modern Chinese School!</summary>  
-
+<br/>
   
   Dear Parents,   
 
@@ -18,15 +18,15 @@ Above all, this is an encouragement-first classroom. We celebrate effort and cur
 We will share a few special days together along the way — a low-stress midterm mid July, a final demo early August, two field trips on July 20 and August 3, and a warm, celebratory gallery-walk Showcase in mid-August where families are invited to walk around and try each student's project as the young creator explains it. By the end of our weeks together, every student will have shipped real, working projects and will be able to explain, in their own words, what a loop, a variable, and AI training data actually are. We cannot wait to learn, build, and celebrate alongside your children this summer.
 
 With warmth and excitement,
-<br>
+<br/>
 Hue
-<br>
+<br/>
 Summer 2026 AI & Coding Program 
-<br>
+<br/>
 Modern Chinese School
 </details>
   
-<br>
+<br/>
 [Syllabus](https://hue881.github.io/mcs/2026/summer/syllabus)  
 [Rules and Regulations](https://hue881.github.io/mcs/2026/rules)
 
