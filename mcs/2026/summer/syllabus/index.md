@@ -1,6 +1,6 @@
 # [Summer 2026 AI & Coding Program](https://hue881.github.io/mcs/2026/summer) — Full Course Syllabus
 **Modern Chinese School | Summer 2026**
-**Python, Scratch & Artificial Intelligence | Ages 7–13 (Grades 1–9) | 19 Students · 3 Sections**
+**Python, Scratch & Artificial Intelligence | Ages 7–13 (Grades 1–9) | 3 Sections**
 
 
 
