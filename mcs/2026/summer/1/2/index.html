@@ -1,1 +1,901 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="slides-format" content="viewport">
+  <title>Session 2 · Internet Safety, Responsible AI &amp; Our First Algorithm</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 
+  <style type="text/tailwindcss">
+    @theme {
+      --color-bg: #f4fbff;
+      --color-bg-deep: #e0f2ff;
+      --color-surface: rgba(255,255,255,0.95);
+      --color-text: #1f2a37;
+      --color-text-secondary: #374151;
+      --color-text-muted: #5b6b7e;
+      --color-accent-1: #0b63ce;
+      --color-accent-2: #10b981;
+      --color-accent-3: #f59e0b;
+      --color-glass-bg: rgba(255,255,255,0.88);
+      --color-glass-border: rgba(11,99,206,0.16);
+      --color-vignette: rgba(15,23,42,0.07);
+      --font-display: 'Fredoka', 'Trebuchet MS', sans-serif;
+      --font-body: 'Nunito', 'Arial', sans-serif;
+    }
+  </style>
+
+  <style>
+    :root {
+      --color-bg: #f4fbff;
+      --color-text: #1f2a37;
+      --glow-color-rgb: 11,99,206;
+      --a1: #0b63ce; --a2: #10b981; --a3: #f59e0b; --ar: #e44;
+      --fc: 'Fira Code', Consolas, monospace;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { background: var(--color-bg); margin: 0; }
+    body { font-family: 'Nunito','Arial',sans-serif; color: var(--color-text); overflow: hidden; height: 100vh; width: 100vw; }
+    .deck { width: 100vw; height: 100vh; position: relative; }
+    .slide {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      background: radial-gradient(circle at top left, rgba(56,189,248,0.14), transparent 40%),
+                  radial-gradient(circle at bottom right, rgba(16,185,129,0.10), transparent 40%),
+                  var(--color-bg);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      opacity: 0; transform: scale(0.96);
+      transition: opacity 0.55s ease, transform 0.55s ease;
+      pointer-events: none; overflow: hidden;
+    }
+    .slide.active { opacity: 1; transform: scale(1); pointer-events: all; }
+    .slide > .content { position: relative; z-index: 2; width: 100%; max-width: 1060px; padding: clamp(1.2rem,3.5vw,3rem); }
+
+    /* Nav */
+    .nav-controls { position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 14px; z-index: 100; background: rgba(255,255,255,0.92); backdrop-filter: blur(12px); padding: 9px 22px; border-radius: 999px; border: 1px solid rgba(148,163,184,0.4); box-shadow: 0 8px 28px rgba(15,23,42,0.13); }
+    .nav-btn { width: 36px; height: 36px; border: none; background: rgba(15,23,42,0.06); color: #0b63ce; border-radius: 999px; font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s, transform 0.15s; }
+    .nav-btn:hover { background: rgba(15,23,42,0.12); transform: translateY(-1px); }
+    .slide-dots { display: flex; gap: 6px; flex-wrap: wrap; max-width: 420px; }
+    .slide-dots .dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(148,163,184,0.6); cursor: pointer; transition: background 0.25s, transform 0.25s; }
+    .slide-dots .dot.active { background: #0b63ce; transform: scale(1.4); }
+    .slide-counter { font-size: 0.78rem; color: #64748b; min-width: 52px; text-align: center; font-weight: 700; }
+    .reveal { opacity: 0; transform: translateY(16px); }
+    .mouse-spotlight { position: fixed; inset: 0; z-index: 1; pointer-events: none; }
+
+    /* Cards */
+    .card { background: var(--color-surface); border-radius: 18px; padding: 16px 20px; box-shadow: 0 8px 24px rgba(15,23,42,0.07); border: 1px solid rgba(255,255,255,0.7); }
+    .accent-card-blue { background: rgba(11,99,206,0.07); border: 1px solid rgba(11,99,206,0.18); }
+    .accent-card-green { background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.20); }
+    .accent-card-amber { background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.22); }
+    .accent-card-red { background: rgba(239,68,68,0.07); border: 1px solid rgba(239,68,68,0.20); }
+    .pill { display: inline-flex; align-items: center; gap: 7px; padding: 5px 14px; border-radius: 999px; border: 1px solid rgba(148,163,184,0.5); background: rgba(255,255,255,0.9); font-size: 0.76rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: #0b63ce; }
+    .pill.green { color: #047857; }
+    .pill.amber { color: #b45309; }
+    .think-chip { display: inline-flex; align-items: center; gap: 9px; padding: 7px 13px; border-radius: 999px; background: rgba(11,99,206,0.08); color: #1e40af; font-size: 0.82rem; font-weight: 700; }
+    .question-chip { display: inline-flex; align-items: center; gap: 9px; padding: 7px 13px; border-radius: 999px; background: rgba(245,158,11,0.09); color: #92400e; font-size: 0.82rem; font-weight: 700; }
+    .question-chip .icon { display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px; border-radius: 999px; background: rgba(245,158,11,0.95); color: #fff; font-size: 0.78rem; }
+    .big-text { font-size: clamp(0.88rem,1.5vw,1.1rem); line-height: 1.65; }
+
+    /* Video embed */
+    .media-embed { position: relative; padding-top: 56.25%; border-radius: 13px; overflow: hidden; background: #1e293b; cursor: pointer; }
+    .media-embed img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+    .media-embed .play-btn { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+    .media-embed .play-btn div { width: 58px; height: 58px; background: rgba(255,0,0,0.88); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 18px rgba(0,0,0,0.38); transition: transform 0.2s; }
+    .media-embed:hover .play-btn div { transform: scale(1.1); }
+    .media-embed iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; border-radius: 13px; }
+
+    /* Gradient text */
+    .grad-text { background: linear-gradient(135deg, #0b63ce 0%, #10b981 50%, #f59e0b 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+
+    /* Gradient mesh & blobs */
+    .gradient-mesh { position: absolute; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+    .blob { position: absolute; border-radius: 50%; filter: blur(72px); animation: float-slow 12s ease-in-out infinite; }
+    .blob:nth-child(2) { animation: float-drift 16s ease-in-out infinite; }
+    .blob:nth-child(3) { animation: float-slow 20s ease-in-out infinite reverse; }
+    @keyframes float-slow { 0%{transform:translate(0,0) scale(1)} 25%{transform:translate(50px,-40px) scale(1.15)} 50%{transform:translate(-30px,35px) scale(0.9)} 75%{transform:translate(45px,18px) scale(1.07)} 100%{transform:translate(0,0) scale(1)} }
+    @keyframes float-drift { 0%{transform:translate(0,0) scale(1) rotate(0deg)} 33%{transform:translate(-45px,-55px) scale(1.13) rotate(3deg)} 66%{transform:translate(38px,28px) scale(0.9) rotate(-2deg)} 100%{transform:translate(0,0) scale(1) rotate(0deg)} }
+    @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-14px)} }
+    .slide::after { content:''; position:absolute; inset:0; z-index:1; pointer-events:none; background:radial-gradient(ellipse at center, transparent 55%, rgba(15,23,42,0.06) 100%); }
+    .particle-canvas { position:absolute; inset:0; width:100%; height:100%; z-index:1; }
+
+    /* Interior slide style */
+    .slide.interior {
+      background:
+        radial-gradient(circle at 18% 12%, rgba(11,99,206,0.16), transparent 50%),
+        radial-gradient(circle at 82% 88%, rgba(16,185,129,0.14), transparent 50%),
+        linear-gradient(160deg, #aecbe8 0%, #b9d4ea 48%, #b3ddd0 100%);
+    }
+    .slide.interior::after { background: radial-gradient(ellipse at center, transparent 58%, rgba(15,23,42,0.12) 100%); }
+    .slide.interior .pill { background: #fff; color: #0b4a9e; border: none; box-shadow: 0 4px 14px rgba(8,15,30,0.25); font-size: 0.8rem; }
+    .slide.interior .pill.green { color: #067a55; }
+    .slide.interior h2.font-display { color: #0f2747!important; }
+    .slide.interior .grad-text { -webkit-text-fill-color: #0f2747; }
+    .slide.interior .card { background: #fff; border: 1px solid rgba(15,23,42,0.06); box-shadow: 0 14px 34px rgba(15,23,42,0.20), 0 2px 6px rgba(15,23,42,0.10); border-radius: 20px; }
+    .slide.interior .accent-card-blue { background: #eaf2fd; border: 1px solid rgba(11,99,206,0.22); }
+    .slide.interior .accent-card-green { background: #e6f7f0; border: 1px solid rgba(16,185,129,0.25); }
+    .slide.interior .accent-card-amber { background: #fff8e8; border: 1px solid rgba(245,158,11,0.3); }
+    .slide.interior .accent-card-red { background: #fdeceb; border: 1px solid rgba(239,68,68,0.25); }
+    .slide.interior .think-chip { background: rgba(255,255,255,0.75); color: #1e40af; border: 1px solid rgba(11,99,206,0.18); }
+    .slide.interior .question-chip { background: rgba(245,158,11,0.13); border: 1px solid rgba(245,158,11,0.2); }
+
+    /* Tier badges */
+    .tier-badge-a { padding: 4px 12px; border-radius: 999px; background: #e6f7f0; color: #047857; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
+    .tier-badge-b { padding: 4px 12px; border-radius: 999px; background: #eaf2fd; color: #0b4a9e; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
+    .tier-badge-c { padding: 4px 12px; border-radius: 999px; background: #fff8e8; color: #b45309; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
+
+    /* Grid helpers */
+    .grid-cards { display: grid; gap: 16px; }
+    @media (min-width:800px) { .grid-2 { grid-template-columns: repeat(2, minmax(0,1fr)); } .grid-3 { grid-template-columns: repeat(3, minmax(0,1fr)); } .grid-4 { grid-template-columns: repeat(4, minmax(0,1fr)); } }
+
+    /* Code inline */
+    code { font-family: 'Fira Code', Consolas, monospace; background: rgba(15,23,42,0.07); border-radius: 5px; padding: 2px 7px; font-size: 0.88em; color: #0b63ce; }
+    .slide.interior code { background: rgba(11,99,206,0.10); }
+
+    /* Tip */
+    .tip { font-size: 0.79rem; border-radius: 10px; padding: 8px 12px; margin-top: 8px; font-weight: 700; }
+    .tip.b { background: rgba(11,99,206,0.08); color: #1e40af; }
+    .tip.g { background: rgba(16,185,129,0.09); color: #065f46; }
+    .tip.a { background: rgba(245,158,11,0.09); color: #92400e; }
+
+    /* Algorithm steps */
+    .algo-step { display: flex; align-items: center; gap: 14px; padding: 10px 14px; border-radius: 12px; background: #fff; border: 1px solid rgba(15,23,42,0.06); box-shadow: 0 3px 10px rgba(15,23,42,0.06); margin-bottom: 6px; }
+    .step-num { width: 32px; height: 32px; border-radius: 999px; background: #0b63ce; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.9rem; flex-shrink: 0; }
+    .step-text { font-size: 0.88rem; color: #1f2a37; font-weight: 600; }
+
+    /* Good/Bad robot */
+    .robot-card { border-radius: 18px; padding: 16px 18px; }
+    .robot-good { background: #e6f7f0; border: 2px solid rgba(16,185,129,0.35); }
+    .robot-bad { background: #fdeceb; border: 2px solid rgba(239,68,68,0.35); }
+
+    /* Safety rule */
+    .safety-rule { display: flex; align-items: flex-start; gap: 12px; padding: 12px 16px; border-radius: 14px; background: #fff; border: 1px solid rgba(15,23,42,0.06); box-shadow: 0 4px 14px rgba(15,23,42,0.07); }
+    .rule-icon { font-size: 1.6rem; flex-shrink: 0; line-height: 1; margin-top: 2px; }
+    .rule-body strong { display: block; font-size: 0.92rem; font-weight: 800; color: #0f2747; margin-bottom: 2px; }
+    .rule-body p { font-size: 0.8rem; color: #374151; margin: 0; line-height: 1.5; }
+
+    /* Vocab flip cards */
+    .vocab-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 10px; }
+    .vc-scene { perspective: 800px; cursor: pointer; height: clamp(110px,15vh,135px); }
+    .vc-inner { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 0.6s cubic-bezier(0.4,0,0.2,1); border-radius: 14px; }
+    .vc-scene.flipped .vc-inner { transform: rotateY(180deg); }
+    .vc-face { position: absolute; inset: 0; border-radius: 14px; backface-visibility: hidden; -webkit-backface-visibility: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px 9px; text-align: center; overflow: hidden; }
+    .vc-front { background: #fff; border: 2.5px solid var(--vc,#0b63ce); box-shadow: 0 4px 16px rgba(15,23,42,0.09); }
+    .vc-back { transform: rotateY(180deg); background: var(--vcbg,#eaf2fd); border: 2.5px solid var(--vc,#0b63ce); font-size: 0.7rem; line-height: 1.45; color: #1e293b; padding: 8px 9px; text-align: left; align-items: flex-start; justify-content: flex-start; }
+    .vc-word { font-family: 'Fredoka',sans-serif; font-size: clamp(0.82rem,1.1vw,0.95rem); font-weight: 700; color: #0f2747; margin-top: 6px; }
+    .vc-hint { font-size: 0.56rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.06em; margin-top: 3px; }
+
+    /* Interactive quiz */
+    .quiz-opt { display: flex; gap: 10px; align-items: center; padding: 9px 14px; border-radius: 12px; background: #fff; border: 2px solid rgba(148,163,184,0.4); cursor: pointer; margin-bottom: 7px; font-size: 0.86rem; font-weight: 700; color: #1f2a37; transition: border-color 0.2s, background 0.2s; }
+    .quiz-opt:hover { border-color: #0b63ce; background: rgba(11,99,206,0.05); }
+    .quiz-opt.correct { border-color: #10b981; background: #e6f7f0; color: #065f46; }
+    .quiz-opt.wrong { border-color: #ef4444; background: #fdeceb; color: #b91c1c; }
+
+    /* Warm-up scenario cards */
+    .scenario-card { border-radius: 16px; padding: 13px 16px; margin-bottom: 8px; display: flex; gap: 12px; align-items: flex-start; }
+    .sc-share { background: #fdeceb; border: 1.5px solid rgba(239,68,68,0.25); }
+    .sc-safe { background: #e6f7f0; border: 1.5px solid rgba(16,185,129,0.25); }
+    .sc-think { background: #fff8e8; border: 1.5px solid rgba(245,158,11,0.28); }
+
+    /* Brain break pulse */
+    @keyframes bounce-in { 0%{transform:scale(0.7) translateY(20px);opacity:0} 60%{transform:scale(1.08) translateY(-5px);opacity:1} 100%{transform:scale(1) translateY(0);opacity:1} }
+    .bounce-in { animation: bounce-in 0.7s cubic-bezier(0.34,1.56,0.64,1) forwards; }
+
+    /* Timer ring */
+    @keyframes spin { 100%{stroke-dashoffset:0} }
+    .timer-ring { stroke-dasharray: 220; stroke-dashoffset: 220; }
+
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.2s !important; } }
+  </style>
+</head>
+<body>
+<div class="mouse-spotlight"></div>
+<div class="deck">
+
+<!-- ═══ SLIDE 1 · TITLE ═══ -->
+<div class="slide active" data-slide="1">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:500px;height:500px;top:-120px;right:-100px;background:#0b63ce;opacity:0.13;"></div>
+    <div class="blob" style="width:340px;height:340px;bottom:-80px;left:-80px;background:#10b981;opacity:0.10;"></div>
+    <div class="blob" style="width:220px;height:220px;top:40%;left:10%;background:#f59e0b;opacity:0.08;"></div>
+  </div>
+  <canvas class="particle-canvas"></canvas>
+  <div class="content" style="text-align:center;">
+    <div style="margin-bottom:1rem;animation:float 3s ease-in-out infinite;" class="reveal">
+      <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/0fd5d94da2b803da3fd6b009c5e2fe2488ac13ab.jpg"
+           alt="Students learning together in a classroom" style="height:clamp(80px,11vh,120px);width:auto;max-width:280px;object-fit:cover;border-radius:18px;box-shadow:0 8px 32px rgba(11,99,206,0.25);" loading="lazy">
+    </div>
+    <p class="pill reveal" style="margin:0 auto 1rem;">Session 2 · Tue Jun 30 · Week 1</p>
+    <h1 class="font-display grad-text reveal" style="font-size:clamp(1.9rem,4.5vw,3.8rem);font-weight:700;line-height:1.1;margin-bottom:0.6rem;">Internet Safety, Responsible AI &amp; Our First Algorithm</h1>
+    <p class="reveal" style="font-size:clamp(0.95rem,1.6vw,1.25rem);color:#374151;margin-bottom:1.4rem;">Digital citizenship, good robot habits, and your very own step-by-step recipe!</p>
+    <div class="reveal" style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+      <span class="pill">Modern Chinese School</span>
+      <span class="pill">Mr. Hsiao "Hue" Weng</span>
+      <span class="pill green">Phase 0 — Welcome &amp; Foundations</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SLIDE 2 · TODAY'S PLAN / DAILY RHYTHM ═══ -->
+<div class="slide interior" data-slide="2">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:360px;height:360px;top:-60px;right:-60px;background:#0b63ce;opacity:0.09;"></div>
+    <div class="blob" style="width:240px;height:240px;bottom:-50px;left:-40px;background:#10b981;opacity:0.07;"></div>
+  </div>
+  <div class="content">
+    <p class="pill mb-3 reveal">📋 Today's Plan</p>
+    <h2 class="font-display reveal" style="font-weight:700;margin-bottom:1.1rem;color:#0f2747;">What we're doing today — 1 hr 50 min</h2>
+    <div class="grid-cards grid-3 reveal" style="gap:12px;">
+      <div class="card accent-card-blue" style="padding:13px 16px;">
+        <div style="font-weight:800;font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;color:#0b63ce;margin-bottom:4px;">🧠 Warm-Up · 10 min</div>
+        <p class="big-text" style="color:#374151;margin:0;">Unplugged "What would a robot get wrong?" — no screens. Think about <strong>private info</strong>.</p>
+      </div>
+      <div class="card accent-card-green" style="padding:13px 16px;">
+        <div style="font-weight:800;font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;color:#047857;margin-bottom:4px;">📖 Mini-Lesson · 15–20 min</div>
+        <p class="big-text" style="color:#374151;margin:0;">Internet Safety rules + <strong>What is an Algorithm?</strong> Two short videos.</p>
+      </div>
+      <div class="card accent-card-amber" style="padding:13px 16px;">
+        <div style="font-weight:800;font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;color:#b45309;margin-bottom:4px;">🤖 AI Moment · 10 min</div>
+        <p class="big-text" style="color:#374151;margin:0;"><strong>Good Robot / Bad Robot</strong> — AI basics: private info, AI can be wrong, always check.</p>
+      </div>
+      <div class="card" style="padding:13px 16px;background:#fff;">
+        <div style="font-weight:800;font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;color:#0b63ce;margin-bottom:4px;">🔨 Guided Build · 20 min</div>
+        <p class="big-text" style="color:#374151;margin:0;">Write a <strong>"morning routine" algorithm</strong> on paper, act it out — debug it live!</p>
+      </div>
+      <div class="card" style="padding:13px 16px;background:#fff;">
+        <div style="font-weight:800;font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;color:#10b981;margin-bottom:4px;">🕹️ Brain Break · 5 min</div>
+        <p class="big-text" style="color:#374151;margin:0;">Stand up, stretch, shake it out. Your brain needs rest to keep learning!</p>
+      </div>
+      <div class="card accent-card-green" style="padding:13px 16px;">
+        <div style="font-weight:800;font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;color:#047857;margin-bottom:4px;">🏗️ Open Build + Share · 40 min</div>
+        <p class="big-text" style="color:#374151;margin:0;">Write your own algorithm. Test it with a partner. Share with the class (opt-in).</p>
+      </div>
+    </div>
+    <div class="card reveal" style="margin-top:10px;background:rgba(11,99,206,0.06);border:1px solid rgba(11,99,206,0.18);padding:10px 16px;display:flex;align-items:center;gap:10px;">
+      <span style="font-size:1.3rem;">🏠</span>
+      <p class="big-text" style="color:#374151;margin:0;"><strong>Homework tonight:</strong> Write a precise 6-step algorithm for a daily task. Bonus: add one "if."</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SLIDE 3 · WARM-UP ═══ -->
+<div class="slide" data-slide="3">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:400px;height:400px;top:-80px;right:-80px;background:#f59e0b;opacity:0.10;"></div>
+    <div class="blob" style="width:280px;height:280px;bottom:-60px;left:-50px;background:#0b63ce;opacity:0.08;"></div>
+  </div>
+  <canvas class="particle-canvas"></canvas>
+  <div class="content">
+    <p class="pill amber mb-3 reveal">🧠 Warm-Up · 10 min · No Screens</p>
+    <h2 class="font-display grad-text reveal" style="font-size:clamp(1.5rem,3vw,2.3rem);font-weight:700;margin-bottom:1rem;">What would the robot get wrong?</h2>
+    <div class="grid-cards grid-2 reveal" style="gap:12px;margin-bottom:12px;">
+      <div>
+        <div class="scenario-card sc-think">
+          <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/14d8e74829cb30aaffa527482ab33eb8a4ca78a1.jpg" alt="Friendly robot with child" style="width:56px;height:56px;object-fit:cover;border-radius:12px;flex-shrink:0;">
+          <div>
+            <strong style="font-size:0.9rem;color:#92400e;display:block;margin-bottom:3px;">Puzzle 1 — The Address Robot</strong>
+            <p class="big-text" style="color:#374151;margin:0;">Your new robot helper asks: <strong>"What is your home address?"</strong></p>
+            <p style="font-size:0.8rem;color:#5b6b7e;margin:5px 0 0;">Should you tell it? <em>Why or why not?</em> Turn to a neighbor.</p>
+          </div>
+        </div>
+        <div class="scenario-card sc-think" style="margin-top:8px;">
+          <div style="font-size:1.8rem;flex-shrink:0;">🏫</div>
+          <div>
+            <strong style="font-size:0.9rem;color:#92400e;display:block;margin-bottom:3px;">Puzzle 2 — The Confused Robot</strong>
+            <p class="big-text" style="color:#374151;margin:0;">You tell a robot: <strong>"Go to school."</strong></p>
+            <p style="font-size:0.8rem;color:#5b6b7e;margin:5px 0 0;">Name 3 things that could go <em>hilariously wrong</em>!</p>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="card" style="padding:16px 18px;height:100%;">
+          <div style="font-weight:800;font-size:0.78rem;letter-spacing:0.1em;text-transform:uppercase;color:#0b63ce;margin-bottom:8px;">✏️ Think, Pair, Share</div>
+          <ol style="list-style:decimal;padding-left:18px;margin:0;">
+            <li class="big-text" style="margin-bottom:8px;color:#374151;"><strong>Think</strong> on your own for 1 minute</li>
+            <li class="big-text" style="margin-bottom:8px;color:#374151;"><strong>Pair</strong> — share your answer with your neighbor</li>
+            <li class="big-text" style="color:#374151;"><strong>Share</strong> — volunteer to tell the class one idea</li>
+          </ol>
+          <div class="tip b" style="margin-top:12px;">No wrong answers here — we are just <em>warming up our thinking!</em></div>
+          <div class="tip g" style="margin-top:6px;">What does this teach us about how robots — and AI — need instructions?</div>
+        </div>
+      </div>
+    </div>
+    <div class="think-chip reveal">The big idea: computers do <strong>exactly</strong> what you tell them — nothing more, nothing less. So we have to be VERY specific!</div>
+  </div>
+</div>
+
+<!-- ═══ SLIDE 4 · INTERNET SAFETY — WHY IT MATTERS ═══ -->
+<div class="slide interior" data-slide="4">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:350px;height:350px;top:-60px;right:-60px;background:#0b63ce;opacity:0.09;"></div>
+    <div class="blob" style="width:240px;height:240px;bottom:-50px;left:-40px;background:#10b981;opacity:0.07;"></div>
+  </div>
+  <div class="content">
+    <p class="pill mb-3 reveal">🛡️ Internet Safety — Why It Matters</p>
+    <h2 class="font-display reveal" style="font-weight:700;margin-bottom:1rem;color:#0f2747;">5 Safety Rules Every Digital Citizen Knows</h2>
+    <div style="display:grid;gap:8px;" class="reveal">
+      <div class="safety-rule">
+        <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/69b71e5b95ba479e71741d628b31e38d95c218e0.jpg" alt="S - Stay safe online" style="width:42px;height:42px;object-fit:cover;border-radius:10px;flex-shrink:0;">
+        <div class="rule-body"><strong>Keep Private Info Private</strong><p>Never share your full name, address, school, phone number, or passwords online. That information is like a key to your house.</p></div>
+      </div>
+      <div class="safety-rule">
+        <div class="rule-icon">👤</div>
+        <div class="rule-body"><strong>Strangers Online ≠ Friends in Real Life</strong><p>Online, anyone can pretend to be someone else. Treat online strangers exactly like strangers on the street — with caution.</p></div>
+      </div>
+      <div class="safety-rule">
+        <div class="rule-icon">🚦</div>
+        <div class="rule-body"><strong>Think Before You Click</strong><p>Weird links, "You won!" pop-ups, unexpected downloads — these are digital traps. If something feels off, don't click. Ask an adult first.</p></div>
+      </div>
+      <div class="safety-rule">
+        <div class="rule-icon">🗣️</div>
+        <div class="rule-body"><strong>Tell a Trusted Adult</strong><p>If something online makes you uncomfortable, scared, or confused — tell a parent, teacher, or trusted adult. You will <em>never</em> get in trouble for speaking up.</p></div>
+      </div>
+      <div class="safety-rule">
+        <div class="rule-icon">♾️</div>
+        <div class="rule-body"><strong>Once Online, Always Online</strong><p>Pictures and messages you post can be shared, screenshotted, and remembered forever. Think before you post!</p></div>
+      </div>
+    </div>
+    <div class="think-chip reveal" style="margin-top:10px;">What does this have to do with AI? AI tools you use online follow the same rules — <strong>your info stays private!</strong></div>
+  </div>
+</div>
+
+<!-- ═══ SLIDE 5 · VIDEO 1 — INTERNET SAFETY FOR KIDS ═══ -->
+<div class="slide interior" data-slide="5">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:360px;height:360px;top:-60px;right:-60px;background:#0b63ce;opacity:0.09;"></div>
+    <div class="blob" style="width:240px;height:240px;bottom:-50px;left:-40px;background:#10b981;opacity:0.07;"></div>
+  </div>
+  <div class="content">
+    <p class="pill mb-3 reveal">▶ Video 1 · Internet Safety for Kids</p>
+    <h2 class="font-display reveal" style="font-weight:700;margin-bottom:1rem;color:#0f2747;">Watch: Internet Safety for Kids <span style="font-size:0.7em;opacity:0.7;font-weight:600;">(~1 min 8 sec · Twinkl USA)</span></h2>
+    <div class="grid-cards grid-2 reveal" style="align-items:start;gap:16px;">
+      <div>
+        <div class="media-embed" id="player-JTl211YlFzc" onclick="playVideo('JTl211YlFzc')" title="Click to play Internet Safety for Kids video">
+          <img src="https://img.youtube.com/vi/JTl211YlFzc/hqdefault.jpg" alt="Internet Safety for Kids — Twinkl USA YouTube thumbnail">
+          <div class="play-btn"><div><svg width="22" height="22" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div>
+        </div>
+        <p style="font-size:0.66rem;color:#5b6b7e;margin-top:6px;">
+          <a href="https://www.youtube.com/watch?v=JTl211YlFzc" target="_blank" rel="noopener" style="color:#0b63ce;text-decoration:underline;">YouTube · Twinkl USA — Internet Safety for Kids (1:08)</a>
+        </p>
+      </div>
+      <div class="card" style="padding:18px 20px;">
+        <div class="question-chip" style="margin-bottom:12px;"><span class="icon">?</span> Watch for these 3 things</div>
+        <ul style="list-style:none;padding:0;margin:0;">
+          <li class="big-text" style="margin-bottom:9px;color:#374151;">📌 What should you <strong>never</strong> share with strangers online?</li>
+          <li class="big-text" style="margin-bottom:9px;color:#374151;">📌 What is <em>cyberbullying</em>, and what should you do about it?</li>
+          <li class="big-text" style="color:#374151;">📌 Who should you tell if something online upsets you?</li>
+        </ul>
+        <div class="tip b" style="margin-top:12px;">After watching — finish this sentence: <em>"If I see something scary online, I will…"</em></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SLIDE 6 · WHAT IS AN ALGORITHM ═══ -->
+<div class="slide interior" data-slide="6">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:360px;height:360px;top:-60px;right:-60px;background:#0b63ce;opacity:0.09;"></div>
+    <div class="blob" style="width:200px;height:200px;bottom:-40px;left:-30px;background:#f59e0b;opacity:0.08;"></div>
+  </div>
+  <div class="content">
+    <p class="pill mb-3 reveal">🧩 What is an Algorithm?</p>
+    <h2 class="font-display reveal" style="font-weight:700;margin-bottom:1rem;color:#0f2747;">An algorithm is a <span style="-webkit-text-fill-color:#0b63ce;color:#0b63ce;">recipe for a computer</span></h2>
+    <div class="grid-cards grid-2 reveal" style="margin-bottom:14px;gap:14px;">
+      <div>
+        <div class="card" style="padding:16px 18px;margin-bottom:12px;">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+            <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/983bf591ceb3cac114653555acaa9a84492b59a8.jpg" alt="Step-by-step visual recipe card" style="width:52px;height:52px;object-fit:cover;border-radius:10px;">
+            <div style="font-size:1rem;font-weight:800;color:#0f2747;">A Recipe Analogy</div>
+          </div>
+          <ul class="list-disc pl-4" style="color:#374151;">
+            <li class="big-text" style="margin-bottom:5px;">A recipe tells you <strong>exactly what to do</strong>, step by step, in order.</li>
+            <li class="big-text" style="margin-bottom:5px;">If you skip a step, the food turns out <strong>wrong</strong>.</li>
+            <li class="big-text">An algorithm does the same — but for a <strong>computer</strong>.</li>
+          </ul>
+        </div>
+        <div class="card" style="padding:14px 18px;">
+          <div style="font-size:0.9rem;font-weight:800;color:#0f2747;margin-bottom:7px;">Algorithm Must-Haves</div>
+          <div class="algo-step"><div class="step-num">1</div><div class="step-text">Precise — no guessing, no "you know what I mean"</div></div>
+          <div class="algo-step"><div class="step-num">2</div><div class="step-text">In the right order — sequence matters!</div></div>
+          <div class="algo-step"><div class="step-num">3</div><div class="step-text">Has a start and an end — it stops when done</div></div>
+        </div>
+      </div>
+      <div class="card" style="padding:16px 18px;display:flex;flex-direction:column;gap:8px;">
+        <div style="font-size:0.9rem;font-weight:800;color:#0f2747;margin-bottom:3px;">Real-World Algorithms</div>
+        <div style="display:flex;gap:10px;align-items:center;padding:8px 10px;background:rgba(11,99,206,0.06);border-radius:10px;"><div style="font-size:1.4rem;flex-shrink:0;">🚦</div><div class="big-text" style="color:#374151;">Traffic lights — follow rules for when to turn red/green</div></div>
+        <div style="display:flex;gap:10px;align-items:center;padding:8px 10px;background:rgba(16,185,129,0.07);border-radius:10px;"><div style="font-size:1.4rem;flex-shrink:0;">📱</div><div class="big-text" style="color:#374151;">Your phone's screen lock — checks your face or passcode</div></div>
+        <div style="display:flex;gap:10px;align-items:center;padding:8px 10px;background:rgba(245,158,11,0.07);border-radius:10px;"><div style="font-size:1.4rem;flex-shrink:0;">🎵</div><div class="big-text" style="color:#374151;">Spotify/YouTube — decides what song to play next</div></div>
+        <div style="display:flex;gap:10px;align-items:center;padding:8px 10px;background:rgba(239,68,68,0.06);border-radius:10px;"><div style="font-size:1.4rem;flex-shrink:0;">🤖</div><div class="big-text" style="color:#374151;">AI — uses algorithms to decide what to say or show</div></div>
+        <div class="card reveal" style="background:linear-gradient(135deg,rgba(11,99,206,0.08),rgba(16,185,129,0.06));border:2px dashed rgba(11,99,206,0.3);padding:11px 14px;text-align:center;margin-top:3px;">
+          <p style="font-size:0.9rem;font-weight:800;color:#0b63ce;margin-bottom:2px;">A precise, ordered list of steps that solves a problem</p>
+          <p class="font-display" style="font-size:clamp(1.4rem,3vw,2rem);font-weight:700;margin:0;color:#0b63ce;">= ALGORITHM</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SLIDE 7 · VIDEO 2 — ALGORITHMS EXPLAINED ═══ -->
+<div class="slide interior" data-slide="7">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:360px;height:360px;top:-60px;right:-60px;background:#0b63ce;opacity:0.09;"></div>
+    <div class="blob" style="width:240px;height:240px;bottom:-50px;left:-40px;background:#10b981;opacity:0.07;"></div>
+  </div>
+  <div class="content">
+    <p class="pill mb-3 reveal">▶ Video 2 · Algorithms — Step by Step</p>
+    <h2 class="font-display reveal" style="font-weight:700;margin-bottom:1rem;color:#0f2747;">Watch: What Are Algorithms? — Computer Science for Kids <span style="font-size:0.7em;opacity:0.7;font-weight:600;">(~2 min 40 sec)</span></h2>
+    <div class="grid-cards grid-2 reveal" style="align-items:start;gap:16px;">
+      <div>
+        <div class="media-embed" id="player-WPv5bD2JOf8" onclick="playVideo('WPv5bD2JOf8')" title="Click to play Algorithms for Kids video">
+          <img src="https://img.youtube.com/vi/WPv5bD2JOf8/hqdefault.jpg" alt="What Are Algorithms? Computer Science for Kids YouTube thumbnail">
+          <div class="play-btn"><div><svg width="22" height="22" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div>
+        </div>
+        <p style="font-size:0.66rem;color:#5b6b7e;margin-top:6px;">
+          <a href="https://www.youtube.com/watch?v=WPv5bD2JOf8" target="_blank" rel="noopener" style="color:#0b63ce;text-decoration:underline;">YouTube · CS for Kids — What Are Algorithms? Step-by-Step Explained (~2:40)</a>
+        </p>
+      </div>
+      <div class="card" style="padding:18px 20px;">
+        <div class="question-chip" style="margin-bottom:12px;"><span class="icon">?</span> Watch for just 2 things</div>
+        <ul style="list-style:none;padding:0;margin:0;">
+          <li class="big-text" style="margin-bottom:9px;color:#374151;">📌 What everyday examples does the video give for algorithms?</li>
+          <li class="big-text" style="color:#374151;">📌 Why must algorithms have steps in the <strong>right order</strong>?</li>
+        </ul>
+        <div class="tip b" style="margin-top:12px;">After watching: <em>"An algorithm is like a _____ that tells you _____."</em></div>
+        <div class="tip g" style="margin-top:6px;">How is an algorithm in a video game different from a recipe? What do they have in common?</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SLIDE 8 · GUIDED BUILD — MORNING ROUTINE ALGORITHM ═══ -->
+<div class="slide interior" data-slide="8">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:340px;height:340px;top:-60px;right:-60px;background:#10b981;opacity:0.09;"></div>
+    <div class="blob" style="width:200px;height:200px;bottom:-40px;left:-30px;background:#0b63ce;opacity:0.07;"></div>
+  </div>
+  <div class="content">
+    <p class="pill green mb-3 reveal">🔨 Guided Build · 20 min</p>
+    <h2 class="font-display reveal" style="font-weight:700;margin-bottom:1rem;color:#0f2747;">Write it &amp; act it out — then <span style="-webkit-text-fill-color:#10b981;color:#10b981;">debug it live!</span></h2>
+    <div class="grid-cards grid-2 reveal" style="margin-bottom:12px;align-items:start;gap:14px;">
+      <div class="card" style="padding:16px 18px;">
+        <div style="font-size:0.85rem;font-weight:800;color:#047857;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.08em;">How the activity works</div>
+        <ol style="list-style:decimal;padding-left:18px;margin:0;">
+          <li class="big-text" style="margin-bottom:6px;color:#374151;">Everyone writes a <strong>morning routine</strong> algorithm on paper.</li>
+          <li class="big-text" style="margin-bottom:6px;color:#374151;">Teacher acts as the <strong>robot</strong> — following steps <em>exactly</em>.</li>
+          <li class="big-text" style="color:#374151;">Watch where it breaks! Then <strong>debug together</strong>. 🐛 → ✅</li>
+        </ol>
+        <div class="tip g" style="margin-top:10px;">Big lesson: writing algorithms forces you to think like a computer — every tiny step counts!</div>
+      </div>
+      <div>
+        <div class="card" style="padding:14px 16px;margin-bottom:10px;">
+          <div style="font-size:0.85rem;font-weight:800;color:#b45309;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.08em;">Common bugs to find</div>
+          <div style="display:flex;gap:8px;align-items:flex-start;margin-bottom:6px;"><span>🐛</span><span class="big-text" style="color:#374151;">"Get dressed" — <em>which clothes? Which order?</em></span></div>
+          <div style="display:flex;gap:8px;align-items:flex-start;margin-bottom:6px;"><span>🐛</span><span class="big-text" style="color:#374151;">"Eat breakfast" — <em>where? What food?</em></span></div>
+          <div style="display:flex;gap:8px;align-items:flex-start;"><span>🐛</span><span class="big-text" style="color:#374151;">Missing a step — robot stands there confused!</span></div>
+        </div>
+        <div class="card" style="padding:14px 16px;">
+          <div style="font-size:0.85rem;font-weight:800;color:#0b63ce;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.08em;">Sample Algorithm Start</div>
+          <div class="algo-step" style="margin-bottom:4px;"><div class="step-num">1</div><div class="step-text">Alarm rings — open eyes</div></div>
+          <div class="algo-step" style="margin-bottom:4px;"><div class="step-num">2</div><div class="step-text">Put feet on the floor</div></div>
+          <div class="algo-step" style="margin-bottom:4px;"><div class="step-num">3</div><div class="step-text">Walk to bathroom</div></div>
+          <div style="padding:8px 12px;border-radius:10px;background:rgba(245,158,11,0.08);color:#92400e;font-size:0.8rem;font-weight:700;margin-top:4px;">🤔 What comes next? What did we miss?</div>
+        </div>
+      </div>
+    </div>
+    <div class="think-chip reveal">Your turn: On your activity sheet, write your own algorithm — and swap with a partner to test for bugs!</div>
+  </div>
+</div>
+
+<!-- ═══ SLIDE 9 · AI MOMENT — GOOD ROBOT / BAD ROBOT ═══ -->
+<div class="slide" data-slide="9">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:400px;height:400px;top:-80px;right:-80px;background:#10b981;opacity:0.12;"></div>
+    <div class="blob" style="width:280px;height:280px;bottom:-60px;left:-50px;background:#ef4444;opacity:0.08;"></div>
+    <div class="blob" style="width:200px;height:200px;top:30%;left:8%;background:#f59e0b;opacity:0.07;"></div>
+  </div>
+  <canvas class="particle-canvas"></canvas>
+  <div class="content">
+    <p class="pill amber mb-3 reveal">🤖 AI Moment · Good Robot / Bad Robot</p>
+    <h2 class="font-display grad-text reveal" style="font-size:clamp(1.5rem,3vw,2.3rem);font-weight:700;margin-bottom:1rem;">Not all robot behavior is created equal…</h2>
+    <div class="grid-cards grid-2 reveal" style="gap:14px;margin-bottom:14px;">
+      <div>
+        <div class="robot-card robot-good" style="margin-bottom:10px;">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+            <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/11c4e09c99b7d793b8491390c05aab9af8169c9a.jpg" alt="Friendly robot reading to children" style="width:48px;height:48px;object-fit:cover;border-radius:12px;">
+            <div style="font-family:'Fredoka',sans-serif;font-size:1.1rem;font-weight:700;color:#065f46;">Good Robot</div>
+          </div>
+          <ul style="list-style:none;padding:0;margin:0;">
+            <li style="font-size:0.83rem;color:#374151;margin-bottom:5px;display:flex;gap:7px;"><span>✅</span> Refuses to share your private information</li>
+            <li style="font-size:0.83rem;color:#374151;margin-bottom:5px;display:flex;gap:7px;"><span>✅</span> Tells you when it isn't sure about something</li>
+            <li style="font-size:0.83rem;color:#374151;display:flex;gap:7px;"><span>✅</span> Suggests you check with a trusted adult</li>
+          </ul>
+        </div>
+        <div class="robot-card robot-bad">
+          <div style="font-family:'Fredoka',sans-serif;font-size:1.1rem;font-weight:700;color:#b91c1c;margin-bottom:8px;">Bad Robot</div>
+          <ul style="list-style:none;padding:0;margin:0;">
+            <li style="font-size:0.83rem;color:#374151;margin-bottom:5px;display:flex;gap:7px;"><span>❌</span> Asks for your home address or passwords</li>
+            <li style="font-size:0.83rem;color:#374151;margin-bottom:5px;display:flex;gap:7px;"><span>❌</span> Gives you wrong information confidently</li>
+            <li style="font-size:0.83rem;color:#374151;display:flex;gap:7px;"><span>❌</span> Acts like it's always right — no need to check</li>
+          </ul>
+        </div>
+      </div>
+      <div class="card accent-card-amber" style="padding:18px 20px;">
+        <div style="font-weight:800;font-size:0.85rem;color:#b45309;margin-bottom:10px;text-transform:uppercase;letter-spacing:0.08em;">⚠️ AI Can Be Wrong!</div>
+        <div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:9px;"><div style="font-size:1.4rem;flex-shrink:0;">📚</div><div><strong style="font-size:0.87rem;color:#0f2747;display:block;">AI learns from data</strong><p style="font-size:0.8rem;color:#374151;margin:0;">If training data has mistakes, AI repeats them.</p></div></div>
+        <div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:9px;"><div style="font-size:1.4rem;flex-shrink:0;">🎭</div><div><strong style="font-size:0.87rem;color:#0f2747;display:block;">AI can "hallucinate"</strong><p style="font-size:0.8rem;color:#374151;margin:0;">It makes up facts that sound real but aren't — and says them confidently!</p></div></div>
+        <div style="display:flex;gap:10px;align-items:flex-start;"><div style="font-size:1.4rem;flex-shrink:0;">🧑‍⚖️</div><div><strong style="font-size:0.87rem;color:#0f2747;display:block;">Humans must check</strong><p style="font-size:0.8rem;color:#374151;margin:0;">AI is a helpful tool, not the final answer.</p></div></div>
+        <div class="tip a" style="margin-top:12px;">If AI told you the capital of France was London — how would you check? What sources would you use?</div>
+      </div>
+    </div>
+    <div class="think-chip reveal">🤔 <strong>Key question:</strong> An AI helper always gives you an answer immediately. Does that mean it's always correct?</div>
+  </div>
+</div>
+
+<!-- ═══ SLIDE 10 · ALGORITHM CHALLENGE — THREE TIERS ═══ -->
+<div class="slide interior" data-slide="10">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:360px;height:360px;top:-60px;right:-60px;background:#0b63ce;opacity:0.09;"></div>
+    <div class="blob" style="width:240px;height:240px;bottom:-50px;left:-40px;background:#f59e0b;opacity:0.07;"></div>
+  </div>
+  <div class="content">
+    <p class="pill mb-3 reveal">📊 Three Tiers · Same Concept, Three On-Ramps</p>
+    <h2 class="font-display reveal" style="font-weight:700;margin-bottom:1rem;color:#0f2747;">Everyone writes an algorithm — at their own level</h2>
+    <div class="grid-cards grid-3 reveal" style="gap:13px;margin-bottom:12px;">
+      <div class="card accent-card-green" style="padding:16px 18px;">
+        <div style="font-size:1.4rem;margin-bottom:5px;"><img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/cf4f8829c64a4ad49a6a50a592348850efa689ea.jpg" alt="Young students coding together" style="width:44px;height:44px;object-fit:cover;border-radius:10px;"></div>
+        <div class="tier-badge-a" style="margin-bottom:8px;display:inline-flex;">Tier A — Foundations</div>
+        <div style="font-size:0.74rem;color:#374151;margin-bottom:7px;font-style:italic;">Grades 1–3 / no experience</div>
+        <ul style="list-style:disc;padding-left:15px;margin:0;">
+          <li style="font-size:0.8rem;color:#374151;margin-bottom:5px;">Draw your morning routine as pictures first, then add words.</li>
+          <li style="font-size:0.8rem;color:#374151;margin-bottom:5px;">Write at least <strong>4 steps</strong>. Use a buddy to check.</li>
+          <li style="font-size:0.8rem;color:#374151;">Extra time on internet safety: "asking a grown-up."</li>
+        </ul>
+      </div>
+      <div class="card accent-card-blue" style="padding:16px 18px;">
+        <div style="font-size:1.4rem;margin-bottom:5px;"><img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/91062221ece2b2de326ad3e97b912d799cfa3b66.jpg" alt="Students working on computers" style="width:44px;height:44px;object-fit:cover;border-radius:10px;"></div>
+        <div class="tier-badge-b" style="margin-bottom:8px;display:inline-flex;">Tier B — Core</div>
+        <div style="font-size:0.74rem;color:#374151;margin-bottom:7px;font-style:italic;">Grades 3–5, some Scratch</div>
+        <ul style="list-style:disc;padding-left:15px;margin:0;">
+          <li style="font-size:0.8rem;color:#374151;margin-bottom:5px;">Write a precise <strong>6-step</strong> morning routine algorithm.</li>
+          <li style="font-size:0.8rem;color:#374151;margin-bottom:5px;">Act it out — find your bugs and debug!</li>
+          <li style="font-size:0.8rem;color:#374151;">Homework: write a new algorithm for a different daily task.</li>
+        </ul>
+      </div>
+      <div class="card accent-card-amber" style="padding:16px 18px;">
+        <div style="font-size:1.4rem;margin-bottom:5px;"><img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/0e43984ba034968b609a61a27f7447aeb912d1d5.jpg" alt="Student at computer smiling" style="width:44px;height:44px;object-fit:cover;border-radius:10px;"></div>
+        <div class="tier-badge-c" style="margin-bottom:8px;display:inline-flex;">Tier C — Accelerated</div>
+        <div style="font-size:0.74rem;color:#374151;margin-bottom:7px;font-style:italic;">Grades 6–9 / Python-curious</div>
+        <ul style="list-style:disc;padding-left:15px;margin:0;">
+          <li style="font-size:0.8rem;color:#374151;margin-bottom:5px;">Write an algorithm with a <strong>decision point</strong>: <code>if it's raining…</code></li>
+          <li style="font-size:0.8rem;color:#374151;margin-bottom:5px;">Add an <code>else</code> — what happens if it's <em>not</em> raining?</li>
+          <li style="font-size:0.8rem;color:#374151;">Challenge: add a <code>while</code> loop — keep getting ready until done!</li>
+        </ul>
+      </div>
+    </div>
+    <div class="think-chip reveal">Challenge cards let fast finishers <strong>extend instead of wait</strong> — so nobody is bored and nobody is lost.</div>
+  </div>
+</div>
+
+<!-- ═══ SLIDE 11 · VOCABULARY ═══ -->
+<div class="slide interior" data-slide="11">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:360px;height:360px;top:-70px;right:-60px;background:#f59e0b;opacity:0.10;"></div>
+    <div class="blob" style="width:240px;height:240px;bottom:-50px;left:-40px;background:#10b981;opacity:0.08;"></div>
+    <div class="blob" style="width:150px;height:150px;top:35%;left:6%;background:#0b63ce;opacity:0.07;"></div>
+  </div>
+  <div class="content">
+    <p class="pill mb-3 reveal">📚 Vocabulary · 5 Words for Today</p>
+    <h2 class="font-display reveal" style="font-weight:700;margin-bottom:1rem;color:#0f2747;">Tap each card — front shows the word, back shows the definition!</h2>
+    <div class="vocab-grid reveal">
+      <div class="vc-scene" style="--vc:#0b63ce;--vcbg:#eaf2fd;" onclick="vcflip(0)">
+        <div class="vc-inner">
+          <div class="vc-face vc-front"><div style="font-size:1.5rem;">📜</div><div class="vc-word">Algorithm</div><div class="vc-hint">tap to flip</div></div>
+          <div class="vc-face vc-back"><strong style="color:#0b63ce;font-size:0.78rem;">Algorithm</strong><br>A precise, ordered set of steps that solves a problem. Like a recipe — skip a step and everything goes wrong!</div>
+        </div>
+      </div>
+      <div class="vc-scene" style="--vc:#10b981;--vcbg:#e6f7f0;" onclick="vcflip(1)">
+        <div class="vc-inner">
+          <div class="vc-face vc-front"><div style="font-size:1.5rem;">🐛</div><div class="vc-word">Bug</div><div class="vc-hint">tap to flip</div></div>
+          <div class="vc-face vc-back"><strong style="color:#047857;font-size:0.78rem;">Bug</strong><br>An error in an algorithm or program that causes it to produce the wrong result or behave unexpectedly.</div>
+        </div>
+      </div>
+      <div class="vc-scene" style="--vc:#f59e0b;--vcbg:#fff8e8;" onclick="vcflip(2)">
+        <div class="vc-inner">
+          <div class="vc-face vc-front"><div style="font-size:1.5rem;">🔧</div><div class="vc-word">Debug</div><div class="vc-hint">tap to flip</div></div>
+          <div class="vc-face vc-back"><strong style="color:#b45309;font-size:0.78rem;">Debug</strong><br>The process of finding and fixing bugs in your algorithm or program. All programmers do this — even experts!</div>
+        </div>
+      </div>
+      <div class="vc-scene" style="--vc:#8b5cf6;--vcbg:#f5f3ff;" onclick="vcflip(3)">
+        <div class="vc-inner">
+          <div class="vc-face vc-front"><div style="font-size:1.5rem;">🏠</div><div class="vc-word">Private Info</div><div class="vc-hint">tap to flip</div></div>
+          <div class="vc-face vc-back"><strong style="color:#7c3aed;font-size:0.78rem;">Private Info</strong><br>Personal details — like your address, phone number, full name, or passwords — that should NEVER be shared online.</div>
+        </div>
+      </div>
+      <div class="vc-scene" style="--vc:#ef4444;--vcbg:#fdeceb;" onclick="vcflip(4)">
+        <div class="vc-inner">
+          <div class="vc-face vc-front"><div style="font-size:1.5rem;">🧠</div><div class="vc-word">AI</div><div class="vc-hint">tap to flip</div></div>
+          <div class="vc-face vc-back"><strong style="color:#b91c1c;font-size:0.78rem;">AI</strong><br>Artificial Intelligence — computer programs that follow complex algorithms to make decisions or predictions. AI learns from data, so it can make mistakes!</div>
+        </div>
+      </div>
+    </div>
+    <div class="card reveal" style="margin-top:12px;background:rgba(11,99,206,0.05);border:1px solid rgba(11,99,206,0.14);padding:11px 16px;display:flex;align-items:center;justify-content:center;gap:12px;">
+      <div style="font-size:1.3rem;">🤔</div>
+      <p class="big-text" style="color:#374151;margin:0;">Quick challenge: can you use <em>all 5 words</em> in one sentence that makes sense?</p>
+    </div>
+  </div>
+  <script>
+  (function(){
+    window.vcflip = function(n){
+      var scenes = document.querySelectorAll('.vc-scene');
+      scenes[n].classList.toggle('flipped');
+    };
+  })();
+  </script>
+</div>
+
+<!-- ═══ SLIDE 12 · QUIZ — SAFE OR NOT SAFE? ═══ -->
+<div class="slide interior" data-slide="12">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:340px;height:340px;top:-60px;right:-60px;background:#0b63ce;opacity:0.09;"></div>
+    <div class="blob" style="width:200px;height:200px;bottom:-40px;left:-30px;background:#ef4444;opacity:0.07;"></div>
+  </div>
+  <div class="content">
+    <p class="pill mb-3 reveal">🎯 Quick Check · Safe or Not Safe?</p>
+    <h2 class="font-display reveal" style="font-weight:700;margin-bottom:1rem;color:#0f2747;">Let's see what you know — tap your answer!</h2>
+    <div class="reveal" id="quiz-container">
+      <div id="q-panel" style="max-width:680px;margin:0 auto;">
+        <div class="card" style="padding:18px 22px;margin-bottom:12px;" id="q-card">
+          <div style="font-size:0.72rem;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:#5b6b7e;margin-bottom:8px;" id="q-num">Question 1 of 5</div>
+          <p style="font-size:clamp(1rem,1.7vw,1.2rem);font-weight:700;color:#0f2747;margin-bottom:14px;" id="q-text">You want to sign up for a free game online. It asks for your home address. What should you do?</p>
+          <div id="q-opts"></div>
+          <div id="q-feedback" style="display:none;margin-top:10px;padding:10px 14px;border-radius:10px;font-size:0.85rem;font-weight:700;"></div>
+        </div>
+        <div style="text-align:center;">
+          <span id="q-score" style="font-size:0.82rem;font-weight:800;color:#5b6b7e;">Score: 0 / 0</span>
+          <button id="q-next" onclick="quizNext()" style="display:none;margin-left:14px;padding:7px 20px;border-radius:999px;background:#0b63ce;color:#fff;border:none;font-family:'Nunito',sans-serif;font-size:0.8rem;font-weight:800;cursor:pointer;">Next →</button>
+          <div id="q-done" style="display:none;padding:12px;background:#e6f7f0;border-radius:12px;border:1px solid rgba(16,185,129,0.3);margin-top:10px;color:#065f46;font-weight:700;font-size:0.9rem;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+  (function(){
+    var qs = [
+      { q: "You want to sign up for a free game online. It asks for your home address. What should you do?",
+        opts: ["Give it — they need it to send prizes!", "Skip it or ask a parent first.", "Make up a fake address.", "Just use your school address."],
+        a: 1, fb: "Your home address is private info — never share it without a parent's permission." },
+      { q: "A friendly stranger in a chat game says they're 12 years old and wants to be your friend. They ask for your phone number. You should…",
+        opts: ["Give it — they seem nice!", "Ask for their phone number first.", "Ignore the request and tell a trusted adult.", "Send them your school's number instead."],
+        a: 2, fb: "Anyone online can pretend to be any age. Never share your phone number with someone you only know online." },
+      { q: "You ask an AI chatbot what the capital of Australia is. It says 'Sydney' — confidently. What should you do?",
+        opts: ["Believe it — AI is always right!", "Check another source, like a map or encyclopedia.", "Ask the AI again, maybe it was joking.", "It doesn't matter, it's probably right."],
+        a: 1, fb: "The capital is Canberra, not Sydney! AI can be confidently wrong — always verify important facts." },
+      { q: "A pop-up says 'Congratulations! You won a free iPad! Click here!' What should you do?",
+        opts: ["Click immediately — it might be real!", "Close it without clicking and tell an adult.", "Share it with friends so they can win too.", "Take a screenshot and post it online."],
+        a: 1, fb: "Pop-ups like this are almost always scams. Close them immediately and never click suspicious links." },
+      { q: "An AI tool helped you with your homework. Your teacher asks how you found the information. You should…",
+        opts: ["Say you figured it out yourself.", "Mention you used AI and double-checked the facts.", "Pretend you read a book.", "Say AI is always correct so it doesn't matter."],
+        a: 1, fb: "Responsible AI use means being honest about using it AND verifying the information yourself." }
+    ];
+    var cur = 0, score = 0, answered = false;
+    function render(){
+      if(cur >= qs.length){ document.getElementById('q-done').style.display='block'; document.getElementById('q-done').textContent = 'Quiz complete! You scored '+score+' out of '+qs.length+'. Great thinking!'; document.getElementById('q-next').style.display='none'; return; }
+      var q = qs[cur];
+      document.getElementById('q-num').textContent = 'Question '+(cur+1)+' of '+qs.length;
+      document.getElementById('q-text').textContent = q.q;
+      document.getElementById('q-feedback').style.display='none';
+      answered = false;
+      document.getElementById('q-next').style.display='none';
+      var c = document.getElementById('q-opts'); c.innerHTML='';
+      q.opts.forEach(function(o,i){ var d=document.createElement('div'); d.className='quiz-opt'; d.innerHTML='<span style="width:22px;height:22px;border-radius:50%;background:rgba(15,23,42,0.08);display:inline-flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:800;flex-shrink:0;">'+'ABCD'[i]+'</span><span>'+o+'</span>'; d.onclick=function(){pick(i);}; c.appendChild(d); });
+    }
+    function pick(i){ if(answered) return; answered=true; var q=qs[cur]; var opts=document.getElementById('q-opts').children; opts[i].classList.add(i===q.a?'correct':'wrong'); if(i!==q.a) opts[q.a].classList.add('correct'); if(i===q.a) score++; document.getElementById('q-score').textContent='Score: '+score+' / '+(cur+1); var fb=document.getElementById('q-feedback'); fb.textContent=q.fb; fb.style.display='block'; fb.style.background=i===q.a?'#e6f7f0':'#fdeceb'; fb.style.color=i===q.a?'#065f46':'#b91c1c'; if(cur<qs.length-1) document.getElementById('q-next').style.display='inline-block'; else { document.getElementById('q-done').style.display='block'; document.getElementById('q-done').textContent='Quiz complete! You scored '+score+' out of '+qs.length+'. Great thinking!'; } }
+    window.quizNext = function(){ cur++; render(); };
+    render();
+  })();
+  </script>
+</div>
+
+<!-- ═══ SLIDE 13 · BRAIN BREAK ═══ -->
+<div class="slide" data-slide="13">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:450px;height:450px;top:-100px;right:-80px;background:#10b981;opacity:0.12;"></div>
+    <div class="blob" style="width:300px;height:300px;bottom:-70px;left:-60px;background:#0b63ce;opacity:0.10;"></div>
+    <div class="blob" style="width:200px;height:200px;top:35%;left:12%;background:#f59e0b;opacity:0.08;"></div>
+  </div>
+  <canvas class="particle-canvas"></canvas>
+  <div class="content" style="text-align:center;">
+    <div style="margin-bottom:0.8rem;" class="reveal">
+      <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/132511016bf9114cd2f4b25a7068232e29f7e353.jpg" alt="Child with friendly robot" style="height:clamp(60px,9vh,95px);width:auto;object-fit:contain;border-radius:16px;box-shadow:0 6px 24px rgba(11,99,206,0.2);">
+    </div>
+    <h2 class="font-display grad-text reveal" style="font-size:clamp(2rem,4.5vw,3.5rem);font-weight:700;margin-bottom:0.5rem;">Brain Break! 5 minutes</h2>
+    <p class="reveal" style="font-size:clamp(0.95rem,1.6vw,1.2rem);color:#374151;margin-bottom:1.4rem;">Stand up, stretch, shake it out — your brain needs a rest to keep learning!</p>
+    <div class="grid-cards grid-3 reveal" style="margin-bottom:1.4rem;text-align:left;max-width:700px;margin-left:auto;margin-right:auto;">
+      <div class="card" style="padding:14px 16px;text-align:center;"><img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/14d8e74829cb30aaffa527482ab33eb8a4ca78a1.jpg" alt="Cartoon robot with child" style="width:36px;height:36px;object-fit:cover;border-radius:8px;margin-bottom:5px;"><div style="font-weight:800;font-size:.87rem;color:#0b63ce;">Robot dance</div><div style="font-size:.85rem;font-weight:700;color:#374151;">with a neighbor</div></div>
+      <div class="card" style="padding:14px 16px;text-align:center;"><div style="margin-bottom:5px;font-size:2rem;">🌀</div><div style="font-weight:800;font-size:.87rem;color:#0b63ce;">Stretch your arms</div><div style="font-size:.85rem;font-weight:700;color:#374151;">wide like an algorithm</div></div>
+      <div class="card" style="padding:14px 16px;text-align:center;"><div style="margin-bottom:5px;font-size:2rem;">😮‍💨</div><div style="font-weight:800;font-size:.87rem;color:#0b63ce;">Deep breath</div><div style="font-size:.85rem;font-weight:700;color:#374151;">in &amp; out slowly</div></div>
+    </div>
+    <p class="reveal" style="font-size:.8rem;color:#94a3b8;">Modern Chinese School · Summer 2026 · Session 2</p>
+  </div>
+</div>
+
+<!-- ═══ SLIDE 14 · OPEN BUILD + SHARE-OUT ═══ -->
+<div class="slide interior" data-slide="14">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:360px;height:360px;top:-60px;right:-60px;background:#10b981;opacity:0.09;"></div>
+    <div class="blob" style="width:240px;height:240px;bottom:-50px;left:-40px;background:#0b63ce;opacity:0.07;"></div>
+  </div>
+  <div class="content">
+    <p class="pill green mb-3 reveal">🏗️ Open Build + Share-Out · 40 min</p>
+    <h2 class="font-display reveal" style="font-weight:700;margin-bottom:1rem;color:#0f2747;">Now it's your turn — build your own algorithm!</h2>
+    <div class="grid-cards grid-2 reveal" style="margin-bottom:12px;gap:14px;">
+      <div class="card" style="padding:16px 18px;">
+        <div style="font-size:0.85rem;font-weight:800;color:#047857;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.08em;">Your Mission (30–40 min)</div>
+        <ol style="list-style:decimal;padding-left:18px;margin:0;">
+          <li class="big-text" style="margin-bottom:7px;color:#374151;">Choose a daily task: <em>brushing teeth, making cereal, feeding a pet, getting dressed…</em></li>
+          <li class="big-text" style="margin-bottom:7px;color:#374151;">Write a <strong>step-by-step algorithm</strong> on your activity sheet.</li>
+          <li class="big-text" style="color:#374151;"><strong>Swap with a partner</strong> and check for bugs. Fix them! 🐛 → ✅</li>
+        </ol>
+      </div>
+      <div class="card" style="padding:16px 18px;">
+        <div style="font-size:0.85rem;font-weight:800;color:#b45309;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.08em;">Share-Out (last 10 min)</div>
+        <ul style="list-style:none;padding:0;margin:0;">
+          <li style="display:flex;gap:8px;margin-bottom:8px;"><span>👥</span><span class="big-text" style="color:#374151;">Default: <strong>show your neighbor</strong> — no pressure!</span></li>
+          <li style="display:flex;gap:8px;margin-bottom:8px;"><span>🎤</span><span class="big-text" style="color:#374151;">Volunteers can share with the class.</span></li>
+          <li style="display:flex;gap:8px;"><span>🏅</span><span class="big-text" style="color:#374151;">Everyone's work is celebrated — <em>effort counts!</em></span></li>
+        </ul>
+        <div class="tip g" style="margin-top:10px;">Finish early? Add an <code>if/else</code> to your algorithm: <em>if [condition], then [step], else [other step].</em></div>
+      </div>
+    </div>
+    <div class="grid-cards grid-3 reveal" style="gap:10px;">
+      <div class="card accent-card-green" style="padding:11px 14px;text-align:center;"><div class="tier-badge-a" style="display:inline-flex;margin-bottom:5px;">Tier A</div><p style="font-size:0.78rem;color:#374151;margin:0;">Draw pictures for each step, then label them with words.</p></div>
+      <div class="card accent-card-blue" style="padding:11px 14px;text-align:center;"><div class="tier-badge-b" style="display:inline-flex;margin-bottom:5px;">Tier B</div><p style="font-size:0.78rem;color:#374151;margin:0;">Write 6+ steps. Swap and debug with a partner.</p></div>
+      <div class="card accent-card-amber" style="padding:11px 14px;text-align:center;"><div class="tier-badge-c" style="display:inline-flex;margin-bottom:5px;">Tier C</div><p style="font-size:0.78rem;color:#374151;margin:0;">Add <code>if/else</code> decision points. Try a <code>while</code> loop!</p></div>
+    </div>
+    <div class="card reveal" style="margin-top:10px;background:rgba(11,99,206,0.06);border:1px solid rgba(11,99,206,0.18);padding:10px 16px;">
+      <p class="big-text" style="color:#374151;margin:0;">🏠 <strong>Tonight's Homework:</strong> Write a precise 6-step algorithm for a daily task (brushing teeth, feeding a pet). <strong>Bonus: add one "if."</strong></p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SLIDE 15 · WRAP-UP + KEY IDEAS ═══ -->
+<div class="slide" data-slide="15">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:480px;height:480px;top:-110px;right:-90px;background:#0b63ce;opacity:0.13;"></div>
+    <div class="blob" style="width:320px;height:320px;bottom:-80px;left:-70px;background:#10b981;opacity:0.10;"></div>
+    <div class="blob" style="width:200px;height:200px;top:35%;left:10%;background:#f59e0b;opacity:0.08;"></div>
+  </div>
+  <canvas class="particle-canvas"></canvas>
+  <div class="content" style="text-align:center;">
+    <p class="pill reveal" style="margin:0 auto 1rem;">Today's Big Ideas</p>
+    <h2 class="font-display grad-text reveal" style="font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:700;margin-bottom:1.2rem;">You learned 3 huge things today!</h2>
+    <div class="grid-cards grid-3 reveal" style="text-align:left;margin-bottom:1.4rem;gap:14px;">
+      <div class="card accent-card-blue" style="padding:18px 20px;">
+        <div style="font-size:1.8rem;margin-bottom:8px;"><img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/4db7c28d0090addab91bfa04a00cf311ba6b38ac.jpg" alt="Internet safety for kids" style="width:44px;height:44px;object-fit:cover;border-radius:10px;"></div>
+        <div style="font-weight:800;color:#0b63ce;margin-bottom:5px;">Internet Safety</div>
+        <p style="font-size:0.82rem;color:#374151;margin:0;">Keep private info private. Think before you click. Tell a trusted adult if something feels wrong.</p>
+      </div>
+      <div class="card accent-card-green" style="padding:18px 20px;">
+        <div style="font-size:1.8rem;margin-bottom:8px;"><img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/3d03951b7b52401a4ca245a1541db508977c6bda.jpg" alt="Step by step recipe cards" style="width:44px;height:44px;object-fit:cover;border-radius:10px;"></div>
+        <div style="font-weight:800;color:#047857;margin-bottom:5px;">Algorithms</div>
+        <p style="font-size:0.82rem;color:#374151;margin:0;">A precise, ordered list of steps that solves a problem. Computers do <em>exactly</em> what you tell them!</p>
+      </div>
+      <div class="card accent-card-amber" style="padding:18px 20px;">
+        <div style="font-size:1.8rem;margin-bottom:8px;"><img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/11c4e09c99b7d793b8491390c05aab9af8169c9a.jpg" alt="Robot reading to children" style="width:44px;height:44px;object-fit:cover;border-radius:10px;"></div>
+        <div style="font-weight:800;color:#b45309;margin-bottom:5px;">Responsible AI</div>
+        <p style="font-size:0.82rem;color:#374151;margin:0;">AI follows algorithms. AI can be wrong. Humans must always check — you are the boss, not the AI!</p>
+      </div>
+    </div>
+    <div class="card reveal" style="max-width:650px;margin:0 auto 1rem;background:linear-gradient(135deg,rgba(11,99,206,0.08),rgba(16,185,129,0.06));border:2px dashed rgba(11,99,206,0.25);padding:14px 20px;">
+      <p style="font-weight:800;color:#0b63ce;font-size:0.9rem;margin-bottom:3px;">Exit Ticket — tell a neighbor before you leave:</p>
+      <p class="big-text" style="color:#374151;margin:0;">Explain what an algorithm is <em>in your own words</em>. Name one internet safety rule. Name one way AI can go wrong.</p>
+    </div>
+    <p class="reveal" style="font-size:.8rem;color:#94a3b8;">Modern Chinese School · Summer 2026 · Session 2 of 26</p>
+  </div>
+</div>
+
+</div><!-- end .deck -->
+
+<!-- Navigation -->
+<div class="nav-controls">
+  <button class="nav-btn" onclick="changeSlide(-1)">&#8249;</button>
+  <div class="slide-dots" id="dots"></div>
+  <button class="nav-btn" onclick="changeSlide(1)">&#8250;</button>
+  <span class="slide-counter" id="counter">1 / 15</span>
+</div>
+
+<script>
+/* === Deck Navigation === */
+let current = 1;
+const total = document.querySelectorAll('.slide').length;
+const dotsContainer = document.getElementById('dots');
+const counter = document.getElementById('counter');
+for (let i = 1; i <= total; i++) {
+  const dot = document.createElement('div');
+  dot.className = 'dot' + (i === 1 ? ' active' : '');
+  dot.onclick = () => goToSlide(i);
+  dotsContainer.appendChild(dot);
+}
+function goToSlide(n) {
+  const prev = document.querySelector('.slide.active');
+  const next = document.querySelector(`.slide[data-slide="${n}"]`);
+  if (prev) prev.classList.remove('active');
+  if (next) { next.classList.add('active'); animateSlide(next); }
+  current = n; updateNav();
+}
+function changeSlide(dir) { let next = current + dir; if (next < 1) next = total; if (next > total) next = 1; goToSlide(next); }
+function updateNav() {
+  document.querySelectorAll('.dot').forEach((d, i) => { d.classList.toggle('active', i + 1 === current); });
+  counter.textContent = current + ' / ' + total;
+}
+document.addEventListener('keydown', (e) => { if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); changeSlide(1); } if (e.key === 'ArrowLeft') { e.preventDefault(); changeSlide(-1); } });
+let touchStartX = 0;
+document.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; });
+document.addEventListener('touchend', (e) => { const diff = touchStartX - e.changedTouches[0].clientX; if (Math.abs(diff) > 50) changeSlide(diff > 0 ? 1 : -1); });
+
+/* === Animate reveal elements === */
+function animateSlide(slide) {
+  slide.querySelectorAll('.reveal').forEach((el, i) => {
+    el.style.transition = 'none'; el.style.opacity = '0'; el.style.transform = 'translateY(16px)';
+    el.offsetHeight;
+    const delay = i * 0.08;
+    el.style.transition = `opacity 0.35s ease ${delay}s, transform 0.35s ease ${delay}s`;
+    el.style.opacity = '1'; el.style.transform = 'translateY(0)';
+  });
+}
+
+/* === Video player === */
+window.playVideo = function(id) {
+  var container = document.getElementById('player-' + id);
+  if (!container) return;
+  var iframe = document.createElement('iframe');
+  iframe.src = 'https://www.youtube.com/embed/' + id + '?autoplay=1&rel=0';
+  iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+  iframe.allowFullscreen = true;
+  container.innerHTML = '';
+  container.appendChild(iframe);
+};
+
+/* === Mouse Spotlight === */
+document.addEventListener('mousemove', (e) => {
+  const spotlight = document.querySelector('.mouse-spotlight');
+  if (spotlight) spotlight.style.background = `radial-gradient(600px circle at ${e.clientX}px ${e.clientY}px, rgba(11,99,206,0.06), transparent 40%)`;
+});
+
+/* === Particle Canvas === */
+window.initParticles = function(canvas, opts) {
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight;
+  const count = opts.count || 45;
+  let mx = -1000, my = -1000;
+  const particles = Array.from({ length: count }, () => ({
+    x: Math.random() * canvas.width, y: Math.random() * canvas.height,
+    vx: (Math.random() - 0.5) * 0.3, vy: (Math.random() - 0.5) * 0.3,
+    size: Math.random() * 2.2 + 0.7, alpha: Math.random() * 0.3 + 0.08
+  }));
+  canvas.addEventListener('mousemove', (e) => { const r = canvas.getBoundingClientRect(); mx = e.clientX - r.left; my = e.clientY - r.top; });
+  canvas.addEventListener('mouseleave', () => { mx = -1000; my = -1000; });
+  (function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(p => {
+      const dx = p.x - mx, dy = p.y - my, dist = Math.sqrt(dx*dx + dy*dy);
+      if (dist < 110) { const f = (110 - dist) / 110 * 1.8; p.vx += (dx/dist)*f*0.1; p.vy += (dy/dist)*f*0.1; }
+      p.vx *= 0.98; p.vy *= 0.98; p.x += p.vx; p.y += p.vy;
+      if (p.x < 0) p.x = canvas.width; if (p.x > canvas.width) p.x = 0;
+      if (p.y < 0) p.y = canvas.height; if (p.y > canvas.height) p.y = 0;
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(11,99,206,${p.alpha})`; ctx.fill();
+    });
+    requestAnimationFrame(animate);
+  })();
+};
+document.querySelectorAll('.particle-canvas').forEach(c => window.initParticles(c, { count: 45 }));
+
+/* Init first slide */
+try { animateSlide(document.querySelector('.slide.active')); } catch(e) {}
+</script>
+</body>
+</html>
