@@ -5,6 +5,7 @@
 
 <details>
   <summary>Welcome to the Summer 2026 AI & Coding Program at Modern Chinese School!</summary>  
+
   
   Dear Parents,   
 
