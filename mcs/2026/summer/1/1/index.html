@@ -4,937 +4,514 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="slides-format" content="viewport">
-<title>Session 1 · Welcome & "What Is Computer Thinking?"</title>
+<title>Session 1 · Welcome &amp; "What Is a Computer Thinking?"</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 <style type="text/tailwindcss">
 @theme {
-  --color-bg:#f4fbff; --color-bg-deep:#e0f2ff; --color-surface:rgba(255,255,255,0.95);
-  --color-text:#1f2a37; --color-text-secondary:#374151; --color-text-muted:#5b6b7e;
-  --color-accent-1:#0b63ce; --color-accent-2:#10b981; --color-accent-3:#f59e0b;
-  --color-glass-bg:rgba(255,255,255,0.88); --color-glass-border:rgba(11,99,206,0.16);
-  --color-vignette:rgba(15,23,42,0.07);
-  --font-display:"Fredoka","Trebuchet MS",sans-serif; --font-body:"Nunito",Arial,sans-serif;
+  --color-bg: #f4fbff;
+  --color-bg-deep: #e0f2ff;
+  --color-surface: rgba(255,255,255,0.95);
+  --color-text: #1f2a37;
+  --color-text-secondary: #374151;
+  --color-text-muted: #5b6b7e;
+  --color-accent-1: #0b63ce;
+  --color-accent-2: #10b981;
+  --color-accent-3: #f59e0b;
+  --color-glass-bg: rgba(255,255,255,0.88);
+  --color-glass-border: rgba(11,99,206,0.16);
+  --color-vignette: rgba(15,23,42,0.07);
+  --font-display: 'Fredoka', 'Trebuchet MS', sans-serif;
+  --font-body: 'Nunito', Arial, sans-serif;
 }
 </style>
 <style>
-:root{--color-bg:#f4fbff;--color-text:#1f2a37;--glow-color-rgb:11,99,206;
-      --a1:#0b63ce;--a2:#10b981;--a3:#f59e0b;--ar:#ef4444;--fc:"Fira Code",Consolas,monospace;}
-*,*::before,*::after{box-sizing:border-box;}
-html,body{background:var(--color-bg);margin:0;}
-body{font-family:"Nunito",Arial,sans-serif;color:var(--color-text);overflow:hidden;height:100vh;width:100vw;}
-.deck{width:100vw;height:100vh;position:relative;}
-.slide{position:absolute;top:0;left:0;width:100%;height:100%;
-  background:radial-gradient(circle at top left,rgba(56,189,248,0.14),transparent 40%),
-             radial-gradient(circle at bottom right,rgba(16,185,129,0.10),transparent 40%),
-             var(--color-bg);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  opacity:0;transform:scale(0.96);transition:opacity 0.55s ease,transform 0.55s ease;
-  pointer-events:none;overflow:hidden;}
-.slide.active{opacity:1;transform:scale(1);pointer-events:all;}
-.slide>.content{position:relative;z-index:2;width:100%;max-width:1060px;padding:clamp(1.2rem,3.5vw,3rem);}
-.slide.scrolly{align-items:flex-start;justify-content:flex-start;overflow-y:auto;}
-.slide.scrolly>.content{margin:auto;padding-top:clamp(1rem,2.5vw,2rem);padding-bottom:clamp(1rem,2.5vw,2rem);}
-
-/* Nav */
-.nav-controls{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:14px;z-index:100;background:rgba(255,255,255,0.92);backdrop-filter:blur(12px);padding:9px 22px;border-radius:999px;border:1px solid rgba(148,163,184,0.4);box-shadow:0 8px 28px rgba(15,23,42,0.13);}
-.nav-btn{width:36px;height:36px;border:none;background:rgba(15,23,42,0.06);color:#0b63ce;border-radius:999px;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 0.2s,transform 0.15s;}
-.nav-btn:hover{background:rgba(15,23,42,0.12);transform:translateY(-1px);}
-.slide-dots{display:flex;gap:6px;flex-wrap:wrap;max-width:420px;}
-.slide-dots .dot{width:8px;height:8px;border-radius:50%;background:rgba(148,163,184,0.6);cursor:pointer;transition:background 0.25s,transform 0.25s;}
-.slide-dots .dot.active{background:#0b63ce;transform:scale(1.4);}
-.slide-dots .dot.activity{background:rgba(16,185,129,0.55);}
-.slide-dots .dot.activity.active{background:#10b981;}
-.slide-counter{font-size:0.78rem;color:#64748b;min-width:52px;text-align:center;font-weight:700;}
-.reveal{opacity:0;transform:translateY(16px);}
-.mouse-spotlight{position:fixed;inset:0;z-index:1;pointer-events:none;}
-
-/* Cards */
-.card{background:var(--color-surface);border-radius:18px;padding:16px 20px;box-shadow:0 8px 24px rgba(15,23,42,0.07);border:1px solid rgba(255,255,255,0.7);}
-.accent-card-blue {background:rgba(11,99,206,0.07); border:1px solid rgba(11,99,206,0.18);}
-.accent-card-green{background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.20);}
-.accent-card-amber{background:rgba(245,158,11,0.08); border:1px solid rgba(245,158,11,0.22);}
-.accent-card-red  {background:rgba(239,68,68,0.07);  border:1px solid rgba(239,68,68,0.20);}
-.pill{display:inline-flex;align-items:center;gap:7px;padding:5px 14px;border-radius:999px;border:1px solid rgba(148,163,184,0.5);background:rgba(255,255,255,0.9);font-size:0.76rem;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;color:#0b63ce;}
-.pill.green{color:#047857;}
-.think-chip{display:inline-flex;align-items:center;gap:9px;padding:7px 13px;border-radius:999px;background:rgba(11,99,206,0.08);color:#1e40af;font-size:0.82rem;font-weight:700;}
-.question-chip{display:inline-flex;align-items:center;gap:9px;padding:7px 13px;border-radius:999px;background:rgba(245,158,11,0.09);color:#92400e;font-size:0.82rem;font-weight:700;}
-.question-chip .icon{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:999px;background:rgba(245,158,11,0.95);color:#fff;font-size:0.78rem;}
-.big-text{font-size:clamp(1rem,1.7vw,1.25rem);line-height:1.65;}
-.media-embed{position:relative;padding-top:56.25%;border-radius:13px;overflow:hidden;background:#1e293b;cursor:pointer;}
-.media-embed img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
-.media-embed .play-btn{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;}
-.media-embed .play-btn div{width:58px;height:58px;background:rgba(255,0,0,0.88);border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 18px rgba(0,0,0,0.38);transition:transform 0.2s;}
-.media-embed:hover .play-btn div{transform:scale(1.1);}
-.media-embed iframe{position:absolute;inset:0;width:100%;height:100%;border:0;border-radius:13px;}
-.vocab-tag{display:inline-flex;align-items:center;padding:5px 13px;border-radius:999px;background:rgba(15,23,42,0.04);font-size:0.85rem;font-weight:800;color:#0b63ce;}
-.grid-cards{display:grid;gap:16px;}
-@media(min-width:800px){.grid-2{grid-template-columns:repeat(2,minmax(0,1fr));}.grid-3{grid-template-columns:repeat(3,minmax(0,1fr));}}
-.grad-text{background:linear-gradient(135deg,#0b63ce 0%,#10b981 50%,#f59e0b 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-.gradient-mesh{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none;}
-.blob{position:absolute;border-radius:50%;filter:blur(72px);animation:float-slow 12s ease-in-out infinite;}
-.blob:nth-child(2){animation:float-drift 16s ease-in-out infinite;}
-.blob:nth-child(3){animation:float-slow 20s ease-in-out infinite reverse;}
-@keyframes float-slow{0%{transform:translate(0,0) scale(1);}25%{transform:translate(50px,-40px) scale(1.1);}50%{transform:translate(-30px,35px) scale(0.92);}75%{transform:translate(45px,18px) scale(1.07);}100%{transform:translate(0,0) scale(1);}}
-@keyframes float-drift{0%{transform:translate(0,0) scale(1) rotate(0deg);}33%{transform:translate(-45px,-55px) scale(1.13) rotate(3deg);}66%{transform:translate(38px,28px) scale(0.9) rotate(-2deg);}100%{transform:translate(0,0) scale(1) rotate(0deg);}}
-@keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-14px);}}
-.slide::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:radial-gradient(ellipse at center,transparent 55%,rgba(15,23,42,0.06) 100%);}
-.particle-canvas{position:absolute;inset:0;width:100%;height:100%;z-index:1;}
-
-/* ===== INTERIOR SLIDE STYLE ===== */
-.slide.interior{
-  background:
-    radial-gradient(circle at 18% 12%,rgba(11,99,206,0.16),transparent 50%),
-    radial-gradient(circle at 82% 88%,rgba(16,185,129,0.14),transparent 50%),
-    linear-gradient(160deg,#aecbe8 0%,#b9d4ea 48%,#b3ddd0 100%);}
-.slide.interior::after{background:radial-gradient(ellipse at center,transparent 58%,rgba(15,23,42,0.12) 100%);}
-.slide.interior .pill{background:#ffffff;color:#0b4a9e;border:none;box-shadow:0 4px 14px rgba(8,15,30,0.25);font-size:0.8rem;}
-.slide.interior .pill.green{color:#067a55;}
-.slide.interior h2.font-display{color:#0f2747!important;text-shadow:0 1px 2px rgba(255,255,255,0.55);font-size:clamp(1.7rem,3vw,2.45rem)!important;letter-spacing:0.005em;}
-.slide.interior .grad-text{-webkit-text-fill-color:#0f2747;text-shadow:0 1px 2px rgba(255,255,255,0.55);}
-.slide.interior .card{background:#ffffff;border:1px solid rgba(15,23,42,0.06);box-shadow:0 14px 34px rgba(15,23,42,0.20),0 2px 6px rgba(15,23,42,0.10);border-radius:20px;}
-.slide.interior .accent-card-blue {background:#eaf2fd;border:1px solid rgba(11,99,206,0.22); box-shadow:0 8px 24px rgba(15,23,42,0.10);}
-.slide.interior .accent-card-green{background:#e6f7f0;border:1px solid rgba(5,150,105,0.22); box-shadow:0 8px 24px rgba(15,23,42,0.10);}
-.slide.interior .accent-card-amber{background:#fdf4e3;border:1px solid rgba(245,158,11,0.28);box-shadow:0 8px 24px rgba(15,23,42,0.10);}
-.slide.interior .accent-card-red  {background:#fdeceb;border:1px solid rgba(239,68,68,0.24); box-shadow:0 8px 24px rgba(15,23,42,0.10);}
-.slide.interior .card .big-text{color:#1e293b!important;}
-.slide.interior .card p,.slide.interior .card li{color:#2d3f55!important;}
-.slide.interior .card strong{color:#0f2747;}
-.slide.interior .think-chip{background:rgba(11,99,206,0.12);color:#0c2d6e;font-size:0.88rem;font-weight:700;}
-.slide.interior .question-chip{background:rgba(234,130,12,0.12);color:#7a3800;font-size:0.88rem;}
-.slide.interior .vocab-tag{background:rgba(11,99,206,0.10);color:#0a3a8c;font-size:0.88rem;font-weight:800;}
-.slide.interior.scrolly{background:radial-gradient(circle at top left,rgba(56,189,248,0.12),transparent 40%),radial-gradient(circle at bottom right,rgba(16,185,129,0.09),transparent 40%),#f0f8ff;}
-
-
-.draw-widget{border:2px dashed rgba(11,99,206,0.3);border-radius:12px;background:#f8faff;overflow:hidden}
-.draw-toolbar{display:flex;align-items:center;gap:6px;padding:6px 10px;background:#eef4ff;border-bottom:1px solid rgba(11,99,206,0.15);flex-wrap:wrap}
-.draw-btn{padding:4px 10px;border:1px solid rgba(11,99,206,0.3);border-radius:6px;background:#fff;cursor:pointer;font-size:0.72rem;font-weight:700;color:#0b63ce;transition:background 0.15s;display:inline-flex;align-items:center;gap:4px}
-.draw-btn:hover{background:#dbeafe}.draw-btn.active{background:#0b63ce;color:#fff;border-color:#0b63ce}.draw-btn.eraser-active{background:#fecdd3;color:#be123c;border-color:#fecdd3}
-.draw-color{width:26px;height:26px;border-radius:50%;border:2px solid rgba(15,23,42,0.15);cursor:pointer;padding:0}
-.draw-size{width:70px;accent-color:#0b63ce;cursor:pointer}
-.draw-canvas-el{display:block;cursor:crosshair;touch-action:none;width:100%;background:#fff}
-.draw-label{font-size:0.68rem;color:#5b6b7e;font-weight:700;text-transform:uppercase;letter-spacing:0.08em}
-.draw-resize-bar{display:flex;justify-content:center;align-items:center;gap:8px;padding:3px 0;background:#eef4ff;border-top:1px solid rgba(11,99,206,0.12);cursor:ns-resize;user-select:none}
-.draw-resize-bar:hover{background:#dbeafe}
-.draw-resize-btn{padding:2px 10px;border:1px solid rgba(11,99,206,0.3);border-radius:5px;background:#fff;cursor:pointer;font-size:0.68rem;font-weight:700;color:#0b63ce;transition:background 0.15s}
-.draw-resize-btn:hover{background:#dbeafe}
-.draw-resize-label{font-size:0.63rem;color:#94a3b8;letter-spacing:0.05em}
-.slide{background-size:cover;background-position:center}
-/* ── Print: canvas images ── */
-
-/* ── Print text mirrors (show typed content) ── */
-@media print {
-  .print-text-mirror { display: block !important; }
-  .wline, .warea, .sbar-input { display: none !important; }
-  input.wline + .print-text-mirror,
-  textarea.warea + .print-text-mirror { display: block !important; border-bottom: 1px solid #cbd5e1; min-height: 1.4em; padding: 2px 4px; }
-}
-
-@media print {
-  .draw-canvas-el { display: none !important; }
-  .draw-canvas-print { display: block !important; max-width: 100%; border-radius: 8px; border: 1px solid #e2e8f0; }
-  .draw-toolbar, .draw-resize-bar { display: none !important; }
-  .draw-widget { border: 1px solid #e2e8f0; background: #fff; }
-}
-.draw-canvas-print { display: none; }
-
-/* ===== ACTIVITY SHEET STYLE ===== */
-.act-shell{
-  width:100%;max-width:1080px;margin:0 auto;
-  background:radial-gradient(circle at top left,rgba(56,189,248,.10),transparent 42%),
-             radial-gradient(circle at bottom right,rgba(16,185,129,.07),transparent 42%),
-             #ffffff;
-  border-radius:22px;padding:clamp(0.9rem,2vw,1.6rem);
-  box-shadow:0 14px 44px rgba(15,23,42,0.16);border:1px solid rgba(11,99,206,0.10);}
-.sheet-header{
-  background:linear-gradient(135deg,#0b63ce 0%,#10b981 55%,#f59e0b 100%);
-  border-radius:18px;padding:14px 20px;color:#fff;margin-bottom:14px;position:relative;overflow:hidden;}
-.sheet-header::before{content:"";position:absolute;top:-50px;right:-50px;width:180px;height:180px;background:rgba(255,255,255,.07);border-radius:50%;}
-.sheet-header::after{content:"";position:absolute;bottom:-36px;left:-36px;width:130px;height:130px;background:rgba(255,255,255,.05);border-radius:50%;}
-.hdr-day{font-size:.62rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;opacity:.88;margin-bottom:3px;}
-.hdr-title{font-family:"Fredoka",sans-serif;font-size:clamp(1.3rem,2.6vw,1.8rem);font-weight:700;line-height:1.12;margin-bottom:4px;}
-.hdr-sub{font-size:.8rem;opacity:.9;margin-bottom:10px;}
-.hdr-pills{display:flex;gap:7px;flex-wrap:wrap;}
-.hpill{background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:3px 11px;font-size:.62rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;}
-
-/* Student info bar */
-.student-bar{
-  display:grid;grid-template-columns:2fr 1fr 1fr;gap:10px;
-  background:#f0f7ff;border:1px solid rgba(11,99,206,0.15);border-radius:14px;
-  padding:10px 14px;margin-bottom:14px;}
-.sbar-field{display:flex;flex-direction:column;gap:3px;}
-.sbar-label{font-size:.62rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#0b63ce;}
-.sbar-input{border:none;border-bottom:1.5px solid #cbd5e1;background:transparent;font-family:"Nunito",sans-serif;font-size:.86rem;color:#1f2a37;padding:2px 4px;outline:none;transition:border-color .2s;}
-.sbar-input:focus{border-bottom-color:#0b63ce;}
-.sbar-select{border:none;border-bottom:1.5px solid #cbd5e1;background:transparent;font-family:"Nunito",sans-serif;font-size:.86rem;color:#1f2a37;padding:2px 4px;outline:none;cursor:pointer;-webkit-appearance:none;}
-.sbar-select:focus{border-bottom-color:#0b63ce;}
-
-.sec-label{display:inline-flex;align-items:center;gap:8px;padding:4px 13px;border-radius:999px;border:1px solid rgba(148,163,184,.4);background:rgba(255,255,255,.9);font-size:.65rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--a1);margin-bottom:8px;}
-.sec-title{font-family:"Fredoka",sans-serif;font-size:clamp(1.1rem,2.1vw,1.5rem);font-weight:700;margin-bottom:12px;color:var(--color-text);line-height:1.2;}
-.acard{background:#fff;border-radius:16px;padding:14px 16px;box-shadow:0 4px 18px rgba(15,23,42,.07);border:1px solid rgba(255,255,255,.7);margin-bottom:0;}
-.acard.ab{background:rgba(11,99,206,0.06); border:1px solid rgba(11,99,206,0.18);}
-.acard.ag{background:rgba(16,185,129,0.07);border:1px solid rgba(16,185,129,0.20);}
-.acard.aa{background:rgba(245,158,11,0.07);border:1px solid rgba(245,158,11,0.22);}
-.acard.ar{background:rgba(239,68,68,0.07); border:1px solid rgba(239,68,68,0.20);}
-.clabel{font-size:.62rem;font-weight:800;letter-spacing:.13em;text-transform:uppercase;margin-bottom:6px;}
-.clabel.b{color:var(--a1)}.clabel.g{color:#047857}.clabel.a{color:#b45309}.clabel.r{color:#b91c1c}
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:13px;}
-.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;}
-@media(max-width:760px){.g2,.g3{grid-template-columns:1fr}.student-bar{grid-template-columns:1fr;}}
-.wline{display:block;width:100%;padding:4px 7px;margin-bottom:7px;border:none;border-bottom:1.5px solid #cbd5e1;border-radius:0;background:transparent;font-family:"Nunito",sans-serif;font-size:.82rem;color:var(--color-text);outline:none;transition:border-color .2s;}
-.wline:focus{border-bottom-color:var(--a1);}
-.wline::placeholder{color:#94a3b8;font-size:.76rem;}
-.warea{display:block;width:100%;padding:8px 10px;min-height:58px;resize:vertical;background:#f8fafc;border-radius:8px;border:1.5px solid #e2e8f0;font-family:"Nunito",sans-serif;font-size:.81rem;color:var(--color-text);line-height:1.5;outline:none;}
-.warea:focus{border-color:var(--a1);}
-.warea::placeholder{color:#94a3b8;font-size:.76rem;}
-.acode{background:#1e293b;color:#e2e8f0;border-radius:12px;padding:11px 15px;font-family:"Fira Code",Consolas,monospace;font-size:clamp(.64rem,1vw,.78rem);line-height:1.65;overflow-x:auto;border:1px solid rgba(255,255,255,.06);white-space:pre;}
-.acode .kw{color:#93c5fd}.acode .nb{color:#fcd34d}.acode .st{color:#86efac}.acode .cm{color:#64748b;font-style:italic;}
-.tip{border-radius:10px;padding:8px 12px;font-size:.77rem;line-height:1.5;margin-top:8px;}
-.tip.b{background:rgba(11,99,206,.07);color:#1e40af;}
-.tip.g{background:rgba(16,185,129,.07);color:#065f46;}
-.tip.a{background:rgba(245,158,11,.07);color:#92400e;}
-.abadge{display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff;padding:3px 12px;border-radius:999px;font-size:.63rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin-bottom:7px;}
-.tier-badge-a{display:inline-flex;align-items:center;gap:5px;background:#e6f7f0;color:#047857;border:1px solid rgba(16,185,129,0.3);padding:3px 11px;border-radius:999px;font-size:.63rem;font-weight:800;letter-spacing:.07em;text-transform:uppercase;}
-.tier-badge-b{display:inline-flex;align-items:center;gap:5px;background:#eaf2fd;color:#0b63ce;border:1px solid rgba(11,99,206,0.3);padding:3px 11px;border-radius:999px;font-size:.63rem;font-weight:800;letter-spacing:.07em;text-transform:uppercase;}
-.tier-badge-c{display:inline-flex;align-items:center;gap:5px;background:#fdf4e3;color:#b45309;border:1px solid rgba(245,158,11,0.35);padding:3px 11px;border-radius:999px;font-size:.63rem;font-weight:800;letter-spacing:.07em;text-transform:uppercase;}
-.act-foot{margin-top:12px;padding:9px 14px;border-radius:12px;background:rgba(11,99,206,.05);border:1px solid rgba(11,99,206,.11);display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:.68rem;color:var(--color-text-muted);}
-code{background:#e0f2ff;padding:1px 5px;border-radius:4px;font-family:"Fira Code",Consolas,monospace;font-size:.82em;color:#0b63ce;}
-.save-bar{display:flex;align-items:center;gap:10px;margin:0 0 12px;flex-wrap:wrap;}
-.save-status{display:inline-flex;align-items:center;gap:7px;font-size:.72rem;font-weight:800;letter-spacing:.04em;color:#047857;background:#e6f7f0;border:1px solid rgba(16,185,129,0.3);padding:4px 11px;border-radius:999px;transition:opacity .3s;}
-.save-status .dot-led{width:8px;height:8px;border-radius:50%;background:#10b981;box-shadow:0 0 0 3px rgba(16,185,129,0.18);}
-.save-status.idle{color:#5b6b7e;background:#eef2f7;border-color:rgba(148,163,184,0.4);}
-.save-status.idle .dot-led{background:#94a3b8;box-shadow:none;}
-.btn-clear{font-size:.72rem;font-weight:800;letter-spacing:.04em;color:#b91c1c;background:#fdeceb;border:1px solid rgba(239,68,68,0.3);padding:4px 13px;border-radius:999px;cursor:pointer;transition:background .2s,transform .15s;}
-.btn-clear:hover{background:#fcdcd9;transform:translateY(-1px);}
-
-.print-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:0 auto 1rem;}
-.btn-print{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:"Nunito",sans-serif;font-size:.9rem;font-weight:800;letter-spacing:.02em;border:none;border-radius:999px;padding:11px 22px;min-width:230px;cursor:pointer;box-shadow:0 6px 18px rgba(15,23,42,0.18);transition:transform .15s,box-shadow .2s;}
-.btn-print:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(15,23,42,0.24);}
-.btn-print.blue{background:#0b63ce;color:#fff;}
-.btn-print.amber{background:#f59e0b;color:#3a2600;}
-
-@media print{
-  @page{margin:12mm;}
-  body.printing{overflow:visible!important;height:auto!important;background:#fff!important;}
-  body.printing .deck{position:static!important;width:auto!important;height:auto!important;}
-  body.printing .nav-controls,body.printing .mouse-spotlight,body.printing .save-bar,body.printing .particle-canvas,body.printing .gradient-mesh{display:none!important;}
-  body.printing .slide{display:none!important;}
-  body.printing .slide.print-target{display:block!important;position:static!important;width:100%!important;height:auto!important;min-height:0!important;opacity:1!important;transform:none!important;background:#fff!important;overflow:visible!important;page-break-after:always;break-after:page;padding:0!important;}
-  body.printing .slide.print-target:last-of-type{page-break-after:auto;break-after:auto;}
-  body.printing .slide.print-target::after{display:none!important;}
-  body.printing .slide.print-target>.content{max-width:100%!important;width:100%!important;padding:0!important;margin:0!important;}
-  body.printing .slide.print-target .reveal,body.printing .slide.print-target *{opacity:1!important;transform:none!important;animation:none!important;}
-  body.printing .slide.print-target .act-shell{box-shadow:none!important;border:1px solid #d1d5db!important;background:#fff!important;max-width:100%!important;}
-  body.printing .slide.print-target .sheet-header{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
-  body.printing .slide.print-target .acard,body.printing .slide.print-target .card{-webkit-print-color-adjust:exact;print-color-adjust:exact;box-shadow:none!important;break-inside:avoid;}
-  body.printing .wline{min-height:1.4em;}
-  body.printing .warea{min-height:80px;}
-}
-@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:0.01ms!important;transition-duration:0.2s!important;}}
+:root{--color-bg:#f4fbff;--color-text:#1f2a37;--glow-color-rgb:11,99,206;--a1:#0b63ce;--a2:#10b981;--a3:#f59e0b;--are:#f44444;--fc:'Fira Code',Consolas,monospace}
+*,*::before,*::after{box-sizing:border-box}
+html,body{background:var(--color-bg);margin:0}
+body{font-family:'Nunito',Arial,sans-serif;color:var(--color-text);overflow:hidden;height:100vh;width:100vw}
+.deck{width:100vw;height:100vh;position:relative}
+.slide{position:absolute;top:0;left:0;width:100%;height:100%;background:radial-gradient(circle at top left,rgba(56,189,248,0.14),transparent 40%),radial-gradient(circle at bottom right,rgba(16,185,129,0.10),transparent 40%),var(--color-bg);display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;transform:scale(0.96);transition:opacity 0.55s ease,transform 0.55s ease;pointer-events:none;overflow:hidden}
+.slide.active{opacity:1;transform:scale(1);pointer-events:all}
+.slide>.content{position:relative;z-index:2;width:100%;max-width:1060px;padding:clamp(1.2rem,3.5vw,3rem)}
+.slide.interior{background:radial-gradient(circle at 18% 12%,rgba(11,99,206,0.16),transparent 50%),radial-gradient(circle at 82% 88%,rgba(16,185,129,0.14),transparent 50%),linear-gradient(160deg,#aecbe8 0%,#b9d4ea 48%,#b3ddd0 100%)}
+.slide.interior::after{background:radial-gradient(ellipse at center,transparent 58%,rgba(15,23,42,0.12) 100%)}
+.slide.interior h2.font-display{color:#0f2747!important;text-shadow:0 1px 2px rgba(255,255,255,0.55);font-size:clamp(1.7rem,3vw,2.45rem)!important;letter-spacing:0.005em}
+.slide.interior .card{background:#fff;border:1px solid rgba(15,23,42,0.06);box-shadow:0 14px 34px rgba(15,23,42,0.20),0 2px 6px rgba(15,23,42,0.10);border-radius:20px}
+.slide.interior .accent-card-blue{background:#eaf2fd;border:1px solid rgba(11,99,206,0.22);box-shadow:0 8px 24px rgba(15,23,42,0.10)}
+.slide.interior .accent-card-green{background:#e6f7f0;border:1px solid rgba(5,150,105,0.22);box-shadow:0 8px 24px rgba(15,23,42,0.10)}
+.slide.interior .accent-card-amber{background:#fdf4e3;border:1px solid rgba(245,158,11,0.28);box-shadow:0 8px 24px rgba(15,23,42,0.10)}
+.slide.interior .accent-card-red{background:#fdeceb;border:1px solid rgba(239,68,68,0.24);box-shadow:0 8px 24px rgba(15,23,42,0.10)}
+.slide.interior .card p,.slide.interior .card li{color:#2d3f55!important}
+.slide.interior .card strong{color:#0f2747}
+.slide.interior .think-chip{background:rgba(11,99,206,0.12);color:#0c2d6e;font-size:0.88rem;font-weight:700}
+.slide.interior .question-chip{background:rgba(234,130,12,0.12);color:#7a3800;font-size:0.88rem}
+.slide.interior .vocab-tag{background:rgba(11,99,206,0.10);color:#0a3a8c;font-size:0.88rem;font-weight:800}
+.slide.interior .pill{background:#fff;color:#0b4a9e;border:none;box-shadow:0 4px 14px rgba(8,15,30,0.25);font-size:0.8rem}
+.slide.interior .pill.green{color:#067a55}
+.nav-controls{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:14px;z-index:100;background:rgba(255,255,255,0.92);backdrop-filter:blur(12px);padding:9px 22px;border-radius:999px;border:1px solid rgba(148,163,184,0.4);box-shadow:0 8px 28px rgba(15,23,42,0.13)}
+.nav-btn{width:36px;height:36px;border:none;background:rgba(15,23,42,0.06);color:#0b63ce;border-radius:999px;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 0.2s,transform 0.15s}
+.nav-btn:hover{background:rgba(15,23,42,0.12);transform:translateY(-1px)}
+.slide-dots{display:flex;gap:6px;flex-wrap:wrap;max-width:420px}
+.slide-dots .dot{width:8px;height:8px;border-radius:50%;background:rgba(148,163,184,0.6);cursor:pointer;transition:background 0.25s,transform 0.25s}
+.slide-dots .dot.active{background:#0b63ce;transform:scale(1.4)}
+.slide-counter{font-size:0.78rem;color:#64748b;min-width:52px;text-align:center;font-weight:700}
+.reveal{opacity:0;transform:translateY(16px)}
+.mouse-spotlight{position:fixed;inset:0;z-index:1;pointer-events:none}
+.card{background:var(--color-surface);border-radius:18px;padding:16px 20px;box-shadow:0 8px 24px rgba(15,23,42,0.07);border:1px solid rgba(255,255,255,0.7)}
+.accent-card-blue{background:rgba(11,99,206,0.07);border:1px solid rgba(11,99,206,0.18)}
+.accent-card-green{background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.20)}
+.accent-card-amber{background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.22)}
+.accent-card-red{background:rgba(239,68,68,0.07);border:1px solid rgba(239,68,68,0.20)}
+.pill{display:inline-flex;align-items:center;gap:7px;padding:5px 14px;border-radius:999px;border:1px solid rgba(148,163,184,0.5);background:rgba(255,255,255,0.9);font-size:0.76rem;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;color:#0b63ce}
+.pill.green{color:#047857}
+.think-chip{display:inline-flex;align-items:center;gap:9px;padding:7px 13px;border-radius:999px;background:rgba(11,99,206,0.08);color:#1e40af;font-size:0.82rem;font-weight:700}
+.question-chip{display:inline-flex;align-items:center;gap:9px;padding:7px 13px;border-radius:999px;background:rgba(245,158,11,0.09);color:#92400e;font-size:0.82rem;font-weight:700}
+.question-chip .icon{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:999px;background:rgba(245,158,11,0.95);color:#fff;font-size:0.78rem}
+.big-text{font-size:clamp(1rem,1.7vw,1.25rem);line-height:1.65}
+.vocab-tag{display:inline-flex;align-items:center;padding:5px 13px;border-radius:999px;background:rgba(15,23,42,0.04);font-size:0.85rem;font-weight:800;color:#0b63ce}
+.grid-cards{display:grid;gap:16px}
+@media(min-width:800px){.grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}.grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.grad-text{background:linear-gradient(135deg,#0b63ce 0%,#10b981 50%,#f59e0b 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.gradient-mesh{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+.blob{position:absolute;border-radius:50%;filter:blur(72px);animation:float-slow 12s ease-in-out infinite}
+.blob:nth-child(2){animation:float-drift 16s ease-in-out infinite}
+.blob:nth-child(3){animation:float-slow 20s ease-in-out infinite reverse}
+@keyframes float-slow{0%{transform:translate(0,0) scale(1)}25%{transform:translate(50px,-40px) scale(1.15)}50%{transform:translate(-30px,35px) scale(0.9)}75%{transform:translate(45px,18px) scale(1.07)}100%{transform:translate(0,0) scale(1)}}
+@keyframes float-drift{0%{transform:translate(0,0) scale(1) rotate(0deg)}33%{transform:translate(-45px,-55px) scale(1.13) rotate(3deg)}66%{transform:translate(38px,28px) scale(0.9) rotate(-2deg)}100%{transform:translate(0,0) scale(1) rotate(0deg)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+.slide::after{content:'';position:absolute;inset:0;z-index:1;pointer-events:none;background:radial-gradient(ellipse at center,transparent 55%,rgba(15,23,42,0.06) 100%)}
+.particle-canvas{position:absolute;inset:0;width:100%;height:100%;z-index:1}
+.tip{border-radius:10px;padding:8px 12px;font-size:.77rem;line-height:1.5;margin-top:8px}
+.tip.b{background:rgba(11,99,206,.07);color:#1e40af}
+.tip.g{background:rgba(16,185,129,.07);color:#065f46}
+/* Video thumbnail embed */
+.media-thumb-wrap{position:relative;border-radius:13px;overflow:hidden;background:#1e293b;cursor:pointer;display:block;text-decoration:none;aspect-ratio:16/9}
+.media-thumb-wrap img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.3s ease}
+.media-thumb-wrap:hover img{transform:scale(1.03)}
+.play-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.18);transition:background 0.2s}
+.media-thumb-wrap:hover .play-overlay{background:rgba(0,0,0,0.32)}
+.play-btn-circle{width:62px;height:62px;background:rgba(255,0,0,0.92);border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(0,0,0,0.45);transition:transform 0.2s}
+.media-thumb-wrap:hover .play-btn-circle{transform:scale(1.1)}
+.vid-source{font-size:0.66rem;color:#5b6b7e;margin-top:6px}
+.vid-source a{color:#0b63ce;text-decoration:underline}
 </style>
 </head>
 <body>
 <div class="mouse-spotlight"></div>
 <div class="deck">
 
-<!-- ===== SLIDE 1 · TITLE ===== -->
-<div class="slide active" data-slide="1" data-type="lesson">
+<!-- SLIDE 1 · TITLE -->
+<div class="slide active" data-slide="1">
   <div class="gradient-mesh">
-    <div class="blob" style="width:500px;height:500px;top:-120px;right:-100px;background:#0b63ce;opacity:0.12;"></div>
-    <div class="blob" style="width:340px;height:340px;bottom:-80px;left:-80px;background:#10b981;opacity:0.10;"></div>
+    <div class="blob" style="width:500px;height:500px;top:-120px;right:-100px;background:#0b63ce;opacity:0.13;"></div>
+    <div class="blob" style="width:340px;height:340px;bottom:-80px;left:-80px;background:#10b981;opacity:0.11;"></div>
     <div class="blob" style="width:220px;height:220px;top:40%;left:10%;background:#f59e0b;opacity:0.08;"></div>
   </div>
   <canvas class="particle-canvas"></canvas>
   <div class="content" style="text-align:center;">
-    <div style="font-size:clamp(4rem,8vw,6.5rem);margin-bottom:0.8rem;animation:float 3s ease-in-out infinite;" class="reveal">🖥️</div>
-    <p class="pill reveal" style="margin:0 auto 1rem;">Session 1 · Mon Jun 29 · Week 1</p>
-    <h1 class="font-display grad-text reveal" style="font-size:clamp(2.2rem,5.5vw,4.2rem);font-weight:700;line-height:1.1;margin-bottom:0.6rem;">Welcome! What Is Computer Thinking?</h1>
-    <p class="reveal" style="font-size:clamp(1rem,1.8vw,1.4rem);color:#374151;margin-bottom:1.4rem;">Icebreakers, our tools, and one big question 🤔</p>
+    <div class="reveal" style="margin-bottom:0.8rem;">
+      <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/d10d613e9fb15fec7ca7822c1a763dee1fbc04b3.jpg" alt="Kids using computers in class" style="height:clamp(90px,11vh,140px);width:auto;object-fit:cover;border-radius:16px;border:3px solid rgba(255,255,255,0.7);box-shadow:0 8px 28px rgba(15,23,42,0.18);display:inline-block;" loading="lazy">
+    </div>
+    <p class="pill reveal" style="margin:0 auto 0.9rem;">Session 1 · Mon Jun 29 · Week 1</p>
+    <h1 class="font-display grad-text reveal" style="font-size:clamp(2.2rem,5.5vw,4.2rem);font-weight:700;line-height:1.1;margin-bottom:0.6rem;">Welcome!<br>What Is a Computer Thinking?</h1>
+    <p class="reveal" style="font-size:clamp(1rem,1.8vw,1.35rem);color:#374151;margin-bottom:1.4rem;">Icebreakers, big ideas, and one surprising question</p>
     <div class="reveal" style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
-      <span class="pill">🏫 Modern Chinese School</span>
-      <span class="pill" style="font-size:0.82rem;">👤 Mr. Hsiao &ldquo;Hue&rdquo; Weng</span>
-      <a href="https://hue881.github.io/mcs/2026/summer" target="_blank" rel="noopener" class="pill reveal" style="text-decoration:none;font-size:0.75rem;color:#0b63ce;display:inline-flex;align-items:center;gap:5px;">🔗 hue881.github.io/mcs/2026/summer</a>
-      <span class="pill green">Phase 0 — Welcome &amp; Foundations</span>
+      <span class="pill">Modern Chinese School</span>
+      <span class="pill" style="font-size:0.82rem;">Mr. Hsiao &ldquo;Hue&rdquo; Weng</span>
+      <span class="pill green">Phase 0 · Welcome &amp; Foundations</span>
     </div>
   </div>
 </div>
 
-<!-- ===== SLIDE 2 · AGENDA ===== -->
-<div class="slide interior" data-slide="2" data-type="lesson">
+<!-- SLIDE 2 · AGENDA -->
+<div class="slide interior" data-slide="2">
   <div class="gradient-mesh">
     <div class="blob" style="width:360px;height:360px;top:-60px;right:-60px;background:#0b63ce;opacity:0.09;"></div>
     <div class="blob" style="width:240px;height:240px;bottom:-50px;left:-40px;background:#10b981;opacity:0.07;"></div>
   </div>
   <div class="content">
-    <p class="pill mb-3 reveal">📋 Today's Plan</p>
-    <h2 class="font-display reveal" style="font-size:clamp(1.6rem,2.8vw,2.2rem);font-weight:700;margin-bottom:1.2rem;">What we're doing today 🗓️</h2>
+    <p class="pill mb-3 reveal">Today&rsquo;s Plan</p>
+    <h2 class="font-display reveal" style="margin-bottom:1.2rem;">What we&rsquo;re doing today</h2>
     <div class="grid-cards grid-2 reveal" style="gap:14px;">
-      <div class="card accent-card-blue" style="padding:14px 18px;">
-        <div style="margin-bottom:8px;"><img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/14b05038cd7b3022c9ea26d06fff68213dafb360.jpg" alt="Warm-up" style="height:48px;width:auto;object-fit:contain;border-radius:10px;" loading="lazy"></div>
-        <div style="font-weight:800;font-size:0.78rem;letter-spacing:0.1em;text-transform:uppercase;color:#0b63ce;margin-bottom:4px;">Warm-Up · 10 min</div>
-        <p class="big-text" style="color:#374151;margin:0;">Brains-on unplugged puzzle — no screens. Think about how machines follow instructions.</p>
+      <div class="card accent-card-blue" style="padding:14px 18px;display:flex;gap:14px;align-items:flex-start;">
+        <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/14b05038cd7b3022c9ea26d06fff68213dafb360.jpg" alt="Warm-up puzzle" style="height:56px;width:72px;object-fit:cover;border-radius:10px;flex-shrink:0;" loading="lazy">
+        <div><div style="font-weight:800;font-size:0.78rem;letter-spacing:0.1em;text-transform:uppercase;color:#0b63ce;margin-bottom:4px;">Warm-Up · 10 min</div><p class="big-text" style="color:#374151;margin:0;">Brains-on puzzle — no screens. Think about how machines follow instructions.</p></div>
       </div>
-      <div class="card accent-card-green" style="padding:14px 18px;">
-        <div style="margin-bottom:8px;"><img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/7ad5cd6e1da80db4320d3af8eb5a221a808f69ea.jpg" alt="Lesson" style="height:48px;width:auto;object-fit:contain;border-radius:10px;" loading="lazy"></div>
-        <div style="font-weight:800;font-size:0.78rem;letter-spacing:0.1em;text-transform:uppercase;color:#047857;margin-bottom:4px;">Mini-Lesson · 15–20 min</div>
-        <p class="big-text" style="color:#374151;margin:0;">What is "computer thinking"? Watch two short videos. Meet your new word: <strong>Algorithm</strong>.</p>
+      <div class="card accent-card-green" style="padding:14px 18px;display:flex;gap:14px;align-items:flex-start;">
+        <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/14f40c50be8ec3ab033021ac9fb38d754c13cd4f.jpg" alt="AI kids lesson" style="height:56px;width:72px;object-fit:cover;border-radius:10px;flex-shrink:0;" loading="lazy">
+        <div><div style="font-weight:800;font-size:0.78rem;letter-spacing:0.1em;text-transform:uppercase;color:#047857;margin-bottom:4px;">Mini-Lesson · 15–20 min</div><p class="big-text" style="color:#374151;margin:0;">What is computer thinking? Two short videos. Meet your new word: <strong>Algorithm</strong>.</p></div>
       </div>
-      <div class="card accent-card-amber" style="padding:14px 18px;">
-        <div style="margin-bottom:8px;"><img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/6dbe59afe8e233442abb3d4beafce246d80233a2.jpg" alt="Icebreaker" style="height:48px;width:auto;object-fit:contain;border-radius:10px;" loading="lazy"></div>
-        <div style="font-weight:800;font-size:0.78rem;letter-spacing:0.1em;text-transform:uppercase;color:#b45309;margin-bottom:4px;">Icebreaker · 15 min</div>
-        <p class="big-text" style="color:#374151;margin:0;">"Two Truths and a Robot Lie" — get to know each other and discover how classifiers work.</p>
+      <div class="card accent-card-amber" style="padding:14px 18px;display:flex;gap:14px;align-items:flex-start;">
+        <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/5b66c95713f1f5f16511e3d4664096f483a74dc8.jpg" alt="Icebreaker" style="height:56px;width:72px;object-fit:cover;border-radius:10px;flex-shrink:0;" loading="lazy">
+        <div><div style="font-weight:800;font-size:0.78rem;letter-spacing:0.1em;text-transform:uppercase;color:#b45309;margin-bottom:4px;">Icebreaker · 15 min</div><p class="big-text" style="color:#374151;margin:0;">Two Truths &amp; a Robot Lie — get to know each other and discover how classifiers work.</p></div>
       </div>
-      <div class="card accent-card-red" style="padding:14px 18px;">
-        <div style="margin-bottom:8px;"><img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/17971eb8378a5252f3a513b1a394881589b00ff8.jpg" alt="AI moment" style="height:48px;width:auto;object-fit:contain;border-radius:10px;" loading="lazy"></div>
-        <div style="font-weight:800;font-size:0.78rem;letter-spacing:0.1em;text-transform:uppercase;color:#b91c1c;margin-bottom:4px;">AI Moment · 10 min</div>
-        <p class="big-text" style="color:#374151;margin:0;">"Are You Smarter Than a Computer?" — step-by-step sandwich instructions reveal the limits of machines.</p>
+      <div class="card accent-card-red" style="padding:14px 18px;display:flex;gap:14px;align-items:flex-start;">
+        <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/6fa14f0fce891a56a4f109269cb3d527bdaec397.jpg" alt="Robot AI Moment" style="height:56px;width:72px;object-fit:cover;border-radius:10px;object-position:top;flex-shrink:0;" loading="lazy">
+        <div><div style="font-weight:800;font-size:0.78rem;letter-spacing:0.1em;text-transform:uppercase;color:#b91c1c;margin-bottom:4px;">AI Moment · 10 min</div><p class="big-text" style="color:#374151;margin:0;">Are You Smarter Than a Computer? Sandwich instructions reveal the limits of machines.</p></div>
       </div>
-    </div>
-    <div class="card reveal" style="margin-top:14px;background:rgba(11,99,206,0.06);border:1px solid rgba(11,99,206,0.18);padding:12px 18px;display:flex;gap:12px;align-items:center;">
-      <div style="flex-shrink:0;"><img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/8955b4a7388dfd204ff49be4dc5a88361679fb1f.jpg" alt="Tools" style="height:40px;width:auto;object-fit:contain;border-radius:8px;" loading="lazy"></div>
-      <p class="big-text" style="color:#374151;margin:0;"><strong>Tools Tour + Scratch Accounts:</strong> Peek at Scratch, Python Playground, and Teachable Machine. Set up accounts. No pressure — just exploring!</p>
     </div>
   </div>
 </div>
 
-<!-- ===== SLIDE 3 · WARM-UP ===== -->
-<div class="slide interior" data-slide="3" data-type="lesson">
+<!-- SLIDE 3 · WARM-UP -->
+<div class="slide interior" data-slide="3">
   <div class="gradient-mesh">
     <div class="blob" style="width:360px;height:360px;top:-60px;right:-60px;background:#f59e0b;opacity:0.09;"></div>
     <div class="blob" style="width:240px;height:240px;bottom:-50px;left:-40px;background:#0b63ce;opacity:0.07;"></div>
   </div>
   <div class="content">
     <p class="pill mb-3 reveal">Warm-Up · Brains On, No Screens</p>
-    <h2 class="font-display reveal" style="font-size:clamp(1.6rem,2.8vw,2.2rem);font-weight:700;margin-bottom:1rem;">Two questions to wake up your brain 🧩</h2>
-    <div class="grid-cards grid-2 reveal" style="margin-bottom:16px;">
-      <div class="card" style="padding:20px 22px;">
-        <div class="question-chip" style="margin-bottom:12px;"><span class="icon">?</span> Question 1</div>
-        <p class="big-text" style="color:#374151;margin-bottom:0;">If a robot has <strong>never seen a sandwich</strong>, and you told it "make a sandwich," what do you think it would do?</p>
+    <h2 class="font-display reveal" style="margin-bottom:1rem;">Two questions to wake up your brain</h2>
+    <div class="grid-cards grid-2 reveal" style="margin-bottom:16px;align-items:stretch;">
+      <div class="card" style="padding:0;overflow:hidden;display:flex;flex-direction:column;">
+        <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/c1f349d1a90782703c2a7c47b0212fc65a78e05b.jpg" alt="Making a sandwich steps" style="width:100%;height:130px;object-fit:cover;" loading="lazy">
+        <div style="padding:16px 18px;flex:1;">
+          <div class="question-chip" style="margin-bottom:10px;"><span class="icon">?</span> Question 1</div>
+          <p class="big-text" style="color:#374151;margin:0;">If a robot has <strong>never seen a sandwich</strong> and you said "make a sandwich" — what do you think it would do?</p>
+        </div>
       </div>
-      <div class="card" style="padding:20px 22px;">
-        <div class="question-chip" style="margin-bottom:12px;"><span class="icon">?</span> Question 2</div>
-        <p class="big-text" style="color:#374151;margin-bottom:0;">Name <strong>one machine</strong> you used today that felt a little bit "smart." What did it do?</p>
+      <div class="card" style="padding:0;overflow:hidden;display:flex;flex-direction:column;">
+        <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/48bb0ed4281b165228780a0061690a6c065bca6b.jpg" alt="Alexa smart speaker AI" style="width:100%;height:130px;object-fit:cover;object-position:center;" loading="lazy">
+        <div style="padding:16px 18px;flex:1;">
+          <div class="question-chip" style="margin-bottom:10px;"><span class="icon">?</span> Question 2</div>
+          <p class="big-text" style="color:#374151;margin:0;">Name <strong>one machine</strong> you used today that felt a little bit smart. What did it do?</p>
+        </div>
       </div>
     </div>
     <div class="card reveal" style="background:rgba(11,99,206,0.06);border:1px solid rgba(11,99,206,0.18);padding:14px 18px;">
-      <p class="big-text" style="color:#374151;">✏️ <strong>Turn to a neighbor</strong> and share your best guess. There are no wrong answers today — we are just warming up our thinking!</p>
+      <p class="big-text" style="color:#374151;margin:0;"><strong>Turn to a neighbor</strong> and share your best guess. There are no wrong answers today — we&rsquo;re just warming up our thinking!</p>
     </div>
   </div>
 </div>
 
-<!-- ===== SLIDE 4 · COMPUTER THINKING ===== -->
-<div class="slide interior" data-slide="4" data-type="lesson">
+<!-- SLIDE 4 · COMPUTER THINKING -->
+<div class="slide interior" data-slide="4">
   <div class="gradient-mesh">
     <div class="blob" style="width:360px;height:360px;top:-60px;right:-60px;background:#10b981;opacity:0.08;"></div>
     <div class="blob" style="width:240px;height:240px;bottom:-50px;left:-40px;background:#0b63ce;opacity:0.07;"></div>
   </div>
   <div class="content">
-    <p class="pill mb-3 reveal" style="display:inline-flex;align-items:center;gap:6px;"><img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/14b05038cd7b3022c9ea26d06fff68213dafb360.jpg" alt="brain" style="height:16px;width:auto;object-fit:contain;vertical-align:middle;border-radius:6px;border-radius:4px;" loading="lazy"> Big Idea · Computer Thinking</p>
-    <h2 class="font-display reveal" style="font-size:clamp(1.6rem,2.8vw,2.2rem);font-weight:700;margin-bottom:1rem;">Computers don't think like us — they follow steps! 🪜</h2>
+    <p class="pill mb-3 reveal" style="display:inline-flex;align-items:center;gap:7px;"><img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/1cb58d67d85ce4cd85fdfa852ac10ea032420067.jpg" alt="brain" style="height:18px;width:auto;border-radius:4px;object-fit:contain;" loading="lazy"> Big Idea · Computer Thinking</p>
+    <h2 class="font-display reveal" style="margin-bottom:1rem;">Computers don&rsquo;t think like us — they follow steps!</h2>
     <div class="grid-cards grid-2 reveal" style="align-items:center;">
       <div class="card" style="padding:20px 22px;">
-        <ul class="list-disc pl-4 space-y-3" style="color:#374151;">
-          <li class="big-text">A computer is <strong>not magic</strong> and it is <strong>not alive</strong>. It is a very fast rule-follower.</li>
-          <li class="big-text">It does <strong>exactly</strong> what we tell it — nothing more, nothing less.</li>
-          <li class="big-text">"Computer thinking" means breaking a big job into <strong>tiny, clear steps</strong> a machine can follow.</li>
-          <li class="big-text">Even the smartest <strong>AI</strong> still follows steps and patterns we set up. We'll see that all summer!</li>
+        <ul style="list-style:disc;padding-left:18px;margin:0;color:#374151;">
+          <li class="big-text" style="margin-bottom:8px;">A computer is <strong>not magic</strong> and not alive. It&rsquo;s a very fast <strong>rule-follower</strong>.</li>
+          <li class="big-text" style="margin-bottom:8px;">It does <strong>exactly</strong> what we tell it — nothing more, nothing less.</li>
+          <li class="big-text" style="margin-bottom:8px;">Computer thinking means breaking a big job into <strong>tiny, clear steps</strong> a machine can follow.</li>
+          <li class="big-text">Even the smartest <strong>AI</strong> still follows steps and patterns — we&rsquo;ll see that all summer!</li>
         </ul>
       </div>
-      <div class="reveal" style="text-align:center;">
-        <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/17971eb8378a5252f3a513b1a394881589b00ff8.jpg" alt="Robot following steps" style="height:clamp(120px,15vh,180px);width:auto;object-fit:contain;border-radius:14px;margin-bottom:8px;" loading="lazy">
-        <div style="font-size:clamp(2rem,4vw,3.5rem);line-height:1;">→</div>
-        <div style="font-size:clamp(1rem,1.6vw,1.2rem);color:#374151;font-weight:700;margin-top:6px;">Step 1 → Step 2 → Step 3…</div>
-        <div class="think-chip" style="margin:12px auto 0;display:inline-flex;">
-          🤔 If a computer only does <strong>exactly</strong> what it's told, who has to be the careful, clear thinker — the computer, or <strong>you</strong>? 👆
-        </div>
+      <div style="text-align:center;">
+        <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/e553b278a02e94f9950aefaf2f8c30530d12e72f.jpg" alt="Kids with AI robots illustration" style="height:clamp(140px,18vh,200px);width:auto;object-fit:contain;border-radius:14px;margin-bottom:8px;" loading="lazy">
+        <div class="think-chip" style="margin:10px auto 0;display:inline-flex;">If a computer only does <strong style="margin:0 4px;">exactly</strong> what it&rsquo;s told — who has to be the careful, clear thinker?</div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ===== SLIDE 5 · ALGORITHM ===== -->
-<div class="slide interior" data-slide="5" data-type="lesson">
+<!-- SLIDE 5 · ALGORITHM -->
+<div class="slide interior" data-slide="5">
   <div class="gradient-mesh">
     <div class="blob" style="width:360px;height:360px;top:-60px;right:-60px;background:#0b63ce;opacity:0.09;"></div>
     <div class="blob" style="width:200px;height:200px;bottom:-40px;left:-30px;background:#f59e0b;opacity:0.08;"></div>
   </div>
   <div class="content">
     <p class="pill mb-3 reveal">Step by Step · The Secret Rule</p>
-    <h2 class="font-display reveal" style="font-size:clamp(1.6rem,2.8vw,2.2rem);font-weight:700;margin-bottom:1rem;">Why computers need every single step spelled out 🥪</h2>
+    <h2 class="font-display reveal" style="margin-bottom:1rem;">Why computers need <em>every single step</em> spelled out</h2>
     <div class="grid-cards grid-2 reveal" style="margin-bottom:16px;">
       <div class="card" style="padding:18px 20px;">
-        <div style="display:flex;align-items:center;gap:9px;margin-bottom:6px;"><img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/02cd4076f1d12aabb60131a850dee911daca5c58.jpg" alt="Child shoes" style="height:36px;width:auto;object-fit:contain;vertical-align:middle;border-radius:6px;border-radius:8px;" loading="lazy"> <strong>"Put on your shoes."</strong></div>
+        <div style="display:flex;align-items:center;gap:9px;margin-bottom:8px;"><img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/d10d613e9fb15fec7ca7822c1a763dee1fbc04b3.jpg" alt="Child" style="height:38px;width:auto;object-fit:cover;border-radius:8px;" loading="lazy"><strong>You hear: "Put on your shoes."</strong></div>
         <p class="big-text" style="color:#374151;margin-bottom:7px;">Easy! Your brain fills in <strong>hundreds</strong> of tiny steps automatically.</p>
-        <div style="background:rgba(15,23,42,0.04);border-radius:10px;padding:9px 13px;">
-          <div style="font-size:0.78rem;font-weight:700;color:#374151;margin-bottom:5px;">What your brain auto-fills:</div>
-          <div style="font-size:0.8rem;color:#374151;">1. Locate shoes 2. Pick them up 3. Sit down 4. Align to foot 5. Slide in 6. Tighten lace…</div>
-        </div>
+        <div style="background:rgba(15,23,42,0.04);border-radius:10px;padding:9px 13px;"><div style="font-size:0.78rem;font-weight:700;color:#374151;margin-bottom:5px;">What your brain auto-fills:</div><div style="font-size:0.8rem;color:#374151;">1. Locate shoes &nbsp;2. Pick up &nbsp;3. Sit down &nbsp;4. Align to foot &nbsp;5. Slide in &nbsp;6. Tighten lace</div></div>
       </div>
       <div class="card" style="padding:18px 20px;">
-        <div style="display:flex;align-items:center;gap:9px;margin-bottom:6px;"><img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/17971eb8378a5252f3a513b1a394881589b00ff8.jpg" alt="Robot" style="height:36px;width:auto;object-fit:contain;vertical-align:middle;border-radius:6px;border-radius:8px;" loading="lazy"> <strong>Robot hears: "Put on your shoes."</strong></div>
-        <p class="big-text" style="color:#374151;margin-bottom:7px;">It freezes! <strong>Which foot? Which shoe? Lift it how high?</strong> It needs every step spelled out.</p>
-        <div style="background:rgba(15,23,42,0.04);border-radius:10px;padding:9px 13px;">
-          <div style="font-size:0.78rem;font-weight:700;color:#374151;margin-bottom:5px;">Robot needs:</div>
-          <div style="font-size:0.8rem;color:#374151;">Pick up left shoe. Hold opening facing right foot. Lift right foot 30cm. Insert foot. Lower foot…</div>
-        </div>
+        <div style="display:flex;align-items:center;gap:9px;margin-bottom:8px;"><img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/6fa14f0fce891a56a4f109269cb3d527bdaec397.jpg" alt="Robot" style="height:38px;width:auto;object-fit:contain;border-radius:8px;" loading="lazy"><strong>Robot hears: "Put on your shoes."</strong></div>
+        <p class="big-text" style="color:#374151;margin-bottom:7px;">It <strong>freezes!</strong> Which foot? Which shoe? Lift how high? It needs every step spelled out.</p>
+        <div style="background:rgba(15,23,42,0.04);border-radius:10px;padding:9px 13px;"><div style="font-size:0.78rem;font-weight:700;color:#374151;margin-bottom:5px;">Robot needs:</div><div style="font-size:0.8rem;color:#374151;">Pick up left shoe. Hold opening toward right foot. Lift right foot 30cm. Insert. Lower foot.</div></div>
       </div>
     </div>
     <div class="card reveal" style="background:linear-gradient(135deg,rgba(11,99,206,0.08),rgba(16,185,129,0.06));border:2px dashed rgba(11,99,206,0.3);padding:14px 20px;text-align:center;">
       <p style="font-size:clamp(1rem,1.8vw,1.3rem);font-weight:800;color:#0b63ce;margin-bottom:3px;">A precise, ordered list of steps a computer follows is called an</p>
-      <p class="font-display grad-text" style="font-size:clamp(2rem,4vw,3rem);font-weight:700;margin:0;">ALGORITHM 🎉</p>
+      <p class="font-display grad-text" style="font-size:clamp(2rem,4vw,3rem);font-weight:700;margin:0;">ALGORITHM</p>
     </div>
   </div>
 </div>
 
-<!-- ===== SLIDE 6 · VIDEO 1 ===== -->
-<div class="slide interior" data-slide="6" data-type="lesson">
+<!-- SLIDE 6 · VIDEO 1 -->
+<div class="slide interior" data-slide="6">
   <div class="gradient-mesh">
     <div class="blob" style="width:360px;height:360px;top:-60px;right:-60px;background:#0b63ce;opacity:0.09;"></div>
     <div class="blob" style="width:240px;height:240px;bottom:-50px;left:-40px;background:#10b981;opacity:0.07;"></div>
   </div>
   <div class="content">
-    <p class="pill mb-3 reveal">▶ Video 1 · What Is an Algorithm?</p>
-    <h2 class="font-display reveal" style="font-size:clamp(1.6rem,2.8vw,2.2rem);font-weight:700;margin-bottom:1rem;">Watch · Dancing Robot: What Is an Algorithm? <span style="font-size:0.7em;opacity:0.7;">(2:51)</span></h2>
+    <p class="pill mb-3 reveal">📺 Video 1 · What Is an Algorithm?</p>
+    <h2 class="font-display reveal" style="margin-bottom:1rem;">Watch: <em>Dancing Robot — What Is an Algorithm?</em> <span style="font-size:0.7em;opacity:0.7;">2:51</span></h2>
     <div class="grid-cards grid-2 reveal" style="align-items:start;">
       <div>
-        <div class="media-embed" id="player-XtIw8iPhGug" onclick="playVideo('XtIw8iPhGug')" title="Click to play">
-          <img src="https://img.youtube.com/vi/XtIw8iPhGug/hqdefault.jpg" alt="What is an algorithm? Dancing Robot">
-          <div class="play-btn"><div><svg width="22" height="22" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div>
-        </div>
-        <p style="font-size:.66rem;color:#5b6b7e;margin-top:7px;">
-          <a href="https://www.youtube.com/watch?v=XtIw8iPhGug" target="_blank" rel="noopener" style="color:#0b63ce;text-decoration:underline;">▶ YouTube · Mundo Lanugo &amp; Google — "What is an algorithm? | Dancing Robot"</a>
-        </p>
+        <a href="https://www.youtube.com/watch?v=XtIw8iPhGug" target="_blank" rel="noopener" class="media-thumb-wrap">
+          <img src="https://img.youtube.com/vi/XtIw8iPhGug/hqdefault.jpg" alt="What is an Algorithm? Dancing Robot video thumbnail" loading="lazy">
+          <div class="play-overlay"><div class="play-btn-circle"><svg width="24" height="24" viewBox="0 0 24 24" fill="white"><polygon points="6,3 20,12 6,21"/></svg></div></div>
+        </a>
+        <p class="vid-source">▶ <a href="https://www.youtube.com/watch?v=XtIw8iPhGug" target="_blank" rel="noopener">YouTube · Mundo Lanugo &amp; Google — "What is an algorithm? Dancing Robot"</a></p>
       </div>
       <div class="card" style="padding:18px 20px;">
         <div class="question-chip" style="margin-bottom:12px;"><span class="icon">?</span> Watch for these 3 things</div>
         <ul style="list-style:none;padding:0;margin:0;">
-          <li class="big-text" style="margin-bottom:9px;color:#374151;">① How does the robot know which move to do next?</li>
-          <li class="big-text" style="margin-bottom:9px;color:#374151;">② What happens when a step is missing or wrong?</li>
-          <li class="big-text" style="color:#374151;">③ Where does this remind you of something in real life?</li>
+          <li class="big-text" style="margin-bottom:9px;color:#374151;">How does the robot know which move to do next?</li>
+          <li class="big-text" style="margin-bottom:9px;color:#374151;">What happens when a step is missing or wrong?</li>
+          <li class="big-text" style="color:#374151;">Where does this remind you of something in real life?</li>
         </ul>
-        <div class="tip b" style="margin-top:12px;">💬 After watching: say <em>one word</em> that describes how the robot follows instructions.</div>
+        <div class="tip b" style="margin-top:12px;">After watching: say <em>one word</em> that describes how the robot follows instructions.</div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ===== SLIDE 7 · AI MOMENT ===== -->
-<div class="slide interior" data-slide="7" data-type="lesson">
+<!-- SLIDE 7 · ALGORITHMS IN EVERYDAY LIFE -->
+<div class="slide interior" data-slide="7">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:340px;height:340px;top:-60px;right:-60px;background:#10b981;opacity:0.09;"></div>
+    <div class="blob" style="width:200px;height:200px;bottom:-40px;left:-30px;background:#0b63ce;opacity:0.07;"></div>
+  </div>
+  <div class="content">
+    <p class="pill green mb-3 reveal">Algorithms All Around Us</p>
+    <h2 class="font-display reveal" style="margin-bottom:1rem;">You follow algorithms every day — you just didn&rsquo;t know the name!</h2>
+    <div class="grid-cards grid-3 reveal" style="margin-bottom:14px;">
+      <div class="card accent-card-blue" style="padding:16px 18px;display:flex;gap:12px;align-items:flex-start;">
+        <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/288a0abd12d6c9de3caf096b1a3fc5b0a08c18b2.jpg" alt="Flowchart diagram" style="height:70px;width:60px;object-fit:cover;border-radius:8px;flex-shrink:0;" loading="lazy">
+        <div><strong style="color:#0b63ce;">Recipe</strong><br><span style="font-size:0.88rem;color:#374151;">Step-by-step cooking = a food algorithm</span></div>
+      </div>
+      <div class="card accent-card-green" style="padding:16px 18px;display:flex;gap:12px;align-items:flex-start;">
+        <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/e864ab5d7e0ae384ff8b4b6357c754e42b861c40.jpg" alt="Keyboard typing" style="height:70px;width:60px;object-fit:cover;border-radius:8px;flex-shrink:0;" loading="lazy">
+        <div><strong style="color:#047857;">Autocomplete</strong><br><span style="font-size:0.88rem;color:#374151;">Phone guesses your next word using patterns</span></div>
+      </div>
+      <div class="card accent-card-amber" style="padding:16px 18px;display:flex;gap:12px;align-items:flex-start;">
+        <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/48bb0ed4281b165228780a0061690a6c065bca6b.jpg" alt="Voice assistant Alexa" style="height:70px;width:60px;object-fit:cover;border-radius:8px;object-position:center;flex-shrink:0;" loading="lazy">
+        <div><strong style="color:#b45309;">Voice Assistant</strong><br><span style="font-size:0.88rem;color:#374151;">Alexa follows a listen → match → answer algorithm</span></div>
+      </div>
+    </div>
+    <div class="card reveal" style="background:rgba(11,99,206,0.06);border:1px solid rgba(11,99,206,0.18);padding:13px 18px;">
+      <div class="think-chip">What algorithm did <em>you</em> follow this morning before leaving the house? Try to name at least 3 steps.</div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 8 · VIDEO 2 — SWAPPED to TenderIntellects "Computer Algorithms Explained!" 3:00 -->
+<div class="slide interior" data-slide="8">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:360px;height:360px;top:-60px;right:-60px;background:#0b63ce;opacity:0.09;"></div>
+    <div class="blob" style="width:240px;height:240px;bottom:-50px;left:-40px;background:#10b981;opacity:0.07;"></div>
+  </div>
+  <div class="content">
+    <p class="pill mb-3 reveal">📺 Video 2 · Algorithms: Flowcharts, Loops &amp; Bugs</p>
+    <h2 class="font-display reveal" style="margin-bottom:1rem;">Watch: <em>Computer Algorithms Explained! Flowcharts, Loops &amp; Debugging!</em> <span style="font-size:0.7em;opacity:0.7;">3:00</span></h2>
+    <div class="grid-cards grid-2 reveal" style="align-items:start;">
+      <div>
+        <a href="https://www.youtube.com/watch?v=Gx81jRt5028" target="_blank" rel="noopener" class="media-thumb-wrap">
+          <img src="https://img.youtube.com/vi/Gx81jRt5028/hqdefault.jpg" alt="Computer Algorithms Explained! Flowcharts Loops and Debugging thumbnail" loading="lazy">
+          <div class="play-overlay"><div class="play-btn-circle"><svg width="24" height="24" viewBox="0 0 24 24" fill="white"><polygon points="6,3 20,12 6,21"/></svg></div></div>
+        </a>
+        <p class="vid-source">▶ <a href="https://www.youtube.com/watch?v=Gx81jRt5028" target="_blank" rel="noopener">YouTube · TenderIntellects — "Computer Algorithms Explained! Flowcharts, Loops &amp; Debugging!"</a></p>
+      </div>
+      <div class="card" style="padding:18px 20px;">
+        <div class="question-chip" style="margin-bottom:12px;"><span class="icon">?</span> Watch for these 3 things</div>
+        <ul style="list-style:none;padding:0;margin:0;">
+          <li class="big-text" style="margin-bottom:9px;color:#374151;">What happens to the <strong>input</strong> after the computer finishes all its steps?</li>
+          <li class="big-text" style="margin-bottom:9px;color:#374151;">What is a <strong>loop</strong> — and when would you want one?</li>
+          <li class="big-text" style="color:#374151;">Why does the order of steps matter so much?</li>
+        </ul>
+        <div class="tip b" style="margin-top:12px;">After watching, finish this sentence: <em>"A bug happens when…"</em></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 9 · AI MOMENT — SANDWICH GAME -->
+<div class="slide interior" data-slide="9">
   <div class="gradient-mesh">
     <div class="blob" style="width:340px;height:340px;top:-60px;right:-60px;background:#10b981;opacity:0.09;"></div>
     <div class="blob" style="width:200px;height:200px;bottom:-40px;left:-30px;background:#0b63ce;opacity:0.07;"></div>
   </div>
   <div class="content">
     <p class="pill green mb-3 reveal">AI Moment · Are You Smarter Than a Computer?</p>
-    <h2 class="font-display reveal" style="font-size:clamp(1.6rem,2.8vw,2.2rem);font-weight:700;margin-bottom:1rem;">The sandwich algorithm game 🥪🤖</h2>
+    <h2 class="font-display reveal" style="margin-bottom:1rem;">The sandwich algorithm game</h2>
     <div class="grid-cards grid-2 reveal" style="margin-bottom:14px;">
-      <div class="card" style="padding:18px 20px;">
-        <div style="font-size:0.9rem;font-weight:800;color:#047857;margin-bottom:9px;text-transform:uppercase;letter-spacing:0.08em;">How the game works</div>
-        <ol style="list-style:decimal;padding-left:18px;margin:0;">
-          <li class="big-text" style="margin-bottom:7px;color:#374151;">You write step-by-step instructions to make a PB&amp;J sandwich.</li>
-          <li class="big-text" style="margin-bottom:7px;color:#374151;">Your teacher acts as the <strong>robot</strong> and follows your instructions <em>exactly</em> — no guessing, no common sense.</li>
-          <li class="big-text" style="color:#374151;">Watch what goes wrong — that's your <strong>bug</strong>! Then fix it.</li>
-        </ol>
+      <div class="card" style="padding:0;overflow:hidden;">
+        <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/d6c91f7269fa9edce676476f4cb9fece48beaa6a.jpg" alt="Detailed A-Z sandwich making guide" style="width:100%;height:140px;object-fit:cover;object-position:top;" loading="lazy">
+        <div style="padding:14px 18px;">
+          <div style="font-size:0.9rem;font-weight:800;color:#047857;margin-bottom:9px;text-transform:uppercase;letter-spacing:0.08em;">How the game works</div>
+          <ol style="list-style:decimal;padding-left:18px;margin:0;">
+            <li class="big-text" style="margin-bottom:7px;color:#374151;">You write step-by-step instructions to make a PB&amp;J sandwich.</li>
+            <li class="big-text" style="margin-bottom:7px;color:#374151;">Your teacher acts as the <strong>robot</strong> and follows your instructions <em>exactly</em> — no guessing, no common sense.</li>
+            <li class="big-text" style="color:#374151;">Watch what goes wrong — that&rsquo;s your <strong>bug!</strong> Then fix it.</li>
+          </ol>
+        </div>
       </div>
       <div class="card" style="padding:18px 20px;">
-        <div style="font-size:0.9rem;font-weight:800;color:#b45309;margin-bottom:9px;text-transform:uppercase;letter-spacing:0.08em;">Common robot "bugs"</div>
+        <div style="font-size:0.9rem;font-weight:800;color:#b45309;margin-bottom:9px;text-transform:uppercase;letter-spacing:0.08em;">Common robot bugs</div>
         <ul style="list-style:none;padding:0;margin:0;">
-          <li style="display:flex;gap:8px;margin-bottom:7px;"><span style="font-size:1.2rem;">🫙</span><span class="big-text" style="color:#374151;">"Open the peanut butter" → Robot picks up the <em>whole jar</em> and shakes it</span></li>
-          <li style="display:flex;gap:8px;margin-bottom:7px;"><span style="font-size:1.2rem;">🍞</span><span class="big-text" style="color:#374151;">"Put it on the bread" → <em>Which side? Top? With what?</em></span></li>
-          <li style="display:flex;gap:8px;"><span style="font-size:1.2rem;">✂️</span><span class="big-text" style="color:#374151;">"Cut in half" → Robot uses scissors, cuts the table, the bag…</span></li>
+          <li style="display:flex;gap:8px;margin-bottom:7px;"><img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/c1f349d1a90782703c2a7c47b0212fc65a78e05b.jpg" alt="sandwich" style="height:22px;width:28px;object-fit:cover;border-radius:4px;flex-shrink:0;margin-top:2px;" loading="lazy"><span class="big-text" style="color:#374151;">"Open the peanut butter" — Robot picks up the <em>whole jar</em> and shakes it</span></li>
+          <li style="display:flex;gap:8px;margin-bottom:7px;"><img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/c1f349d1a90782703c2a7c47b0212fc65a78e05b.jpg" alt="sandwich" style="height:22px;width:28px;object-fit:cover;border-radius:4px;flex-shrink:0;margin-top:2px;" loading="lazy"><span class="big-text" style="color:#374151;">"Put it on the bread" — <em>Which side? Top? With what?</em></span></li>
+          <li style="display:flex;gap:8px;"><img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/c1f349d1a90782703c2a7c47b0212fc65a78e05b.jpg" alt="sandwich" style="height:22px;width:28px;object-fit:cover;border-radius:4px;flex-shrink:0;margin-top:2px;" loading="lazy"><span class="big-text" style="color:#374151;">"Cut in half" — Robot uses scissors, cuts the table, the bag…</span></li>
         </ul>
       </div>
     </div>
     <div class="card reveal" style="background:rgba(16,185,129,0.07);border:1px solid rgba(16,185,129,0.25);padding:11px 18px;">
-      <p class="big-text" style="color:#065f46;margin:0;"><strong>Big lesson:</strong> AI is still just following instructions and patterns — it can't read your mind! 🧠 The smarter your instructions, the smarter the result.</p>
+      <p class="big-text" style="color:#065f46;margin:0;"><strong>Big lesson:</strong> AI is still just following instructions and patterns — it can&rsquo;t read your mind! The smarter your instructions, the smarter the result.</p>
     </div>
   </div>
 </div>
 
-<!-- ===== SLIDE 8 · HUMAN VS ROBOT ===== -->
-<div class="slide interior" data-slide="8" data-type="lesson">
+<!-- SLIDE 10 · HUMAN vs ROBOT STEPS -->
+<div class="slide interior" data-slide="10">
   <div class="gradient-mesh">
     <div class="blob" style="width:360px;height:360px;top:-60px;right:-60px;background:#0b63ce;opacity:0.09;"></div>
     <div class="blob" style="width:240px;height:240px;bottom:-50px;left:-40px;background:#f59e0b;opacity:0.07;"></div>
   </div>
   <div class="content">
-    <p class="pill mb-3 reveal">Compare · "Human Steps" vs "Robot Steps"</p>
-    <h2 class="font-display reveal" style="font-size:clamp(1.6rem,2.8vw,2.2rem);font-weight:700;margin-bottom:1rem;">The same task — two very different sets of instructions 🆚</h2>
+    <p class="pill mb-3 reveal">Compare · Human Steps vs Robot Steps</p>
+    <h2 class="font-display reveal" style="margin-bottom:1rem;">The same task — two very different sets of instructions</h2>
     <div class="grid-cards grid-2 reveal" style="margin-bottom:14px;">
       <div class="card" style="padding:18px 20px;">
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;"><img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/02cd4076f1d12aabb60131a850dee911daca5c58.jpg" alt="Person" style="height:28px;width:auto;object-fit:contain;vertical-align:middle;border-radius:6px;border-radius:8px;" loading="lazy"> <strong>How a person says it</strong></div>
-        <div style="background:#e6f7f0;border-radius:10px;padding:11px;margin-bottom:9px;">
-          <div style="font-family:'Fira Code',monospace;font-size:.82rem;color:#065f46;line-height:1.8;">1. Open the jar<br>2. Spread on bread<br>3. Add jelly<br>4. Close the sandwich</div>
-        </div>
-        <p style="font-size:.82rem;color:#374151;font-style:italic;">4 easy steps — our brains fill in the rest.</p>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;"><img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/40543193bfbf5270cc2fd4b91344cb1ce33d62bb.jpg" alt="Kids coding together" style="height:30px;width:auto;object-fit:cover;border-radius:8px;" loading="lazy"><strong>How a person says it</strong></div>
+        <div style="background:#e6f7f0;border-radius:10px;padding:11px;margin-bottom:9px;"><div style="font-family:'Fira Code',monospace;font-size:.82rem;color:#065f46;line-height:1.8;">1. Open the jar<br>2. Spread on bread<br>3. Add jelly<br>4. Close the sandwich</div></div>
+        <p style="font-size:.82rem;color:#374151;font-style:italic;">4 easy steps — our brain fills in the rest.</p>
       </div>
       <div class="card" style="padding:18px 20px;">
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;"><img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/17971eb8378a5252f3a513b1a394881589b00ff8.jpg" alt="Robot" style="height:28px;width:auto;object-fit:contain;vertical-align:middle;border-radius:6px;border-radius:8px;" loading="lazy"> <strong>How a robot needs it</strong></div>
-        <div style="background:#e0f2ff;border-radius:10px;padding:11px;margin-bottom:9px;">
-          <div style="font-family:'Fira Code',monospace;font-size:.82rem;color:#0b63ce;line-height:1.8;">1. Locate jar on counter<br>2. Grasp lid with right hand<br>3. Turn lid counter-clockwise<br>4. Insert knife ½ inch deep<br>5. Spread in left-right motion<br>…and many more!</div>
-        </div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;"><img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/6fa14f0fce891a56a4f109269cb3d527bdaec397.jpg" alt="Robot" style="height:30px;width:auto;object-fit:contain;border-radius:8px;" loading="lazy"><strong>How a robot needs it</strong></div>
+        <div style="background:#e0f2ff;border-radius:10px;padding:11px;margin-bottom:9px;"><div style="font-family:'Fira Code',monospace;font-size:.82rem;color:#0b63ce;line-height:1.8;">1. Locate jar on counter<br>2. Grasp lid with right hand<br>3. Turn lid counter-clockwise<br>4. Insert knife 1 inch deep<br>5. Spread in left–right motion<br>…and many more!</div></div>
         <p style="font-size:.82rem;color:#374151;font-style:italic;">Every detail must be said.</p>
       </div>
     </div>
     <div class="card reveal" style="background:rgba(11,99,206,0.06);border:1px solid rgba(11,99,206,0.2);padding:12px 18px;">
-      <p class="big-text" style="color:#374151;margin:0;">💡 <strong>This is computer thinking:</strong> noticing the tiny steps we usually skip, and putting them in the right order.</p>
+      <p class="big-text" style="color:#374151;margin:0;"><strong>This is computer thinking:</strong> noticing the tiny steps we usually skip, and putting them in the right order.</p>
     </div>
   </div>
 </div>
 
-<!-- ===== SLIDE 9 · VIDEO 2 ===== -->
-<div class="slide interior" data-slide="9" data-type="lesson">
+<!-- SLIDE 11 · ICEBREAKER -->
+<div class="slide interior" data-slide="11">
   <div class="gradient-mesh">
-    <div class="blob" style="width:360px;height:360px;top:-60px;right:-60px;background:#0b63ce;opacity:0.09;"></div>
+    <div class="blob" style="width:360px;height:360px;top:-60px;right:-60px;background:#f59e0b;opacity:0.09;"></div>
     <div class="blob" style="width:240px;height:240px;bottom:-50px;left:-40px;background:#10b981;opacity:0.07;"></div>
   </div>
   <div class="content">
-    <p class="pill mb-3 reveal">▶ Video 2 · Algorithms All Around Us</p>
-    <h2 class="font-display reveal" style="font-size:clamp(1.6rem,2.8vw,2.2rem);font-weight:700;margin-bottom:1rem;">Watch · Introduction to Algorithms <span style="font-size:0.7em;opacity:0.7;">(4:48)</span></h2>
-    <div class="grid-cards grid-2 reveal" style="align-items:start;">
-      <div>
-        <div class="media-embed" id="player-_YoXMAKk9zg" onclick="playVideo('_YoXMAKk9zg')" title="Click to play">
-          <img src="https://img.youtube.com/vi/_YoXMAKk9zg/hqdefault.jpg" alt="Introduction to Algorithms">
-          <div class="play-btn"><div><svg width="22" height="22" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div>
+    <p class="pill mb-3 reveal">Icebreaker · Get to Know Each Other</p>
+    <h2 class="font-display reveal" style="margin-bottom:1rem;">Two Truths &amp; a Robot Lie</h2>
+    <div class="grid-cards grid-2 reveal" style="margin-bottom:14px;align-items:stretch;">
+      <div class="card" style="padding:0;overflow:hidden;display:flex;flex-direction:column;">
+        <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/5b66c95713f1f5f16511e3d4664096f483a74dc8.jpg" alt="Happy kids giving high five in classroom" style="width:100%;height:120px;object-fit:cover;" loading="lazy">
+        <div style="padding:14px 18px;flex:1;">
+          <div style="font-weight:800;font-size:0.85rem;color:#b45309;margin-bottom:7px;">How to play:</div>
+          <ol style="list-style:decimal;padding-left:18px;margin:0;">
+            <li class="big-text" style="margin-bottom:5px;color:#374151;">Think of 2 true facts about yourself and 1 <strong>robot-style lie</strong> (overly literal, like a robot would say it).</li>
+            <li class="big-text" style="margin-bottom:5px;color:#374151;">Share all three — classmates vote on which is the lie.</li>
+            <li class="big-text" style="color:#374151;">Reveal and discuss what made the lie sound "robotic."</li>
+          </ol>
         </div>
-        <p style="font-size:.66rem;color:#5b6b7e;margin-top:7px;">
-          <a href="https://www.youtube.com/watch?v=_YoXMAKk9zg" target="_blank" rel="noopener" style="color:#0b63ce;text-decoration:underline;">▶ YouTube · Tynker — "Introduction to Algorithms | All About Computers"</a>
-        </p>
       </div>
       <div class="card" style="padding:18px 20px;">
-        <div class="question-chip" style="margin-bottom:12px;"><span class="icon">?</span> Watch for just 2 things</div>
-        <ul style="list-style:none;padding:0;margin:0;">
-          <li class="big-text" style="margin-bottom:9px;color:#374151;">① Can you spot an <strong>algorithm</strong> in everyday life in the video?</li>
-          <li class="big-text" style="color:#374151;">② Can you think of an everyday task <em>you</em> do that is secretly an algorithm?</li>
-        </ul>
-        <div class="tip b" style="margin-top:12px;">💬 After watching, finish this sentence: <em>"An algorithm is a list of ___."</em></div>
+        <div style="font-weight:800;font-size:0.85rem;color:#0b63ce;margin-bottom:9px;">Example statements:</div>
+        <div class="accent-card-blue" style="border-radius:10px;padding:10px 14px;margin-bottom:8px;"><span style="font-size:0.8rem;font-weight:800;color:#0b63ce;">TRUTH →</span> "I have a dog named Max."</div>
+        <div class="accent-card-green" style="border-radius:10px;padding:10px 14px;margin-bottom:8px;"><span style="font-size:0.8rem;font-weight:800;color:#047857;">TRUTH →</span> "I like pizza on Fridays."</div>
+        <div class="accent-card-red" style="border-radius:10px;padding:10px 14px;"><span style="font-size:0.8rem;font-weight:800;color:#b91c1c;">ROBOT LIE →</span> "I transport myself to school by placing one foot in front of the other, 847 times."</div>
+        <div class="think-chip" style="margin-top:12px;display:inline-flex;">Why does the robot version sound weird? What is it missing?</div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ===== SLIDE 10 · VOCABULARY ===== -->
-<div class="slide interior" data-slide="10" data-type="lesson">
+<!-- SLIDE 12 · VOCABULARY -->
+<div class="slide interior" data-slide="12">
   <div class="gradient-mesh">
     <div class="blob" style="width:340px;height:340px;top:-60px;right:-60px;background:#f59e0b;opacity:0.09;"></div>
     <div class="blob" style="width:220px;height:220px;bottom:-50px;left:-40px;background:#10b981;opacity:0.07;"></div>
   </div>
   <div class="content">
-    <p class="pill mb-3 reveal" style="display:inline-flex;align-items:center;gap:6px;"><img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/7ad5cd6e1da80db4320d3af8eb5a221a808f69ea.jpg" alt="vocab" style="height:16px;width:auto;object-fit:contain;vertical-align:middle;border-radius:6px;border-radius:4px;" loading="lazy"> Vocabulary · 4 Words for Today</p>
-    <h2 class="font-display reveal" style="font-size:clamp(1.6rem,2.8vw,2.2rem);font-weight:700;margin-bottom:1rem;">Your first four computer-science words 🏆</h2>
+    <p class="pill mb-3 reveal" style="display:inline-flex;align-items:center;gap:6px;"><img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/1cb58d67d85ce4cd85fdfa852ac10ea032420067.jpg" alt="vocab" style="height:18px;width:auto;border-radius:4px;" loading="lazy"> Vocabulary · 4 Words for Today</p>
+    <h2 class="font-display reveal" style="margin-bottom:1rem;">Your first four computer-science words</h2>
     <div class="grid-cards grid-2 reveal" style="gap:14px;">
       <div class="card accent-card-blue" style="padding:18px 20px;">
-        <div style="display:flex;gap:10px;align-items:center;margin-bottom:7px;"><span style="font-size:1.4rem;">🪜</span><span class="vocab-tag">Algorithm</span></div>
+        <div style="display:flex;gap:10px;align-items:center;margin-bottom:7px;"><img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/288a0abd12d6c9de3caf096b1a3fc5b0a08c18b2.jpg" alt="Flowchart algorithm" style="height:36px;width:auto;object-fit:contain;border-radius:6px;" loading="lazy"><span class="vocab-tag">Algorithm</span></div>
         <p class="big-text" style="color:#374151;margin:0;">A <strong>precise list of steps</strong>, in order, that solves a task. A recipe is an algorithm for food!</p>
       </div>
       <div class="card accent-card-green" style="padding:18px 20px;">
-        <div style="display:flex;gap:10px;align-items:center;margin-bottom:7px;"><span style="font-size:1.4rem;">📋</span><span class="vocab-tag">Instruction</span></div>
+        <div style="display:flex;gap:10px;align-items:center;margin-bottom:7px;"><img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/e864ab5d7e0ae384ff8b4b6357c754e42b861c40.jpg" alt="Typing instructions" style="height:36px;width:auto;object-fit:cover;border-radius:6px;" loading="lazy"><span class="vocab-tag">Instruction</span></div>
         <p class="big-text" style="color:#374151;margin:0;">One single step in the list. Computers do each instruction <strong>exactly</strong> and in order.</p>
       </div>
       <div class="card accent-card-amber" style="padding:18px 20px;">
-        <div style="display:flex;gap:10px;align-items:center;margin-bottom:7px;"><span style="font-size:1.4rem;">🤖</span><span class="vocab-tag">AI</span></div>
+        <div style="display:flex;gap:10px;align-items:center;margin-bottom:7px;"><img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/14f40c50be8ec3ab033021ac9fb38d754c13cd4f.jpg" alt="AI kids" style="height:36px;width:auto;object-fit:contain;border-radius:6px;" loading="lazy"><span class="vocab-tag">AI</span></div>
         <p class="big-text" style="color:#374151;margin:0;">Computer programs that spot <strong>patterns</strong> and make guesses. Still following instructions — not magic.</p>
       </div>
       <div class="card accent-card-red" style="padding:18px 20px;">
-        <div style="display:flex;gap:10px;align-items:center;margin-bottom:7px;"><span style="font-size:1.4rem;">🐛</span><span class="vocab-tag">Bug</span></div>
+        <div style="display:flex;gap:10px;align-items:center;margin-bottom:7px;"><img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/6fa14f0fce891a56a4f109269cb3d527bdaec397.jpg" alt="Robot bug" style="height:36px;width:auto;object-fit:contain;border-radius:6px;" loading="lazy"><span class="vocab-tag">Bug</span></div>
         <p class="big-text" style="color:#374151;margin:0;">A mistake in your steps that makes things go wrong. Bugs are <strong>normal</strong> — we fix them together!</p>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ===== SLIDE 11 · TOOLS TOUR ===== -->
-<div class="slide interior" data-slide="11" data-type="lesson">
+<!-- SLIDE 13 · TOOLS TOUR -->
+<div class="slide interior" data-slide="13">
   <div class="gradient-mesh">
     <div class="blob" style="width:360px;height:360px;top:-60px;right:-60px;background:#0b63ce;opacity:0.09;"></div>
     <div class="blob" style="width:240px;height:240px;bottom:-50px;left:-40px;background:#10b981;opacity:0.07;"></div>
   </div>
   <div class="content">
-    <p class="pill mb-3 reveal" style="display:inline-flex;align-items:center;gap:6px;"><img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/8955b4a7388dfd204ff49be4dc5a88361679fb1f.jpg" alt="tools" style="height:16px;width:auto;object-fit:contain;vertical-align:middle;border-radius:6px;border-radius:4px;" loading="lazy"> Tour · The Tools We'll Use</p>
-    <h2 class="font-display reveal" style="font-size:clamp(1.6rem,2.8vw,2.2rem);font-weight:700;margin-bottom:1rem;">Three free tools — all in your browser! 🌐</h2>
+    <p class="pill mb-3 reveal">Tour · The Tools We&rsquo;ll Use</p>
+    <h2 class="font-display reveal" style="margin-bottom:1rem;">Three free tools — all in your browser!</h2>
     <div class="grid-cards grid-3 reveal" style="margin-bottom:14px;">
       <div class="card" style="padding:18px 20px;text-align:center;">
-        <div style="margin-bottom:7px;"><img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/8955b4a7388dfd204ff49be4dc5a88361679fb1f.jpg" alt="Scratch cat" style="height:60px;width:auto;object-fit:contain;border-radius:10px;" loading="lazy"></div>
+        <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/06e5b5075497640d61a3be6fbad5b66cd3dc84ab.jpg" alt="Scratch coding blocks and cat mascot" style="height:70px;width:auto;object-fit:contain;border-radius:10px;margin-bottom:8px;" loading="lazy">
         <div style="font-weight:800;font-size:1rem;color:#0b63ce;margin-bottom:5px;">Scratch</div>
         <p style="font-size:.86rem;color:#374151;margin-bottom:7px;">Drag-and-drop <strong>blocks</strong> to make games and animations. We start here — no typing stress!</p>
         <a href="https://scratch.mit.edu" target="_blank" rel="noopener" style="display:inline-block;background:#0b63ce;color:#fff;font-size:.74rem;font-weight:800;padding:5px 14px;border-radius:999px;text-decoration:none;">scratch.mit.edu</a>
       </div>
       <div class="card" style="padding:18px 20px;text-align:center;">
-        <div style="margin-bottom:7px;"><img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/0a76ba80fe12cfd7ebc5d232cb49e24001da609f.jpg" alt="Python" style="height:60px;width:auto;object-fit:contain;border-radius:10px;" loading="lazy"></div>
+        <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/d9dfc8ebf0a6414279fc13add5fe3e3a53a429e4.jpg" alt="Python programming logo" style="height:70px;width:auto;object-fit:contain;border-radius:10px;margin-bottom:8px;" loading="lazy">
         <div style="font-weight:800;font-size:1rem;color:#0b63ce;margin-bottom:5px;">Python Playground</div>
         <p style="font-size:.86rem;color:#374151;margin-bottom:7px;">Where we write <strong>real text code</strong> later in the summer. Same ideas, just typed out.</p>
         <a href="https://playcode.io/python-playground" target="_blank" rel="noopener" style="display:inline-block;background:#0b63ce;color:#fff;font-size:.74rem;font-weight:800;padding:5px 14px;border-radius:999px;text-decoration:none;">playcode.io</a>
       </div>
       <div class="card" style="padding:18px 20px;text-align:center;">
-        <div style="margin-bottom:7px;"><img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/8605f73c7ddc0264551be896b969bde0c5f69b3a.jpg" alt="Teachable Machine" style="height:60px;width:auto;object-fit:contain;border-radius:10px;" loading="lazy"></div>
+        <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/2b66dc2508013c1a6f6d111630818071bf7af880.jpg" alt="Teachable Machine interface" style="height:70px;width:auto;object-fit:cover;border-radius:10px;margin-bottom:8px;" loading="lazy">
         <div style="font-weight:800;font-size:1rem;color:#0b63ce;margin-bottom:5px;">Teachable Machine</div>
         <p style="font-size:.86rem;color:#374151;margin-bottom:7px;">A Google tool to <strong>train a real AI</strong> in your browser — coming later. So cool!</p>
-        <a href="https://teachablemachine.withgoogle.com" target="_blank" rel="noopener" style="display:inline-block;background:#10b981;color:#fff;font-size:.74rem;font-weight:800;padding:5px 14px;border-radius:999px;text-decoration:none;">teachablemachine.withgoogle.com</a>
+        <a href="https://teachablemachine.withgoogle.com" target="_blank" rel="noopener" style="display:inline-block;background:#10b981;color:#fff;font-size:.74rem;font-weight:800;padding:5px 14px;border-radius:999px;text-decoration:none;">teachablemachine.com</a>
       </div>
     </div>
     <div class="card reveal" style="background:rgba(245,158,11,0.07);border:1px solid rgba(245,158,11,0.25);padding:11px 18px;">
-      <p class="big-text" style="color:#374151;margin:0;">📝 <strong>Today we just set up our Scratch accounts</strong> and take a peek around. Next session we start building. No rush!</p>
+      <p class="big-text" style="color:#374151;margin:0;"><strong>Today we just set up our Scratch accounts</strong> and take a peek around. Next session we start building. No rush!</p>
     </div>
   </div>
 </div>
 
-<!-- ===== SLIDE 12 · CLASS AGREEMENTS ===== -->
-<div class="slide interior" data-slide="12" data-type="lesson">
+<!-- SLIDE 14 · CLASS AGREEMENTS -->
+<div class="slide interior" data-slide="14">
   <div class="gradient-mesh">
     <div class="blob" style="width:360px;height:360px;top:-60px;right:-60px;background:#10b981;opacity:0.09;"></div>
     <div class="blob" style="width:240px;height:240px;bottom:-50px;left:-40px;background:#0b63ce;opacity:0.07;"></div>
   </div>
   <div class="content">
-    <p class="pill green mb-3 reveal" style="display:inline-flex;align-items:center;gap:6px;"><img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/6dbe59afe8e233442abb3d4beafce246d80233a2.jpg" alt="agreements" style="height:16px;width:auto;object-fit:contain;vertical-align:middle;border-radius:6px;border-radius:4px;" loading="lazy"> Our Class Agreements</p>
-    <h2 class="font-display reveal" style="font-size:clamp(1.6rem,2.8vw,2.2rem);font-weight:700;margin-bottom:1rem;">How we treat each other — and ourselves 💚</h2>
+    <p class="pill green mb-3 reveal">Our Class Agreements</p>
+    <h2 class="font-display reveal" style="margin-bottom:1rem;">How we treat each other — and ourselves</h2>
     <div class="grid-cards grid-3 reveal" style="gap:13px;">
-      <div class="card" style="padding:14px 16px;display:flex;gap:10px;align-items:flex-start;"><span style="flex-shrink:0;"><img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/5d841159d205f7e5dd6c2cf9f682f222777d3b81.jpg" alt="trophy" style="height:32px;width:auto;object-fit:contain;vertical-align:middle;border-radius:6px;border-radius:8px;" loading="lazy"></span><div><strong style="color:#0b63ce;">Everyone is a beginner.</strong><br><span style="font-size:.86rem;color:#374151;">Be kind and patient with yourself and others.</span></div></div>
-      <div class="card" style="padding:14px 16px;display:flex;gap:10px;align-items:flex-start;"><span style="flex-shrink:0;"><img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/8406474dde0944c4eea6c0a8a213ac196c132fc7.jpg" alt="bug" style="height:32px;width:auto;object-fit:contain;vertical-align:middle;border-radius:6px;border-radius:8px;" loading="lazy"></span><div><strong style="color:#0b63ce;">Bugs are normal.</strong><br><span style="font-size:.86rem;color:#374151;">Mistakes mean you're learning — we fix them together.</span></div></div>
-      <div class="card" style="padding:14px 16px;display:flex;gap:10px;align-items:flex-start;"><span style="font-size:1.3rem;flex-shrink:0;">🙂</span><div><strong style="color:#0b63ce;">Sharing is optional.</strong><br><span style="font-size:.86rem;color:#374151;">You're never forced to present in front of the group.</span></div></div>
-      <div class="card" style="padding:14px 16px;display:flex;gap:10px;align-items:flex-start;"><span style="flex-shrink:0;"><img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/6dbe59afe8e233442abb3d4beafce246d80233a2.jpg" alt="highfive" style="height:32px;width:auto;object-fit:contain;vertical-align:middle;border-radius:6px;border-radius:8px;" loading="lazy"></span><div><strong style="color:#0b63ce;">Praise out loud, correct privately.</strong><br><span style="font-size:.86rem;color:#374151;">We cheer each other on.</span></div></div>
-      <div class="card" style="padding:14px 16px;display:flex;gap:10px;align-items:flex-start;"><span style="flex-shrink:0;"><img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/721ee156f0568c238f5cbc54356cc9638ce8ef39.jpg" alt="help" style="height:32px;width:auto;object-fit:contain;vertical-align:middle;border-radius:6px;border-radius:8px;" loading="lazy"></span><div><strong style="color:#0b63ce;">Help a neighbor</strong><br><span style="font-size:.86rem;color:#374151;">when you can. Teaching others helps you learn too.</span></div></div>
-      <div class="card" style="padding:14px 16px;display:flex;gap:10px;align-items:flex-start;"><span style="font-size:1.3rem;flex-shrink:0;">📵</span><div><strong style="color:#0b63ce;">Phones away</strong><br><span style="font-size:.86rem;color:#374151;">during instruction. Movement breaks are built in — just ask.</span></div></div>
+      <div class="card" style="padding:14px 16px;display:flex;gap:10px;align-items:flex-start;"><img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/72cdf63eb8ffa07b5f0559272d305c5f5577e03b.jpg" alt="Students high five" style="height:36px;width:44px;object-fit:cover;border-radius:8px;flex-shrink:0;" loading="lazy"><div><strong style="color:#0b63ce;">Everyone is a beginner.</strong><br><span style="font-size:.86rem;color:#374151;">Be kind and patient with yourself and others.</span></div></div>
+      <div class="card" style="padding:14px 16px;display:flex;gap:10px;align-items:flex-start;"><img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/6fa14f0fce891a56a4f109269cb3d527bdaec397.jpg" alt="Robot bug" style="height:36px;width:28px;object-fit:contain;border-radius:8px;flex-shrink:0;" loading="lazy"><div><strong style="color:#0b63ce;">Bugs are normal.</strong><br><span style="font-size:.86rem;color:#374151;">Mistakes mean you&rsquo;re learning — we fix them together.</span></div></div>
+      <div class="card" style="padding:14px 16px;display:flex;gap:10px;align-items:flex-start;"><img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/40543193bfbf5270cc2fd4b91344cb1ce33d62bb.jpg" alt="Students working" style="height:36px;width:44px;object-fit:cover;border-radius:8px;flex-shrink:0;" loading="lazy"><div><strong style="color:#0b63ce;">Ask before you tell.</strong><br><span style="font-size:.86rem;color:#374151;">Try it yourself first — then ask a neighbor, then ask me.</span></div></div>
+      <div class="card" style="padding:14px 16px;display:flex;gap:10px;align-items:flex-start;"><img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/5b66c95713f1f5f16511e3d4664096f483a74dc8.jpg" alt="Celebrating kids" style="height:36px;width:44px;object-fit:cover;border-radius:8px;flex-shrink:0;" loading="lazy"><div><strong style="color:#0b63ce;">Praise out loud, correct privately.</strong><br><span style="font-size:.86rem;color:#374151;">We cheer each other on.</span></div></div>
+      <div class="card" style="padding:14px 16px;display:flex;gap:10px;align-items:flex-start;"><img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/e64d60561ca6e352b0ed261382635e67827d8fe7.jpg" alt="Students at computer" style="height:36px;width:44px;object-fit:cover;border-radius:8px;flex-shrink:0;" loading="lazy"><div><strong style="color:#0b63ce;">Sharing is optional.</strong><br><span style="font-size:.86rem;color:#374151;">You&rsquo;re never forced to present in front of the group.</span></div></div>
+      <div class="card accent-card-blue" style="padding:14px 16px;display:flex;gap:10px;align-items:center;"><img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/14b05038cd7b3022c9ea26d06fff68213dafb360.jpg" alt="Thinking student" style="height:36px;width:44px;object-fit:cover;border-radius:8px;flex-shrink:0;" loading="lazy"><div><strong style="color:#0b63ce;">Questions are gifts.</strong><br><span style="font-size:.86rem;color:#374151;">If you&rsquo;re wondering it, someone else is too — always ask.</span></div></div>
     </div>
   </div>
 </div>
 
-<!-- ===== SLIDE 13 · ACTIVITY: WARM-UP (TIERED) ===== -->
-<div class="slide scrolly interior" data-slide="13" data-type="activity">
-  <div class="content">
-    <div class="act-shell reveal">
-      <div class="sheet-header">
-        <div class="hdr-day">Session 1 · Mon Jun 29 · In-Class Activity</div>
-        <div class="hdr-title" style="display:flex;align-items:center;gap:10px;"><img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/14b05038cd7b3022c9ea26d06fff68213dafb360.jpg" alt="warm-up" style="height:28px;width:auto;object-fit:contain;vertical-align:middle;border-radius:6px;border-radius:8px;flex-shrink:0;" loading="lazy"> Warm-Up Activity</div>
-        <div class="hdr-sub">Brains On — No Screens Required</div>
-        <div class="hdr-pills">
-          <span class="hpill">⏱ 10 min</span>
-          <span class="hpill">✏ Paper &amp; Pencil</span>
-          <span class="hpill">Partner Work</span>
-        </div>
-      </div>
-      <!-- Student info bar (once per activity section) -->
-      <div class="student-bar">
-        <div class="sbar-field"><span class="sbar-label">Name</span><input class="sbar-input" type="text" placeholder="Your full name" autocomplete="name"></div>
-        <div class="sbar-field"><span class="sbar-label">Date</span><input class="sbar-input" type="text" placeholder="Jun 29, 2026"></div>
-        <div class="sbar-field"><span class="sbar-label">Section</span>
-          <select class="sbar-select">
-            <option value="">— select —</option>
-            <option value="AM-AI1">AM-AI1 (10:30–11:45 AM)</option>
-            <option value="PM-AI1">PM-AI1 (1:00–2:50 PM)</option>
-            <option value="PM-AI2">PM-AI2 (3:00–4:50 PM)</option>
-          </select>
-        </div>
-      </div>
-      <!-- Tier A -->
-      <div class="acard ag" style="margin-bottom:11px;">
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;"><span class="tier-badge-a"><img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/744b8dc685e466958f393592a685b9baf05003a7.jpg" alt="Tier A" style="height:18px;width:auto;object-fit:contain;vertical-align:middle;border-radius:6px;border-radius:4px;" loading="lazy"> Tier A · Foundations</span></div>
-        <p style="font-size:.84rem;color:#374151;margin-bottom:8px;"><strong>Draw first, then add words.</strong> Draw a robot trying to make a sandwich in the box below. Add 2 labels for what might go wrong.</p>
-        <div class="draw-widget" id="dw-act13"><div class="draw-toolbar"><span class="draw-label">Draw:</span><button class="draw-btn active" id="btn-pencil-act13" onclick="setTool('act13','pencil')">✏ Pencil</button><button class="draw-btn" id="btn-eraser-act13" onclick="setTool('act13','eraser')">⬜ Eraser</button><input class="draw-color" type="color" id="color-act13" value="#1e3a5f" oninput="setColor('act13',this.value)"><span class="draw-label">Size:</span><input class="draw-size" type="range" id="size-act13" min="1" max="20" value="3" oninput="setSize('act13',this.value)"><button class="draw-btn" onclick="clearCanvas('act13')" style="margin-left:auto;color:#be123c;border-color:#fecdd3;">✕ Clear</button></div><canvas class="draw-canvas-el" id="canvas-act13" style="height:140px;background:#fff;" data-key="draw_act13"></canvas><img class="draw-canvas-print" id="print-act13" src="" alt="Drawing"><div class="draw-resize-bar" id="resize-bar-act13"><button class="draw-resize-btn" onclick="resizeCanvas('act13',-40)">▲ Smaller</button><span class="draw-resize-label">drag to resize ↕</span><button class="draw-resize-btn" onclick="resizeCanvas('act13',60)">▼ Bigger</button></div></div>
-        <textarea class="warea" style="margin-top:8px;min-height:36px;" placeholder="Labels (what went wrong?): 1. ___   2. ___"></textarea>
-      </div>
-      <!-- Tier B -->
-      <div class="acard ab" style="margin-bottom:11px;">
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;"><span class="tier-badge-b"><img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/7ad5cd6e1da80db4320d3af8eb5a221a808f69ea.jpg" alt="Tier B" style="height:18px;width:auto;object-fit:contain;vertical-align:middle;border-radius:6px;border-radius:4px;" loading="lazy"> Tier B · Core</span></div>
-        <div class="g2" style="gap:10px;">
-          <div>
-            <div class="clabel b">❓ Q1 — Partner Discussion</div>
-            <p style="font-size:.82rem;color:#374151;margin-bottom:6px;">A robot has never seen a sandwich. You say "make a sandwich." What might go wrong?</p>
-            <textarea class="warea" placeholder="My answer..." rows="2"></textarea>
-          </div>
-          <div>
-            <div class="clabel b">❓ Q2 — Partner Discussion</div>
-            <p style="font-size:.82rem;color:#374151;margin-bottom:6px;">Name one machine you used today that felt "smart." What did it do?</p>
-            <textarea class="warea" placeholder="My example..." rows="2"></textarea>
-          </div>
-        </div>
-      </div>
-      <!-- Tier C -->
-      <div class="acard aa" style="margin-bottom:0;">
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;"><span class="tier-badge-c"><img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/9f5151b0098bb7899f75edc1c9ed1e8661df0062.jpg" alt="Tier C" style="height:18px;width:auto;object-fit:contain;vertical-align:middle;border-radius:6px;border-radius:4px;" loading="lazy"> Tier C · Accelerated</span></div>
-        <p style="font-size:.82rem;color:#374151;margin-bottom:8px;">Answer both Tier B questions <em>and</em> this extension: describe a machine you use daily in terms of its algorithm. What inputs does it receive? What steps does it follow? What output does it give?</p>
-        <input type="text" class="wline" placeholder="Machine name:">
-        <textarea class="warea" placeholder="Inputs → Steps → Output (describe in your own words)..." rows="3"></textarea>
-        <div class="tip a">🌶 Bonus: Can you write the first 3 steps as <code>if / then</code> rules?</div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ===== SLIDE 14 · ACTIVITY: ICEBREAKER (TIERED) ===== -->
-<div class="slide scrolly interior" data-slide="14" data-type="activity">
-  <div class="content">
-    <div class="act-shell reveal">
-      <div class="sheet-header">
-        <div class="hdr-day">Session 1 · Mon Jun 29 · Icebreaker Activity</div>
-        <div class="hdr-title" style="display:flex;align-items:center;gap:10px;"><img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/6dbe59afe8e233442abb3d4beafce246d80233a2.jpg" alt="icebreaker" style="height:28px;width:auto;object-fit:contain;vertical-align:middle;border-radius:6px;border-radius:8px;flex-shrink:0;" loading="lazy"> Two Truths and a Robot Lie</div>
-        <div class="hdr-sub">Get to know each other — and discover how AI classifiers work!</div>
-        <div class="hdr-pills">
-          <span class="hpill">⏱ 15 min</span>
-          <span class="hpill">Whole Class</span>
-          <span class="hpill" style="display:inline-flex;align-items:center;gap:4px;"><img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/17971eb8378a5252f3a513b1a394881589b00ff8.jpg" alt="ai" style="height:14px;width:auto;object-fit:contain;vertical-align:middle;border-radius:6px;border-radius:3px;" loading="lazy"> AI Tie-In</span>
-        </div>
-      </div>
-      <!-- No second student-bar — shared across this activity section; auto-filled from slide 13 via JS -->
-      <div style="background:#f0f7ff;border:1px solid rgba(11,99,206,0.12);border-radius:12px;padding:9px 14px;margin-bottom:12px;font-size:.72rem;color:#5b6b7e;">
-        ℹ️ Student info entered on the Warm-Up sheet carries to all activity sheets automatically.
-      </div>
-      <!-- How to Play: tiered -->
-      <div class="g3" style="margin-bottom:12px;">
-        <div class="acard ag">
-          <span class="tier-badge-a" style="margin-bottom:7px;display:inline-flex;"><img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/744b8dc685e466958f393592a685b9baf05003a7.jpg" alt="Tier A" style="height:18px;width:auto;object-fit:contain;vertical-align:middle;border-radius:6px;border-radius:4px;" loading="lazy"> Tier A</span>
-          <div class="clabel g">Write or draw 2 truths + 1 robot lie</div>
-          <p style="font-size:.82rem;color:#374151;margin:0;">Use pictures or single words. Ask a buddy if you need spelling help. The "robot lie" can be silly!</p>
-        </div>
-        <div class="acard ab">
-          <span class="tier-badge-b" style="margin-bottom:7px;display:inline-flex;"><img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/7ad5cd6e1da80db4320d3af8eb5a221a808f69ea.jpg" alt="Tier B" style="height:18px;width:auto;object-fit:contain;vertical-align:middle;border-radius:6px;border-radius:4px;" loading="lazy"> Tier B</span>
-          <div class="clabel b">Write 2 truths + 1 robot lie in full sentences</div>
-          <p style="font-size:.82rem;color:#374151;margin:0;">Make the lie sound believable. After, explain how the class "classified" which was false — just like an AI!</p>
-        </div>
-        <div class="acard aa">
-          <span class="tier-badge-c" style="margin-bottom:7px;display:inline-flex;"><img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/9f5151b0098bb7899f75edc1c9ed1e8661df0062.jpg" alt="Tier C" style="height:18px;width:auto;object-fit:contain;vertical-align:middle;border-radius:6px;border-radius:4px;" loading="lazy"> Tier C</span>
-          <div class="clabel a">Write 2 truths + 1 robot lie + explain your classifier</div>
-          <p style="font-size:.82rem;color:#374151;margin:0;">After the class guesses, write 2 sentences: what "features" (clues) gave the lie away, and how a real AI classifier would use those same clues.</p>
-        </div>
-      </div>
-      <!-- Shared fill-in -->
-      <div class="g3" style="margin-bottom:11px;">
-        <div class="acard ag">
-          <div class="clabel g">✅ Truth 1</div>
-          <input type="text" class="wline" placeholder="Write a true fact about yourself...">
-        </div>
-        <div class="acard ag">
-          <div class="clabel g">✅ Truth 2</div>
-          <input type="text" class="wline" placeholder="Write another true fact...">
-        </div>
-        <div class="acard ar">
-          <div class="clabel r">🤖 Robot Lie</div>
-          <input type="text" class="wline" placeholder="Write the robot lie (sounds plausible!)...">
-        </div>
-      </div>
-      <!-- Tier C extension -->
-      <div class="acard aa" style="margin-bottom:0;">
-        <span class="tier-badge-c" style="margin-bottom:7px;display:inline-flex;"><img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/9f5151b0098bb7899f75edc1c9ed1e8661df0062.jpg" alt="Tier C" style="height:18px;width:auto;object-fit:contain;vertical-align:middle;border-radius:6px;border-radius:4px;" loading="lazy"> Tier C Extension</span>
-        <div class="clabel a">What clues (features) gave away your lie?</div>
-        <textarea class="warea" placeholder="The class noticed... A real AI classifier would look for..." rows="2"></textarea>
-        <div class="tip a">🌶 Stretch: How many examples would an AI need to learn to spot your lie reliably?</div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ===== SLIDE 15 · ACTIVITY: SANDWICH ALGORITHM (TIERED) ===== -->
-<div class="slide scrolly interior" data-slide="15" data-type="activity">
-  <div class="content">
-    <div class="act-shell reveal">
-      <div class="sheet-header">
-        <div class="hdr-day">Session 1 · Mon Jun 29 · Guided Build Activity</div>
-        <div class="hdr-title" style="display:flex;align-items:center;gap:10px;"><img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/260bc1a2f3932ef0f14b744d0eedf33c6221281f.jpg" alt="sandwich" style="height:28px;width:auto;object-fit:contain;vertical-align:middle;border-radius:6px;border-radius:8px;flex-shrink:0;" loading="lazy"> The Sandwich Algorithm Challenge</div>
-        <div class="hdr-sub">Write step-by-step instructions for a very literal robot!</div>
-        <div class="hdr-pills">
-          <span class="hpill">⏱ 20 min</span>
-          <span class="hpill" style="display:inline-flex;align-items:center;gap:4px;"><img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/17971eb8378a5252f3a513b1a394881589b00ff8.jpg" alt="robot" style="height:14px;width:auto;object-fit:contain;vertical-align:middle;border-radius:6px;border-radius:3px;" loading="lazy"> Robot Teacher</span>
-          <span class="hpill" style="display:inline-flex;align-items:center;gap:4px;"><img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/8406474dde0944c4eea6c0a8a213ac196c132fc7.jpg" alt="bug" style="height:14px;width:auto;object-fit:contain;vertical-align:middle;border-radius:6px;border-radius:3px;" loading="lazy"> Bug Hunt</span>
-        </div>
-      </div>
-      <div style="background:#f0f7ff;border:1px solid rgba(11,99,206,0.12);border-radius:12px;padding:9px 14px;margin-bottom:12px;font-size:.72rem;color:#5b6b7e;">
-        ℹ️ Student info entered on the Warm-Up sheet carries to all activity sheets automatically.
-      </div>
-      <!-- Tier A -->
-      <div class="acard ag" style="margin-bottom:11px;">
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;"><span class="tier-badge-a"><img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/744b8dc685e466958f393592a685b9baf05003a7.jpg" alt="Tier A" style="height:18px;width:auto;object-fit:contain;vertical-align:middle;border-radius:6px;border-radius:4px;" loading="lazy"> Tier A · Foundations</span></div>
-        <div class="clabel g">My Picture Algorithm — draw the steps, then add a word for each</div>
-        <div class="g2" style="gap:8px;margin-bottom:8px;">
-<div style="border-radius:9px;overflow:hidden;border:1.5px dashed rgba(16,185,129,0.3);"><div style="font-size:.7rem;color:#047857;font-weight:700;background:#f0fff8;padding:5px 10px;border-bottom:1px solid rgba(16,185,129,0.2);">Step 1</div><div class="draw-widget" id="dw-sw1" style="border:none;border-radius:0;"><div class="draw-toolbar" style="padding:4px 8px;gap:4px;"><button class="draw-btn active" id="btn-pencil-sw1" onclick="setTool('sw1','pencil')" style="padding:2px 7px;font-size:.66rem;">✏</button><button class="draw-btn" id="btn-eraser-sw1" onclick="setTool('sw1','eraser')" style="padding:2px 7px;font-size:.66rem;">⬜</button><input class="draw-color" type="color" id="color-sw1" value="#1e3a5f" style="width:20px;height:20px;" oninput="setColor('sw1',this.value)"><button class="draw-btn" onclick="clearCanvas('sw1')" style="margin-left:auto;color:#be123c;border-color:#fecdd3;padding:2px 7px;font-size:.66rem;">✕</button></div><canvas class="draw-canvas-el" id="canvas-sw1" style="height:80px;background:#fff;" data-key="draw_sw1"></canvas><img class="draw-canvas-print" id="print-sw1" src="" alt="Drawing"><div class="draw-resize-bar" id="resize-bar-sw1" style="padding:2px 0;"><button class="draw-resize-btn" onclick="resizeCanvas('sw1',-30)" style="padding:1px 7px;font-size:.6rem;">▲</button><span class="draw-resize-label">resize</span><button class="draw-resize-btn" onclick="resizeCanvas('sw1',50)" style="padding:1px 7px;font-size:.6rem;">▼</button></div></div><input type="text" class="wline" placeholder="e.g. Get bread" style="margin:5px 8px 6px;width:calc(100% - 16px);"></div>
-<div style="border-radius:9px;overflow:hidden;border:1.5px dashed rgba(16,185,129,0.3);"><div style="font-size:.7rem;color:#047857;font-weight:700;background:#f0fff8;padding:5px 10px;border-bottom:1px solid rgba(16,185,129,0.2);">Step 2</div><div class="draw-widget" id="dw-sw2" style="border:none;border-radius:0;"><div class="draw-toolbar" style="padding:4px 8px;gap:4px;"><button class="draw-btn active" id="btn-pencil-sw2" onclick="setTool('sw2','pencil')" style="padding:2px 7px;font-size:.66rem;">✏</button><button class="draw-btn" id="btn-eraser-sw2" onclick="setTool('sw2','eraser')" style="padding:2px 7px;font-size:.66rem;">⬜</button><input class="draw-color" type="color" id="color-sw2" value="#1e3a5f" style="width:20px;height:20px;" oninput="setColor('sw2',this.value)"><button class="draw-btn" onclick="clearCanvas('sw2')" style="margin-left:auto;color:#be123c;border-color:#fecdd3;padding:2px 7px;font-size:.66rem;">✕</button></div><canvas class="draw-canvas-el" id="canvas-sw2" style="height:80px;background:#fff;" data-key="draw_sw2"></canvas><img class="draw-canvas-print" id="print-sw2" src="" alt="Drawing"><div class="draw-resize-bar" id="resize-bar-sw2" style="padding:2px 0;"><button class="draw-resize-btn" onclick="resizeCanvas('sw2',-30)" style="padding:1px 7px;font-size:.6rem;">▲</button><span class="draw-resize-label">resize</span><button class="draw-resize-btn" onclick="resizeCanvas('sw2',50)" style="padding:1px 7px;font-size:.6rem;">▼</button></div></div><input type="text" class="wline" placeholder="e.g. Open jar" style="margin:5px 8px 6px;width:calc(100% - 16px);"></div>
-<div style="border-radius:9px;overflow:hidden;border:1.5px dashed rgba(16,185,129,0.3);"><div style="font-size:.7rem;color:#047857;font-weight:700;background:#f0fff8;padding:5px 10px;border-bottom:1px solid rgba(16,185,129,0.2);">Step 3</div><div class="draw-widget" id="dw-sw3" style="border:none;border-radius:0;"><div class="draw-toolbar" style="padding:4px 8px;gap:4px;"><button class="draw-btn active" id="btn-pencil-sw3" onclick="setTool('sw3','pencil')" style="padding:2px 7px;font-size:.66rem;">✏</button><button class="draw-btn" id="btn-eraser-sw3" onclick="setTool('sw3','eraser')" style="padding:2px 7px;font-size:.66rem;">⬜</button><input class="draw-color" type="color" id="color-sw3" value="#1e3a5f" style="width:20px;height:20px;" oninput="setColor('sw3',this.value)"><button class="draw-btn" onclick="clearCanvas('sw3')" style="margin-left:auto;color:#be123c;border-color:#fecdd3;padding:2px 7px;font-size:.66rem;">✕</button></div><canvas class="draw-canvas-el" id="canvas-sw3" style="height:80px;background:#fff;" data-key="draw_sw3"></canvas><img class="draw-canvas-print" id="print-sw3" src="" alt="Drawing"><div class="draw-resize-bar" id="resize-bar-sw3" style="padding:2px 0;"><button class="draw-resize-btn" onclick="resizeCanvas('sw3',-30)" style="padding:1px 7px;font-size:.6rem;">▲</button><span class="draw-resize-label">resize</span><button class="draw-resize-btn" onclick="resizeCanvas('sw3',50)" style="padding:1px 7px;font-size:.6rem;">▼</button></div></div><input type="text" class="wline" placeholder="e.g. Spread it on" style="margin:5px 8px 6px;width:calc(100% - 16px);"></div>
-<div style="border-radius:9px;overflow:hidden;border:1.5px dashed rgba(16,185,129,0.3);"><div style="font-size:.7rem;color:#047857;font-weight:700;background:#f0fff8;padding:5px 10px;border-bottom:1px solid rgba(16,185,129,0.2);">Step 4</div><div class="draw-widget" id="dw-sw4" style="border:none;border-radius:0;"><div class="draw-toolbar" style="padding:4px 8px;gap:4px;"><button class="draw-btn active" id="btn-pencil-sw4" onclick="setTool('sw4','pencil')" style="padding:2px 7px;font-size:.66rem;">✏</button><button class="draw-btn" id="btn-eraser-sw4" onclick="setTool('sw4','eraser')" style="padding:2px 7px;font-size:.66rem;">⬜</button><input class="draw-color" type="color" id="color-sw4" value="#1e3a5f" style="width:20px;height:20px;" oninput="setColor('sw4',this.value)"><button class="draw-btn" onclick="clearCanvas('sw4')" style="margin-left:auto;color:#be123c;border-color:#fecdd3;padding:2px 7px;font-size:.66rem;">✕</button></div><canvas class="draw-canvas-el" id="canvas-sw4" style="height:80px;background:#fff;" data-key="draw_sw4"></canvas><img class="draw-canvas-print" id="print-sw4" src="" alt="Drawing"><div class="draw-resize-bar" id="resize-bar-sw4" style="padding:2px 0;"><button class="draw-resize-btn" onclick="resizeCanvas('sw4',-30)" style="padding:1px 7px;font-size:.6rem;">▲</button><span class="draw-resize-label">resize</span><button class="draw-resize-btn" onclick="resizeCanvas('sw4',50)" style="padding:1px 7px;font-size:.6rem;">▼</button></div></div><input type="text" class="wline" placeholder="e.g. Close sandwich" style="margin:5px 8px 6px;width:calc(100% - 16px);"></div>
-        </div>
-        <div class="clabel r" style="margin-top:6px;">🐛 Bug I spotted</div>
-        <input type="text" class="wline" placeholder="Something the teacher-robot did wrong...">
-      </div>
-      <!-- Tier B -->
-      <div class="acard ab" style="margin-bottom:11px;">
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;"><span class="tier-badge-b"><img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/7ad5cd6e1da80db4320d3af8eb5a221a808f69ea.jpg" alt="Tier B" style="height:18px;width:auto;object-fit:contain;vertical-align:middle;border-radius:6px;border-radius:4px;" loading="lazy"> Tier B · Core</span></div>
-        <div class="g2" style="gap:10px;">
-          <div>
-            <div class="clabel b">📜 My 6-Step Algorithm</div>
-            <input type="text" class="wline" placeholder="Step 1:">
-            <input type="text" class="wline" placeholder="Step 2:">
-            <input type="text" class="wline" placeholder="Step 3:">
-            <input type="text" class="wline" placeholder="Step 4:">
-            <input type="text" class="wline" placeholder="Step 5:">
-            <input type="text" class="wline" placeholder="Step 6:">
-          </div>
-          <div>
-            <div class="clabel r" style="display:flex;align-items:center;gap:5px;"><img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/8406474dde0944c4eea6c0a8a213ac196c132fc7.jpg" alt="bug" style="height:16px;width:auto;object-fit:contain;vertical-align:middle;border-radius:6px;border-radius:4px;" loading="lazy"> Bug Hunt</div>
-            <textarea class="warea" placeholder="What went wrong when the robot followed your steps?" rows="3" style="margin-bottom:8px;"></textarea>
-            <div class="clabel g">✅ My Fix</div>
-            <textarea class="warea" placeholder="How did you debug it?" rows="3"></textarea>
-          </div>
-        </div>
-      </div>
-      <!-- Tier C -->
-      <div class="acard aa" style="margin-bottom:0;">
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;"><span class="tier-badge-c"><img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/9f5151b0098bb7899f75edc1c9ed1e8661df0062.jpg" alt="Tier C" style="height:18px;width:auto;object-fit:contain;vertical-align:middle;border-radius:6px;border-radius:4px;" loading="lazy"> Tier C · Accelerated</span></div>
-        <div class="g2" style="gap:10px;">
-          <div>
-            <div class="clabel a">📜 My Detailed Algorithm (as many steps as needed)</div>
-            <input type="text" class="wline" placeholder="Step 1:">
-            <input type="text" class="wline" placeholder="Step 2:">
-            <input type="text" class="wline" placeholder="Step 3:">
-            <input type="text" class="wline" placeholder="Step 4:">
-            <input type="text" class="wline" placeholder="Step 5:">
-            <input type="text" class="wline" placeholder="Step 6:">
-          </div>
-          <div>
-            <div class="clabel r">🐛 Bugs Found &amp; Fixed</div>
-            <textarea class="warea" placeholder="Bug 1 and fix..." rows="2" style="margin-bottom:7px;"></textarea>
-            <div class="clabel a">🌶 Add a Conditional</div>
-            <div class="acode" style="margin-bottom:7px;"><span class="kw">if</span> <span class="st">the bread is moldy</span>:
-    <span class="nb">get a new slice</span>
-<span class="kw">else</span>:
-    <span class="nb">continue with step 2</span></div>
-            <textarea class="warea" placeholder="My if/else step: if ______, then ______, else ______" rows="2"></textarea>
-          </div>
-        </div>
-        <div class="tip a" style="margin-top:8px;">🌶 Super stretch: write a second algorithm for something <em>you</em> do every morning and add an <code>if</code> to it.</div>
-      </div>
-      <div class="act-foot">
-        <span>★ Finish early? Write an algorithm for brushing teeth — see how many steps you need!</span>
-        <span>Session 1 · Modern Chinese School · Summer 2026</span>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ===== SLIDE 16 · HOMEWORK (TIERED) ===== -->
-<div class="slide scrolly interior" data-slide="16" data-type="activity">
-  <div class="content">
-    <div class="act-shell reveal">
-      <div class="sheet-header">
-        <div class="hdr-day">Session 1 · Mon Jun 29 · Take-Home Homework</div>
-        <div class="hdr-title" style="display:flex;align-items:center;gap:10px;"><img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/9e53dd974899b4052f6d00abfb70af51c08d7342.jpg" alt="scavenger" style="height:28px;width:auto;object-fit:contain;vertical-align:middle;border-radius:6px;border-radius:8px;flex-shrink:0;" loading="lazy"> My AI Scavenger Hunt</div>
-        <div class="hdr-sub">Find places AI shows up at home — due next class!</div>
-        <div class="hdr-pills">
-          <span class="hpill">⏱ ~30 min</span>
-          <span class="hpill">At Home</span>
-          <span class="hpill">Look Around</span>
-        </div>
-      </div>
-      <!-- Homework student info bar (once, separate from in-class bar) -->
-      <div class="student-bar" id="hw-student-bar">
-        <div class="sbar-field"><span class="sbar-label">Name</span><input class="sbar-input" id="hw-name" type="text" placeholder="Your full name" autocomplete="name"></div>
-        <div class="sbar-field"><span class="sbar-label">Date Due</span><input class="sbar-input" type="text" placeholder="Tue Jun 30, 2026"></div>
-        <div class="sbar-field"><span class="sbar-label">Section</span>
-          <select class="sbar-select" id="hw-section">
-            <option value="">— select —</option>
-            <option value="AM-AI1">AM-AI1 (10:30–11:45 AM)</option>
-            <option value="PM-AI1">PM-AI1 (1:00–2:50 PM)</option>
-            <option value="PM-AI2">PM-AI2 (3:00–4:50 PM)</option>
-          </select>
-        </div>
-      </div>
-      <!-- Tier task overview -->
-      <div class="g3" style="margin-bottom:12px;">
-        <div class="acard ag" style="padding:11px 14px;">
-          <span class="tier-badge-a" style="margin-bottom:6px;display:inline-flex;"><img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/744b8dc685e466958f393592a685b9baf05003a7.jpg" alt="Tier A" style="height:18px;width:auto;object-fit:contain;vertical-align:middle;border-radius:6px;border-radius:4px;" loading="lazy"> Tier A</span>
-          <p style="font-size:.81rem;color:#374151;margin:0;">Find <strong>2</strong> AI sightings. For each, draw a picture and write one word about what it does.</p>
-        </div>
-        <div class="acard ab" style="padding:11px 14px;">
-          <span class="tier-badge-b" style="margin-bottom:6px;display:inline-flex;"><img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/7ad5cd6e1da80db4320d3af8eb5a221a808f69ea.jpg" alt="Tier B" style="height:18px;width:auto;object-fit:contain;vertical-align:middle;border-radius:6px;border-radius:4px;" loading="lazy"> Tier B</span>
-          <p style="font-size:.81rem;color:#374151;margin:0;">Find <strong>3</strong> AI sightings. Write one full sentence for each describing what it does.</p>
-        </div>
-        <div class="acard aa" style="padding:11px 14px;">
-          <span class="tier-badge-c" style="margin-bottom:6px;display:inline-flex;"><img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/9f5151b0098bb7899f75edc1c9ed1e8661df0062.jpg" alt="Tier C" style="height:18px;width:auto;object-fit:contain;vertical-align:middle;border-radius:6px;border-radius:4px;" loading="lazy"> Tier C</span>
-          <p style="font-size:.81rem;color:#374151;margin:0;">Find <strong>3</strong> AI sightings + describe the <em>algorithm</em> behind one of them in 2–3 sentences.</p>
-        </div>
-      </div>
-      <!-- Sighting 1 -->
-      <div class="acard ab" style="margin-bottom:10px;">
-        <div class="clabel b" style="display:flex;align-items:center;gap:5px;"><img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/721ee156f0568c238f5cbc54356cc9638ce8ef39.jpg" alt="sighting" style="height:16px;width:auto;object-fit:contain;vertical-align:middle;border-radius:6px;border-radius:4px;" loading="lazy"> AI Sighting #1</div>
-        <input type="text" class="wline" placeholder="What was it? (e.g., YouTube recommendations, Siri, autocomplete…)">
-        <div class="draw-widget" id="dw-hw1"><div class="draw-toolbar"><span class="draw-label">Draw:</span><button class="draw-btn active" id="btn-pencil-hw1" onclick="setTool('hw1','pencil')">✏ Pencil</button><button class="draw-btn" id="btn-eraser-hw1" onclick="setTool('hw1','eraser')">⬜ Eraser</button><input class="draw-color" type="color" id="color-hw1" value="#1e3a5f" oninput="setColor('hw1',this.value)"><span class="draw-label">Size:</span><input class="draw-size" type="range" id="size-hw1" min="1" max="20" value="3" oninput="setSize('hw1',this.value)"><button class="draw-btn" onclick="clearCanvas('hw1')" style="margin-left:auto;color:#be123c;border-color:#fecdd3;">✕ Clear</button></div><canvas class="draw-canvas-el" id="canvas-hw1" style="height:110px;background:#fff;" data-key="draw_hw1"></canvas><img class="draw-canvas-print" id="print-hw1" src="" alt="Drawing"><div class="draw-resize-bar" id="resize-bar-hw1"><button class="draw-resize-btn" onclick="resizeCanvas('hw1',-40)">▲ Smaller</button><span class="draw-resize-label">drag to resize ↕</span><button class="draw-resize-btn" onclick="resizeCanvas('hw1',60)">▼ Bigger</button></div></div>
-        <textarea class="warea" style="margin-top:6px;" placeholder="Tier A: one word  |  Tier B/C: one sentence" rows="2"></textarea>
-      </div>
-      <!-- Sighting 2 -->
-      <div class="acard ag" style="margin-bottom:10px;">
-        <div class="clabel g">🔍 AI Sighting #2</div>
-        <input type="text" class="wline" placeholder="What was it?">
-        <div class="draw-widget" id="dw-hw2"><div class="draw-toolbar"><span class="draw-label">Draw:</span><button class="draw-btn active" id="btn-pencil-hw2" onclick="setTool('hw2','pencil')">✏ Pencil</button><button class="draw-btn" id="btn-eraser-hw2" onclick="setTool('hw2','eraser')">⬜ Eraser</button><input class="draw-color" type="color" id="color-hw2" value="#1e3a5f" oninput="setColor('hw2',this.value)"><span class="draw-label">Size:</span><input class="draw-size" type="range" id="size-hw2" min="1" max="20" value="3" oninput="setSize('hw2',this.value)"><button class="draw-btn" onclick="clearCanvas('hw2')" style="margin-left:auto;color:#be123c;border-color:#fecdd3;">✕ Clear</button></div><canvas class="draw-canvas-el" id="canvas-hw2" style="height:110px;background:#fff;" data-key="draw_hw2"></canvas><img class="draw-canvas-print" id="print-hw2" src="" alt="Drawing"><div class="draw-resize-bar" id="resize-bar-hw2"><button class="draw-resize-btn" onclick="resizeCanvas('hw2',-40)">▲ Smaller</button><span class="draw-resize-label">drag to resize ↕</span><button class="draw-resize-btn" onclick="resizeCanvas('hw2',60)">▼ Bigger</button></div></div>
-        <textarea class="warea" style="margin-top:6px;" placeholder="Tier A: one word  |  Tier B/C: one sentence" rows="2"></textarea>
-      </div>
-      <!-- Sighting 3 (Tier B & C) -->
-      <div class="acard aa" style="margin-bottom:10px;">
-        <div class="clabel a">🔍 AI Sighting #3 <span style="font-weight:400;font-size:.78rem;">(Tier B &amp; C)</span></div>
-        <input type="text" class="wline" placeholder="What was it?">
-        <textarea class="warea" placeholder="What did it do?" rows="2"></textarea>
-      </div>
-      <!-- Tier C extension -->
-      <div class="acard aa" style="margin-bottom:10px;">
-        <span class="tier-badge-c" style="margin-bottom:7px;display:inline-flex;"><img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/9f5151b0098bb7899f75edc1c9ed1e8661df0062.jpg" alt="Tier C" style="height:18px;width:auto;object-fit:contain;vertical-align:middle;border-radius:6px;border-radius:4px;" loading="lazy"> Tier C — Describe the Algorithm</span>
-        <div class="clabel a">Pick one sighting above. What algorithm do you think is behind it?</div>
-        <textarea class="warea" placeholder="I think it works by... First it... Then it... Finally it..." rows="3"></textarea>
-        <div class="tip a">🌶 Bonus: Test your robot sandwich algorithm on a grown-up. Did it work, or did you find a new bug? Bring your story to class!</div>
-      </div>
-      <div style="background:rgba(11,99,206,0.05);border:1px solid rgba(11,99,206,0.15);border-radius:12px;padding:11px 15px;">
-        <div class="clabel b"><span style="display:inline-flex;align-items:center;gap:6px;"><img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/721ee156f0568c238f5cbc54356cc9638ce8ef39.jpg" alt="ideas" style="height:18px;width:auto;object-fit:contain;vertical-align:middle;border-radius:6px;border-radius:4px;" loading="lazy"> Ideas of where to look</span></div>
-        <p style="font-size:.8rem;color:#374151;margin:0;">Video recommendations, voice assistants (Alexa, Siri, Google), keyboard autocomplete, photo sorting in camera roll, map routes (Google Maps), games that adapt to you.</p>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ===== SLIDE 17 · TIER DIFFERENTIATION ===== -->
-<div class="slide interior" data-slide="17" data-type="lesson">
-  <div class="gradient-mesh">
-    <div class="blob" style="width:360px;height:360px;top:-60px;right:-60px;background:#0b63ce;opacity:0.09;"></div>
-    <div class="blob" style="width:240px;height:240px;bottom:-50px;left:-40px;background:#f59e0b;opacity:0.07;"></div>
-  </div>
-  <div class="content">
-    <p class="pill mb-3 reveal">📊 Three Tiers · Same Concept, Three On-Ramps</p>
-    <h2 class="font-display reveal" style="font-size:clamp(1.6rem,2.8vw,2.2rem);font-weight:700;margin-bottom:1rem;">Everyone does the same activity — at their own level 🏅</h2>
-    <div class="grid-cards grid-3 reveal" style="gap:14px;">
-      <div class="card accent-card-green" style="padding:18px 20px;">
-        <div style="font-size:1.4rem;margin-bottom:5px;">🌱</div>
-        <div style="font-weight:800;font-size:.9rem;color:#047857;margin-bottom:3px;">Tier A — Foundations</div>
-        <div style="font-size:.76rem;color:#374151;margin-bottom:8px;font-style:italic;">Grades 1–3 · no experience</div>
-        <ul style="list-style:disc;padding-left:16px;margin:0;">
-          <li style="font-size:.82rem;color:#374151;margin-bottom:5px;">Draw your algorithm with pictures, then add words.</li>
-          <li style="font-size:.82rem;color:#374151;margin-bottom:5px;">Pair with a buddy for the sandwich activity.</li>
-          <li style="font-size:.82rem;color:#374151;">Scavenger hunt: find <strong>2</strong> AI sightings.</li>
-        </ul>
-      </div>
-      <div class="card accent-card-blue" style="padding:18px 20px;">
-        <div style="font-size:1.4rem;margin-bottom:5px;">⚡</div>
-        <div style="font-weight:800;font-size:.9rem;color:#0b63ce;margin-bottom:3px;">Tier B — Core</div>
-        <div style="font-size:.76rem;color:#374151;margin-bottom:8px;font-style:italic;">Grades 3–5 · some Scratch</div>
-        <ul style="list-style:disc;padding-left:16px;margin:0;">
-          <li style="font-size:.82rem;color:#374151;margin-bottom:5px;">Write a full 6-step algorithm.</li>
-          <li style="font-size:.82rem;color:#374151;margin-bottom:5px;">Find and fix at least one bug.</li>
-          <li style="font-size:.82rem;color:#374151;">Scavenger hunt: find <strong>3</strong> AI sightings.</li>
-        </ul>
-      </div>
-      <div class="card accent-card-amber" style="padding:18px 20px;">
-        <div style="font-size:1.4rem;margin-bottom:5px;">🚀</div>
-        <div style="font-weight:800;font-size:.9rem;color:#b45309;margin-bottom:3px;">Tier C — Accelerated</div>
-        <div style="font-size:.76rem;color:#374151;margin-bottom:8px;font-style:italic;">Grades 6–9 · Python-curious</div>
-        <ul style="list-style:disc;padding-left:16px;margin:0;">
-          <li style="font-size:.82rem;color:#374151;margin-bottom:5px;">Add an <code>if/else</code> conditional to your algorithm.</li>
-          <li style="font-size:.82rem;color:#374151;margin-bottom:5px;">Describe the algorithm behind one AI sighting.</li>
-          <li style="font-size:.82rem;color:#374151;">Stretch: how many examples would an AI need to learn your lie from the icebreaker?</li>
-        </ul>
-      </div>
-    </div>
-    <div class="card reveal" style="margin-top:14px;background:rgba(245,158,11,0.07);border:1px solid rgba(245,158,11,0.25);padding:12px 18px;">
-      <p class="big-text" style="color:#374151;margin:0;">🎯 <strong>Challenge cards</strong> allow fast finishers to extend instead of waiting — so nobody is bored and nobody is lost.</p>
-    </div>
-  </div>
-</div>
-
-<!-- ===== SLIDE 18 · CLOSING ===== -->
-<div class="slide" data-slide="18" data-type="lesson">
+<!-- SLIDE 15 · CLOSING -->
+<div class="slide" data-slide="15">
   <div class="gradient-mesh">
     <div class="blob" style="width:500px;height:500px;top:-120px;right:-100px;background:#10b981;opacity:0.12;"></div>
     <div class="blob" style="width:340px;height:340px;bottom:-80px;left:-80px;background:#0b63ce;opacity:0.10;"></div>
@@ -942,23 +519,13 @@ code{background:#e0f2ff;padding:1px 5px;border-radius:4px;font-family:"Fira Code
   </div>
   <canvas class="particle-canvas"></canvas>
   <div class="content" style="text-align:center;">
-    <div style="margin-bottom:0.6rem;animation:float 3s ease-in-out infinite;" class="reveal"><img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/5d841159d205f7e5dd6c2cf9f682f222777d3b81.jpg" alt="celebration trophy" style="height:clamp(70px,9vh,120px);width:auto;object-fit:contain;border-radius:16px;" loading="lazy"></div>
-    <h2 class="font-display grad-text reveal" style="font-size:clamp(1.8rem,4vw,3.2rem);font-weight:700;margin-bottom:0.5rem;">That's a wrap on Session 1!</h2>
-    <p class="reveal" style="font-size:clamp(.95rem,1.6vw,1.2rem);color:#374151;margin-bottom:1.4rem;">Today you learned to think like a computer — one clear step at a time. 🪜</p>
+    <div class="reveal" style="margin-bottom:0.8rem;"><img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/5b66c95713f1f5f16511e3d4664096f483a74dc8.jpg" alt="Kids celebrating" style="height:clamp(70px,9vh,120px);width:auto;object-fit:cover;border-radius:16px;border:3px solid rgba(255,255,255,0.7);box-shadow:0 8px 28px rgba(15,23,42,0.18);display:inline-block;" loading="lazy"></div>
+    <h2 class="font-display grad-text reveal" style="font-size:clamp(1.8rem,4vw,3.2rem);font-weight:700;margin-bottom:0.5rem;">That&rsquo;s a wrap on Session 1!</h2>
+    <p class="reveal" style="font-size:clamp(.95rem,1.6vw,1.2rem);color:#374151;margin-bottom:1.4rem;">Today you learned to think like a computer — one clear step at a time.</p>
     <div class="grid-cards grid-3 reveal" style="margin-bottom:1.4rem;text-align:left;max-width:780px;margin-left:auto;margin-right:auto;">
-      <div class="card" style="padding:14px 16px;text-align:center;"><div style="margin-bottom:5px;"><img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/7ad5cd6e1da80db4320d3af8eb5a221a808f69ea.jpg" alt="algorithm" style="height:44px;width:auto;object-fit:contain;border-radius:8px;" loading="lazy"></div><div style="font-weight:800;font-size:.87rem;color:#0b63ce;">New word</div><div style="font-size:1rem;font-weight:700;color:#374151;">Algorithm</div></div>
-      <div class="card" style="padding:14px 16px;text-align:center;"><div style="margin-bottom:5px;"><img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/260bc1a2f3932ef0f14b744d0eedf33c6221281f.jpg" alt="sandwich" style="height:44px;width:auto;object-fit:contain;border-radius:8px;" loading="lazy"></div><div style="font-weight:800;font-size:.87rem;color:#0b63ce;">We programmed</div><div style="font-size:1rem;font-weight:700;color:#374151;">a robot</div></div>
-      <div class="card" style="padding:14px 16px;text-align:center;"><div style="margin-bottom:5px;"><img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/8955b4a7388dfd204ff49be4dc5a88361679fb1f.jpg" alt="scratch" style="height:44px;width:auto;object-fit:contain;border-radius:8px;" loading="lazy"></div><div style="font-weight:800;font-size:.87rem;color:#0b63ce;">Next class</div><div style="font-size:1rem;font-weight:700;color:#374151;">Scratch begins!</div></div>
-    </div>
-    <div class="print-actions reveal">
-      <button class="btn-print blue" onclick="printActivity()">
-        <svg style="width:18px;height:18px;flex-shrink:0;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9V2h12v7"/><rect x="6" y="13" width="12" height="8"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/></svg>
-        Print Activity Sheets
-      </button>
-      <button class="btn-print amber" onclick="printHomework()">
-        <svg style="width:18px;height:18px;flex-shrink:0;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9V2h12v7"/><rect x="6" y="13" width="12" height="8"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/></svg>
-        Print Homework
-      </button>
+      <div class="card" style="padding:14px 16px;text-align:center;"><img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/288a0abd12d6c9de3caf096b1a3fc5b0a08c18b2.jpg" alt="algorithm" style="height:44px;width:auto;object-fit:contain;border-radius:8px;margin-bottom:5px;" loading="lazy"><div style="font-weight:800;font-size:.87rem;color:#0b63ce;">New word</div><div style="font-size:1rem;font-weight:700;color:#374151;">Algorithm</div></div>
+      <div class="card" style="padding:14px 16px;text-align:center;"><img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/c1f349d1a90782703c2a7c47b0212fc65a78e05b.jpg" alt="sandwich robot" style="height:44px;width:auto;object-fit:cover;border-radius:8px;margin-bottom:5px;" loading="lazy"><div style="font-weight:800;font-size:.87rem;color:#0b63ce;">We played</div><div style="font-size:1rem;font-weight:700;color:#374151;">The Robot Game</div></div>
+      <div class="card" style="padding:14px 16px;text-align:center;"><img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/06e5b5075497640d61a3be6fbad5b66cd3dc84ab.jpg" alt="Scratch" style="height:44px;width:auto;object-fit:contain;border-radius:8px;margin-bottom:5px;" loading="lazy"><div style="font-weight:800;font-size:.87rem;color:#0b63ce;">Next class</div><div style="font-size:1rem;font-weight:700;color:#374151;">Scratch begins!</div></div>
     </div>
     <p class="reveal" style="font-size:.76rem;color:#94a3b8;">Modern Chinese School · Summer 2026 · Session 1 of 26</p>
   </div>
@@ -970,352 +537,27 @@ code{background:#e0f2ff;padding:1px 5px;border-radius:4px;font-family:"Fira Code
   <button class="nav-btn" onclick="changeSlide(-1)">&#8249;</button>
   <div class="slide-dots" id="dots"></div>
   <button class="nav-btn" onclick="changeSlide(1)">&#8250;</button>
-  <span class="slide-counter" id="counter">1 / 18</span>
+  <span class="slide-counter" id="counter">1 / 15</span>
 </div>
 
 <script>
-let current = 1;
-const slides = document.querySelectorAll('.slide');
-const total = slides.length;
-const dotsContainer = document.getElementById('dots');
-const counter = document.getElementById('counter');
-for (let i = 1; i <= total; i++) {
-  const dot = document.createElement('div');
-  const type = slides[i-1].getAttribute('data-type');
-  dot.className = 'dot' + (type === 'activity' ? ' activity' : '') + (i === 1 ? ' active' : '');
-  dot.title = (type === 'activity' ? 'Activity' : 'Lesson') + ' slide ' + i;
-  dot.onclick = () => goToSlide(i);
-  dotsContainer.appendChild(dot);
-}
-function goToSlide(n) {
-  const prev = document.querySelector('.slide.active');
-  const next = document.querySelector('.slide[data-slide="' + n + '"]');
-  if (prev) prev.classList.remove('active');
-  if (next) { next.classList.add('active'); next.scrollTop = 0; animateSlide(next); }
-  current = n; updateNav();
-}
-function changeSlide(dir) { let n = current + dir; if (n < 1) n = total; if (n > total) n = 1; goToSlide(n); }
-function updateNav() {
-  document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i + 1 === current));
-  counter.textContent = current + ' / ' + total;
-}
-document.addEventListener('keydown', e => {
-  if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); changeSlide(1); }
-  if (e.key === 'ArrowLeft') { e.preventDefault(); changeSlide(-1); }
-});
-let tx = 0;
-document.addEventListener('touchstart', e => { tx = e.touches[0].clientX; });
-document.addEventListener('touchend', e => { const dx = tx - e.changedTouches[0].clientX; if (Math.abs(dx) > 60) changeSlide(dx > 0 ? 1 : -1); });
-
-function animateSlide(slide) {
-  slide.querySelectorAll('.reveal').forEach((el, i) => {
-    el.style.transition = 'none'; el.style.opacity = '0'; el.style.transform = 'translateY(16px)';
-    el.offsetHeight;
-    const d = i * 0.06;
-    el.style.transition = 'opacity 0.32s ease ' + d + 's, transform 0.32s ease ' + d + 's';
-    el.style.opacity = '1'; el.style.transform = 'translateY(0)';
-  });
-}
-
-function playVideo(videoId) {
-  const container = document.getElementById('player-' + videoId);
-  if (!container) return;
-  container.onclick = null; container.style.cursor = 'default';
-  container.innerHTML = '<iframe src="https://www.youtube.com/embed/' + videoId + '?autoplay=1&rel=0" allowfullscreen allow="autoplay; encrypted-media" style="position:absolute;inset:0;width:100%;height:100%;border:0;border-radius:13px;"></iframe>';
-}
-
-document.addEventListener('mousemove', e => {
-  const s = document.querySelector('.mouse-spotlight');
-  if (s) s.style.background = 'radial-gradient(600px circle at ' + e.clientX + 'px ' + e.clientY + 'px, rgba(11,99,206,0.05), transparent 40%)';
-});
-
-window.initParticles = function(canvas, opts) {
-  if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-  const count = opts.count || 40;
-  let mx = -1000, my = -1000;
-  const [r, g, b] = [11, 99, 206];
-  let particles = [];
-  function seed() {
-    const w = canvas.offsetWidth || window.innerWidth;
-    const h = canvas.offsetHeight || window.innerHeight;
-    canvas.width = w; canvas.height = h;
-    particles = Array.from({ length: count }, () => ({
-      x: Math.random() * w, y: Math.random() * h,
-      vx: (Math.random() - .5) * .3, vy: (Math.random() - .5) * .3,
-      size: Math.random() * 2.2 + .7, alpha: Math.random() * .3 + .08
-    }));
-  }
-  seed(); requestAnimationFrame(seed); window.addEventListener('resize', seed);
-  document.addEventListener('mousemove', e => { const rc = canvas.getBoundingClientRect(); mx = e.clientX - rc.left; my = e.clientY - rc.top; });
-  const ownSlide = canvas.closest('.slide');
-  (function animate() {
-    if (!ownSlide || ownSlide.classList.contains('active')) {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      particles.forEach(p => {
-        const dx = p.x - mx, dy = p.y - my, dist = Math.sqrt(dx*dx + dy*dy);
-        if (dist < 120) { const f = (120-dist)/120*1.5; p.vx += (dx/dist)*f*.1; p.vy += (dy/dist)*f*.1; }
-        p.vx *= .98; p.vy *= .98; p.x += p.vx; p.y += p.vy;
-        if (p.x < 0) p.x = canvas.width; if (p.x > canvas.width) p.x = 0;
-        if (p.y < 0) p.y = canvas.height; if (p.y > canvas.height) p.y = 0;
-        ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2);
-        ctx.fillStyle = 'rgba(' + r + ',' + g + ',' + b + ',' + p.alpha + ')'; ctx.fill();
-      });
-    }
-    requestAnimationFrame(animate);
-  })();
-};
-document.querySelectorAll('.slide[data-type="lesson"]').forEach(slide => {
-  let c = slide.querySelector('canvas.particle-canvas');
-  if (!c) {
-    c = document.createElement('canvas'); c.className = 'particle-canvas';
-    const mesh = slide.querySelector('.gradient-mesh');
-    if (mesh) mesh.insertAdjacentElement('afterend', c); else slide.insertBefore(c, slide.firstChild);
-  }
-  initParticles(c, { count: 65 });
-});
-try { animateSlide(document.querySelector('.slide.active')); } catch(e) {}
-
-(function(){
-  var S={}, K='mcs_s1_v9';
-
-  /* ─── canvas state init ─── */
-  function g(id){
-    if(S[id])return S[id];
-    var c=document.getElementById('canvas-'+id);
-    if(!c)return null;
-    var x=c.getContext('2d');
-    c.width=c.offsetWidth||300; c.height=c.offsetHeight||130;
-    x.lineCap='round'; x.lineJoin='round';
-    var s={ctx:x,canvas:c,tool:'pencil',color:'#1e3a5f',size:3,drawing:false};
-    S[id]=s; ld(id);
-    c.addEventListener('mousedown',function(e){sd(id,e.offsetX,e.offsetY)});
-    c.addEventListener('mousemove',function(e){if(S[id].drawing)mv(id,e.offsetX,e.offsetY)});
-    c.addEventListener('mouseup',function(){sp(id)});
-    c.addEventListener('mouseleave',function(){sp(id)});
-    c.addEventListener('touchstart',function(e){e.preventDefault();var r=c.getBoundingClientRect(),t=e.touches[0];sd(id,t.clientX-r.left,t.clientY-r.top)},{passive:false});
-    c.addEventListener('touchmove',function(e){e.preventDefault();if(!S[id].drawing)return;var r=c.getBoundingClientRect(),t=e.touches[0];mv(id,t.clientX-r.left,t.clientY-r.top)},{passive:false});
-    c.addEventListener('touchend',function(){sp(id)});
-    var b=document.getElementById('resize-bar-'+id);
-    if(b){
-      var dr=false,sy=0,sh=0;
-      b.addEventListener('mousedown',function(e){if(e.target===b){dr=true;sy=e.clientY;sh=c.offsetHeight;e.preventDefault()}});
-      document.addEventListener('mousemove',function(e){if(!dr)return;ar(id,Math.max(60,sh+(e.clientY-sy)))});
-      document.addEventListener('mouseup',function(){if(dr){dr=false;sv(id)}});
-    }
-    return s;
-  }
-
-  function ar(id,h){
-    var s=S[id]; if(!s)return;
-    var c=s.canvas,t=document.createElement('canvas');
-    t.width=c.width; t.height=c.height;
-    t.getContext('2d').drawImage(c,0,0);
-    c.style.height=h+'px'; c.width=c.offsetWidth||c.width; c.height=h;
-    s.ctx.lineCap='round'; s.ctx.lineJoin='round';
-    s.ctx.drawImage(t,0,0);
-  }
-  function sd(id,x,y){var s=g(id);if(!s)return;s.drawing=true;s.ctx.beginPath();s.ctx.moveTo(x,y)}
-  function mv(id,x,y){
-    var s=S[id];if(!s||!s.drawing)return;
-    s.ctx.lineWidth=s.size;
-    if(s.tool==='eraser'){s.ctx.globalCompositeOperation='destination-out';s.ctx.strokeStyle='rgba(0,0,0,1)';s.ctx.lineWidth=s.size*3}
-    else{s.ctx.globalCompositeOperation='source-over';s.ctx.strokeStyle=s.color}
-    s.ctx.lineTo(x,y);s.ctx.stroke();s.ctx.beginPath();s.ctx.moveTo(x,y);
-  }
-  function sp(id){var s=S[id];if(!s)return;s.drawing=false;s.ctx.globalCompositeOperation='source-over';sv(id)}
-
-  function sv(id){
-    try{
-      var c=document.getElementById('canvas-'+id);if(!c)return;
-      var all=JSON.parse(localStorage.getItem(K)||'{}');
-      all[id]={data:c.toDataURL(),h:c.height};
-      localStorage.setItem(K,JSON.stringify(all));
-      /* keep print-img in sync */
-      var pi=document.getElementById('print-'+id);
-      if(pi){pi.src=c.toDataURL();pi.style.width=c.width+'px';pi.style.height=c.height+'px';}
-    }catch(e){}
-  }
-  function ld(id){
-    try{
-      var all=JSON.parse(localStorage.getItem(K)||'{}');
-      if(!all[id])return;
-      var saved=all[id];
-      var c=document.getElementById('canvas-'+id);if(!c)return;
-      if(saved.h&&saved.h!==c.height)ar(id,saved.h);
-      var img=new Image();
-      img.onload=function(){
-        if(S[id])S[id].ctx.drawImage(img,0,0);
-        /* sync print image after load */
-        var pi=document.getElementById('print-'+id);
-        if(pi){pi.src=saved.data;pi.style.width=c.width+'px';pi.style.height=c.height+'px';}
-      };
-      img.src=saved.data||saved;
-    }catch(e){}
-  }
-
-  window.setTool=function(id,t){var s=g(id);if(!s)return;s.tool=t;var p=document.getElementById('btn-pencil-'+id),e=document.getElementById('btn-eraser-'+id);if(p){p.classList.toggle('active',t==='pencil');p.classList.remove('eraser-active')}if(e){e.classList.toggle('active',t==='eraser');e.classList.toggle('eraser-active',t==='eraser')}};
-  window.setColor=function(id,c){var s=g(id);if(!s)return;s.color=c;s.tool='pencil';var p=document.getElementById('btn-pencil-'+id),e=document.getElementById('btn-eraser-'+id);if(p)p.classList.add('active');if(e){e.classList.remove('active');e.classList.remove('eraser-active')}};
-  window.setSize=function(id,z){var s=g(id);if(!s)return;s.size=parseInt(z)};
-  window.clearCanvas=function(id){var s=g(id);if(!s)return;s.ctx.clearRect(0,0,s.canvas.width,s.canvas.height);sv(id)};
-  window.resizeCanvas=function(id,d){var c=document.getElementById('canvas-'+id);if(!c)return;ar(id,Math.max(60,c.height+d));sv(id)};
-
-  /* ─── Restore text inputs + textareas from localStorage on load ─── */
-  function restoreFields(){
-    try{
-      var all=JSON.parse(localStorage.getItem(K)||'{}');
-      /* inputs with data-key */
-      document.querySelectorAll('input[data-key],textarea[data-key]').forEach(function(el){
-        if(all[el.dataset.key]!==undefined)el.value=all[el.dataset.key];
-        el.addEventListener('input',function(){
-          var a=JSON.parse(localStorage.getItem(K)||'{}');
-          a[el.dataset.key]=el.value;
-          localStorage.setItem(K,JSON.stringify(a));
-        });
-      });
-      /* fallback: save ALL wline/warea/sbar-input by stable key = slide+index */
-      document.querySelectorAll('.slide[data-slide]').forEach(function(slide){
-        var sn=slide.dataset.slide;
-        slide.querySelectorAll('.wline,.warea,.sbar-input,.sbar-select').forEach(function(el,i){
-          var key='slide'+sn+'_field'+i;
-          if(all[key]!==undefined)el.value=all[key];
-          el.addEventListener('input',function(){
-            var a=JSON.parse(localStorage.getItem(K)||'{}');
-            a[key]=el.value; localStorage.setItem(K,JSON.stringify(a));
-          });
-          el.addEventListener('change',function(){
-            var a=JSON.parse(localStorage.getItem(K)||'{}');
-            a[key]=el.value; localStorage.setItem(K,JSON.stringify(a));
-          });
-        });
-      });
-    }catch(e){}
-  }
-
-  /* ─── Before print: copy every canvas → its print <img>, and ensure fields render ─── */
-  window.addEventListener('beforeprint',function(){
-    /* canvases → print images */
-    document.querySelectorAll('.draw-canvas-el').forEach(function(c){
-      var id=c.id.replace('canvas-','');
-      var pi=document.getElementById('print-'+id);
-      if(pi){
-        try{pi.src=c.toDataURL();pi.style.width=c.offsetWidth+'px';pi.style.height=c.offsetHeight+'px';}catch(e){}
-      }
-    });
-    /* Make textarea / input values appear in print via ::after is not feasible,
-       so set value attribute so browsers can pick it up, and also inject a sibling span */
-    document.querySelectorAll('.wline,.warea,.sbar-input').forEach(function(el){
-      el.setAttribute('data-print-val', el.value);
-      var existing = el.parentNode.querySelector('.print-text-mirror');
-      if(!existing){
-        var mirror = document.createElement(el.tagName==='TEXTAREA'?'div':'span');
-        mirror.className='print-text-mirror';
-        mirror.style.cssText='display:none;white-space:pre-wrap;font-family:Nunito,Arial,sans-serif;font-size:.82rem;color:#1f2a37;padding:3px 6px;min-height:1.2em;word-break:break-word;';
-        el.parentNode.insertBefore(mirror, el.nextSibling);
-      }
-      var m=el.parentNode.querySelector('.print-text-mirror');
-      if(m)m.textContent=el.value||'';
-    });
-  });
-
-  window.addEventListener('afterprint',function(){
-    document.querySelectorAll('.print-text-mirror').forEach(function(m){m.style.display='none';});
-  });
-
-  /* slide navigation init */
-  var og=window.goToSlide;
-  window.goToSlide=function(n){
-    if(og)og(n);
-    setTimeout(function(){
-      var sl=document.querySelector('.slide[data-slide="'+n+'"]');
-      if(!sl)return;
-      sl.querySelectorAll('.draw-canvas-el').forEach(function(c){g(c.id.replace('canvas-',''))});
-    },250);
-  };
-  setTimeout(function(){
-    document.querySelectorAll('.slide.active .draw-canvas-el').forEach(function(c){g(c.id.replace('canvas-',''))});
-    restoreFields();
-  },500);
-})();
-
-
-/* ---- LocalStorage auto-save ---- */
-(function () {
-  var KEY = 'mcs_s1_v3';
-  function fields() {
-    var arr = [];
-    document.querySelectorAll('.slide[data-type="activity"]').forEach(function(slide) {
-      var sn = slide.getAttribute('data-slide');
-      slide.querySelectorAll('input.wline, input.sbar-input, textarea.warea, select.sbar-select').forEach(function(el, idx) {
-        el.dataset.sk = 'sl' + sn + '_' + idx; arr.push(el);
-      });
-    });
-    return arr;
-  }
-  function save() {
-    var d = {}; fields().forEach(function(el) { if (el.dataset.sk) d[el.dataset.sk] = el.tagName === 'SELECT' ? el.value : el.value; });
-    try { localStorage.setItem(KEY, JSON.stringify(d)); } catch(e) {}
-  }
-  function load() {
-    var d; try { d = JSON.parse(localStorage.getItem(KEY) || '{}'); } catch(e) { return; }
-    fields().forEach(function(el) { if (el.dataset.sk && d[el.dataset.sk] !== undefined) el.value = d[el.dataset.sk]; });
-    // sync hw bar from activity bar
-    var n = document.querySelector('#hw-name'); var s = document.querySelector('#hw-section');
-    var src = document.querySelector('.student-bar:not(#hw-student-bar) .sbar-input');
-    var srcs = document.querySelector('.student-bar:not(#hw-student-bar) .sbar-select');
-    if (n && src && !n.value) n.value = src.value;
-    if (s && srcs && !s.value) s.value = srcs.value;
-  }
-  // Sync name/section from slide 13 bar to hw bar on input
-  document.querySelectorAll('.student-bar:not(#hw-student-bar) input, .student-bar:not(#hw-student-bar) select').forEach(function(el) {
-    el.addEventListener('input', function() {
-      if (el.tagName === 'SELECT') { var hw = document.querySelector('#hw-section'); if (hw) hw.value = el.value; }
-      else if (el.type === 'text' && el.placeholder.toLowerCase().includes('name')) { var hw = document.querySelector('#hw-name'); if (hw && !hw.value) hw.value = el.value; }
-      save();
-    });
-  });
-  // Save on any input change
-  document.querySelectorAll('.slide[data-type="activity"] input, .slide[data-type="activity"] textarea, .slide[data-type="activity"] select').forEach(function(el) {
-    el.addEventListener('input', function() { save(); updateStatus(); });
-    el.addEventListener('change', function() { save(); updateStatus(); });
-  });
-  function updateStatus() {
-    document.querySelectorAll('.save-status').forEach(function(s) {
-      s.className = 'save-status'; s.innerHTML = '<span class="dot-led"></span>Saved ✓';
-    });
-  }
-  // Inject save bar after each sheet-header
-  document.querySelectorAll('.slide[data-type="activity"] .act-shell').forEach(function(shell) {
-    var header = shell.querySelector('.student-bar, .sheet-header');
-    // insert after student-bar if present, else after sheet-header
-    var insertAfter = shell.querySelector('.student-bar') || header;
-    if (!insertAfter) return;
-    var bar = document.createElement('div');
-    bar.className = 'save-bar';
-    bar.innerHTML = '<span class="save-status idle"><span class="dot-led"></span>Not saved</span><button class="btn-clear" type="button">Clear</button>';
-    insertAfter.insertAdjacentElement('afterend', bar);
-    bar.querySelector('.btn-clear').onclick = function() {
-      shell.querySelectorAll('input.wline, textarea.warea, input.sbar-input').forEach(function(el) { el.value = ''; });
-      shell.querySelectorAll('select.sbar-select').forEach(function(el) { el.value = ''; });
-      save(); bar.querySelector('.save-status').className = 'save-status idle'; bar.querySelector('.save-status').innerHTML = '<span class="dot-led"></span>Cleared';
-    };
-  });
-  load();
-})();
-
-/* ---- Print helpers ---- */
-function printSlides(selector) {
-  var targets = document.querySelectorAll(selector);
-  if (!targets.length) return;
-  targets.forEach(function(s) { s.classList.add('print-target'); });
-  document.body.classList.add('printing');
-  function cleanup() { document.body.classList.remove('printing'); targets.forEach(function(s) { s.classList.remove('print-target'); }); window.removeEventListener('afterprint', cleanup); }
-  window.addEventListener('afterprint', cleanup);
-  setTimeout(function() { if (document.body.classList.contains('printing')) cleanup(); }, 60000);
-  window.print();
-}
-function printActivity() { printSlides('.slide[data-slide="13"],.slide[data-slide="14"],.slide[data-slide="15"]'); }
-function printHomework()  { printSlides('.slide[data-slide="16"]'); }
+let current=1;
+const total=document.querySelectorAll('.slide').length;
+const dotsContainer=document.getElementById('dots');
+const counter=document.getElementById('counter');
+for(let i=1;i<=total;i++){const dot=document.createElement('div');dot.className='dot'+(i===1?' active':'');dot.onclick=()=>goToSlide(i);dotsContainer.appendChild(dot);}
+function goToSlide(n){const prev=document.querySelector('.slide.active');const next=document.querySelector(`.slide[data-slide="${n}"]`);if(prev)prev.classList.remove('active');if(next){next.classList.add('active');animateSlide(next);}current=n;updateNav();}
+function changeSlide(dir){let n=current+dir;if(n<1)n=total;if(n>total)n=1;goToSlide(n);}
+function updateNav(){document.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('active',i+1===current));counter.textContent=current+' / '+total;}
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();changeSlide(1);}if(e.key==='ArrowLeft'){e.preventDefault();changeSlide(-1);}});
+let touchStartX=0;
+document.addEventListener('touchstart',e=>{touchStartX=e.touches[0].clientX;});
+document.addEventListener('touchend',e=>{const d=touchStartX-e.changedTouches[0].clientX;if(Math.abs(d)>50)changeSlide(d>0?1:-1);});
+function animateSlide(slide){slide.querySelectorAll('.reveal').forEach((el,i)=>{el.style.transition='none';el.style.opacity='0';el.style.transform='translateY(16px)';el.offsetHeight;const delay=i*0.08;el.style.transition=`opacity 0.35s ease ${delay}s, transform 0.35s ease ${delay}s`;el.style.opacity='1';el.style.transform='translateY(0px)';});}
+document.addEventListener('mousemove',e=>{const s=document.querySelector('.mouse-spotlight');if(s)s.style.background=`radial-gradient(600px circle at ${e.clientX}px ${e.clientY}px, rgba(11,99,206,0.05), transparent 40%)`;});
+window.initParticles=function(canvas,opts){if(!canvas)return;const ctx=canvas.getContext('2d');canvas.width=canvas.offsetWidth;canvas.height=canvas.offsetHeight;const count=opts.count||45;const interactive=opts.interactive!==false;let mx=-1000,my=-1000;const particles=Array.from({length:count},()=>({x:Math.random()*canvas.width,y:Math.random()*canvas.height,vx:(Math.random()-0.5)*0.3,vy:(Math.random()-0.5)*0.3,size:Math.random()*2.5+0.8,alpha:Math.random()*0.35+0.1}));if(interactive){canvas.addEventListener('mousemove',e=>{const r=canvas.getBoundingClientRect();mx=e.clientX-r.left;my=e.clientY-r.top;});canvas.addEventListener('mouseleave',()=>{mx=-1000;my=-1000;});}(function animate(){ctx.clearRect(0,0,canvas.width,canvas.height);particles.forEach(p=>{if(interactive){const dx=p.x-mx,dy=p.y-my,dist=Math.sqrt(dx*dx+dy*dy);if(dist<120){const f=(120-dist)/120*2;p.vx+=(dx/dist)*f*0.1;p.vy+=(dy/dist)*f*0.1;}}p.vx*=0.98;p.vy*=0.98;p.x+=p.vx;p.y+=p.vy;if(p.x<0)p.x=canvas.width;if(p.x>canvas.width)p.x=0;if(p.y<0)p.y=canvas.height;if(p.y>canvas.height)p.y=0;ctx.beginPath();ctx.arc(p.x,p.y,p.size,0,Math.PI*2);ctx.fillStyle=`rgba(11,99,206,${p.alpha})`;ctx.fill();});requestAnimationFrame(animate);})();};
+document.querySelectorAll('.particle-canvas').forEach(c=>window.initParticles(c,{interactive:true,count:45}));
+try{animateSlide(document.querySelector('.slide.active'));}catch(e){}
 </script>
 </body>
 </html>
