@@ -3,7 +3,7 @@
 ![Level](https://img.shields.io/badge/level-beginner%20to%20advanced-brightgreen)
 ![Updated](https://img.shields.io/badge/updated-Summer%202026-lightyellow)
 
-
+[Instructor](https://hue881.github.io/mcs/2026/hue)  
 [Syllabus](https://hue881.github.io/mcs/2026/summer/syllabus)  
 [Rules and Regulations](https://hue881.github.io/mcs/2026/rules)
 
