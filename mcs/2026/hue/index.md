@@ -2,7 +2,7 @@
 
 I'm a software engineer *and* a teacher, which means I've spent a lot of years writing code *and* a lot of years helping people like you understand it.
 
-Here are **three things about me** — two are true, one is a lie. Can you guess which one is the robot? *(This becomes the icebreaker — see below!)*
+Here are **three things about me** — two are true, one is a lie. Can you guess which one is the lie?
 
 1. I once helped *train an AI* — like, a real one. I helped teach it to write better code.
 2. I competed in a cybersecurity hacking challenge and placed in the **top 27%** nationwide.
