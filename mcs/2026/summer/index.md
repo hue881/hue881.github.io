@@ -10,6 +10,7 @@
 | Week-Day | Lesson | Activity | Homework |Class | Notes |
 |:-----:|:----------|:---------------:|:-------|:-------|:----------|
 | **1-1** | [Welcome! What is Computer Thinking?](https://hue881.github.io/mcs/2026/summer/1/1) | [1-1 Activity](https://hue881.github.io/mcs/2026/summer/1/1/activity) | [1-1 Homework](https://hue881.github.io/mcs/2026/summer/1/1/homework) | -- ||
+| **1-2** | [Internet Safety, Responsible AI & Our First Algorithm](https://hue881.github.io/mcs/2026/summer/1/2) | [1-2 Activity](https://hue881.github.io/mcs/2026/summer/1/2/activity) | [1-2 Homework](https://hue881.github.io/mcs/2026/summer/1/2/homework) | -- ||
 
 
   
