@@ -1,1 +1,1242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="slides-format" content="viewport">
+<title>Session 3 · Scratch: Sequencing &amp; Events</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<style type="text/tailwindcss">
+@theme {
+  --color-bg:#f4fbff; --color-bg-deep:#e0f2ff; --color-surface:rgba(255,255,255,0.95);
+  --color-text:#1f2a37; --color-text-secondary:#374151; --color-text-muted:#5b6b7e;
+  --color-accent-1:#0b63ce; --color-accent-2:#10b981; --color-accent-3:#f59e0b;
+  --color-glass-bg:rgba(255,255,255,0.88); --color-glass-border:rgba(11,99,206,0.16);
+  --color-vignette:rgba(15,23,42,0.07);
+  --font-display:"Fredoka","Trebuchet MS",sans-serif; --font-body:"Nunito",Arial,sans-serif;
+}
+</style>
+<style>
+:root{--color-bg:#f4fbff;--color-text:#1f2a37;--glow-color-rgb:11,99,206;
+      --a1:#0b63ce;--a2:#10b981;--a3:#f59e0b;--ar:#ef4444;--fc:"Fira Code",Consolas,monospace;}
+*,*::before,*::after{box-sizing:border-box;}
+html,body{background:var(--color-bg);margin:0;}
+body{font-family:"Nunito",Arial,sans-serif;color:var(--color-text);overflow:hidden;height:100vh;width:100vw;}
+.deck{width:100vw;height:100vh;position:relative;}
+.slide{position:absolute;top:0;left:0;width:100%;height:100%;
+  background:radial-gradient(circle at top left,rgba(56,189,248,0.14),transparent 40%),
+             radial-gradient(circle at bottom right,rgba(16,185,129,0.10),transparent 40%),
+             var(--color-bg);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  opacity:0;transform:scale(0.96);transition:opacity 0.55s ease,transform 0.55s ease;
+  pointer-events:none;overflow:hidden;}
+.slide.active{opacity:1;transform:scale(1);pointer-events:all;}
+.slide>.content{position:relative;z-index:2;width:100%;max-width:1060px;padding:clamp(1rem,2.5vw,2.2rem);}
+.slide.scrolly{align-items:flex-start;justify-content:flex-start;overflow-y:auto;}
+.slide.scrolly>.content{margin:auto;padding-top:clamp(0.8rem,2vw,1.5rem);padding-bottom:clamp(0.8rem,2vw,1.5rem);}
+.nav-controls{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:12px;z-index:100;background:rgba(255,255,255,0.93);backdrop-filter:blur(12px);padding:8px 20px;border-radius:999px;border:1px solid rgba(148,163,184,0.4);box-shadow:0 8px 28px rgba(15,23,42,0.13);}
+.nav-btn{width:34px;height:34px;border:none;background:rgba(15,23,42,0.06);color:#0b63ce;border-radius:999px;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 0.2s,transform 0.15s;}
+.nav-btn:hover{background:rgba(15,23,42,0.12);transform:translateY(-1px);}
+.slide-dots{display:flex;gap:5px;flex-wrap:wrap;max-width:480px;}
+.slide-dots .dot{width:8px;height:8px;border-radius:50%;background:rgba(148,163,184,0.6);cursor:pointer;transition:background 0.25s,transform 0.25s;}
+.slide-dots .dot.active{background:#0b63ce;transform:scale(1.4);}
+.slide-dots .dot.activity{background:rgba(16,185,129,0.55);}
+.slide-dots .dot.activity.active{background:#10b981;}
+.slide-dots .dot.warmup{background:rgba(245,158,11,0.6);}
+.slide-dots .dot.warmup.active{background:#f59e0b;}
+.slide-counter{font-size:0.75rem;color:#64748b;min-width:52px;text-align:center;font-weight:700;}
+.reveal{opacity:0;transform:translateY(16px);}
+.mouse-spotlight{position:fixed;inset:0;z-index:1;pointer-events:none;}
+.card{background:var(--color-surface);border-radius:18px;padding:14px 18px;box-shadow:0 8px 24px rgba(15,23,42,0.07);border:1px solid rgba(255,255,255,0.7);}
+.accent-card-blue {background:rgba(11,99,206,0.07); border:1px solid rgba(11,99,206,0.18);}
+.accent-card-green{background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.20);}
+.accent-card-amber{background:rgba(245,158,11,0.08); border:1px solid rgba(245,158,11,0.22);}
+.accent-card-red  {background:rgba(239,68,68,0.07);  border:1px solid rgba(239,68,68,0.20);}
+.pill{display:inline-flex;align-items:center;gap:7px;padding:4px 13px;border-radius:999px;border:1px solid rgba(148,163,184,0.5);background:rgba(255,255,255,0.9);font-size:0.74rem;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;color:#0b63ce;}
+.pill.green{color:#047857;border-color:rgba(16,185,129,0.4);background:rgba(16,185,129,0.06);}
+.pill.amber{color:#92400e;border-color:rgba(245,158,11,0.4);background:rgba(245,158,11,0.07);}
+.think-chip{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border-radius:999px;background:rgba(11,99,206,0.09);color:#1e40af;font-size:0.8rem;font-weight:700;}
+.question-chip{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border-radius:999px;background:rgba(245,158,11,0.09);color:#92400e;font-size:0.8rem;font-weight:700;}
+.question-chip .icon{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:999px;background:rgba(245,158,11,0.95);color:#fff;font-size:0.76rem;}
+.big-text{font-size:clamp(0.95rem,1.55vw,1.15rem);line-height:1.65;}
+.media-embed{position:relative;padding-top:56.25%;border-radius:13px;overflow:hidden;background:#1e293b;cursor:pointer;}
+.media-embed img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+.media-embed .play-btn{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;}
+.media-embed .play-btn div{width:56px;height:56px;background:rgba(255,0,0,0.88);border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 18px rgba(0,0,0,0.38);transition:transform 0.2s;}
+.media-embed:hover .play-btn div{transform:scale(1.1);}
+.media-embed iframe{position:absolute;inset:0;width:100%;height:100%;border:0;border-radius:13px;}
+.vocab-tag{display:inline-flex;align-items:center;padding:4px 12px;border-radius:999px;background:rgba(15,23,42,0.04);font-size:0.83rem;font-weight:800;color:#0b63ce;}
+.grid-cards{display:grid;gap:14px;}
+@media(min-width:800px){.grid-2{grid-template-columns:repeat(2,minmax(0,1fr));}.grid-3{grid-template-columns:repeat(3,minmax(0,1fr));}}
+.grad-text{background:linear-gradient(135deg,#0b63ce 0%,#10b981 50%,#f59e0b 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.gradient-mesh{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none;}
+.blob{position:absolute;border-radius:50%;filter:blur(72px);animation:float-slow 12s ease-in-out infinite;}
+.blob:nth-child(2){animation:float-drift 16s ease-in-out infinite;}
+.blob:nth-child(3){animation:float-slow 20s ease-in-out infinite reverse;}
+@keyframes float-slow{0%{transform:translate(0,0) scale(1);}25%{transform:translate(50px,-40px) scale(1.1);}50%{transform:translate(-30px,35px) scale(0.92);}75%{transform:translate(45px,18px) scale(1.07);}100%{transform:translate(0,0) scale(1);}}
+@keyframes float-drift{0%{transform:translate(0,0) scale(1) rotate(0deg);}33%{transform:translate(-45px,-55px) scale(1.13) rotate(3deg);}66%{transform:translate(38px,28px) scale(0.9) rotate(-2deg);}100%{transform:translate(0,0) scale(1) rotate(0deg);}}
+@keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-14px);}}
+.slide::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:radial-gradient(ellipse at center,transparent 55%,rgba(15,23,42,0.06) 100%);}
+.particle-canvas{position:absolute;inset:0;width:100%;height:100%;z-index:1;}
 
+/* ===== INTERIOR SLIDE STYLE ===== */
+.slide.interior{
+  background:
+    radial-gradient(circle at 18% 12%,rgba(11,99,206,0.16),transparent 50%),
+    radial-gradient(circle at 82% 88%,rgba(16,185,129,0.14),transparent 50%),
+    linear-gradient(160deg,#aecbe8 0%,#b9d4ea 48%,#b3ddd0 100%);}
+.slide.interior::after{background:radial-gradient(ellipse at center,transparent 58%,rgba(15,23,42,0.12) 100%);}
+.slide.interior .pill{background:#ffffff;color:#0b4a9e;border:none;box-shadow:0 4px 14px rgba(8,15,30,0.25);font-size:0.78rem;}
+.slide.interior .pill.green{color:#067a55;}
+.slide.interior .pill.amber{color:#7a4800;}
+.slide.interior h2.font-display{color:#0f2747!important;text-shadow:0 1px 2px rgba(255,255,255,0.55);font-size:clamp(1.6rem,2.8vw,2.3rem)!important;letter-spacing:0.005em;}
+.slide.interior .grad-text{-webkit-text-fill-color:#0f2747;text-shadow:0 1px 2px rgba(255,255,255,0.55);}
+.slide.interior .card{background:#ffffff;border:1px solid rgba(15,23,42,0.06);box-shadow:0 14px 34px rgba(15,23,42,0.20),0 2px 6px rgba(15,23,42,0.10);border-radius:20px;}
+.slide.interior .accent-card-blue {background:#eaf2fd;border:1px solid rgba(11,99,206,0.22); box-shadow:0 8px 24px rgba(15,23,42,0.10);}
+.slide.interior .accent-card-green{background:#e6f7f0;border:1px solid rgba(5,150,105,0.22); box-shadow:0 8px 24px rgba(15,23,42,0.10);}
+.slide.interior .accent-card-amber{background:#fdf4e3;border:1px solid rgba(245,158,11,0.28);box-shadow:0 8px 24px rgba(15,23,42,0.10);}
+.slide.interior .accent-card-red  {background:#fdeceb;border:1px solid rgba(239,68,68,0.24); box-shadow:0 8px 24px rgba(15,23,42,0.10);}
+.slide.interior .card .big-text{color:#1e293b!important;}
+.slide.interior .card p,.slide.interior .card li{color:#2d3f55!important;}
+.slide.interior .card strong{color:#0f2747;}
+.slide.interior .think-chip{background:rgba(11,99,206,0.12);color:#0c2d6e;font-size:0.86rem;font-weight:700;}
+.slide.interior .question-chip{background:rgba(234,130,12,0.12);color:#7a3800;font-size:0.86rem;}
+.slide.interior .vocab-tag{background:rgba(11,99,206,0.10);color:#0a3a8c;font-size:0.86rem;font-weight:800;}
+.slide.interior.scrolly{background:radial-gradient(circle at top left,rgba(56,189,248,0.12),transparent 40%),radial-gradient(circle at bottom right,rgba(16,185,129,0.09),transparent 40%),#f0f8ff;}
+
+/* Tier badges */
+.tier-badge-a{display:inline-flex;align-items:center;gap:5px;background:#e6f7f0;color:#047857;border:1px solid rgba(16,185,129,0.3);padding:3px 10px;border-radius:999px;font-size:.63rem;font-weight:800;letter-spacing:.07em;text-transform:uppercase;}
+.tier-badge-b{display:inline-flex;align-items:center;gap:5px;background:#eaf2fd;color:#0b63ce;border:1px solid rgba(11,99,206,0.3);padding:3px 10px;border-radius:999px;font-size:.63rem;font-weight:800;letter-spacing:.07em;text-transform:uppercase;}
+.tier-badge-c{display:inline-flex;align-items:center;gap:5px;background:#fdf4e3;color:#b45309;border:1px solid rgba(245,158,11,0.35);padding:3px 10px;border-radius:999px;font-size:.63rem;font-weight:800;letter-spacing:.07em;text-transform:uppercase;}
+
+/* Code blocks */
+.code-block{font-family:var(--fc);background:#1e293b;color:#e2e8f0;border-radius:12px;padding:12px 16px;font-size:0.82rem;line-height:1.7;box-shadow:0 8px 20px rgba(15,23,42,0.18);}
+.code-kw{color:#93c5fd;} .code-fn{color:#86efac;} .code-str{color:#fde68a;} .code-cm{color:#64748b;font-style:italic;}
+
+/* Scratch block visuals */
+.scratch-block{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:8px;font-size:0.82rem;font-weight:700;color:#fff;box-shadow:0 3px 8px rgba(0,0,0,0.22);}
+.sb-events{background:#ffab19;}
+.sb-motion{background:#4c97ff;}
+.sb-looks{background:#9966ff;}
+.sb-control{background:#ffab19;}
+.sb-green{background:#4caf50;border-radius:24px;}
+
+/* Interactive quiz */
+.quiz-opt{cursor:pointer;padding:9px 14px;border-radius:10px;border:2px solid rgba(11,99,206,0.2);background:rgba(255,255,255,0.9);transition:all 0.2s;font-size:0.85rem;font-weight:700;color:#1e293b;}
+.quiz-opt:hover{border-color:#0b63ce;background:rgba(11,99,206,0.07);transform:translateY(-1px);}
+.quiz-opt.correct{background:#e6f7f0;border-color:#10b981;color:#065f46;}
+.quiz-opt.wrong{background:#fdeceb;border-color:#ef4444;color:#991b1b;}
+
+/* Progress bar */
+.progress-bar{height:6px;border-radius:999px;background:rgba(11,99,206,0.12);overflow:hidden;}
+.progress-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,#0b63ce,#10b981);transition:width 1s ease;}
+
+/* Step sequence */
+.step-seq{display:flex;align-items:center;gap:0;flex-wrap:wrap;}
+.step-box{padding:6px 12px;border-radius:8px;font-size:0.8rem;font-weight:700;color:#fff;background:#0b63ce;white-space:nowrap;}
+.step-arrow{color:#0b63ce;font-size:1.1rem;margin:0 4px;}
+
+/* AI moment banner */
+.ai-banner{background:linear-gradient(135deg,rgba(11,99,206,0.12),rgba(16,185,129,0.10));border:1px solid rgba(11,99,206,0.2);border-radius:14px;padding:12px 16px;}
+
+/* Homework card */
+.hw-card{background:linear-gradient(135deg,#eaf2fd,#e6f7f0);border:2px solid rgba(11,99,206,0.2);border-radius:18px;padding:16px 20px;}
+
+/* Share out card */
+.share-card{background:linear-gradient(135deg,rgba(245,158,11,0.1),rgba(16,185,129,0.08));border:1px solid rgba(245,158,11,0.3);border-radius:16px;padding:12px 16px;}
+
+/* Photo caption */
+.photo-caption{font-size:0.72rem;color:#64748b;text-align:center;margin-top:4px;font-style:italic;}
+</style>
+</head>
+<body>
+<div class="mouse-spotlight"></div>
+<div class="deck">
+
+<!-- ═══════════════════════════════
+     SLIDE 1 · TITLE
+     ═══════════════════════════════ -->
+<div class="slide active" data-slide="1" data-type="lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:500px;height:500px;top:-120px;right:-100px;background:#0b63ce;opacity:0.13;"></div>
+    <div class="blob" style="width:320px;height:320px;bottom:-80px;left:-60px;background:#10b981;opacity:0.11;"></div>
+    <div class="blob" style="width:220px;height:220px;top:42%;left:18%;background:#f59e0b;opacity:0.09;"></div>
+  </div>
+  <canvas class="particle-canvas"></canvas>
+  <div class="content" style="text-align:center;">
+    <div style="margin-bottom:1rem;animation:float 3s ease-in-out infinite;" class="reveal">
+      <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/fc65cb93d65672f15907e090492764526ac9f78e.jpg"
+           alt="Kids learning Scratch coding"
+           style="width:130px;height:130px;object-fit:cover;border-radius:50%;border:4px solid #fff;box-shadow:0 8px 28px rgba(11,99,206,0.28);display:inline-block;">
+    </div>
+    <div class="reveal" style="margin-bottom:0.5rem;">
+      <span class="pill">Session 3 · Wed Jul 1 · Week 1</span>
+    </div>
+    <h1 class="font-display reveal" style="font-size:clamp(2.4rem,5.5vw,4.2rem);font-weight:700;color:#0f2747;line-height:1.1;margin-bottom:0.6rem;">
+      Scratch:<br><span class="grad-text">Sequencing &amp; Events</span>
+    </h1>
+    <p class="reveal" style="font-size:clamp(0.95rem,1.6vw,1.3rem);color:#374151;font-weight:600;letter-spacing:0.05em;margin-bottom:1rem;">
+      Making things happen — in the right order
+    </p>
+    <div class="reveal" style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+      <span class="pill green">Phase 1 · Scratch On-Ramp</span>
+      <span class="pill amber">Ages 7–13 · All Tiers</span>
+      <span class="pill">Modern Chinese School · Summer 2026</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════
+     SLIDE 2 · TODAY'S PLAN (Agenda)
+     ═══════════════════════════════ -->
+<div class="slide interior" data-slide="2" data-type="lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:340px;height:340px;top:-80px;right:-60px;background:#0b63ce;opacity:0.10;"></div>
+    <div class="blob" style="width:240px;height:240px;bottom:-60px;left:-40px;background:#10b981;opacity:0.09;"></div>
+  </div>
+  <div class="content">
+    <div class="reveal" style="margin-bottom:0.7rem;">
+      <span class="pill">Today's Roadmap · 110 min</span>
+    </div>
+    <h2 class="font-display reveal" style="font-size:clamp(1.5rem,2.8vw,2.2rem);font-weight:700;color:#0f2747;margin-bottom:1rem;">
+      What Are We Doing Today?
+    </h2>
+    <div class="grid-cards grid-2 reveal">
+      <div class="card accent-card-amber" style="display:flex;align-items:flex-start;gap:12px;">
+        <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/4033b02e0bf4e1ef958d267abec83f8577c9a0b5.jpg"
+             alt="Brain warm-up puzzle" style="width:54px;height:54px;object-fit:cover;border-radius:10px;flex-shrink:0;">
+        <div>
+          <div style="font-size:0.7rem;font-weight:800;color:#92400e;text-transform:uppercase;letter-spacing:.07em;margin-bottom:3px;">10 min · Warm-Up</div>
+          <div class="big-text" style="font-weight:700;color:#1e293b;">Unplugged Puzzle</div>
+          <p style="font-size:0.82rem;color:#374151;margin:2px 0 0;">No screens — brains on. Sequence a morning routine.</p>
+        </div>
+      </div>
+      <div class="card accent-card-blue" style="display:flex;align-items:flex-start;gap:12px;">
+        <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/47cd2fe86af5e4b2ea6a5ed98e2ae89fecd5b0e1.jpg"
+             alt="Mini lesson concept" style="width:54px;height:54px;object-fit:cover;border-radius:10px;flex-shrink:0;background:#eaf2fd;"
+             onerror="this.style.display='none'">
+        <div>
+          <div style="font-size:0.7rem;font-weight:800;color:#0b4a9e;text-transform:uppercase;letter-spacing:.07em;margin-bottom:3px;">15–20 min · Mini-Lesson</div>
+          <div class="big-text" style="font-weight:700;color:#1e293b;">Sequencing &amp; Events</div>
+          <p style="font-size:0.82rem;color:#374151;margin:2px 0 0;">One concept at a time. Live demo + 2 videos.</p>
+        </div>
+      </div>
+      <div class="card accent-card-green" style="display:flex;align-items:flex-start;gap:12px;">
+        <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/156aaafc42624b642eced4aebb5655390fde7ceb.jpg"
+             alt="Guided build Scratch" style="width:54px;height:54px;object-fit:cover;border-radius:10px;flex-shrink:0;">
+        <div>
+          <div style="font-size:0.7rem;font-weight:800;color:#065f46;text-transform:uppercase;letter-spacing:.07em;margin-bottom:3px;">20 min · Guided Build</div>
+          <div class="big-text" style="font-weight:700;color:#1e293b;">Everyone Builds Together</div>
+          <p style="font-size:0.82rem;color:#374151;margin:2px 0 0;">Animate a sprite to move &amp; react — step by step.</p>
+        </div>
+      </div>
+      <div class="card" style="display:flex;align-items:flex-start;gap:12px;">
+        <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/e03c51c17c751f5b85695515ebe7601d341b8bf4.jpg"
+             alt="Movement break kids" style="width:54px;height:54px;object-fit:cover;border-radius:10px;flex-shrink:0;">
+        <div>
+          <div style="font-size:0.7rem;font-weight:800;color:#374151;text-transform:uppercase;letter-spacing:.07em;margin-bottom:3px;">5 min · Brain Break</div>
+          <div class="big-text" style="font-weight:700;color:#1e293b;">Move Your Body!</div>
+          <p style="font-size:0.82rem;color:#374151;margin:2px 0 0;">Stand up, stretch, reset focus — then back to building.</p>
+        </div>
+      </div>
+    </div>
+    <div class="card reveal" style="margin-top:10px;display:flex;align-items:center;gap:14px;">
+      <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/75ceb135632e5af78fc241634215cd008701d87a.jpg"
+           alt="Kids celebrating achievement" style="width:54px;height:54px;object-fit:cover;border-radius:10px;flex-shrink:0;">
+      <div style="flex:1;">
+        <div style="font-size:0.7rem;font-weight:800;color:#0b4a9e;text-transform:uppercase;letter-spacing:.07em;margin-bottom:3px;">30–40 min · Open Build + Share-Out</div>
+        <div class="big-text" style="font-weight:700;color:#1e293b;">Build Your Own · Challenge Cards · Show Your Neighbor</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════
+     SLIDE 3 · WARM-UP
+     ═══════════════════════════════ -->
+<div class="slide interior" data-slide="3" data-type="lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:300px;height:300px;top:-60px;left:-50px;background:#f59e0b;opacity:0.12;"></div>
+    <div class="blob" style="width:250px;height:250px;bottom:-50px;right:-40px;background:#0b63ce;opacity:0.09;"></div>
+  </div>
+  <div class="content">
+    <div class="reveal" style="margin-bottom:0.6rem;display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+      <span class="pill amber">10 min · Warm-Up · No Screens</span>
+      <span class="think-chip" style="font-size:0.78rem;">Think first — then share!</span>
+    </div>
+    <h2 class="font-display reveal" style="font-size:clamp(1.4rem,2.6vw,2rem);font-weight:700;color:#0f2747;margin-bottom:0.8rem;">
+      The Domino Challenge
+    </h2>
+    <div class="grid-cards grid-2 reveal" style="gap:12px;">
+      <div>
+        <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/6db8eb41281dcc70a9ea46241e92d04d1bd041bf.jpg"
+             alt="Domino chain reaction sequence" style="width:100%;height:160px;object-fit:cover;border-radius:14px;box-shadow:0 6px 18px rgba(15,23,42,0.15);">
+        <p class="photo-caption">A chain reaction — each domino triggers the next, in order!</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div class="card accent-card-amber">
+          <span class="question-chip"><span class="icon">?</span> Question 1</span>
+          <p class="big-text" style="margin:6px 0 0;color:#1e293b;">If you set up 10 dominoes and push the <strong>first one</strong> — what happens?</p>
+        </div>
+        <div class="card accent-card-blue">
+          <span class="question-chip"><span class="icon">?</span> Question 2</span>
+          <p class="big-text" style="margin:6px 0 0;color:#1e293b;">What if you <strong>skip domino #5</strong> and leave a gap? Does the rest fall?</p>
+        </div>
+        <div class="card accent-card-green">
+          <span class="question-chip"><span class="icon">?</span> Big Idea</span>
+          <p class="big-text" style="margin:6px 0 0;color:#1e293b;">How is this like a computer program?<br><em>Turn &amp; tell your neighbor!</em></p>
+        </div>
+      </div>
+    </div>
+    <div class="card reveal" style="margin-top:10px;background:linear-gradient(90deg,rgba(11,99,206,0.07),rgba(16,185,129,0.06));border:1px solid rgba(11,99,206,0.15);">
+      <p class="big-text" style="color:#0f2747;margin:0;text-align:center;">
+        <strong>A program is a chain of instructions.</strong> Skip one step — and the whole thing breaks. 
+        Today we learn how to write instructions that work <em>every single time</em>.
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════
+     SLIDE 4 · WHAT IS SEQUENCING?
+     ═══════════════════════════════ -->
+<div class="slide interior" data-slide="4" data-type="lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:320px;height:320px;top:-70px;right:-50px;background:#0b63ce;opacity:0.11;"></div>
+    <div class="blob" style="width:200px;height:200px;bottom:-40px;left:-30px;background:#10b981;opacity:0.09;"></div>
+  </div>
+  <div class="content">
+    <div class="reveal" style="margin-bottom:0.6rem;">
+      <span class="pill">Mini-Lesson · Concept 1 of 2</span>
+    </div>
+    <h2 class="font-display reveal" style="font-size:clamp(1.4rem,2.6vw,2rem);font-weight:700;color:#0f2747;margin-bottom:0.8rem;">
+      What Is <span class="grad-text">Sequencing</span>?
+    </h2>
+    <div class="grid-cards grid-2 reveal" style="gap:12px;align-items:start;">
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div class="card accent-card-blue">
+          <p style="font-size:0.78rem;font-weight:800;color:#0b4a9e;text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px;">Definition</p>
+          <p class="big-text" style="color:#1e293b;margin:0;">A <strong>sequence</strong> is a list of steps carried out <strong>in order, one at a time</strong>. Miss a step or change the order — the result changes!</p>
+        </div>
+        <div class="card accent-card-amber">
+          <p style="font-size:0.78rem;font-weight:800;color:#92400e;text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px;">Morning Routine Example</p>
+          <div class="step-seq" style="margin-bottom:6px;">
+            <span class="step-box" style="background:#f59e0b;">Wake Up</span>
+            <span class="step-arrow">→</span>
+            <span class="step-box" style="background:#0b63ce;">Brush Teeth</span>
+            <span class="step-arrow">→</span>
+            <span class="step-box" style="background:#10b981;">Eat Breakfast</span>
+          </div>
+          <div class="question-chip" style="margin-top:4px;"><span class="icon">?</span> What if you eat breakfast FIRST, then brush teeth?</div>
+        </div>
+        <div class="card accent-card-green">
+          <p style="font-size:0.78rem;font-weight:800;color:#065f46;text-transform:uppercase;letter-spacing:.07em;margin-bottom:5px;">In Scratch</p>
+          <div class="code-block" style="font-size:0.78rem;padding:8px 12px;">
+            <span class="code-kw">when</span> green flag clicked<br>
+            &nbsp;&nbsp;move <span class="code-str">10</span> steps<br>
+            &nbsp;&nbsp;say <span class="code-str">"Hello!"</span> for <span class="code-str">2</span> secs<br>
+            &nbsp;&nbsp;turn <span class="code-str">90</span> degrees
+          </div>
+        </div>
+      </div>
+      <div>
+        <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/943eb5a5be135dcb98422e3be60daaeefba56e26.jpg"
+             alt="Green flag triggers multiple sprites in Scratch" style="width:100%;height:auto;border-radius:14px;box-shadow:0 6px 18px rgba(15,23,42,0.15);">
+        <p class="photo-caption">One green flag click starts the sequence for <em>every</em> sprite!</p>
+        <div class="think-chip reveal" style="margin-top:10px;justify-content:center;">
+          What do you think the Scratch cat does in those 3 steps?
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════
+     SLIDE 5 · WHAT IS AN EVENT?
+     ═══════════════════════════════ -->
+<div class="slide interior" data-slide="5" data-type="lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:300px;height:300px;top:-60px;left:-40px;background:#10b981;opacity:0.12;"></div>
+    <div class="blob" style="width:220px;height:220px;bottom:-50px;right:-30px;background:#f59e0b;opacity:0.09;"></div>
+  </div>
+  <div class="content">
+    <div class="reveal" style="margin-bottom:0.6rem;">
+      <span class="pill">Mini-Lesson · Concept 2 of 2</span>
+    </div>
+    <h2 class="font-display reveal" style="font-size:clamp(1.4rem,2.6vw,2rem);font-weight:700;color:#0f2747;margin-bottom:0.8rem;">
+      What Is an <span class="grad-text">Event</span>?
+    </h2>
+    <div class="grid-cards grid-2 reveal" style="gap:12px;align-items:start;">
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div class="card">
+          <p style="font-size:0.78rem;font-weight:800;color:#374151;text-transform:uppercase;letter-spacing:.07em;margin-bottom:5px;">In Real Life</p>
+          <div style="display:flex;flex-direction:column;gap:6px;">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span style="font-size:1.2rem;">🔔</span>
+              <span class="big-text" style="color:#1e293b;">School bell rings → <strong>students leave class</strong></span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span style="font-size:1.2rem;">🚦</span>
+              <span class="big-text" style="color:#1e293b;">Light turns green → <strong>cars start moving</strong></span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span style="font-size:1.2rem;">👆</span>
+              <span class="big-text" style="color:#1e293b;">You press a key → <strong>sprite moves!</strong></span>
+            </div>
+          </div>
+        </div>
+        <div class="card accent-card-blue">
+          <p style="font-size:0.78rem;font-weight:800;color:#0b4a9e;text-transform:uppercase;letter-spacing:.07em;margin-bottom:5px;">Definition</p>
+          <p class="big-text" style="color:#1e293b;margin:0;">An <strong>event</strong> is a <em>trigger</em> — something that happens which tells your program to START running a sequence of code.</p>
+        </div>
+        <div class="card accent-card-green">
+          <p style="font-size:0.78rem;font-weight:800;color:#065f46;text-transform:uppercase;letter-spacing:.07em;margin-bottom:5px;">The 3 Key Scratch Events</p>
+          <div style="display:flex;flex-direction:column;gap:5px;">
+            <span class="scratch-block sb-events">🚩 When Green Flag Clicked</span>
+            <span class="scratch-block sb-events">⌨️ When [key] Key Pressed</span>
+            <span class="scratch-block sb-events">👆 When This Sprite Clicked</span>
+          </div>
+        </div>
+      </div>
+      <div>
+        <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/af62af765db5b80c5e52003bc526049a8ad48813.jpg"
+             alt="Scratch programming interface with sprites" style="width:100%;height:180px;object-fit:cover;border-radius:14px;box-shadow:0 6px 18px rgba(15,23,42,0.15);">
+        <p class="photo-caption">The yellow "hat blocks" in Scratch are your event triggers!</p>
+        <div class="card reveal" style="margin-top:10px;">
+          <div class="question-chip"><span class="icon">?</span> Think &amp; Discuss</div>
+          <p class="big-text" style="color:#1e293b;margin:6px 0 0;">Without an event, does the code <em>ever</em> run? What would happen to a sprite with <strong>no green flag block</strong>?</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════
+     SLIDE 6 · VIDEO 1
+     ═══════════════════════════════ -->
+<div class="slide interior" data-slide="6" data-type="lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:280px;height:280px;top:-50px;right:-40px;background:#ef4444;opacity:0.09;"></div>
+    <div class="blob" style="width:200px;height:200px;bottom:-40px;left:-30px;background:#0b63ce;opacity:0.09;"></div>
+  </div>
+  <div class="content">
+    <div class="reveal" style="margin-bottom:0.6rem;display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+      <span class="pill">Watch · 3 min</span>
+      <span class="think-chip">Watch, then we discuss!</span>
+    </div>
+    <h2 class="font-display reveal" style="font-size:clamp(1.3rem,2.4vw,1.9rem);font-weight:700;color:#0f2747;margin-bottom:0.8rem;">
+      Video 1: Events in Scratch — The 3 Essential Hat Blocks
+    </h2>
+    <div class="grid-cards grid-2 reveal" style="gap:14px;align-items:start;">
+      <div>
+        <!-- VIDEO EMBED: YQU4XMjdXHE — Scratch Tutorial Events -->
+        <div class="media-embed" id="player-YQU4XMjdXHE" onclick="playVideo('YQU4XMjdXHE')" title="Click to play: Scratch Tutorial - Events">
+          <img src="https://img.youtube.com/vi/YQU4XMjdXHE/hqdefault.jpg" alt="Scratch Tutorial - Events thumbnail">
+          <div class="play-btn"><div style="border:none;display:flex;align-items:center;justify-content:center;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>
+          </div></div>
+        </div>
+        <p class="photo-caption" style="margin-top:6px;">
+          <a href="https://www.youtube.com/watch?v=YQU4XMjdXHE" target="_blank" style="color:#0b63ce;text-decoration:underline;">▶ Open on YouTube: "Scratch Tutorial - Events" (3 min)</a>
+        </p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div class="card accent-card-blue">
+          <p style="font-size:0.78rem;font-weight:800;color:#0b4a9e;text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px;">What to Look For</p>
+          <ul style="padding-left:16px;margin:0;font-size:0.85rem;color:#1e293b;line-height:1.7;">
+            <li>What are <strong>"hat blocks"</strong> — why the funny shape?</li>
+            <li>What happens when the <strong>green flag</strong> is clicked?</li>
+            <li>How does the sprite respond to a <strong>key press</strong>?</li>
+            <li>What is an <strong>"event listener"</strong>?</li>
+          </ul>
+        </div>
+        <div class="card accent-card-amber">
+          <p style="font-size:0.78rem;font-weight:800;color:#92400e;text-transform:uppercase;letter-spacing:.07em;margin-bottom:5px;">After the Video…</p>
+          <div class="question-chip"><span class="icon">?</span> Why can't you put blocks ON TOP of a hat block?</div>
+          <p style="font-size:0.83rem;color:#374151;margin:6px 0 0;">Turn &amp; tell your neighbor — what did you notice?</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════
+     SLIDE 7 · VIDEO 2
+     ═══════════════════════════════ -->
+<div class="slide interior" data-slide="7" data-type="lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:260px;height:260px;top:-50px;right:-30px;background:#ef4444;opacity:0.09;"></div>
+    <div class="blob" style="width:200px;height:200px;bottom:-40px;left:-30px;background:#10b981;opacity:0.09;"></div>
+  </div>
+  <div class="content">
+    <div class="reveal" style="margin-bottom:0.6rem;display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+      <span class="pill">Watch · 4 min</span>
+      <span class="think-chip">Count the events!</span>
+    </div>
+    <h2 class="font-display reveal" style="font-size:clamp(1.3rem,2.4vw,1.9rem);font-weight:700;color:#0f2747;margin-bottom:0.8rem;">
+      Video 2: Make a Sprite Move — Events + Motion in Action
+    </h2>
+    <div class="grid-cards grid-2 reveal" style="gap:14px;align-items:start;">
+      <div>
+        <!-- VIDEO EMBED: svS8lVvjn1Y — How to Make a Sprite Move in Scratch -->
+        <div class="media-embed" id="player-svS8lVvjn1Y" onclick="playVideo('svS8lVvjn1Y')" title="Click to play: How to Make a Sprite Move in Scratch">
+          <img src="https://img.youtube.com/vi/svS8lVvjn1Y/hqdefault.jpg" alt="How to Make a Sprite Move in Scratch thumbnail">
+          <div class="play-btn"><div style="border:none;display:flex;align-items:center;justify-content:center;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>
+          </div></div>
+        </div>
+        <p class="photo-caption" style="margin-top:6px;">
+          <a href="https://www.youtube.com/watch?v=svS8lVvjn1Y" target="_blank" style="color:#0b63ce;text-decoration:underline;">▶ Open on YouTube: "How to Make a Sprite Move in Scratch" (4 min)</a>
+        </p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div class="card accent-card-green">
+          <p style="font-size:0.78rem;font-weight:800;color:#065f46;text-transform:uppercase;letter-spacing:.07em;margin-bottom:5px;">Spot These Blocks</p>
+          <ul style="padding-left:16px;margin:0;font-size:0.85rem;color:#1e293b;line-height:1.7;">
+            <li><span class="scratch-block sb-events" style="font-size:0.73rem;padding:3px 8px;">when green flag clicked</span></li>
+            <li><span class="scratch-block sb-motion" style="font-size:0.73rem;padding:3px 8px;">move 10 steps</span></li>
+            <li><span class="scratch-block sb-control" style="font-size:0.73rem;padding:3px 8px;">forever</span></li>
+            <li><span class="scratch-block sb-motion" style="font-size:0.73rem;padding:3px 8px;">if on edge, bounce</span></li>
+          </ul>
+        </div>
+        <div class="card accent-card-blue">
+          <p style="font-size:0.78rem;font-weight:800;color:#0b4a9e;text-transform:uppercase;letter-spacing:.07em;margin-bottom:5px;">Challenge Question</p>
+          <div class="question-chip"><span class="icon">?</span> Can you have TWO events on the same sprite? What happens?</div>
+        </div>
+        <div class="ai-banner">
+          <p style="font-size:0.78rem;font-weight:800;color:#0b4a9e;text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px;">🤖 AI Moment Preview</p>
+          <p style="font-size:0.82rem;color:#1e293b;margin:0;">These steps in order are exactly how an AI model is <em>trained</em> — one step at a time, in a sequence.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════
+     SLIDE 8 · VOCABULARY
+     ═══════════════════════════════ -->
+<div class="slide interior" data-slide="8" data-type="lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:280px;height:280px;top:-60px;right:-50px;background:#0b63ce;opacity:0.11;"></div>
+    <div class="blob" style="width:200px;height:200px;bottom:-40px;left:-30px;background:#f59e0b;opacity:0.09;"></div>
+  </div>
+  <div class="content">
+    <div class="reveal" style="margin-bottom:0.6rem;">
+      <span class="pill">Vocabulary · 5 Words for Today</span>
+    </div>
+    <h2 class="font-display reveal" style="font-size:clamp(1.4rem,2.6vw,2rem);font-weight:700;color:#0f2747;margin-bottom:0.8rem;">
+      Words You'll Use Today
+    </h2>
+    <div class="grid-cards grid-2 reveal" style="gap:10px;">
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:5px;">
+          <span class="vocab-tag">Sequence</span>
+        </div>
+        <p class="big-text" style="color:#1e293b;margin:0;">Steps executed <strong>one after another, in order</strong>. Like a recipe — skip step 3 and dinner burns!</p>
+      </div>
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:5px;">
+          <span class="vocab-tag">Event</span>
+        </div>
+        <p class="big-text" style="color:#1e293b;margin:0;">A <strong>trigger</strong> that starts a script. "When _____ happens, do _____." Without it, nothing runs.</p>
+      </div>
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:5px;">
+          <span class="vocab-tag">Sprite</span>
+        </div>
+        <p class="big-text" style="color:#1e293b;margin:0;">A <strong>character or object</strong> in Scratch that you program. The cat is a sprite. You can make your own!</p>
+      </div>
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:5px;">
+          <span class="vocab-tag">Script</span>
+        </div>
+        <p class="big-text" style="color:#1e293b;margin:0;">A <strong>stack of blocks</strong> that runs together when an event fires. One sprite can have many scripts!</p>
+      </div>
+    </div>
+    <div class="card accent-card-green reveal" style="margin-top:10px;display:flex;align-items:center;gap:10px;">
+      <span class="vocab-tag" style="white-space:nowrap;">Stage</span>
+      <p class="big-text" style="color:#1e293b;margin:0;">The <strong>background canvas</strong> where sprites live. 480×360 pixels. Your sprites act out their scripts here!</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════
+     SLIDE 9 · AI MOMENT
+     ═══════════════════════════════ -->
+<div class="slide interior" data-slide="9" data-type="lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:300px;height:300px;top:-60px;left:-50px;background:#0b63ce;opacity:0.13;"></div>
+    <div class="blob" style="width:220px;height:220px;bottom:-40px;right:-30px;background:#10b981;opacity:0.10;"></div>
+  </div>
+  <div class="content">
+    <div class="reveal" style="margin-bottom:0.6rem;display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+      <span class="pill" style="background:linear-gradient(135deg,rgba(11,99,206,0.15),rgba(16,185,129,0.12));color:#0b63ce;border-color:rgba(11,99,206,0.25);">🤖 AI Moment</span>
+      <span class="think-chip">Sequence = Recipe = Training Steps</span>
+    </div>
+    <h2 class="font-display reveal" style="font-size:clamp(1.4rem,2.6vw,2rem);font-weight:700;color:#0f2747;margin-bottom:0.8rem;">
+      Your Scratch Script IS Like AI Training
+    </h2>
+    <div class="grid-cards grid-2 reveal" style="gap:12px;align-items:start;">
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div class="card accent-card-blue">
+          <p style="font-size:0.78rem;font-weight:800;color:#0b4a9e;text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px;">Your Scratch Script</p>
+          <div class="step-seq" style="flex-direction:column;align-items:flex-start;gap:4px;">
+            <div style="display:flex;align-items:center;gap:6px;">
+              <span class="step-box" style="background:#f59e0b;min-width:22px;text-align:center;">1</span>
+              <span style="font-size:0.83rem;color:#1e293b;">When green flag clicked</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;">
+              <span class="step-box" style="background:#0b63ce;min-width:22px;text-align:center;">2</span>
+              <span style="font-size:0.83rem;color:#1e293b;">Move 10 steps</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;">
+              <span class="step-box" style="background:#0b63ce;min-width:22px;text-align:center;">3</span>
+              <span style="font-size:0.83rem;color:#1e293b;">Say "Hello!"</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;">
+              <span class="step-box" style="background:#0b63ce;min-width:22px;text-align:center;">4</span>
+              <span style="font-size:0.83rem;color:#1e293b;">Turn 90 degrees</span>
+            </div>
+          </div>
+        </div>
+        <div class="card accent-card-green">
+          <p style="font-size:0.78rem;font-weight:800;color:#065f46;text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px;">An AI Training Run</p>
+          <div class="step-seq" style="flex-direction:column;align-items:flex-start;gap:4px;">
+            <div style="display:flex;align-items:center;gap:6px;">
+              <span class="step-box" style="background:#f59e0b;min-width:22px;text-align:center;">1</span>
+              <span style="font-size:0.83rem;color:#1e293b;">Start training (trigger)</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;">
+              <span class="step-box" style="background:#10b981;min-width:22px;text-align:center;">2</span>
+              <span style="font-size:0.83rem;color:#1e293b;">Show example image</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;">
+              <span class="step-box" style="background:#10b981;min-width:22px;text-align:center;">3</span>
+              <span style="font-size:0.83rem;color:#1e293b;">Adjust understanding</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;">
+              <span class="step-box" style="background:#10b981;min-width:22px;text-align:center;">4</span>
+              <span style="font-size:0.83rem;color:#1e293b;">Repeat for every example</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div class="ai-banner">
+          <p style="font-size:0.78rem;font-weight:800;color:#0b4a9e;text-transform:uppercase;letter-spacing:.07em;margin-bottom:5px;">The Big Idea</p>
+          <p class="big-text" style="color:#1e293b;margin:0;">AI doesn't learn all at once — it learns in <strong>steps, in a sequence</strong>, just like your script runs. Change the order of training steps and the AI learns something different… or breaks completely!</p>
+        </div>
+        <div class="card accent-card-amber">
+          <div class="question-chip"><span class="icon">?</span> What Would Happen?</div>
+          <p class="big-text" style="color:#1e293b;margin:6px 0 0;">If an AI only trained on examples of sunny days — what would it predict for a rainy day?</p>
+        </div>
+        <div class="card" style="text-align:center;padding:12px;">
+          <p style="font-size:0.78rem;font-weight:800;color:#374151;text-transform:uppercase;margin-bottom:4px;">Key Takeaway</p>
+          <p class="big-text" style="color:#0b63ce;font-weight:800;margin:0;">"Sequence is the skeleton of every program — and every AI."</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════
+     SLIDE 10 · TOUR OF SCRATCH
+     ═══════════════════════════════ -->
+<div class="slide interior" data-slide="10" data-type="lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:280px;height:280px;top:-60px;right:-40px;background:#10b981;opacity:0.11;"></div>
+    <div class="blob" style="width:200px;height:200px;bottom:-40px;left:-30px;background:#0b63ce;opacity:0.09;"></div>
+  </div>
+  <div class="content">
+    <div class="reveal" style="margin-bottom:0.6rem;">
+      <span class="pill green">Tour · scratch.mit.edu</span>
+    </div>
+    <h2 class="font-display reveal" style="font-size:clamp(1.4rem,2.6vw,2rem);font-weight:700;color:#0f2747;margin-bottom:0.8rem;">
+      The Scratch Interface — Know Your Workspace
+    </h2>
+    <div class="grid-cards grid-2 reveal" style="gap:12px;align-items:start;">
+      <div>
+        <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/af62af765db5b80c5e52003bc526049a8ad48813.jpg"
+             alt="Scratch interface with sprites and code blocks" style="width:100%;height:180px;object-fit:cover;border-radius:14px;box-shadow:0 6px 18px rgba(15,23,42,0.15);">
+        <p class="photo-caption">The Scratch editor — 4 main zones work together</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div class="card" style="display:flex;align-items:center;gap:10px;">
+          <span style="width:28px;height:28px;border-radius:50%;background:#4c97ff;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:0.8rem;flex-shrink:0;">1</span>
+          <div><strong style="color:#1e293b;">Stage</strong> <span style="color:#374151;font-size:0.82rem;">— where your sprites act. 480 × 360 pixels.</span></div>
+        </div>
+        <div class="card" style="display:flex;align-items:center;gap:10px;">
+          <span style="width:28px;height:28px;border-radius:50%;background:#ff8c1a;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:0.8rem;flex-shrink:0;">2</span>
+          <div><strong style="color:#1e293b;">Sprite Panel</strong> <span style="color:#374151;font-size:0.82rem;">— your characters. Pick one to code it!</span></div>
+        </div>
+        <div class="card" style="display:flex;align-items:center;gap:10px;">
+          <span style="width:28px;height:28px;border-radius:50%;background:#9966ff;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:0.8rem;flex-shrink:0;">3</span>
+          <div><strong style="color:#1e293b;">Block Palette</strong> <span style="color:#374151;font-size:0.82rem;">— all your instructions. Events are yellow!</span></div>
+        </div>
+        <div class="card" style="display:flex;align-items:center;gap:10px;">
+          <span style="width:28px;height:28px;border-radius:50%;background:#10b981;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:0.8rem;flex-shrink:0;">4</span>
+          <div><strong style="color:#1e293b;">Script Area</strong> <span style="color:#374151;font-size:0.82rem;">— drag blocks here to build your scripts.</span></div>
+        </div>
+        <div class="card accent-card-green" style="margin-top:2px;">
+          <div class="question-chip"><span class="icon">?</span> Quick Check</div>
+          <p style="font-size:0.83rem;color:#1e293b;margin:5px 0 0;">Where would you find the <span class="scratch-block sb-events" style="font-size:0.72rem;padding:2px 7px;">when green flag clicked</span> block?</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════
+     SLIDE 11 · GUIDED BUILD INTRO
+     ═══════════════════════════════ -->
+<div class="slide interior" data-slide="11" data-type="lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:300px;height:300px;top:-60px;left:-50px;background:#10b981;opacity:0.13;"></div>
+    <div class="blob" style="width:220px;height:220px;bottom:-40px;right:-30px;background:#0b63ce;opacity:0.10;"></div>
+  </div>
+  <div class="content">
+    <div class="reveal" style="margin-bottom:0.6rem;display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+      <span class="pill green">20 min · Guided Build</span>
+      <span class="pill">Everyone builds together</span>
+    </div>
+    <h2 class="font-display reveal" style="font-size:clamp(1.4rem,2.6vw,2rem);font-weight:700;color:#0f2747;margin-bottom:0.8rem;">
+      Our Goal: A Sprite That Moves &amp; Reacts
+    </h2>
+    <div class="grid-cards grid-2 reveal" style="gap:12px;align-items:start;">
+      <div>
+        <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/f27cd2bd47eef14d948487648c32fb68ad61543e.jpg"
+             alt="Sprite flying animation Scratch coding" style="width:100%;height:165px;object-fit:cover;border-radius:14px;box-shadow:0 6px 18px rgba(15,23,42,0.15);">
+        <p class="photo-caption">Your sprite will move, react, and come alive!</p>
+        <div class="card reveal" style="margin-top:10px;background:linear-gradient(90deg,rgba(16,185,129,0.1),rgba(11,99,206,0.08));border:1px solid rgba(16,185,129,0.2);">
+          <p style="font-size:0.78rem;font-weight:800;color:#065f46;text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px;">By the End You Will Have…</p>
+          <ul style="padding-left:16px;margin:0;font-size:0.83rem;color:#1e293b;line-height:1.7;">
+            <li>A sprite that moves when the green flag clicks</li>
+            <li>A sprite that reacts to a key press</li>
+            <li>At least <strong>3 actions happening in sequence</strong></li>
+          </ul>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div class="card accent-card-amber">
+          <p style="font-size:0.78rem;font-weight:800;color:#92400e;text-transform:uppercase;letter-spacing:.07em;margin-bottom:5px;">Step-by-Step Plan</p>
+          <div style="display:flex;flex-direction:column;gap:5px;">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span class="step-box" style="background:#f59e0b;min-width:22px;text-align:center;flex-shrink:0;">1</span>
+              <span style="font-size:0.82rem;color:#1e293b;">Open Scratch &amp; pick a sprite you like</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span class="step-box" style="background:#0b63ce;min-width:22px;text-align:center;flex-shrink:0;">2</span>
+              <span style="font-size:0.82rem;color:#1e293b;">Drag <span class="scratch-block sb-events" style="font-size:0.7rem;padding:2px 7px;">when 🚩 clicked</span> to script area</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span class="step-box" style="background:#0b63ce;min-width:22px;text-align:center;flex-shrink:0;">3</span>
+              <span style="font-size:0.82rem;color:#1e293b;">Attach <span class="scratch-block sb-motion" style="font-size:0.7rem;padding:2px 7px;">move 10 steps</span></span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span class="step-box" style="background:#0b63ce;min-width:22px;text-align:center;flex-shrink:0;">4</span>
+              <span style="font-size:0.82rem;color:#1e293b;">Add <span class="scratch-block sb-looks" style="font-size:0.7rem;padding:2px 7px;">say "I moved!"</span></span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span class="step-box" style="background:#10b981;min-width:22px;text-align:center;flex-shrink:0;">5</span>
+              <span style="font-size:0.82rem;color:#1e293b;"><strong>NEW script:</strong> <span class="scratch-block sb-events" style="font-size:0.7rem;padding:2px 7px;">when [space] pressed</span></span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span class="step-box" style="background:#10b981;min-width:22px;text-align:center;flex-shrink:0;">6</span>
+              <span style="font-size:0.82rem;color:#1e293b;">Attach <span class="scratch-block sb-motion" style="font-size:0.7rem;padding:2px 7px;">turn 90 degrees</span></span>
+            </div>
+          </div>
+        </div>
+        <div class="card accent-card-red" style="margin-top:2px;">
+          <p style="font-size:0.78rem;font-weight:800;color:#991b1b;text-transform:uppercase;margin-bottom:4px;">Bugs Are Normal!</p>
+          <p style="font-size:0.82rem;color:#7f1d1d;margin:0;">If your sprite doesn't move — check that your blocks are <strong>connected</strong> to a hat block. Disconnected blocks never run!</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════
+     SLIDE 12 · GUIDED BUILD STEPS (DEMO CODE)
+     ═══════════════════════════════ -->
+<div class="slide interior" data-slide="12" data-type="lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:260px;height:260px;top:-50px;right:-40px;background:#0b63ce;opacity:0.11;"></div>
+    <div class="blob" style="width:200px;height:200px;bottom:-40px;left:-30px;background:#10b981;opacity:0.09;"></div>
+  </div>
+  <div class="content">
+    <div class="reveal" style="margin-bottom:0.6rem;display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+      <span class="pill green">Live Demo · Follow Along</span>
+      <span class="think-chip">Build this exactly as I do!</span>
+    </div>
+    <h2 class="font-display reveal" style="font-size:clamp(1.4rem,2.6vw,2rem);font-weight:700;color:#0f2747;margin-bottom:0.8rem;">
+      Two Scripts — Two Events, One Sprite
+    </h2>
+    <div class="grid-cards grid-2 reveal" style="gap:14px;align-items:start;">
+      <div>
+        <div class="card accent-card-blue">
+          <p style="font-size:0.78rem;font-weight:800;color:#0b4a9e;text-transform:uppercase;margin-bottom:8px;">Script A · Green Flag</p>
+          <div class="code-block">
+            <span class="code-kw">when</span> <span class="code-str">🚩</span> clicked<br>
+            &nbsp;&nbsp;<span class="code-fn">move</span> <span class="code-str">100</span> steps<br>
+            &nbsp;&nbsp;<span class="code-fn">say</span> <span class="code-str">"I'm moving!"</span> for <span class="code-str">2</span> secs<br>
+            &nbsp;&nbsp;<span class="code-fn">turn</span> <span class="code-str">⟳</span> <span class="code-str">45</span> degrees
+          </div>
+          <div class="question-chip" style="margin-top:8px;"><span class="icon">?</span> What does the sprite do — and in what order?</div>
+        </div>
+        <div class="card accent-card-green" style="margin-top:10px;">
+          <p style="font-size:0.78rem;font-weight:800;color:#065f46;text-transform:uppercase;margin-bottom:8px;">Script B · Space Key</p>
+          <div class="code-block">
+            <span class="code-kw">when</span> <span class="code-str">[space]</span> key pressed<br>
+            &nbsp;&nbsp;<span class="code-fn">go to</span> x:<span class="code-str">0</span> y:<span class="code-str">0</span><br>
+            &nbsp;&nbsp;<span class="code-fn">say</span> <span class="code-str">"I'm back!"</span> for <span class="code-str">2</span> secs
+          </div>
+          <div class="question-chip" style="margin-top:8px;"><span class="icon">?</span> When does THIS script run — before or after Script A?</div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div class="card">
+          <p style="font-size:0.78rem;font-weight:800;color:#374151;text-transform:uppercase;margin-bottom:6px;">The Big Discovery</p>
+          <p class="big-text" style="color:#1e293b;margin:0;">A sprite can have <strong>multiple scripts</strong>! Each script waits for its <em>own</em> event. They don't interfere — they run independently.</p>
+        </div>
+        <div class="card accent-card-amber">
+          <p style="font-size:0.78rem;font-weight:800;color:#92400e;text-transform:uppercase;margin-bottom:5px;">Try Changing These</p>
+          <ul style="padding-left:16px;margin:0;font-size:0.83rem;color:#1e293b;line-height:1.7;">
+            <li>Change <code style="background:rgba(0,0,0,0.06);padding:1px 5px;border-radius:4px;">100</code> steps to <code style="background:rgba(0,0,0,0.06);padding:1px 5px;border-radius:4px;">50</code> — slower?</li>
+            <li>Change key from <code style="background:rgba(0,0,0,0.06);padding:1px 5px;border-radius:4px;">space</code> to <code style="background:rgba(0,0,0,0.06);padding:1px 5px;border-radius:4px;">up arrow</code></li>
+            <li>Add a <strong>third block</strong> to Script A — what happens?</li>
+          </ul>
+        </div>
+        <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/156aaafc42624b642eced4aebb5655390fde7ceb.jpg"
+             alt="Scratch code blocks for a sprite" style="width:100%;height:100px;object-fit:cover;border-radius:12px;box-shadow:0 4px 12px rgba(15,23,42,0.12);">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════
+     SLIDE 13 · BRAIN BREAK
+     ═══════════════════════════════ -->
+<div class="slide interior" data-slide="13" data-type="lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:280px;height:280px;top:-50px;right:-40px;background:#10b981;opacity:0.14;"></div>
+    <div class="blob" style="width:220px;height:220px;bottom:-40px;left:-30px;background:#f59e0b;opacity:0.12;"></div>
+  </div>
+  <canvas class="particle-canvas"></canvas>
+  <div class="content" style="text-align:center;">
+    <div class="reveal" style="margin-bottom:0.7rem;display:flex;justify-content:center;">
+      <span class="pill green">5 min · Brain Break!</span>
+    </div>
+    <h2 class="font-display reveal" style="font-size:clamp(1.6rem,3vw,2.4rem);font-weight:700;color:#0f2747;margin-bottom:0.8rem;">
+      Stand Up &amp; Follow the Sequence!
+    </h2>
+    <div class="reveal" style="display:flex;justify-content:center;margin-bottom:1rem;">
+      <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/0a674dbb770ce241e3349d38ab487f0d70c4609d.jpg"
+           alt="Kids movement break exercises poster" style="width:100%;max-width:520px;height:180px;object-fit:cover;border-radius:16px;box-shadow:0 8px 24px rgba(15,23,42,0.14);">
+    </div>
+    <div class="grid-cards grid-2 reveal" style="gap:10px;max-width:640px;margin:0 auto;">
+      <div class="card accent-card-green" style="text-align:center;">
+        <p style="font-size:0.78rem;font-weight:800;color:#065f46;text-transform:uppercase;margin-bottom:4px;">Script A · 5 Times</p>
+        <div class="step-seq" style="justify-content:center;flex-direction:column;align-items:center;gap:4px;">
+          <span class="step-box" style="background:#10b981;">Jump once</span>
+          <span class="step-arrow" style="transform:rotate(90deg);">→</span>
+          <span class="step-box" style="background:#0b63ce;">Clap twice</span>
+          <span class="step-arrow" style="transform:rotate(90deg);">→</span>
+          <span class="step-box" style="background:#f59e0b;">Spin around</span>
+        </div>
+      </div>
+      <div class="card accent-card-blue" style="text-align:center;">
+        <p style="font-size:0.78rem;font-weight:800;color:#0b4a9e;text-transform:uppercase;margin-bottom:4px;">Teacher Presses "Key"</p>
+        <div class="step-seq" style="justify-content:center;flex-direction:column;align-items:center;gap:4px;">
+          <span class="step-box" style="background:#0b63ce;">Sit back down</span>
+          <span class="step-arrow" style="transform:rotate(90deg);">→</span>
+          <span class="step-box" style="background:#10b981;">Take a breath</span>
+          <span class="step-arrow" style="transform:rotate(90deg);">→</span>
+          <span class="step-box" style="background:#f59e0b;">Ready to code!</span>
+        </div>
+      </div>
+    </div>
+    <div class="card reveal" style="margin-top:12px;max-width:520px;margin-left:auto;margin-right:auto;">
+      <p class="big-text" style="color:#0f2747;margin:0;font-style:italic;">"See what you just did? You followed a <strong>sequence</strong>, and reacted to an <strong>event</strong>. Your body is a Scratch sprite!"</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════
+     SLIDE 14 · OPEN BUILD + TIERS
+     ═══════════════════════════════ -->
+<div class="slide interior scrolly" data-slide="14" data-type="activity">
+  <div class="content">
+    <div style="margin-bottom:0.8rem;display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+      <span class="pill green">30–40 min · Open Build</span>
+      <span class="pill amber">Challenge Cards Available</span>
+    </div>
+    <h2 class="font-display" style="font-size:clamp(1.4rem,2.5vw,2rem);font-weight:700;color:#0f2747;margin-bottom:0.8rem;">
+      Build Your Own Scratch Animation!
+    </h2>
+    <div class="grid-cards grid-3" style="gap:12px;margin-bottom:12px;">
+      <!-- TIER A -->
+      <div class="card" style="border-top:4px solid #10b981;">
+        <div style="display:flex;align-items:center;gap:7px;margin-bottom:8px;">
+          <span class="tier-badge-a">Tier A · Foundations</span>
+        </div>
+        <p style="font-size:0.78rem;font-weight:800;color:#065f46;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;">Grades 1–3</p>
+        <p style="font-size:0.83rem;color:#1e293b;line-height:1.6;margin-bottom:8px;">Use the starter sprite (cat). Add the green flag event. Make it move, then make it say something. Buddy pairs welcome!</p>
+        <div class="card accent-card-green" style="padding:8px 12px;">
+          <p style="font-size:0.75rem;font-weight:800;color:#065f46;margin-bottom:3px;">Goal</p>
+          <p style="font-size:0.82rem;color:#1e293b;margin:0;">2 blocks attached to green flag. Sprite moves AND says something.</p>
+        </div>
+      </div>
+      <!-- TIER B -->
+      <div class="card" style="border-top:4px solid #0b63ce;">
+        <div style="display:flex;align-items:center;gap:7px;margin-bottom:8px;">
+          <span class="tier-badge-b">Tier B · Core</span>
+        </div>
+        <p style="font-size:0.78rem;font-weight:800;color:#0b4a9e;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;">Grades 3–5</p>
+        <p style="font-size:0.83rem;color:#1e293b;line-height:1.6;margin-bottom:8px;">Pick YOUR own sprite. Create 2 scripts: one for green flag (3+ actions), one for a key press. Name your project!</p>
+        <div class="card accent-card-blue" style="padding:8px 12px;">
+          <p style="font-size:0.75rem;font-weight:800;color:#0b4a9e;margin-bottom:3px;">Goal</p>
+          <p style="font-size:0.82rem;color:#1e293b;margin:0;">Sprite does 3 actions in sequence + responds to 1 key event.</p>
+        </div>
+      </div>
+      <!-- TIER C -->
+      <div class="card" style="border-top:4px solid #f59e0b;">
+        <div style="display:flex;align-items:center;gap:7px;margin-bottom:8px;">
+          <span class="tier-badge-c">Tier C · Accelerated</span>
+        </div>
+        <p style="font-size:0.78rem;font-weight:800;color:#b45309;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;">Grades 6–9</p>
+        <p style="font-size:0.83rem;color:#1e293b;line-height:1.6;margin-bottom:8px;">Two sprites with separate scripts. Each sprite responds to a DIFFERENT key with a DIFFERENT action. Can they interact?</p>
+        <div class="card accent-card-amber" style="padding:8px 12px;">
+          <p style="font-size:0.75rem;font-weight:800;color:#92400e;margin-bottom:3px;">Challenge Card</p>
+          <p style="font-size:0.82rem;color:#1e293b;margin:0;">Make sprite 2 respond to 2 different keys with different actions.</p>
+        </div>
+      </div>
+    </div>
+    <div class="card" style="background:linear-gradient(90deg,rgba(11,99,206,0.07),rgba(16,185,129,0.06));border:1px solid rgba(11,99,206,0.15);display:flex;align-items:center;gap:14px;">
+      <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/44da4fed1a2f15c1d8d2f2c5b4d0d0bc76cfce8a.jpg"
+           alt="Kids coding together" style="width:50px;height:50px;object-fit:cover;border-radius:10px;flex-shrink:0;" onerror="this.style.display='none'">
+      <div>
+        <p style="font-size:0.78rem;font-weight:800;color:#0b4a9e;text-transform:uppercase;margin-bottom:3px;">Finished Early?</p>
+        <p style="font-size:0.83rem;color:#1e293b;margin:0;">Try adding a <strong>sound effect</strong> when a key is pressed, or help your neighbor debug their project. Fast finishers: attempt the next tier's goal!</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════
+     SLIDE 15 · INTERACTIVE QUIZ
+     ═══════════════════════════════ -->
+<div class="slide interior" data-slide="15" data-type="activity">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:280px;height:280px;top:-50px;right:-40px;background:#f59e0b;opacity:0.12;"></div>
+    <div class="blob" style="width:200px;height:200px;bottom:-40px;left:-30px;background:#0b63ce;opacity:0.10;"></div>
+  </div>
+  <div class="content">
+    <div class="reveal" style="margin-bottom:0.6rem;display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+      <span class="pill amber">Quick Check · Think First!</span>
+      <span class="think-chip">No wrong answers in trying</span>
+    </div>
+    <h2 class="font-display reveal" style="font-size:clamp(1.4rem,2.6vw,2rem);font-weight:700;color:#0f2747;margin-bottom:0.8rem;">
+      Let's Test Your Thinking!
+    </h2>
+    <div style="display:flex;flex-direction:column;gap:14px;" class="reveal">
+      <!-- Q1 -->
+      <div class="card">
+        <p style="font-size:0.78rem;font-weight:800;color:#374151;text-transform:uppercase;margin-bottom:6px;">Question 1</p>
+        <p class="big-text" style="color:#1e293b;margin-bottom:8px;font-weight:700;">You have 3 blocks attached to "when green flag clicked": move, say, turn. The sprite will…</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+          <button class="quiz-opt" onclick="answerQuiz(this,'wrong')">Run all 3 at the same time</button>
+          <button class="quiz-opt" onclick="answerQuiz(this,'correct')">Run them one after another, in order</button>
+          <button class="quiz-opt" onclick="answerQuiz(this,'wrong')">Pick a random one to run</button>
+          <button class="quiz-opt" onclick="answerQuiz(this,'wrong')">Do nothing — needs a loop</button>
+        </div>
+      </div>
+      <!-- Q2 -->
+      <div class="card">
+        <p style="font-size:0.78rem;font-weight:800;color:#374151;text-transform:uppercase;margin-bottom:6px;">Question 2</p>
+        <p class="big-text" style="color:#1e293b;margin-bottom:8px;font-weight:700;">A block that's floating in the script area (not connected to any hat block) will…</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+          <button class="quiz-opt" onclick="answerQuiz(this,'correct')">Never run automatically</button>
+          <button class="quiz-opt" onclick="answerQuiz(this,'wrong')">Run every second</button>
+          <button class="quiz-opt" onclick="answerQuiz(this,'wrong')">Run when the stage is clicked</button>
+          <button class="quiz-opt" onclick="answerQuiz(this,'wrong')">Cause a bug error</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════
+     SLIDE 16 · SHARE OUT
+     ═══════════════════════════════ -->
+<div class="slide interior" data-slide="16" data-type="lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:280px;height:280px;top:-50px;right:-40px;background:#f59e0b;opacity:0.13;"></div>
+    <div class="blob" style="width:200px;height:200px;bottom:-40px;left:-30px;background:#10b981;opacity:0.11;"></div>
+  </div>
+  <div class="content">
+    <div class="reveal" style="margin-bottom:0.7rem;display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+      <span class="pill amber">10 min · Share-Out</span>
+      <span class="pill green">Opt-in · Show Your Neighbor</span>
+    </div>
+    <h2 class="font-display reveal" style="font-size:clamp(1.4rem,2.6vw,2rem);font-weight:700;color:#0f2747;margin-bottom:0.8rem;">
+      Show It Off!
+    </h2>
+    <div class="grid-cards grid-2 reveal" style="gap:12px;">
+      <div>
+        <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/29ec258a3997fc37df42b4809266823c483b04a5.jpg"
+             alt="Kids coding and sharing projects in classroom" style="width:100%;height:165px;object-fit:cover;border-radius:14px;box-shadow:0 6px 18px rgba(15,23,42,0.15);">
+        <p class="photo-caption">Share with your neighbor — no pressure, just show and explain!</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div class="share-card">
+          <p style="font-size:0.78rem;font-weight:800;color:#92400e;text-transform:uppercase;margin-bottom:5px;">Step 1 · Turn &amp; Show</p>
+          <p class="big-text" style="color:#1e293b;margin:0;">Turn your screen to your neighbor and run your project. Tell them: <em>"When I click the green flag, my sprite…"</em></p>
+        </div>
+        <div class="share-card">
+          <p style="font-size:0.78rem;font-weight:800;color:#065f46;text-transform:uppercase;margin-bottom:5px;">Step 2 · Explain the Code</p>
+          <p class="big-text" style="color:#1e293b;margin:0;">Point to one block and say: <em>"This block is here because…"</em> Can you explain WHY you placed each block?</p>
+        </div>
+        <div class="card accent-card-blue">
+          <p style="font-size:0.78rem;font-weight:800;color:#0b4a9e;text-transform:uppercase;margin-bottom:5px;">Volunteer Bonus</p>
+          <p class="big-text" style="color:#1e293b;margin:0;">1–2 volunteers can share with the class! Totally optional — we cheer for everyone.</p>
+        </div>
+      </div>
+    </div>
+    <div class="card reveal" style="margin-top:10px;background:linear-gradient(90deg,rgba(16,185,129,0.08),rgba(11,99,206,0.06));border:1px solid rgba(16,185,129,0.2);">
+      <p class="big-text" style="color:#0f2747;text-align:center;margin:0;">
+        <strong>Neighbor feedback:</strong> "I noticed your sprite did ______. Could you add ______ next?"
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════
+     SLIDE 17 · HOMEWORK
+     ═══════════════════════════════ -->
+<div class="slide interior" data-slide="17" data-type="lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:280px;height:280px;top:-50px;left:-40px;background:#0b63ce;opacity:0.12;"></div>
+    <div class="blob" style="width:200px;height:200px;bottom:-40px;right:-30px;background:#f59e0b;opacity:0.10;"></div>
+  </div>
+  <div class="content">
+    <div class="reveal" style="margin-bottom:0.7rem;">
+      <span class="pill">30 min · Tonight's Homework</span>
+    </div>
+    <h2 class="font-display reveal" style="font-size:clamp(1.4rem,2.6vw,2rem);font-weight:700;color:#0f2747;margin-bottom:0.8rem;">
+      Keep Building Tonight!
+    </h2>
+    <div class="grid-cards grid-2 reveal" style="gap:12px;">
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div class="hw-card">
+          <p style="font-size:0.78rem;font-weight:800;color:#0b4a9e;text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px;">The Task · All Tiers</p>
+          <p class="big-text" style="color:#1e293b;margin-bottom:8px;">Finish your animation so your sprite does <strong>at least 3 actions in order</strong>. Save &amp; screenshot (or share the link).</p>
+          <div style="display:flex;flex-direction:column;gap:5px;">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span style="width:20px;height:20px;border-radius:50%;background:#10b981;display:flex;align-items:center;justify-content:center;color:#fff;font-size:0.7rem;font-weight:800;flex-shrink:0;">✓</span>
+              <span style="font-size:0.83rem;color:#1e293b;">At least 1 event (green flag or key)</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span style="width:20px;height:20px;border-radius:50%;background:#10b981;display:flex;align-items:center;justify-content:center;color:#fff;font-size:0.7rem;font-weight:800;flex-shrink:0;">✓</span>
+              <span style="font-size:0.83rem;color:#1e293b;">3 actions connected in sequence</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span style="width:20px;height:20px;border-radius:50%;background:#10b981;display:flex;align-items:center;justify-content:center;color:#fff;font-size:0.7rem;font-weight:800;flex-shrink:0;">✓</span>
+              <span style="font-size:0.83rem;color:#1e293b;">Screenshot or save the project</span>
+            </div>
+          </div>
+        </div>
+        <div class="card accent-card-amber">
+          <p style="font-size:0.78rem;font-weight:800;color:#92400e;text-transform:uppercase;margin-bottom:5px;">Tier C Bonus</p>
+          <p style="font-size:0.83rem;color:#1e293b;margin:0;">Add a <strong>second sprite</strong> with its own event and sequence. Can both sprites respond to their own events simultaneously?</p>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div class="card">
+          <p style="font-size:0.78rem;font-weight:800;color:#374151;text-transform:uppercase;margin-bottom:5px;">Stuck? Reminders</p>
+          <ul style="padding-left:16px;margin:0;font-size:0.83rem;color:#1e293b;line-height:1.7;">
+            <li>Blocks must be <strong>connected</strong> to a hat block to run</li>
+            <li>Events are <strong>yellow</strong> in the block palette</li>
+            <li>Motion is <strong>blue</strong>, Looks is <strong>purple</strong></li>
+            <li>Scratch saves automatically — just click the cloud icon</li>
+          </ul>
+        </div>
+        <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/5ae67e259392fd77c2f7f0ceab62470ad234fb5f.jpg"
+             alt="Student coding on laptop at home" style="width:100%;height:120px;object-fit:cover;border-radius:12px;box-shadow:0 4px 12px rgba(15,23,42,0.12);">
+        <div class="ai-banner">
+          <p style="font-size:0.78rem;font-weight:800;color:#0b4a9e;text-transform:uppercase;margin-bottom:3px;">Think About This Tonight</p>
+          <p style="font-size:0.82rem;color:#1e293b;margin:0;">Your sequence of blocks is like AI training steps. If you add a block in the wrong order — what happens to your sprite?</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════
+     SLIDE 18 · WRAP-UP / SEE YOU TOMORROW
+     ═══════════════════════════════ -->
+<div class="slide" data-slide="18" data-type="lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:500px;height:500px;top:-120px;right:-100px;background:#0b63ce;opacity:0.13;"></div>
+    <div class="blob" style="width:320px;height:320px;bottom:-80px;left:-60px;background:#10b981;opacity:0.11;"></div>
+    <div class="blob" style="width:200px;height:200px;top:40%;left:20%;background:#f59e0b;opacity:0.09;"></div>
+  </div>
+  <canvas class="particle-canvas"></canvas>
+  <div class="content" style="text-align:center;">
+    <div class="reveal" style="margin-bottom:1rem;display:flex;justify-content:center;">
+      <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/7a0e9488d66c629a83886dd773a7f66900666df1.jpg"
+           alt="Kids celebrating achievement with trophies" style="width:110px;height:110px;object-fit:cover;border-radius:50%;border:4px solid #fff;box-shadow:0 8px 28px rgba(11,99,206,0.28);display:inline-block;animation:float 3s ease-in-out infinite;">
+    </div>
+    <h2 class="font-display reveal" style="font-size:clamp(2rem,4.5vw,3.2rem);font-weight:700;color:#0f2747;margin-bottom:0.6rem;">
+      You Did It! <span class="grad-text">Session 3 Complete</span>
+    </h2>
+    <div class="grid-cards grid-3 reveal" style="gap:10px;margin:1rem 0;max-width:700px;margin-left:auto;margin-right:auto;">
+      <div class="card accent-card-green" style="text-align:center;padding:12px;">
+        <p style="font-size:0.7rem;font-weight:800;color:#065f46;text-transform:uppercase;margin-bottom:4px;">You Learned</p>
+        <p style="font-size:0.87rem;font-weight:700;color:#1e293b;margin:0;">Sequences run step-by-step, in order</p>
+      </div>
+      <div class="card accent-card-blue" style="text-align:center;padding:12px;">
+        <p style="font-size:0.7rem;font-weight:800;color:#0b4a9e;text-transform:uppercase;margin-bottom:4px;">You Learned</p>
+        <p style="font-size:0.87rem;font-weight:700;color:#1e293b;margin:0;">Events are the triggers that start scripts</p>
+      </div>
+      <div class="card accent-card-amber" style="text-align:center;padding:12px;">
+        <p style="font-size:0.7rem;font-weight:800;color:#92400e;text-transform:uppercase;margin-bottom:4px;">You Built</p>
+        <p style="font-size:0.87rem;font-weight:700;color:#1e293b;margin:0;">A Scratch sprite that moves &amp; reacts</p>
+      </div>
+    </div>
+    <div class="card reveal" style="max-width:560px;margin:0 auto 0.8rem;background:linear-gradient(135deg,rgba(11,99,206,0.07),rgba(16,185,129,0.06));border:1px solid rgba(11,99,206,0.15);">
+      <p class="big-text" style="color:#0f2747;margin:0;font-weight:700;">
+        Tomorrow: <strong>Session 4 — Loops!</strong><br>
+        <span style="font-weight:400;font-size:0.9rem;">How to make your sprite do the same thing <em>without</em> repeating yourself 100 times.</span>
+      </p>
+    </div>
+    <div class="reveal" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+      <span class="pill green">30 min homework tonight</span>
+      <span class="pill">Modern Chinese School · Summer 2026</span>
+      <span class="pill amber">Session 3 of 26</span>
+    </div>
+  </div>
+</div>
+
+</div><!-- end .deck -->
+
+<!-- NAV CONTROLS -->
+<div class="nav-controls">
+  <button class="nav-btn" onclick="changeSlide(-1)">&#8249;</button>
+  <div class="slide-dots" id="dots"></div>
+  <button class="nav-btn" onclick="changeSlide(1)">&#8250;</button>
+  <span class="slide-counter" id="counter">1 / 18</span>
+</div>
+
+<script>
+let current = 1;
+const slides = document.querySelectorAll('.slide');
+const total = slides.length;
+const dotsContainer = document.getElementById('dots');
+const counter = document.getElementById('counter');
+for (let i = 1; i <= total; i++) {
+  const dot = document.createElement('div');
+  const type = slides[i-1].getAttribute('data-type');
+  dot.className = 'dot' + (type === 'activity' ? ' activity' : '') + (i === 1 ? ' active' : '');
+  dot.title = (type === 'activity' ? 'Activity' : 'Lesson') + ' slide ' + i;
+  dot.onclick = () => goToSlide(i);
+  dotsContainer.appendChild(dot);
+}
+function goToSlide(n) {
+  const prev = document.querySelector('.slide.active');
+  const next = document.querySelector('.slide[data-slide="' + n + '"]');
+  if (prev) prev.classList.remove('active');
+  if (next) { next.classList.add('active'); next.scrollTop = 0; animateSlide(next); }
+  current = n; updateNav();
+}
+function changeSlide(dir) { let n = current + dir; if (n < 1) n = total; if (n > total) n = 1; goToSlide(n); }
+function updateNav() {
+  document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i + 1 === current));
+  counter.textContent = current + ' / ' + total;
+}
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); changeSlide(1); }
+  if (e.key === 'ArrowLeft') { e.preventDefault(); changeSlide(-1); }
+});
+let tx = 0;
+document.addEventListener('touchstart', e => { tx = e.touches[0].clientX; });
+document.addEventListener('touchend', e => { const dx = tx - e.changedTouches[0].clientX; if (Math.abs(dx) > 60) changeSlide(dx > 0 ? 1 : -1); });
+
+function animateSlide(slide) {
+  slide.querySelectorAll('.reveal').forEach((el, i) => {
+    el.style.transition = 'none'; el.style.opacity = '0'; el.style.transform = 'translateY(16px)';
+    el.offsetHeight;
+    const d = i * 0.06;
+    el.style.transition = 'opacity 0.32s ease ' + d + 's, transform 0.32s ease ' + d + 's';
+    el.style.opacity = '1'; el.style.transform = 'translateY(0)';
+  });
+}
+
+function playVideo(videoId) {
+  const container = document.getElementById('player-' + videoId);
+  if (!container) return;
+  container.onclick = null; container.style.cursor = 'default';
+  container.innerHTML = '<iframe src="https://www.youtube.com/embed/' + videoId + '?autoplay=1&rel=0" allowfullscreen allow="autoplay; encrypted-media" style="position:absolute;inset:0;width:100%;height:100%;border:0;border-radius:13px;"></iframe>';
+}
+
+function answerQuiz(btn, result) {
+  const parent = btn.closest('.card');
+  parent.querySelectorAll('.quiz-opt').forEach(b => { b.disabled = true; b.style.opacity = '0.6'; });
+  btn.classList.add(result);
+  btn.style.opacity = '1';
+  if (result === 'correct') {
+    btn.textContent = '✓ ' + btn.textContent + ' — Correct!';
+  } else {
+    btn.textContent = '✗ ' + btn.textContent + ' — Try again!';
+    parent.querySelectorAll('.quiz-opt').forEach(b => { if (b !== btn) { b.disabled = false; b.style.opacity = '1'; } });
+  }
+}
+
+document.addEventListener('mousemove', e => {
+  const s = document.querySelector('.mouse-spotlight');
+  if (s) s.style.background = 'radial-gradient(600px circle at ' + e.clientX + 'px ' + e.clientY + 'px, rgba(11,99,206,0.05), transparent 40%)';
+});
+
+window.initParticles = function(canvas, opts) {
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const count = opts.count || 40;
+  let mx = -1000, my = -1000;
+  const [r, g, b] = [11, 99, 206];
+  let particles = [];
+  function seed() {
+    const w = canvas.offsetWidth || window.innerWidth;
+    const h = canvas.offsetHeight || window.innerHeight;
+    canvas.width = w; canvas.height = h;
+    particles = Array.from({ length: count }, () => ({
+      x: Math.random() * w, y: Math.random() * h,
+      vx: (Math.random() - .5) * .3, vy: (Math.random() - .5) * .3,
+      size: Math.random() * 2.2 + .7, alpha: Math.random() * .3 + .08
+    }));
+  }
+  seed(); requestAnimationFrame(seed); window.addEventListener('resize', seed);
+  document.addEventListener('mousemove', e => { const rc = canvas.getBoundingClientRect(); mx = e.clientX - rc.left; my = e.clientY - rc.top; });
+  const ownSlide = canvas.closest('.slide');
+  (function animate() {
+    if (!ownSlide || ownSlide.classList.contains('active')) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(p => {
+        const dx = p.x - mx, dy = p.y - my, dist = Math.sqrt(dx*dx + dy*dy);
+        if (dist < 120) { const f = (120-dist)/120*1.5; p.vx += (dx/dist)*f*.1; p.vy += (dy/dist)*f*.1; }
+        p.vx *= .98; p.vy *= .98; p.x += p.vx; p.y += p.vy;
+        if (p.x < 0) p.x = canvas.width; if (p.x > canvas.width) p.x = 0;
+        if (p.y < 0) p.y = canvas.height; if (p.y > canvas.height) p.y = 0;
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2);
+        ctx.fillStyle = 'rgba(' + r + ',' + g + ',' + b + ',' + p.alpha + ')'; ctx.fill();
+      });
+    }
+    requestAnimationFrame(animate);
+  })();
+};
+document.querySelectorAll('canvas.particle-canvas').forEach(c => initParticles(c, { count: 55 }));
+try { animateSlide(document.querySelector('.slide.active')); } catch(e) {}
+</script>
+</body>
+</html>
