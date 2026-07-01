@@ -1,1 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scratch Account Lookup</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --color-bg: #f4fbff;
+      --color-surface: rgba(255,255,255,0.97);
+      --color-text: #1f2a37;
+      --color-text-secondary: #374151;
+      --color-text-muted: #5b6b7e;
+      --color-accent-1: #0b63ce;
+      --color-accent-2: #10b981;
+      --color-accent-3: #f59e0b;
+      --color-accent-red: #ef4444;
+      --color-accent-purple: #7c3aed;
+      --font-display: 'Fredoka', 'Trebuchet MS', sans-serif;
+      --font-body: 'Nunito', Arial, sans-serif;
+      --font-code: 'Fira Code', Consolas, monospace;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 20px;
+      --radius-full: 999px;
+      --transition: 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+    }
 
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-body);
+      color: var(--color-text);
+      background: var(--color-bg);
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 16px 48px;
+    }
+
+    input, button, textarea { font: inherit; color: inherit; }
+    button { cursor: pointer; background: none; border: none; }
+    :focus-visible { outline: 2px solid var(--color-accent-1); outline-offset: 3px; border-radius: var(--radius-sm); }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+    }
+
+    /* ── Page wrapper ── */
+    .page-wrap {
+      width: 100%;
+      max-width: 480px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* ── Gradient header (mirrors activity.html sheet-header) ── */
+    .app-header {
+      background: linear-gradient(135deg, #7c3aed 0%, #0b63ce 50%, #10b981 100%);
+      border-radius: var(--radius-xl);
+      padding: 28px 28px 22px;
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+    }
+    .app-header::before {
+      content: '';
+      position: absolute;
+      top: -50px; right: -50px;
+      width: 180px; height: 180px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .app-header::after {
+      content: '';
+      position: absolute;
+      bottom: -35px; left: -35px;
+      width: 130px; height: 130px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .header-inner { position: relative; z-index: 1; }
+    .header-eyebrow {
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      opacity: 0.85;
+      margin-bottom: 4px;
+    }
+    .header-title {
+      font-family: var(--font-display);
+      font-size: clamp(1.5rem, 5vw, 2rem);
+      font-weight: 700;
+      line-height: 1.1;
+      margin-bottom: 8px;
+    }
+    .header-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 10px;
+    }
+    .header-pill {
+      background: rgba(255,255,255,0.22);
+      border: 1px solid rgba(255,255,255,0.35);
+      border-radius: var(--radius-full);
+      padding: 3px 13px;
+      font-size: 0.7rem;
+      font-weight: 800;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+    }
+
+    /* ── Main lookup card ── */
+    .card {
+      background: var(--color-surface);
+      border-radius: var(--radius-lg);
+      padding: 22px 24px;
+      box-shadow: 0 4px 18px rgba(15,23,42,0.08);
+      border: 1px solid rgba(255,255,255,0.7);
+    }
+    .card.accent-blue { border-left: 4px solid var(--color-accent-1); }
+
+    .section-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 4px 14px;
+      border-radius: var(--radius-full);
+      border: 1px solid rgba(148,163,184,0.4);
+      background: rgba(255,255,255,0.9);
+      font-size: 0.7rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--color-accent-1);
+      margin-bottom: 12px;
+    }
+
+    .card-title {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--color-text);
+      margin-bottom: 4px;
+    }
+    .card-desc {
+      font-size: 0.85rem;
+      color: var(--color-text-muted);
+      margin-bottom: 18px;
+      line-height: 1.5;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.65rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--color-accent-1);
+      margin-bottom: 8px;
+    }
+
+    .pin-row { display: flex; gap: 10px; }
+
+    .pin-input {
+      flex: 1;
+      padding: 12px 16px;
+      border: 2px solid rgba(148,163,184,0.4);
+      border-radius: var(--radius-md);
+      background: #f8fafc;
+      font-size: 1.6rem;
+      font-family: var(--font-code);
+      font-weight: 700;
+      text-align: center;
+      letter-spacing: 0.35em;
+      color: var(--color-text);
+      transition: border-color var(--transition), box-shadow var(--transition), background var(--transition);
+      appearance: none;
+      -moz-appearance: textfield;
+    }
+    .pin-input::-webkit-outer-spin-button,
+    .pin-input::-webkit-inner-spin-button { -webkit-appearance: none; }
+    .pin-input::placeholder {
+      color: #bdc5d1;
+      letter-spacing: 0.2em;
+      font-size: 1.2rem;
+      font-weight: 400;
+    }
+    .pin-input:focus {
+      outline: none;
+      border-color: var(--color-accent-1);
+      box-shadow: 0 0 0 3px rgba(11,99,206,0.15);
+      background: #fff;
+    }
+    .pin-input.shake { animation: shake 0.35s ease; }
+    .pin-input.error-state {
+      border-color: var(--color-accent-red);
+      box-shadow: 0 0 0 3px rgba(239,68,68,0.15);
+    }
+
+    @keyframes shake {
+      0%,100% { transform: translateX(0); }
+      20% { transform: translateX(-6px); }
+      40% { transform: translateX(6px); }
+      60% { transform: translateX(-4px); }
+      80% { transform: translateX(4px); }
+    }
+
+    .lookup-btn {
+      padding: 12px 22px;
+      background: linear-gradient(135deg, #0b63ce, #10b981);
+      color: #fff;
+      border-radius: var(--radius-md);
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+      font-weight: 800;
+      white-space: nowrap;
+      letter-spacing: 0.04em;
+      transition: opacity var(--transition), transform 80ms ease, box-shadow var(--transition);
+      box-shadow: 0 3px 12px rgba(11,99,206,0.30);
+    }
+    .lookup-btn:hover { opacity: 0.9; box-shadow: 0 5px 18px rgba(11,99,206,0.38); }
+    .lookup-btn:active { transform: scale(0.97); }
+
+    /* ── Error message ── */
+    .error-msg {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #b91c1c;
+      background: rgba(239,68,68,0.07);
+      border: 1.5px solid rgba(239,68,68,0.18);
+      border-radius: var(--radius-sm);
+      padding: 9px 13px;
+      margin-top: 12px;
+      opacity: 0;
+      transform: translateY(-4px);
+      transition: opacity var(--transition), transform var(--transition);
+      pointer-events: none;
+      height: 0;
+      overflow: hidden;
+    }
+    .error-msg.visible {
+      opacity: 1;
+      transform: translateY(0);
+      height: auto;
+      overflow: visible;
+    }
+
+    /* ── Result card ── */
+    .result-card {
+      background: var(--color-surface);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 8px 30px rgba(15,23,42,0.10);
+      border: 1px solid rgba(255,255,255,0.7);
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(14px) scale(0.98);
+      transition: opacity 280ms cubic-bezier(0.16,1,0.3,1), transform 280ms cubic-bezier(0.16,1,0.3,1);
+      pointer-events: none;
+    }
+    .result-card.visible {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      pointer-events: auto;
+    }
+
+    /* Result banner — gradient like activity header */
+    .result-banner {
+      background: linear-gradient(135deg, #7c3aed 0%, #0b63ce 55%, #10b981 100%);
+      padding: 20px 24px 18px;
+      position: relative;
+      overflow: hidden;
+    }
+    .result-banner::before {
+      content: '';
+      position: absolute;
+      top: -40px; right: -40px;
+      width: 140px; height: 140px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .banner-inner { position: relative; z-index: 1; display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+    .banner-label {
+      font-size: 0.65rem;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.7);
+      margin-bottom: 3px;
+    }
+    .student-name {
+      font-family: var(--font-display);
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.2;
+    }
+    .pin-badge {
+      background: rgba(255,255,255,0.22);
+      border: 1px solid rgba(255,255,255,0.38);
+      border-radius: var(--radius-full);
+      padding: 5px 14px;
+      font-family: var(--font-code);
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #fff;
+      white-space: nowrap;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    /* Credentials body */
+    .result-body { padding: 0 24px; }
+
+    .cred-block {
+      padding: 16px 0;
+      position: relative;
+    }
+    .cred-label {
+      font-size: 0.65rem;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--color-accent-1);
+      margin-bottom: 7px;
+    }
+    .cred-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      background: #f8fafc;
+      border: 1.5px solid rgba(11,99,206,0.14);
+      border-radius: var(--radius-md);
+      padding: 10px 14px;
+    }
+    .cred-value {
+      font-family: var(--font-code);
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--color-text);
+      letter-spacing: 0.02em;
+      word-break: break-all;
+      flex: 1;
+    }
+    .copy-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px; height: 32px;
+      border-radius: var(--radius-sm);
+      background: rgba(11,99,206,0.08);
+      color: var(--color-accent-1);
+      border: 1.5px solid rgba(11,99,206,0.18);
+      transition: background var(--transition), color var(--transition), border-color var(--transition);
+      flex-shrink: 0;
+    }
+    .copy-btn:hover { background: rgba(11,99,206,0.16); }
+    .copy-btn.copied { background: rgba(16,185,129,0.12); color: #047857; border-color: rgba(16,185,129,0.25); }
+
+    .result-divider {
+      border: none;
+      border-top: 2px dashed #dde6f0;
+      margin: 0;
+    }
+
+    /* Scratch link footer */
+    .scratch-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 24px;
+      background: rgba(124,58,237,0.04);
+      border-top: 1px solid rgba(124,58,237,0.1);
+    }
+    .scratch-brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .scratch-icon {
+      width: 26px; height: 26px;
+      background: linear-gradient(135deg, #f59e0b, #ef4444);
+      border-radius: var(--radius-full);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .scratch-brand-name {
+      font-size: 0.8rem;
+      font-weight: 800;
+      color: var(--color-text-muted);
+      letter-spacing: 0.03em;
+    }
+    .scratch-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 7px 16px;
+      background: linear-gradient(135deg, #7c3aed, #0b63ce);
+      color: #fff;
+      text-decoration: none;
+      border-radius: var(--radius-full);
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      transition: opacity var(--transition), transform 80ms ease;
+      box-shadow: 0 2px 10px rgba(124,58,237,0.30);
+    }
+    .scratch-link:hover { opacity: 0.88; }
+    .scratch-link:active { transform: scale(0.97); }
+
+    /* Page hint */
+    .page-hint {
+      text-align: center;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--color-text-muted);
+      letter-spacing: 0.03em;
+    }
+    .page-hint::before { content: '🔒 '; }
+
+    /* Mobile */
+    @media (max-width: 480px) {
+      body { padding: 20px 12px 40px; }
+      .app-header { padding: 22px 20px 18px; }
+      .card { padding: 18px 18px; }
+      .result-body { padding: 0 18px; }
+      .result-banner { padding: 16px 18px; }
+      .scratch-footer { padding: 12px 18px; }
+      .pin-row { flex-direction: column; }
+      .lookup-btn { width: 100%; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="page-wrap">
+
+  <!-- Header -->
+  <div class="app-header">
+    <div class="header-inner">
+      <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/98294c322397a8b29b5db2058942ffeb19415719.jpg" alt="Scratch logo" width="72" height="54" loading="lazy" style="border-radius:10px;object-fit:cover;margin-bottom:8px;">
+      <div class="header-eyebrow">AI Coding · Summer 2026</div>
+      <div class="header-title">Scratch Account Lookup</div>
+      <div class="header-pills">
+        <span class="header-pill">🔐 PIN Required</span>
+        <span class="header-pill">scratch.mit.edu</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lookup Card -->
+  <div class="card accent-blue">
+    <div class="section-label">🔍 Find My Account</div>
+    <div class="card-title">Enter Your PIN</div>
+    <div class="card-desc">Type your 3-digit PIN below and press <strong>Look Up</strong>.</div>
+
+    <label class="form-label" for="pin-input">Student PIN</label>
+    <div class="pin-row">
+      <input
+        class="pin-input"
+        id="pin-input"
+        type="number"
+        placeholder="· · ·"
+        inputmode="numeric"
+        autocomplete="off"
+        aria-describedby="error-msg"
+        min="100" max="999"
+      >
+      <button class="lookup-btn" id="lookup-btn">Look Up</button>
+    </div>
+
+    <div class="error-msg" id="error-msg" role="alert" aria-live="polite">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <span id="error-text">PIN not found. Please try again.</span>
+    </div>
+  </div>
+
+  <!-- Result Card -->
+  <div class="result-card" id="result-card" aria-live="polite" aria-label="Account credentials">
+    <div class="result-banner">
+      <div class="banner-inner">
+        <div>
+          <div class="banner-label">Student</div>
+          <div class="student-name" id="res-name">—</div>
+        </div>
+        <div class="pin-badge" id="res-pin">PIN —</div>
+      </div>
+    </div>
+
+    <div class="result-body">
+      <!-- Username -->
+      <div class="cred-block">
+        <div class="cred-label">Scratch Username</div>
+        <div class="cred-row">
+          <div class="cred-value" id="res-username">—</div>
+          <button class="copy-btn" id="copy-user" aria-label="Copy username" title="Copy username">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <hr class="result-divider">
+
+      <!-- Password -->
+      <div class="cred-block">
+        <div class="cred-label">Password</div>
+        <div class="cred-row">
+          <div class="cred-value" id="res-password">—</div>
+          <button class="copy-btn" id="copy-pass" aria-label="Copy password" title="Copy password">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="scratch-footer">
+      <div class="scratch-brand">
+        <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/98294c322397a8b29b5db2058942ffeb19415719.jpg" alt="Scratch cat" width="26" height="26" loading="lazy" style="border-radius:50%;object-fit:cover;flex-shrink:0;">
+        <span class="scratch-brand-name">scratch.mit.edu</span>
+      </div>
+      <a class="scratch-link" href="https://scratch.mit.edu" target="_blank" rel="noopener noreferrer">
+        Open Scratch
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      </a>
+    </div>
+  </div>
+
+  <p class="page-hint">Only you can see your credentials — each PIN is unique.</p>
+
+</div>
+
+<script>
+  const students = {
+    "642": { name: "Gavin Chong",    username: "GChvn007",  password: "hwscratch2026_DF4m" },
+    "953": { name: "Richard Febus",  username: "RchFb831",  password: "hwscratch2026_DF4m" },
+    "676": { name: "Aryanna He",     username: "AryHe108",  password: "hwscratch2026_DF4m" },
+    "483": { name: "Emory He",       username: "EmHe2049",  password: "hwscratch2026_DF4m" },
+    "326": { name: "Aidan La",       username: "AidLa509",  password: "hwscratch2026_DF4m" },
+    "961": { name: "Peijing Liao",   username: "PjLiao83",  password: "hwscratch2026_DF4m" },
+    "904": { name: "Olivia Persaud", username: "OlvPr831",  password: "hwscratch2026_DF4m" },
+    "268": { name: "Ethan Sanchez",  username: "EthSnz09",  password: "hwscratch2026_DF4m" },
+    "600": { name: "Aaron Wu",       username: "AarWu509",  password: "hwscratch2026_DF4m" },
+    "574": { name: "Alex Yang",      username: "AlxYng09",  password: "hwscratch2026_DF4m" },
+    "469": { name: "Tydan Yang",     username: "TydYng07",  password: "hwscratch2026_DF4m" },
+    "589": { name: "Eddie Zhao",     username: "EdZhao09",  password: "hwscratch2026_DF4m" },
+    "811": { name: "Ethan Zhao",     username: "EthZha83",  password: "hwscratch2026_DF4m" },
+  };
+
+  const pinInput   = document.getElementById('pin-input');
+  const lookupBtn  = document.getElementById('lookup-btn');
+  const errorMsg   = document.getElementById('error-msg');
+  const errorText  = document.getElementById('error-text');
+  const resultCard = document.getElementById('result-card');
+
+  function lookup() {
+    const raw = pinInput.value.toString().trim();
+    const padded = raw.padStart(3, '0');
+    const data = students[raw] || students[padded];
+
+    if (!data) {
+      pinInput.classList.add('error-state');
+      pinInput.classList.remove('shake');
+      void pinInput.offsetWidth;
+      pinInput.classList.add('shake');
+      errorText.textContent = raw
+        ? `PIN "${raw}" not found. Please check your PIN and try again.`
+        : 'Please enter your 3-digit PIN.';
+      errorMsg.classList.add('visible');
+      resultCard.classList.remove('visible');
+      pinInput.focus();
+      return;
+    }
+
+    pinInput.classList.remove('error-state', 'shake');
+    errorMsg.classList.remove('visible');
+
+    document.getElementById('res-name').textContent     = data.name;
+    document.getElementById('res-pin').textContent      = 'PIN ' + raw;
+    document.getElementById('res-username').textContent = data.username;
+    document.getElementById('res-password').textContent = data.password;
+
+    resultCard.classList.add('visible');
+    resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  lookupBtn.addEventListener('click', lookup);
+  pinInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') { lookup(); return; }
+    pinInput.classList.remove('error-state');
+    errorMsg.classList.remove('visible');
+  });
+  pinInput.addEventListener('input', () => {
+    if (pinInput.value.length > 3) pinInput.value = pinInput.value.slice(0, 3);
+  });
+
+  // Copy buttons
+  const copyIcon  = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+  const checkIcon = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>';
+
+  function makeCopyBtn(btnId, sourceId) {
+    const btn = document.getElementById(btnId);
+    btn.addEventListener('click', () => {
+      const val = document.getElementById(sourceId).textContent;
+      navigator.clipboard.writeText(val).then(() => {
+        btn.classList.add('copied');
+        btn.innerHTML = checkIcon;
+        setTimeout(() => { btn.classList.remove('copied'); btn.innerHTML = copyIcon; }, 2000);
+      }).catch(() => {
+        const ta = document.createElement('textarea');
+        ta.value = val;
+        ta.style.cssText = 'position:fixed;opacity:0';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        btn.classList.add('copied');
+        btn.innerHTML = checkIcon;
+        setTimeout(() => { btn.classList.remove('copied'); btn.innerHTML = copyIcon; }, 2000);
+      });
+    });
+  }
+
+  makeCopyBtn('copy-user', 'res-username');
+  makeCopyBtn('copy-pass', 'res-password');
+</script>
+</body>
+</html>
