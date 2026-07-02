@@ -1,1 +1,1138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="slides-format" content="viewport">
+<title>Session 4 · Scratch: Loops</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<style type="text/tailwindcss">
+@theme {
+  --color-bg:#f4fbff;
+  --color-bg-deep:#e0f2ff;
+  --color-surface:rgba(255,255,255,0.95);
+  --color-text:#1f2a37;
+  --color-text-secondary:#374151;
+  --color-text-muted:#5b6b7e;
+  --color-accent-1:#0b63ce;
+  --color-accent-2:#10b981;
+  --color-accent-3:#f59e0b;
+  --color-glass-bg:rgba(255,255,255,0.88);
+  --color-glass-border:rgba(11,99,206,0.16);
+  --color-vignette:rgba(15,23,42,0.07);
+  --font-display:"Fredoka","Trebuchet MS",sans-serif;
+  --font-body:"Nunito",Arial,sans-serif;
+}
+</style>
+<style>
+:root{
+  --color-bg:#f4fbff;--color-text:#1f2a37;
+  --glow-color-rgb:11,99,206;
+  --a1:#0b63ce;--a2:#10b981;--a3:#f59e0b;--ar:#ef4444;
+  --fc:"Fira Code",Consolas,monospace;
+}
+*,*::before,*::after{box-sizing:border-box;}
+html,body{background:var(--color-bg);margin:0;}
+body{font-family:"Nunito",Arial,sans-serif;color:var(--color-text);overflow:hidden;height:100vh;width:100vw;}
+.deck{width:100vw;height:100vh;position:relative;}
 
+.slide{
+  position:absolute;top:0;left:0;width:100%;height:100%;
+  background:radial-gradient(circle at top left,rgba(56,189,248,0.14),transparent 40%),
+             radial-gradient(circle at bottom right,rgba(16,185,129,0.10),transparent 40%),
+             var(--color-bg);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  opacity:0;transform:scale(0.96);transition:opacity 0.55s ease,transform 0.55s ease;
+  pointer-events:none;overflow:hidden;
+}
+.slide.active{opacity:1;transform:scale(1);pointer-events:all;}
+.slide>.content{position:relative;z-index:2;width:100%;max-width:1060px;padding:clamp(1rem,3vw,2.5rem);}
+
+/* Interior slides */
+.slide.interior{
+  background:
+    radial-gradient(circle at 18% 12%,rgba(11,99,206,0.16),transparent 50%),
+    radial-gradient(circle at 82% 88%,rgba(16,185,129,0.14),transparent 50%),
+    linear-gradient(160deg,#aecbe8 0%,#b9d4ea 48%,#b3ddd0 100%);
+}
+.slide.interior::after{background:radial-gradient(ellipse at center,transparent 58%,rgba(15,23,42,0.12) 100%);}
+
+/* Nav */
+.nav-controls{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:12px;z-index:100;background:rgba(255,255,255,0.93);backdrop-filter:blur(12px);padding:8px 20px;border-radius:999px;border:1px solid rgba(148,163,184,0.4);box-shadow:0 8px 28px rgba(15,23,42,0.13);}
+.nav-btn{width:34px;height:34px;border:none;background:rgba(15,23,42,0.06);color:#0b63ce;border-radius:999px;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 0.2s,transform 0.15s;}
+.nav-btn:hover{background:rgba(15,23,42,0.12);transform:translateY(-1px);}
+.slide-dots{display:flex;gap:5px;flex-wrap:wrap;max-width:460px;}
+.slide-dots .dot{width:8px;height:8px;border-radius:50%;background:rgba(148,163,184,0.6);cursor:pointer;transition:background 0.25s,transform 0.25s;}
+.slide-dots .dot.active{background:#0b63ce;transform:scale(1.4);}
+.slide-dots .dot.activity{background:rgba(16,185,129,0.6);}
+.slide-dots .dot.activity.active{background:#10b981;}
+.slide-dots .dot.warmup{background:rgba(245,158,11,0.6);}
+.slide-dots .dot.warmup.active{background:#f59e0b;}
+.slide-dots .dot.brain{background:rgba(239,68,68,0.5);}
+.slide-dots .dot.brain.active{background:#ef4444;}
+.slide-counter{font-size:0.75rem;color:#64748b;min-width:48px;text-align:center;font-weight:700;}
+.mouse-spotlight{position:fixed;inset:0;z-index:1;pointer-events:none;}
+
+/* Reveal animation */
+.reveal{opacity:0;transform:translateY(16px);}
+
+/* Cards */
+.card{background:var(--color-surface);border-radius:16px;padding:14px 18px;box-shadow:0 8px 24px rgba(15,23,42,0.07);border:1px solid rgba(255,255,255,0.7);}
+.accent-card-blue{background:rgba(11,99,206,0.07);border:1px solid rgba(11,99,206,0.18);}
+.accent-card-green{background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.20);}
+.accent-card-amber{background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.22);}
+.accent-card-red{background:rgba(239,68,68,0.07);border:1px solid rgba(239,68,68,0.20);}
+
+/* Interior card overrides */
+.slide.interior .card{background:#ffffff;border:1px solid rgba(15,23,42,0.06);box-shadow:0 12px 30px rgba(15,23,42,0.18),0 2px 6px rgba(15,23,42,0.10);border-radius:18px;}
+.slide.interior .accent-card-blue{background:#eaf2fd;border:1px solid rgba(11,99,206,0.22);box-shadow:0 8px 24px rgba(15,23,42,0.10);}
+.slide.interior .accent-card-green{background:#e6f7f0;border:1px solid rgba(5,150,105,0.22);box-shadow:0 8px 24px rgba(15,23,42,0.10);}
+.slide.interior .accent-card-amber{background:#fdf4e3;border:1px solid rgba(245,158,11,0.28);box-shadow:0 8px 24px rgba(15,23,42,0.10);}
+.slide.interior .accent-card-red{background:#fdeceb;border:1px solid rgba(239,68,68,0.24);box-shadow:0 8px 24px rgba(15,23,42,0.10);}
+
+/* Pill badges */
+.pill{display:inline-flex;align-items:center;gap:7px;padding:5px 13px;border-radius:999px;border:1px solid rgba(148,163,184,0.5);background:rgba(255,255,255,0.9);font-size:0.74rem;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;color:#0b63ce;}
+.pill.green{color:#047857;}
+.pill.amber{color:#92400e;}
+.pill.red{color:#991b1b;}
+.slide.interior .pill{background:#ffffff;color:#0b4a9e;border:none;box-shadow:0 4px 14px rgba(8,15,30,0.25);font-size:0.78rem;}
+.slide.interior .pill.green{color:#067a55;}
+.slide.interior .pill.amber{color:#92400e;}
+
+/* Chips */
+.think-chip{display:inline-flex;align-items:center;gap:8px;padding:7px 13px;border-radius:999px;background:rgba(11,99,206,0.08);color:#1e40af;font-size:0.82rem;font-weight:700;}
+.question-chip{display:inline-flex;align-items:center;gap:8px;padding:7px 13px;border-radius:999px;background:rgba(245,158,11,0.09);color:#92400e;font-size:0.82rem;font-weight:700;}
+.question-chip .qicon{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:999px;background:rgba(245,158,11,0.95);color:#fff;font-size:0.76rem;font-weight:800;}
+.slide.interior .think-chip{background:rgba(11,99,206,0.12);color:#0c2d6e;}
+.slide.interior .question-chip{background:rgba(234,130,12,0.12);color:#7a3800;}
+
+/* Text sizes */
+.big-text{font-size:clamp(0.93rem,1.55vw,1.18rem);line-height:1.65;}
+.slide.interior h2.font-display{color:#0f2747!important;text-shadow:0 1px 2px rgba(255,255,255,0.55);font-size:clamp(1.6rem,2.7vw,2.3rem)!important;letter-spacing:0.005em;}
+.slide.interior .card .big-text{color:#1e293b!important;}
+.slide.interior .card p,.slide.interior .card li{color:#2d3f55!important;}
+.slide.interior .card strong{color:#0f2747;}
+
+/* Grid helpers */
+.grid-cards{display:grid;gap:14px;}
+@media(min-width:780px){.grid-2{grid-template-columns:repeat(2,minmax(0,1fr));}.grid-3{grid-template-columns:repeat(3,minmax(0,1fr));}.grid-4{grid-template-columns:repeat(4,minmax(0,1fr));}}
+
+/* Gradient text */
+.grad-text{background:linear-gradient(135deg,#0b63ce 0%,#10b981 50%,#f59e0b 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.slide.interior .grad-text{-webkit-text-fill-color:#0f2747;text-shadow:0 1px 2px rgba(255,255,255,0.55);}
+
+/* Gradient mesh blobs */
+.gradient-mesh{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none;}
+.blob{position:absolute;border-radius:50%;filter:blur(72px);animation:float-slow 12s ease-in-out infinite;}
+.blob:nth-child(2){animation:float-drift 16s ease-in-out infinite;}
+.blob:nth-child(3){animation:float-slow 20s ease-in-out infinite reverse;}
+@keyframes float-slow{0%{transform:translate(0,0) scale(1);}25%{transform:translate(50px,-40px) scale(1.1);}50%{transform:translate(-30px,35px) scale(0.92);}75%{transform:translate(45px,18px) scale(1.07);}100%{transform:translate(0,0) scale(1);}}
+@keyframes float-drift{0%{transform:translate(0,0) scale(1);}33%{transform:translate(-45px,-55px) scale(1.13);}66%{transform:translate(38px,28px) scale(0.9);}100%{transform:translate(0,0) scale(1);}}
+@keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-14px);}}
+
+.slide::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:radial-gradient(ellipse at center,transparent 55%,rgba(15,23,42,0.06) 100%);}
+.slide.interior::after{background:radial-gradient(ellipse at center,transparent 58%,rgba(15,23,42,0.12) 100%);}
+.particle-canvas{position:absolute;inset:0;width:100%;height:100%;z-index:1;}
+
+/* Code blocks */
+.code-block{font-family:'Fira Code',Consolas,monospace;font-size:clamp(0.78rem,1.3vw,0.98rem);background:#1e293b;color:#e2e8f0;border-radius:12px;padding:14px 18px;line-height:1.7;border:1px solid rgba(255,255,255,0.08);}
+.code-block .kw{color:#7dd3fc;}
+.code-block .num{color:#fbbf24;}
+.code-block .comment{color:#64748b;font-style:italic;}
+.code-block .fn{color:#a3e635;}
+.code-block .str{color:#f9a8d4;}
+
+/* Vocab tag */
+.vocab-tag{display:inline-flex;align-items:center;padding:4px 12px;border-radius:999px;background:rgba(15,23,42,0.05);font-size:0.83rem;font-weight:800;color:#0b63ce;}
+.slide.interior .vocab-tag{background:rgba(11,99,206,0.10);color:#0a3a8c;}
+
+/* Video embed */
+.media-embed{position:relative;padding-top:56.25%;border-radius:13px;overflow:hidden;background:#1e293b;cursor:pointer;}
+.media-embed img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+.media-embed .play-btn{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;}
+.media-embed .play-btn div{width:56px;height:56px;background:rgba(220,20,20,0.92);border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 18px rgba(0,0,0,0.38);transition:transform 0.2s;}
+.media-embed:hover .play-btn div{transform:scale(1.1);}
+.media-embed iframe{position:absolute;inset:0;width:100%;height:100%;border:0;border-radius:13px;}
+
+/* Interactive poll / click-reveal */
+.choice-btn{display:block;width:100%;text-align:left;padding:10px 16px;border-radius:10px;border:2px solid rgba(11,99,206,0.2);background:rgba(255,255,255,0.8);font-family:"Nunito",sans-serif;font-size:0.9rem;font-weight:700;color:#1f2a37;cursor:pointer;transition:all 0.22s;margin-bottom:8px;}
+.choice-btn:hover{border-color:#0b63ce;background:rgba(11,99,206,0.07);transform:translateX(4px);}
+.choice-btn.correct{border-color:#10b981!important;background:rgba(16,185,129,0.13)!important;color:#065f46;}
+.choice-btn.wrong{border-color:#ef4444!important;background:rgba(239,68,68,0.10)!important;color:#991b1b;}
+.choice-btn.disabled{pointer-events:none;opacity:0.65;}
+.feedback-box{border-radius:10px;padding:10px 16px;font-weight:700;font-size:0.88rem;margin-top:6px;display:none;}
+.feedback-box.show{display:block;}
+.feedback-box.good{background:rgba(16,185,129,0.15);color:#065f46;border:1px solid rgba(16,185,129,0.3);}
+.feedback-box.retry{background:rgba(245,158,11,0.12);color:#92400e;border:1px solid rgba(245,158,11,0.28);}
+
+/* Step-reveal activity */
+.step-item{display:flex;gap:12px;align-items:flex-start;padding:10px 14px;border-radius:10px;background:rgba(255,255,255,0.75);border:1px solid rgba(11,99,206,0.12);opacity:0;transform:translateX(-18px);transition:all 0.4s ease;}
+.step-item.revealed{opacity:1;transform:translateX(0);}
+.step-num{min-width:28px;height:28px;border-radius:50%;background:#0b63ce;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.82rem;flex-shrink:0;}
+
+/* Progress bar */
+.progress-bar-wrap{background:rgba(15,23,42,0.07);border-radius:999px;height:8px;overflow:hidden;}
+.progress-bar-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,#0b63ce,#10b981);transition:width 0.6s ease;}
+
+/* Tier badges */
+.tier-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:999px;font-size:0.72rem;font-weight:800;letter-spacing:0.06em;text-transform:uppercase;}
+.tier-a{background:rgba(245,158,11,0.15);color:#92400e;border:1px solid rgba(245,158,11,0.35);}
+.tier-b{background:rgba(11,99,206,0.10);color:#0b4a9e;border:1px solid rgba(11,99,206,0.25);}
+.tier-c{background:rgba(16,185,129,0.12);color:#067a55;border:1px solid rgba(16,185,129,0.3);}
+
+/* Deco shapes */
+.deco-shape{position:absolute;pointer-events:none;opacity:0.13;border-radius:50%;z-index:1;}
+
+/* Confetti burst */
+@keyframes confetti-fall{0%{transform:translateY(-60px) rotate(0deg);opacity:1;}100%{transform:translateY(160px) rotate(720deg);opacity:0;}}
+.conf-piece{position:absolute;width:10px;height:10px;border-radius:2px;animation:confetti-fall 1.4s ease-in forwards;}
+
+/* Today's plan timeline */
+.timeline-row{display:flex;align-items:center;gap:12px;padding:8px 0;}
+.timeline-dot{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;box-shadow:0 3px 10px rgba(0,0,0,0.12);}
+.timeline-line{width:2px;height:18px;background:linear-gradient(180deg,rgba(11,99,206,0.3),rgba(16,185,129,0.2));margin-left:16px;}
+
+/* AI Robot highlight */
+.robot-box{border-radius:14px;padding:12px 16px;background:linear-gradient(135deg,rgba(11,99,206,0.10),rgba(16,185,129,0.08));border:1px solid rgba(11,99,206,0.2);}
+
+/* Warm-up stand instruction */
+.stand-box{border-radius:14px;padding:14px 18px;background:rgba(245,158,11,0.09);border:2px dashed rgba(245,158,11,0.4);}
+
+/* Scratch block visuals */
+.scratch-block{display:inline-block;border-radius:6px;padding:6px 12px;font-family:'Fira Code',monospace;font-size:0.83rem;font-weight:700;margin:2px 3px;}
+.sb-orange{background:#f59e0b;color:#fff;}
+.sb-purple{background:#8b5cf6;color:#fff;}
+.sb-blue{background:#2563eb;color:#fff;}
+.sb-green{background:#10b981;color:#fff;}
+.sb-yellow{background:#fbbf24;color:#1f2937;}
+</style>
+</head>
+<body>
+<div class="mouse-spotlight"></div>
+
+<div class="deck">
+
+<!-- ===== SLIDE 1 · TITLE ===== -->
+<div class="slide active" data-slide="1" data-type="title">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:480px;height:480px;top:-100px;right:-80px;background:#0b63ce;opacity:0.13;"></div>
+    <div class="blob" style="width:320px;height:320px;bottom:-80px;left:-60px;background:#10b981;opacity:0.11;"></div>
+    <div class="blob" style="width:200px;height:200px;top:40%;left:10%;background:#f59e0b;opacity:0.09;"></div>
+  </div>
+  <canvas class="particle-canvas"></canvas>
+  <div class="content" style="text-align:center;">
+    <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/861921c8a2939609b7460d6878b488831a14c02a.jpg"
+         alt="Scratch programming blocks and cat mascot"
+         class="reveal"
+         style="height:clamp(90px,14vw,130px);width:auto;object-fit:contain;border-radius:16px;margin:0 auto 1.2rem;display:block;box-shadow:0 8px 28px rgba(15,23,42,0.18);">
+    <div class="pill reveal" style="margin:0 auto 0.8rem;display:inline-flex;">Session 4 · Thu Jul 2 · Week 1</div>
+    <h1 class="font-display grad-text reveal" style="font-size:clamp(2.4rem,6vw,4.4rem);font-weight:700;margin:0 0 0.5rem;line-height:1.1;">Scratch: Loops</h1>
+    <p class="reveal" style="font-size:clamp(1rem,2vw,1.4rem);color:#5b6b7e;letter-spacing:0.04em;margin-bottom:1.4rem;">Why write it 10 times when once will do?</p>
+    <div class="reveal" style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+      <span class="tier-badge tier-a">Tier A · Grades 1–3</span>
+      <span class="tier-badge tier-b">Tier B · Grades 3–5</span>
+      <span class="tier-badge tier-c">Tier C · Grades 6–9</span>
+    </div>
+    <p class="reveal" style="font-size:0.78rem;color:#5b6b7e;margin-top:1rem;">Modern Chinese School · Summer 2026 · Session 4 of 26</p>
+  </div>
+</div>
+
+<!-- ===== SLIDE 2 · TODAY'S PLAN ===== -->
+<div class="slide interior" data-slide="2" data-type="lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:360px;height:360px;top:-70px;right:-60px;background:#0b63ce;opacity:0.09;"></div>
+    <div class="blob" style="width:220px;height:220px;bottom:-50px;left:-30px;background:#10b981;opacity:0.07;"></div>
+  </div>
+  <div class="content">
+    <p class="pill mb-3 reveal">Today's Plan</p>
+    <h2 class="font-display reveal" style="font-weight:700;margin-bottom:1.2rem;">What are we doing today?</h2>
+    <div class="grid-cards reveal" style="gap:10px;">
+      <div class="timeline-row">
+        <div class="timeline-dot" style="background:#f59e0b;">⚡</div>
+        <div>
+          <strong style="color:#1f2a37;font-size:0.9rem;">10 min · Warm-up</strong>
+          <div class="big-text" style="color:#374151;">Stand-up loop: Jumping jacks without writing code</div>
+        </div>
+      </div>
+      <div class="timeline-line"></div>
+      <div class="timeline-row">
+        <div class="timeline-dot" style="background:#0b63ce;">🎯</div>
+        <div>
+          <strong style="color:#1f2a37;font-size:0.9rem;">15 min · Mini-Lesson</strong>
+          <div class="big-text" style="color:#374151;">What loops are + <span style="color:#059669;font-weight:700;">AI Moment</span>: how AI practices with loops</div>
+        </div>
+      </div>
+      <div class="timeline-line"></div>
+      <div class="timeline-row">
+        <div class="timeline-dot" style="background:#10b981;">🏗️</div>
+        <div>
+          <strong style="color:#1f2a37;font-size:0.9rem;">20 min · Guided Build</strong>
+          <div class="big-text" style="color:#374151;">Draw a square with <span class="scratch-block sb-orange" style="font-size:0.72rem;">repeat 4</span> · Make a sprite dance <span class="scratch-block sb-orange" style="font-size:0.72rem;">forever</span></div>
+        </div>
+      </div>
+      <div class="timeline-line"></div>
+      <div class="timeline-row">
+        <div class="timeline-dot" style="background:#ef4444;">🧠</div>
+        <div>
+          <strong style="color:#1f2a37;font-size:0.9rem;">5 min · Brain Break</strong>
+          <div class="big-text" style="color:#374151;">Move, breathe, reset — essential!</div>
+        </div>
+      </div>
+      <div class="timeline-line"></div>
+      <div class="timeline-row">
+        <div class="timeline-dot" style="background:#8b5cf6;">🚀</div>
+        <div>
+          <strong style="color:#1f2a37;font-size:0.9rem;">30 min · Open Build + Challenge Cards</strong>
+          <div class="big-text" style="color:#374151;">Make your own repeating pattern or animation. Count lines of code saved!</div>
+        </div>
+      </div>
+      <div class="timeline-line"></div>
+      <div class="timeline-row">
+        <div class="timeline-dot" style="background:#0b63ce;">🌟</div>
+        <div>
+          <strong style="color:#1f2a37;font-size:0.9rem;">10 min · Share-Out</strong>
+          <div class="big-text" style="color:#374151;">Show a neighbor or volunteer to share — always opt-in, always warm</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 3 · WARM-UP (unplugged) ===== -->
+<div class="slide interior" data-slide="3" data-type="warmup">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:380px;height:380px;top:-70px;right:-60px;background:#f59e0b;opacity:0.09;"></div>
+    <div class="blob" style="width:240px;height:240px;bottom:-60px;left:-40px;background:#0b63ce;opacity:0.07;"></div>
+  </div>
+  <div class="content">
+    <p class="pill amber reveal" style="margin-bottom:0.8rem;">Warm-Up · Brains On, No Screens · 10 min</p>
+    <h2 class="font-display reveal" style="font-weight:700;margin-bottom:1rem;">Let's do some jumping jacks!</h2>
+    <div class="grid-cards grid-2 reveal" style="margin-bottom:12px;align-items:start;">
+      <div>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/e/e1/Elementary_school_students_conduct_jumping_jacks_to_warm_up_USMC-120214-M-MA421-288.jpg"
+             alt="Children doing jumping jacks in gym"
+             style="width:100%;border-radius:14px;object-fit:cover;height:180px;box-shadow:0 8px 24px rgba(15,23,42,0.18);">
+        <p style="font-size:0.66rem;color:#5b6b7e;margin-top:5px;text-align:center;">Movement break &amp; coding lesson rolled into one!</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div class="stand-box">
+          <div class="think-chip" style="margin-bottom:8px;">Stand up — everyone!</div>
+          <p class="big-text" style="color:#374151;margin:0;">Your teacher will say a number. Do <strong>that many</strong> jumping jacks. Ready?</p>
+        </div>
+        <div class="card accent-card-amber" style="padding:12px 14px;">
+          <div style="font-size:0.82rem;font-weight:800;color:#92400e;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.06em;">Think about it…</div>
+          <ul style="list-style:none;padding:0;margin:0;">
+            <li class="big-text" style="margin-bottom:6px;color:#374151;">What did you just do to your body… <em>over and over</em>?</li>
+            <li class="big-text" style="color:#374151;">What would it look like to write those instructions down for a robot?</li>
+          </ul>
+        </div>
+        <div class="question-chip">
+          <span class="qicon">?</span>
+          If you had to write "jump, land" 20 times… wouldn't you rather write it <em>once</em> and say "do it 20 times"?
+        </div>
+      </div>
+    </div>
+    <div class="card reveal" style="background:rgba(11,99,206,0.07);border:1px solid rgba(11,99,206,0.2);padding:10px 16px;">
+      <p class="big-text" style="color:#374151;margin:0;">That's exactly what a <strong>loop</strong> does in code. Instead of repeating yourself, you tell the computer: <em>"do this thing N times."</em></p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 4 · WHAT IS A LOOP? ===== -->
+<div class="slide interior" data-slide="4" data-type="lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:360px;height:360px;top:-60px;right:-60px;background:#0b63ce;opacity:0.09;"></div>
+    <div class="blob" style="width:220px;height:220px;bottom:-50px;left:-40px;background:#10b981;opacity:0.07;"></div>
+  </div>
+  <div class="content">
+    <p class="pill reveal" style="margin-bottom:0.8rem;">Mini-Lesson · One Big Idea</p>
+    <h2 class="font-display reveal" style="font-weight:700;margin-bottom:1rem;">What is a loop?</h2>
+    <div class="grid-cards grid-2 reveal" style="align-items:start;margin-bottom:12px;">
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div class="card" style="padding:14px 16px;">
+          <div style="font-size:0.82rem;font-weight:800;color:#991b1b;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:7px;">Without a loop — painful!</div>
+          <div class="code-block" style="font-size:0.78rem;line-height:1.6;">
+            <span class="fn">move</span> 10 steps<br>
+            <span class="fn">move</span> 10 steps<br>
+            <span class="fn">move</span> 10 steps<br>
+            <span class="fn">move</span> 10 steps<br>
+            <span class="comment">...do this 10 times?! 😩</span>
+          </div>
+          <p style="font-size:0.78rem;color:#5b6b7e;margin-top:8px;font-style:italic;">10 lines for 1 simple idea. Easy to forget one.</p>
+        </div>
+        <div class="card" style="padding:14px 16px;">
+          <div style="font-size:0.82rem;font-weight:800;color:#047857;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:7px;">With a loop — elegant!</div>
+          <div class="code-block" style="font-size:0.78rem;line-height:1.6;">
+            <span class="kw">repeat</span> <span class="num">10</span><br>
+            &nbsp;&nbsp;<span class="fn">move</span> 10 steps<br>
+            <span class="comment">end  ✅ same result!</span>
+          </div>
+          <p style="font-size:0.78rem;color:#5b6b7e;margin-top:8px;font-style:italic;">3 lines. Change the 10 to 100 — done!</p>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div class="card accent-card-blue" style="padding:14px 16px;">
+          <div style="font-size:0.82rem;font-weight:800;color:#0b4a9e;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:9px;">Two loop types in Scratch</div>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span class="scratch-block sb-orange">repeat 10</span>
+              <span class="big-text" style="color:#374151;">Does it <em>exactly</em> N times, then stops.</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span class="scratch-block sb-orange">forever</span>
+              <span class="big-text" style="color:#374151;">Never stops! Runs until <em>you</em> stop it.</span>
+            </div>
+          </div>
+        </div>
+        <div class="card" style="padding:12px 16px;">
+          <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/4e431245865bd83580b2052fbadb51e8e1555c7d.jpg"
+               alt="Scratch coding environment with blocks"
+               style="width:100%;height:120px;object-fit:cover;border-radius:8px;margin-bottom:8px;">
+          <p class="big-text" style="color:#374151;margin:0;">In Scratch, loops are in the <strong style="color:#f59e0b;">Control</strong> (orange) block section.</p>
+        </div>
+        <div class="think-chip" style="display:flex;">
+          When might you want <em>forever</em> vs <em>repeat 10</em>? Think of a real-life example!
+        </div>
+      </div>
+    </div>
+    <div class="card reveal" style="background:rgba(11,99,206,0.06);border:1px solid rgba(11,99,206,0.18);padding:10px 16px;">
+      <p class="big-text" style="color:#374151;margin:0;">A <strong>loop</strong> is an instruction that says: <em>"Do this group of steps multiple times."</em> It's one of the most powerful tools in all of programming.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 5 · INTERACTIVE QUIZ ===== -->
+<div class="slide interior" data-slide="5" data-type="activity">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:340px;height:340px;top:-60px;right:-50px;background:#10b981;opacity:0.09;"></div>
+    <div class="blob" style="width:200px;height:200px;bottom:-40px;left:-30px;background:#f59e0b;opacity:0.07;"></div>
+  </div>
+  <div class="content">
+    <p class="pill green reveal" style="margin-bottom:0.8rem;">Quick Check · Slide 5 of 16</p>
+    <h2 class="font-display reveal" style="font-weight:700;margin-bottom:1rem;">Which loop would you use?</h2>
+    <div class="grid-cards grid-2 reveal" style="align-items:start;gap:14px;">
+      <div>
+        <p class="big-text" style="color:#374151;margin-bottom:12px;font-weight:700;">Scenario A: A sprite waves hello exactly <strong>3 times</strong> when clicked.</p>
+        <button class="choice-btn" onclick="handleQuiz('q1','a','correct')">repeat 3 — it should stop after 3 waves</button>
+        <button class="choice-btn" onclick="handleQuiz('q1','b','wrong')">forever — it waves without stopping</button>
+        <div class="feedback-box good" id="fb-q1-correct">Correct! <strong>repeat 3</strong> stops exactly when the job is done. Forever would wave forever — and never stop!</div>
+        <div class="feedback-box retry" id="fb-q1-wrong">Almost! If you use <em>forever</em>, the sprite never stops waving. You'd need to hit the stop button. <strong>repeat 3</strong> is the right pick.</div>
+      </div>
+      <div>
+        <p class="big-text" style="color:#374151;margin-bottom:12px;font-weight:700;">Scenario B: A bouncing ball keeps moving until the player quits the game.</p>
+        <button class="choice-btn" onclick="handleQuiz('q2','a','wrong')">repeat 100 — that's enough bounces</button>
+        <button class="choice-btn" onclick="handleQuiz('q2','b','correct')">forever — the ball never stops on its own</button>
+        <div class="feedback-box good" id="fb-q2-correct">Yes! <strong>forever</strong> means the ball moves as long as the game is running — no fixed count needed. That's perfect for games!</div>
+        <div class="feedback-box retry" id="fb-q2-wrong">Good try! But what if the player plays for more than 100 bounces? <em>forever</em> means the ball never runs out of bounces on its own.</div>
+      </div>
+    </div>
+    <div class="card reveal" style="background:rgba(11,99,206,0.06);border:1px solid rgba(11,99,206,0.18);padding:10px 16px;margin-top:12px;">
+      <div class="think-chip" style="margin-bottom:6px;">The key question to ask yourself:</div>
+      <p class="big-text" style="color:#374151;margin:0;">Does this action have a <strong>fixed count</strong> (use <code>repeat N</code>), or does it need to run <strong>until the user stops the program</strong> (use <code>forever</code>)?</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 6 · VIDEO 1 ===== -->
+<div class="slide interior" data-slide="6" data-type="lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:360px;height:360px;top:-60px;right:-60px;background:#0b63ce;opacity:0.09;"></div>
+    <div class="blob" style="width:240px;height:240px;bottom:-50px;left:-40px;background:#10b981;opacity:0.07;"></div>
+  </div>
+  <div class="content">
+    <p class="pill reveal" style="margin-bottom:0.8rem;">Watch · Video 1 · Scratch Repeat &amp; Forever</p>
+    <h2 class="font-display reveal" style="font-weight:700;margin-bottom:1rem;">See loops in action <span style="font-size:0.65em;opacity:0.65;">(~4 min)</span></h2>
+    <div class="grid-cards grid-2 reveal" style="align-items:start;">
+      <div>
+        <div class="media-embed" id="player-N_9bDyqbEQU" onclick="playVideo('N_9bDyqbEQU')" title="Click to play">
+          <img src="https://img.youtube.com/vi/N_9bDyqbEQU/hqdefault.jpg" alt="Coding for kids - Scratch Tutorial 18 - Loops">
+          <div class="play-btn"><div><svg width="20" height="20" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div>
+        </div>
+        <p style="font-size:0.66rem;color:#5b6b7e;margin-top:6px;">
+          <a href="https://www.youtube.com/watch?v=N_9bDyqbEQU" target="_blank" rel="noopener" style="color:#0b63ce;text-decoration:underline;">▶ YouTube · Abhijay Potluri — "Coding for kids | Scratch Tutorial 18 | Loops"</a>
+        </p>
+      </div>
+      <div class="card" style="padding:16px 18px;">
+        <div class="question-chip" style="margin-bottom:10px;"><span class="qicon">?</span> Watch for just 3 things</div>
+        <ul style="list-style:none;padding:0;margin:0;">
+          <li class="big-text" style="margin-bottom:8px;color:#374151;">① What does the <strong>repeat</strong> block look like in Scratch? How do you change the number?</li>
+          <li class="big-text" style="margin-bottom:8px;color:#374151;">② What makes the <strong>forever</strong> block different from repeat?</li>
+          <li class="big-text" style="color:#374151;">③ Can you spot a real-life thing the video compares loops to?</li>
+        </ul>
+        <div class="card accent-card-green" style="margin-top:10px;padding:8px 12px;">
+          <p style="font-size:0.82rem;color:#065f46;margin:0;">After watching, tell a neighbor: <em>"A loop is like…"</em> using your own words!</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 7 · REAL-LIFE LOOPS ===== -->
+<div class="slide interior" data-slide="7" data-type="lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:360px;height:360px;top:-60px;right:-60px;background:#f59e0b;opacity:0.09;"></div>
+    <div class="blob" style="width:240px;height:240px;bottom:-50px;left:-40px;background:#0b63ce;opacity:0.07;"></div>
+  </div>
+  <div class="content">
+    <p class="pill amber reveal" style="margin-bottom:0.8rem;">Real Life vs. Code · Spot the Pattern</p>
+    <h2 class="font-display reveal" style="font-weight:700;margin-bottom:1rem;">Loops are everywhere you look</h2>
+    <div class="grid-cards grid-3 reveal" style="margin-bottom:12px;">
+      <div class="card" style="padding:14px 16px;text-align:center;">
+        <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/1d33b4ad1b28d40ae09bbd210b795febc8c3c816.jpg"
+             alt="Loop repeat concept illustration for kids"
+             style="width:100%;height:100px;object-fit:cover;border-radius:10px;margin-bottom:8px;">
+        <div style="font-weight:800;color:#0f2747;font-size:0.92rem;margin-bottom:4px;">Making toast</div>
+        <p style="font-size:0.8rem;color:#374151;margin:0;"><em>Butter each slice.</em> If you have 4 slices → repeat 4!</p>
+        <span class="scratch-block sb-orange" style="margin-top:6px;display:inline-block;">repeat 4</span>
+      </div>
+      <div class="card" style="padding:14px 16px;text-align:center;">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/e/e1/Elementary_school_students_conduct_jumping_jacks_to_warm_up_USMC-120214-M-MA421-288.jpg"
+             alt="Kids doing jumping jacks"
+             style="width:100%;height:100px;object-fit:cover;border-radius:10px;margin-bottom:8px;">
+        <div style="font-weight:800;color:#0f2747;font-size:0.92rem;margin-bottom:4px;">Jumping jacks at PE</div>
+        <p style="font-size:0.8rem;color:#374151;margin:0;"><em>Up, down, up, down…</em> for a count → repeat!</p>
+        <span class="scratch-block sb-orange" style="margin-top:6px;display:inline-block;">repeat 20</span>
+      </div>
+      <div class="card" style="padding:14px 16px;text-align:center;">
+        <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/26526d2258778bb709c5cd7ef136ca51b4e002be.jpg"
+             alt="Snowflake pattern drawing"
+             style="width:100%;height:100px;object-fit:cover;border-radius:10px;margin-bottom:8px;">
+        <div style="font-weight:800;color:#0f2747;font-size:0.92rem;margin-bottom:4px;">Drawing a snowflake</div>
+        <p style="font-size:0.8rem;color:#374151;margin:0;">Draw a spike, rotate, repeat → 6 spikes = snowflake!</p>
+        <span class="scratch-block sb-orange" style="margin-top:6px;display:inline-block;">repeat 6</span>
+      </div>
+    </div>
+    <div class="card reveal accent-card-blue" style="padding:11px 16px;">
+      <div class="think-chip" style="margin-bottom:7px;">Think of your own!</div>
+      <p class="big-text" style="color:#374151;margin:0;">Name one thing YOU do every day that is secretly a loop. Tell your neighbor!</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 8 · AI MOMENT ===== -->
+<div class="slide interior" data-slide="8" data-type="lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:360px;height:360px;top:-60px;right:-60px;background:#10b981;opacity:0.09;"></div>
+    <div class="blob" style="width:220px;height:220px;bottom:-50px;left:-40px;background:#0b63ce;opacity:0.07;"></div>
+  </div>
+  <div class="content">
+    <p class="pill green reveal" style="margin-bottom:0.8rem;">AI Moment · "AI learns by repeating"</p>
+    <h2 class="font-display reveal" style="font-weight:700;margin-bottom:1rem;">How does AI practice? It loops!</h2>
+    <div class="grid-cards grid-2 reveal" style="align-items:start;margin-bottom:12px;">
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div class="card" style="padding:14px 16px;">
+          <div style="font-size:0.82rem;font-weight:800;color:#047857;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">How a musician practices</div>
+          <ol style="list-style:decimal;padding-left:18px;margin:0;">
+            <li class="big-text" style="margin-bottom:6px;color:#374151;">Play the hard part of the song</li>
+            <li class="big-text" style="margin-bottom:6px;color:#374151;">Notice the mistake</li>
+            <li class="big-text" style="margin-bottom:6px;color:#374151;">Adjust fingers / timing</li>
+            <li class="big-text" style="color:#374151;"><strong>Repeat</strong> — loop back to step 1!</li>
+          </ol>
+        </div>
+        <div class="card" style="padding:14px 16px;">
+          <div style="font-size:0.82rem;font-weight:800;color:#0b4a9e;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">How an AI "practices"</div>
+          <div class="code-block" style="font-size:0.74rem;line-height:1.7;">
+            <span class="kw">repeat</span> <span class="num">1000</span> times:<br>
+            &nbsp;&nbsp;look at an example<br>
+            &nbsp;&nbsp;make a guess<br>
+            &nbsp;&nbsp;check if guess is right<br>
+            &nbsp;&nbsp;adjust (learn from mistake)<br>
+            <span class="comment">→ gets better each loop!</span>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div class="robot-box">
+          <div style="font-size:0.82rem;font-weight:800;color:#0b4a9e;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">The loop connection</div>
+          <p class="big-text" style="color:#374151;margin-bottom:8px;">When an AI learns to recognize a cat photo, it doesn't study one picture once. It <strong>loops</strong> through thousands of cat photos — over and over — each time getting a little bit better at spotting what makes a cat look like a cat.</p>
+          <p class="big-text" style="color:#374151;margin:0;"><strong>More loops = more practice = smarter AI.</strong> Just like practicing piano!</p>
+        </div>
+        <div class="question-chip" style="display:flex;">
+          <span class="qicon">?</span>
+          If the AI only looked at 3 cat photos, would it be good at recognizing cats? What would happen if it looped through 10,000 photos instead?
+        </div>
+      </div>
+    </div>
+    <div class="card reveal" style="background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.22);padding:10px 16px;">
+      <p class="big-text" style="color:#065f46;margin:0;"><strong>Today's code concept = today's AI idea:</strong> Your <code>repeat</code> block IS the "training loop" of an AI — the core engine that makes patterns get stronger the more times it runs.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 9 · VIDEO 2 ===== -->
+<div class="slide interior" data-slide="9" data-type="lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:360px;height:360px;top:-60px;right:-60px;background:#8b5cf6;opacity:0.09;"></div>
+    <div class="blob" style="width:240px;height:240px;bottom:-50px;left:-40px;background:#10b981;opacity:0.07;"></div>
+  </div>
+  <div class="content">
+    <p class="pill reveal" style="margin-bottom:0.8rem;">Watch · Video 2 · Loops in a Real Scratch Game</p>
+    <h2 class="font-display reveal" style="font-weight:700;margin-bottom:1rem;">See forever loops build a game <span style="font-size:0.65em;opacity:0.65;">(~7 min)</span></h2>
+    <div class="grid-cards grid-2 reveal" style="align-items:start;">
+      <div>
+        <div class="media-embed" id="player-L9QXfCbKe-A" onclick="playVideo('L9QXfCbKe-A')" title="Click to play">
+          <img src="https://img.youtube.com/vi/L9QXfCbKe-A/hqdefault.jpg" alt="Scratch Tutorial 19 - Loops Project">
+          <div class="play-btn"><div><svg width="20" height="20" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div>
+        </div>
+        <p style="font-size:0.66rem;color:#5b6b7e;margin-top:6px;">
+          <a href="https://www.youtube.com/watch?v=L9QXfCbKe-A" target="_blank" rel="noopener" style="color:#0b63ce;text-decoration:underline;">▶ YouTube · Abhijay Potluri — "Coding for kids | Scratch Tutorial 19 | Project - Loops Blocks"</a>
+        </p>
+      </div>
+      <div class="card" style="padding:16px 18px;">
+        <div class="question-chip" style="margin-bottom:10px;"><span class="qicon">?</span> Watch for just 3 things</div>
+        <ul style="list-style:none;padding:0;margin:0;">
+          <li class="big-text" style="margin-bottom:8px;color:#374151;">① Where does the <strong>forever</strong> loop go in the bounce game — around what code?</li>
+          <li class="big-text" style="margin-bottom:8px;color:#374151;">② How does the <strong>stop all</strong> block end the forever loop? Why is that needed?</li>
+          <li class="big-text" style="color:#374151;">③ Could you make your own version of this game? What would you change first?</li>
+        </ul>
+        <div class="card accent-card-blue" style="margin-top:10px;padding:8px 12px;">
+          <p style="font-size:0.82rem;color:#0b4a9e;margin:0;">After watching: <em>"I noticed the forever loop was used to…"</em> — finish that sentence!</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 10 · GUIDED BUILD STEP 1 ===== -->
+<div class="slide interior" data-slide="10" data-type="activity">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:360px;height:360px;top:-60px;right:-60px;background:#10b981;opacity:0.09;"></div>
+    <div class="blob" style="width:220px;height:220px;bottom:-50px;left:-30px;background:#0b63ce;opacity:0.07;"></div>
+  </div>
+  <div class="content">
+    <p class="pill green reveal" style="margin-bottom:0.8rem;">Guided Build · Step 1 of 3 · 20 min total</p>
+    <h2 class="font-display reveal" style="font-weight:700;margin-bottom:0.9rem;">Draw a square with <code style="font-size:0.85em;">repeat 4</code></h2>
+    <div class="grid-cards grid-2 reveal" style="align-items:start;gap:14px;">
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div class="card accent-card-amber" style="padding:12px 16px;">
+          <div style="font-size:0.82rem;font-weight:800;color:#92400e;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px;">Build this together in Scratch</div>
+          <div class="code-block" style="font-size:0.8rem;line-height:1.8;">
+            when 🏁 clicked<br>
+            <span class="fn">pen down</span><br>
+            <span class="kw">repeat</span> <span class="num">4</span><br>
+            &nbsp;&nbsp;<span class="fn">move</span> <span class="num">100</span> steps<br>
+            &nbsp;&nbsp;<span class="fn">turn</span> <span class="num">90</span> degrees<br>
+            <span class="comment">end</span>
+          </div>
+        </div>
+        <div class="card" style="padding:12px 14px;">
+          <div style="font-size:0.82rem;font-weight:800;color:#0f2747;margin-bottom:6px;">Steps to set up:</div>
+          <div id="build-steps" style="display:flex;flex-direction:column;gap:6px;">
+            <div class="step-item" id="step1">
+              <div class="step-num">1</div>
+              <span class="big-text" style="color:#374151;">Open Scratch → choose or keep the cat sprite</span>
+            </div>
+            <div class="step-item" id="step2">
+              <div class="step-num">2</div>
+              <span class="big-text" style="color:#374151;">Click <strong>Add Extension</strong> → add <strong>Pen</strong></span>
+            </div>
+            <div class="step-item" id="step3">
+              <div class="step-num">3</div>
+              <span class="big-text" style="color:#374151;">Drag <em>when flag clicked</em> → <em>pen down</em> → <em>repeat 4</em></span>
+            </div>
+            <div class="step-item" id="step4">
+              <div class="step-num">4</div>
+              <span class="big-text" style="color:#374151;">Inside repeat: <em>move 100 steps</em> → <em>turn 90 degrees</em></span>
+            </div>
+            <div class="step-item" id="step5">
+              <div class="step-num">5</div>
+              <span class="big-text" style="color:#374151;">Click the green flag — a square appears!</span>
+            </div>
+          </div>
+          <button onclick="revealBuildSteps()" class="choice-btn" id="reveal-btn" style="margin-top:10px;text-align:center;">Click to reveal steps one by one →</button>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div class="card accent-card-blue" style="padding:13px 16px;">
+          <div style="font-size:0.82rem;font-weight:800;color:#0b4a9e;text-transform:uppercase;margin-bottom:7px;">Why does this work?</div>
+          <p class="big-text" style="color:#374151;margin-bottom:6px;">A square has <strong>4 equal sides</strong> and <strong>4 right-angle turns</strong> (90° each). Instead of writing "move 100, turn 90" four times, the loop does it all in three lines.</p>
+          <p class="big-text" style="color:#374151;margin:0;">4 sides × 90° = 360° total turn = a complete square!</p>
+        </div>
+        <div class="card" style="padding:12px 16px;">
+          <div class="think-chip" style="margin-bottom:8px;">Extension experiments:</div>
+          <ul style="list-style:none;padding:0;margin:0;">
+            <li class="big-text" style="margin-bottom:5px;color:#374151;">Change <strong>4</strong> to <strong>3</strong> + <strong>120°</strong> → triangle!</li>
+            <li class="big-text" style="margin-bottom:5px;color:#374151;">Change to <strong>6</strong> + <strong>60°</strong> → hexagon!</li>
+            <li class="big-text" style="color:#374151;">Change to <strong>36</strong> + <strong>10°</strong> → almost a circle!</li>
+          </ul>
+        </div>
+        <div>
+          <span class="tier-badge tier-a" style="display:inline-block;margin-bottom:4px;">Tier A</span>
+          <p style="font-size:0.8rem;color:#374151;margin:0 0 6px;">Just use <strong>repeat 4</strong> and make the square — that's the whole goal!</p>
+          <span class="tier-badge tier-c" style="display:inline-block;margin-bottom:4px;">Tier C</span>
+          <p style="font-size:0.8rem;color:#374151;margin:0;">Try all three shapes. What's the pattern between sides and degrees?</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 11 · GUIDED BUILD STEP 2 ===== -->
+<div class="slide interior" data-slide="11" data-type="activity">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:360px;height:360px;top:-60px;right:-60px;background:#8b5cf6;opacity:0.09;"></div>
+    <div class="blob" style="width:220px;height:220px;bottom:-50px;left:-30px;background:#10b981;opacity:0.07;"></div>
+  </div>
+  <div class="content">
+    <p class="pill reveal" style="margin-bottom:0.8rem;">Guided Build · Step 2 of 3</p>
+    <h2 class="font-display reveal" style="font-weight:700;margin-bottom:0.9rem;">Make a sprite dance <code style="font-size:0.85em;">forever</code></h2>
+    <div class="grid-cards grid-2 reveal" style="align-items:start;gap:14px;">
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div class="card accent-card-blue" style="padding:12px 16px;">
+          <div style="font-size:0.82rem;font-weight:800;color:#0b4a9e;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px;">Build this in Scratch</div>
+          <div class="code-block" style="font-size:0.8rem;line-height:1.8;">
+            when 🏁 clicked<br>
+            <span class="kw">forever</span><br>
+            &nbsp;&nbsp;<span class="fn">next costume</span><br>
+            &nbsp;&nbsp;<span class="fn">wait</span> <span class="num">0.3</span> seconds<br>
+            <span class="comment">end (loops until stop)</span>
+          </div>
+        </div>
+        <div class="card" style="padding:12px 14px;">
+          <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/d3821d178ba557eb066d79be09387ef013c6a277.jpg"
+               alt="Scratch cat dancing poses"
+               style="width:100%;height:100px;object-fit:cover;border-radius:8px;margin-bottom:8px;">
+          <p class="big-text" style="color:#374151;margin:0;">The Scratch cat has multiple <strong>costumes</strong>. Switching them fast creates animation!</p>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div class="card" style="padding:13px 16px;">
+          <div style="font-size:0.82rem;font-weight:800;color:#0f2747;text-transform:uppercase;margin-bottom:7px;">Why does the dance look smooth?</div>
+          <p class="big-text" style="color:#374151;margin-bottom:6px;">Because the <strong>forever</strong> loop keeps cycling through costumes without ever stopping. Movies work the same way — 24 images per second, looping forward.</p>
+          <p class="big-text" style="color:#374151;margin:0;">Try changing <strong>0.3</strong> to <strong>0.1</strong> — does the dance speed up?</p>
+        </div>
+        <div class="card accent-card-green" style="padding:12px 14px;">
+          <div style="font-size:0.82rem;font-weight:800;color:#047857;text-transform:uppercase;margin-bottom:6px;">Challenge it!</div>
+          <ul style="list-style:none;padding:0;margin:0;">
+            <li class="big-text" style="margin-bottom:5px;color:#374151;"><span class="tier-badge tier-b" style="font-size:0.65rem;">Tier B</span> Add a <strong>move 10 steps + if on edge bounce</strong> so the sprite dances AND walks.</li>
+            <li class="big-text" style="margin-top:5px;color:#374151;"><span class="tier-badge tier-c" style="font-size:0.65rem;">Tier C</span> Add a <strong>sound</strong> block inside the loop so the sprite plays a beat while dancing.</li>
+          </ul>
+        </div>
+        <div class="question-chip" style="display:flex;">
+          <span class="qicon">?</span>
+          What would happen if you removed the <strong>wait</strong> block? Try it and see!
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 12 · BRAIN BREAK ===== -->
+<div class="slide" data-slide="12" data-type="break">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:500px;height:500px;top:-80px;right:-80px;background:#ef4444;opacity:0.09;"></div>
+    <div class="blob" style="width:320px;height:320px;bottom:-60px;left:-60px;background:#f59e0b;opacity:0.08;"></div>
+    <div class="blob" style="width:220px;height:220px;top:30%;right:20%;background:#10b981;opacity:0.07;"></div>
+  </div>
+  <canvas class="particle-canvas"></canvas>
+  <div class="content" style="text-align:center;">
+    <p class="pill red reveal" style="margin:0 auto 0.8rem;display:inline-flex;">Brain Break · 5 Minutes · Essential!</p>
+    <img src="https://upload.wikimedia.org/wikipedia/commons/e/e1/Elementary_school_students_conduct_jumping_jacks_to_warm_up_USMC-120214-M-MA421-288.jpg"
+         alt="Kids doing jumping jacks"
+         class="reveal"
+         style="width:clamp(160px,28vw,260px);height:auto;border-radius:18px;display:block;margin:0 auto 1.2rem;object-fit:cover;box-shadow:0 12px 32px rgba(15,23,42,0.16);">
+    <h2 class="font-display reveal" style="font-size:clamp(1.8rem,4vw,3rem);font-weight:700;color:#0f2747;margin-bottom:0.6rem;">Stand up! Move around!</h2>
+    <div class="card reveal" style="display:inline-block;padding:14px 28px;margin-bottom:1rem;background:rgba(239,68,68,0.08);border:2px dashed rgba(239,68,68,0.3);">
+      <p class="big-text" style="color:#374151;margin:0;font-weight:700;">Do 10 jumping jacks — that's a <code>repeat 10</code> loop on your body!</p>
+    </div>
+    <div class="card reveal" style="max-width:480px;margin:0 auto;padding:12px 18px;background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2);">
+      <p class="big-text" style="color:#065f46;margin:0;">Then shake out your hands, take 3 deep breaths, and get ready to build your own project in Open Build time!</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 13 · OPEN BUILD + TIER PATHS ===== -->
+<div class="slide interior" data-slide="13" data-type="activity">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:360px;height:360px;top:-60px;right:-60px;background:#8b5cf6;opacity:0.09;"></div>
+    <div class="blob" style="width:240px;height:240px;bottom:-50px;left:-40px;background:#f59e0b;opacity:0.07;"></div>
+  </div>
+  <div class="content">
+    <p class="pill reveal" style="margin-bottom:0.8rem;">Open Build + Challenge Cards · 30 min</p>
+    <h2 class="font-display reveal" style="font-weight:700;margin-bottom:0.9rem;">Your turn to build with loops!</h2>
+    <div class="grid-cards grid-3 reveal" style="gap:12px;margin-bottom:12px;">
+      <div class="card accent-card-amber" style="padding:13px 15px;">
+        <div class="tier-badge tier-a" style="margin-bottom:8px;display:inline-flex;">Tier A · Foundations</div>
+        <div style="font-weight:800;color:#0f2747;margin-bottom:6px;font-size:0.88rem;">Draw a square loop</div>
+        <ul style="list-style:none;padding:0;margin:0;">
+          <li class="big-text" style="margin-bottom:4px;color:#374151;">Use <code>repeat 4</code> to make a square</li>
+          <li class="big-text" style="margin-bottom:4px;color:#374151;">Change the color of your pen</li>
+          <li class="big-text" style="color:#374151;">Can you draw a triangle? (<em>hint: 3 sides, 120°</em>)</li>
+        </ul>
+      </div>
+      <div class="card accent-card-blue" style="padding:13px 15px;">
+        <div class="tier-badge tier-b" style="margin-bottom:8px;display:inline-flex;">Tier B · Core</div>
+        <div style="font-weight:800;color:#0f2747;margin-bottom:6px;font-size:0.88rem;">Animated pattern</div>
+        <ul style="list-style:none;padding:0;margin:0;">
+          <li class="big-text" style="margin-bottom:4px;color:#374151;">Make a sprite with a <code>forever</code> dance loop</li>
+          <li class="big-text" style="margin-bottom:4px;color:#374151;">Add a <code>repeat</code> loop that draws a shape</li>
+          <li class="big-text" style="color:#374151;">Count how many code lines a loop <em>saved</em> you</li>
+        </ul>
+      </div>
+      <div class="card accent-card-green" style="padding:13px 15px;">
+        <div class="tier-badge tier-c" style="margin-bottom:8px;display:inline-flex;">Tier C · Challenge Card</div>
+        <div style="font-weight:800;color:#0f2747;margin-bottom:6px;font-size:0.88rem;">Nested loops → spiral or grid</div>
+        <ul style="list-style:none;padding:0;margin:0;">
+          <li class="big-text" style="margin-bottom:4px;color:#374151;">Use a loop <em>inside</em> a loop (nested)</li>
+          <li class="big-text" style="margin-bottom:4px;color:#374151;">Try: repeat 6 → draw square → turn 60°</li>
+          <li class="big-text" style="color:#374151;">Or: grow the move steps each iteration for a spiral</li>
+        </ul>
+      </div>
+    </div>
+    <div class="card reveal accent-card-blue" style="padding:12px 16px;">
+      <div class="think-chip" style="margin-bottom:7px;">Track your savings!</div>
+      <p class="big-text" style="color:#374151;margin:0;">For every loop you write, count how many lines it <strong>would have been</strong> without a loop. Write that number on a sticky note. Whose loop saved the most lines?</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 14 · NESTED LOOPS (Tier C) ===== -->
+<div class="slide interior" data-slide="14" data-type="activity">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:360px;height:360px;top:-60px;right:-60px;background:#8b5cf6;opacity:0.09;"></div>
+    <div class="blob" style="width:240px;height:240px;bottom:-50px;left:-40px;background:#0b63ce;opacity:0.07;"></div>
+  </div>
+  <div class="content">
+    <p class="pill reveal" style="margin-bottom:0.8rem;">Challenge Card · Nested Loops</p>
+    <h2 class="font-display reveal" style="font-weight:700;margin-bottom:0.9rem;">Loops inside loops = patterns inside patterns</h2>
+    <div class="grid-cards grid-2 reveal" style="align-items:start;gap:14px;">
+      <div>
+        <div class="card accent-card-blue" style="padding:13px 16px;margin-bottom:10px;">
+          <div style="font-size:0.82rem;font-weight:800;color:#0b4a9e;text-transform:uppercase;margin-bottom:7px;">Flower of squares (nested)</div>
+          <div class="code-block" style="font-size:0.78rem;line-height:1.8;">
+            when 🏁 clicked<br>
+            <span class="kw">repeat</span> <span class="num">6</span> <span class="comment"> ← outer: 6 petals</span><br>
+            &nbsp;&nbsp;<span class="kw">repeat</span> <span class="num">4</span> <span class="comment"> ← inner: draw square</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="fn">move</span> <span class="num">80</span> steps<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="fn">turn</span> <span class="num">90</span> degrees<br>
+            &nbsp;&nbsp;<span class="fn">turn</span> <span class="num">60</span> degrees<br>
+            <span class="comment">end</span>
+          </div>
+        </div>
+        <div class="card" style="padding:12px 14px;">
+          <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/67c9b03bdeba06cc2fd38a1f872a9535813331d6.jpg"
+               alt="Colorful mandala snowflake drawings"
+               style="width:100%;height:110px;object-fit:cover;border-radius:8px;margin-bottom:6px;">
+          <p style="font-size:0.78rem;color:#374151;margin:0;">These mandala snowflakes are <em>exactly</em> what nested loops create — a shape repeated and rotated around a center.</p>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div class="question-chip">
+          <span class="qicon">?</span>
+          How many total move steps does this program run? (Outer × inner = ?)
+        </div>
+        <div class="card" style="padding:13px 16px;">
+          <div style="font-size:0.82rem;font-weight:800;color:#047857;text-transform:uppercase;margin-bottom:7px;">Count it together:</div>
+          <div style="display:flex;flex-direction:column;gap:6px;">
+            <div class="step-item revealed" style="background:rgba(16,185,129,0.08);border-color:rgba(16,185,129,0.2);">
+              <div class="step-num" style="background:#10b981;">→</div>
+              <span class="big-text" style="color:#374151;">Outer loop runs <strong>6</strong> times</span>
+            </div>
+            <div class="step-item revealed" style="background:rgba(11,99,206,0.06);border-color:rgba(11,99,206,0.15);">
+              <div class="step-num" style="background:#0b63ce;">→</div>
+              <span class="big-text" style="color:#374151;">Each time outer runs, inner runs <strong>4</strong> times</span>
+            </div>
+            <div class="step-item revealed" style="background:rgba(245,158,11,0.08);border-color:rgba(245,158,11,0.22);">
+              <div class="step-num" style="background:#f59e0b;">✓</div>
+              <span class="big-text" style="color:#374151;"><strong>6 × 4 = 24</strong> total move steps = 6 squares drawn!</span>
+            </div>
+          </div>
+        </div>
+        <div class="card accent-card-amber" style="padding:10px 14px;">
+          <p class="big-text" style="color:#374151;margin:0;">Try changing the outer repeat to <strong>12</strong> and the turn to <strong>30°</strong>. What shape do you get?</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 15 · SHARE-OUT + CHECK ===== -->
+<div class="slide interior" data-slide="15" data-type="activity">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:360px;height:360px;top:-60px;right:-60px;background:#10b981;opacity:0.09;"></div>
+    <div class="blob" style="width:220px;height:220px;bottom:-50px;left:-30px;background:#8b5cf6;opacity:0.07;"></div>
+  </div>
+  <div class="content">
+    <p class="pill green reveal" style="margin-bottom:0.8rem;">Share-Out · 10 min · Always Opt-In!</p>
+    <h2 class="font-display reveal" style="font-weight:700;margin-bottom:0.9rem;">Show your neighbor what you built!</h2>
+    <div class="grid-cards grid-2 reveal" style="align-items:start;margin-bottom:12px;">
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div class="card" style="padding:14px 16px;">
+          <div style="font-size:0.82rem;font-weight:800;color:#0f2747;text-transform:uppercase;margin-bottom:8px;">3 things to tell your neighbor</div>
+          <ol style="list-style:decimal;padding-left:18px;margin:0;">
+            <li class="big-text" style="margin-bottom:7px;color:#374151;">What does your project <strong>do</strong>? (describe it in 1 sentence)</li>
+            <li class="big-text" style="margin-bottom:7px;color:#374151;">Did you use <strong>repeat</strong> or <strong>forever</strong>? Why?</li>
+            <li class="big-text" style="color:#374151;">How many lines of code did your loop <strong>save</strong>?</li>
+          </ol>
+        </div>
+        <div class="card accent-card-blue" style="padding:12px 14px;">
+          <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/01fead2a2af607d8a3142357433b40b3db2e374a.jpg"
+               alt="Children working together coding"
+               style="width:100%;height:90px;object-fit:cover;border-radius:8px;margin-bottom:8px;">
+          <p style="font-size:0.8rem;color:#374151;margin:0;">Pair up with someone who made something <em>different</em> from you. Look at their code — what loops did they use?</p>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div class="card accent-card-green" style="padding:13px 15px;">
+          <div style="font-size:0.82rem;font-weight:800;color:#047857;text-transform:uppercase;margin-bottom:8px;">Exit ticket (think it, say it)</div>
+          <p class="big-text" style="color:#374151;margin-bottom:8px;">Before we go, finish these sentences out loud or in your head:</p>
+          <div style="display:flex;flex-direction:column;gap:6px;">
+            <div style="background:rgba(16,185,129,0.10);border-radius:8px;padding:8px 12px;">
+              <p style="font-size:0.82rem;color:#065f46;margin:0;">"A loop is different from just writing the same block ten times because…"</p>
+            </div>
+            <div style="background:rgba(16,185,129,0.10);border-radius:8px;padding:8px 12px;">
+              <p style="font-size:0.82rem;color:#065f46;margin:0;">"I would use <code>forever</code> instead of <code>repeat N</code> when…"</p>
+            </div>
+            <div style="background:rgba(16,185,129,0.10);border-radius:8px;padding:8px 12px;">
+              <p style="font-size:0.82rem;color:#065f46;margin:0;">"Loops connect to AI because AI also…"</p>
+            </div>
+          </div>
+        </div>
+        <div class="card" style="padding:12px 14px;">
+          <div class="think-chip" style="margin-bottom:7px;">Volunteer showcase (opt-in!)</div>
+          <p class="big-text" style="color:#374151;margin:0;">1–2 volunteers can show the whole class — or just do the <em>"show your neighbor"</em> option. Both are equally great. No one is ever put on the spot.</p>
+        </div>
+      </div>
+    </div>
+    <div class="progress-bar-wrap reveal" style="max-width:400px;margin:0 auto;">
+      <div class="progress-bar-fill" style="width:100%;"></div>
+    </div>
+    <p class="reveal" style="text-align:center;font-size:0.78rem;color:#5b6b7e;margin-top:6px;">Today's session complete!</p>
+  </div>
+</div>
+
+<!-- ===== SLIDE 16 · HOMEWORK ===== -->
+<div class="slide interior" data-slide="16" data-type="lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:360px;height:360px;top:-60px;right:-60px;background:#0b63ce;opacity:0.09;"></div>
+    <div class="blob" style="width:240px;height:240px;bottom:-50px;left:-40px;background:#f59e0b;opacity:0.07;"></div>
+  </div>
+  <canvas class="particle-canvas"></canvas>
+  <div class="content">
+    <p class="pill reveal" style="margin-bottom:0.8rem;">Homework · 30 min · Tonight</p>
+    <h2 class="font-display reveal" style="font-weight:700;margin-bottom:1rem;">Use a loop to make something repeat!</h2>
+    <div class="grid-cards grid-2 reveal" style="align-items:start;margin-bottom:12px;">
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div class="card" style="padding:14px 16px;">
+          <div style="font-size:0.82rem;font-weight:800;color:#0f2747;text-transform:uppercase;margin-bottom:8px;">Your mission</div>
+          <ol style="list-style:decimal;padding-left:18px;margin:0;">
+            <li class="big-text" style="margin-bottom:7px;color:#374151;">Use a <strong>loop</strong> (<code>repeat</code> or <code>forever</code>) to make a repeating pattern OR animation in Scratch.</li>
+            <li class="big-text" style="margin-bottom:7px;color:#374151;">Count how many lines of code your loop <strong>saved</strong> vs. doing it the long way.</li>
+            <li class="big-text" style="color:#374151;">Write that number down — we'll compare at the start of next class!</li>
+          </ol>
+        </div>
+        <div class="card accent-card-amber" style="padding:12px 14px;">
+          <div style="font-size:0.82rem;font-weight:800;color:#92400e;text-transform:uppercase;margin-bottom:6px;">Ideas to try</div>
+          <ul style="list-style:none;padding:0;margin:0;">
+            <li class="big-text" style="margin-bottom:4px;color:#374151;">A star, hexagon, or spiral with the pen tool</li>
+            <li class="big-text" style="margin-bottom:4px;color:#374151;">A sprite that bounces and changes color forever</li>
+            <li class="big-text" style="color:#374151;">A rocket that blinks its engine lights on a loop</li>
+          </ul>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div class="card accent-card-green" style="padding:13px 15px;">
+          <div style="font-size:0.82rem;font-weight:800;color:#047857;text-transform:uppercase;margin-bottom:8px;">Tier paths</div>
+          <div style="display:flex;flex-direction:column;gap:7px;">
+            <div>
+              <span class="tier-badge tier-a" style="margin-bottom:3px;display:inline-flex;">Tier A</span>
+              <p style="font-size:0.8rem;color:#374151;margin:0;">Make a square or triangle using <code>repeat</code>. Screenshot and save your project.</p>
+            </div>
+            <div>
+              <span class="tier-badge tier-b" style="margin-bottom:3px;display:inline-flex;">Tier B</span>
+              <p style="font-size:0.8rem;color:#374151;margin:0;">Make a repeating pattern AND a forever animation. Count lines saved.</p>
+            </div>
+            <div>
+              <span class="tier-badge tier-c" style="margin-bottom:3px;display:inline-flex;">Tier C</span>
+              <p style="font-size:0.8rem;color:#374151;margin:0;">Nested loops! Build a grid of shapes or a spiral. Explain in 2 sentences how the inner and outer loops work together.</p>
+            </div>
+          </div>
+        </div>
+        <div class="robot-box">
+          <div style="font-size:0.82rem;font-weight:800;color:#0b4a9e;text-transform:uppercase;margin-bottom:6px;">AI connection to write down</div>
+          <p class="big-text" style="color:#374151;margin:0;">In your own words, explain: <em>"Loops help AI get smarter because…"</em> Write 1–2 sentences. There's no wrong answer — just your thinking!</p>
+        </div>
+      </div>
+    </div>
+    <div class="card reveal" style="background:rgba(11,99,206,0.06);border:1px solid rgba(11,99,206,0.2);padding:11px 16px;">
+      <p class="big-text" style="color:#374151;margin:0;text-align:center;"><strong>See you Monday!</strong> Bring your loop project — we'll do a quick loop-lines-saved competition at the warm-up.</p>
+    </div>
+  </div>
+</div>
+
+</div><!-- end .deck -->
+
+<!-- Nav -->
+<div class="nav-controls">
+  <button class="nav-btn" onclick="changeSlide(-1)">&#8249;</button>
+  <div class="slide-dots" id="dots"></div>
+  <button class="nav-btn" onclick="changeSlide(1)">&#8250;</button>
+  <span class="slide-counter" id="counter">1 / 16</span>
+</div>
+
+<script>
+/* ============================================================
+   DECK NAVIGATION
+   ============================================================ */
+let current = 1;
+const total = document.querySelectorAll('.slide').length;
+const dotsContainer = document.getElementById('dots');
+const counter = document.getElementById('counter');
+
+const dotTypes = ['title','lesson','warmup','lesson','activity','lesson','lesson','lesson','lesson','activity','activity','break','activity','activity','activity','lesson'];
+
+for(let i=1;i<=total;i++){
+  const dot=document.createElement('div');
+  const t=dotTypes[i-1]||'lesson';
+  let cls='dot';
+  if(t==='activity') cls+=' activity';
+  if(t==='warmup') cls+=' warmup';
+  if(t==='break') cls+=' brain';
+  if(i===1) cls+=' active';
+  dot.className=cls;
+  dot.onclick=()=>goToSlide(i);
+  dotsContainer.appendChild(dot);
+}
+
+function goToSlide(n){
+  const prev=document.querySelector('.slide.active');
+  const next=document.querySelector('.slide[data-slide="'+n+'"]');
+  if(prev) prev.classList.remove('active');
+  if(next){next.classList.add('active');animateSlide(next);}
+  current=n;updateNav();
+}
+function changeSlide(dir){let n=current+dir;if(n<1)n=total;if(n>total)n=1;goToSlide(n);}
+function updateNav(){
+  document.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('active',i+1===current));
+  counter.textContent=current+' / '+total;
+}
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();changeSlide(1);}
+  if(e.key==='ArrowLeft'){e.preventDefault();changeSlide(-1);}
+});
+let tx=0;
+document.addEventListener('touchstart',e=>{tx=e.touches[0].clientX;});
+document.addEventListener('touchend',e=>{const d=tx-e.changedTouches[0].clientX;if(Math.abs(d)>50)changeSlide(d>0?1:-1);});
+
+/* ============================================================
+   REVEAL ANIMATION
+   ============================================================ */
+function animateSlide(slide){
+  slide.querySelectorAll('.reveal').forEach((el,i)=>{
+    el.style.transition='none';
+    el.style.opacity='0';
+    el.style.transform='translateY(16px)';
+    el.offsetHeight;
+    const delay=i*0.09;
+    el.style.transition='opacity 0.38s ease '+delay+'s, transform 0.38s ease '+delay+'s';
+    el.style.opacity='1';
+    el.style.transform='translateY(0)';
+  });
+}
+
+/* ============================================================
+   MOUSE SPOTLIGHT
+   ============================================================ */
+document.addEventListener('mousemove',e=>{
+  const s=document.querySelector('.mouse-spotlight');
+  if(s) s.style.background='radial-gradient(600px circle at '+e.clientX+'px '+e.clientY+'px, rgba(11,99,206,0.05), transparent 40%)';
+});
+
+/* ============================================================
+   PARTICLES
+   ============================================================ */
+window.initParticles=function(canvas,opts){
+  if(!canvas) return;
+  const ctx=canvas.getContext('2d');
+  const count=opts.count||40;
+  let mx=-1000,my=-1000;
+  const [r,g,b]=[11,99,206];
+  let particles=[];
+  function seed(){
+    const w=canvas.offsetWidth||window.innerWidth;
+    const h=canvas.offsetHeight||window.innerHeight;
+    canvas.width=w;canvas.height=h;
+    particles=Array.from({length:count},()=>({
+      x:Math.random()*w,y:Math.random()*h,
+      vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,
+      size:Math.random()*2.2+.7,alpha:Math.random()*.3+.08
+    }));
+  }
+  seed();requestAnimationFrame(seed);window.addEventListener('resize',seed);
+  document.addEventListener('mousemove',e=>{const rc=canvas.getBoundingClientRect();mx=e.clientX-rc.left;my=e.clientY-rc.top;});
+  const ownSlide=canvas.closest('.slide');
+  (function animate(){
+    if(!ownSlide||ownSlide.classList.contains('active')){
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      particles.forEach(p=>{
+        const dx=p.x-mx,dy=p.y-my,dist=Math.sqrt(dx*dx+dy*dy);
+        if(dist<120){const f=(120-dist)/120*1.5;p.vx+=(dx/dist)*f*.1;p.vy+=(dy/dist)*f*.1;}
+        p.vx*=.98;p.vy*=.98;p.x+=p.vx;p.y+=p.vy;
+        if(p.x<0)p.x=canvas.width;if(p.x>canvas.width)p.x=0;
+        if(p.y<0)p.y=canvas.height;if(p.y>canvas.height)p.y=0;
+        ctx.beginPath();ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
+        ctx.fillStyle='rgba('+r+','+g+','+b+','+p.alpha+')';ctx.fill();
+      });
+    }
+    requestAnimationFrame(animate);
+  })();
+};
+document.querySelectorAll('.particle-canvas').forEach(c=>window.initParticles(c,{count:55}));
+
+/* ============================================================
+   VIDEO EMBED
+   ============================================================ */
+function playVideo(videoId){
+  const container=document.getElementById('player-'+videoId);
+  if(!container) return;
+  container.onclick=null;container.style.cursor='default';
+  container.innerHTML='<iframe src="https://www.youtube.com/embed/'+videoId+'?autoplay=1&rel=0" allowfullscreen allow="autoplay; encrypted-media" style="position:absolute;inset:0;width:100%;height:100%;border:0;border-radius:13px;"></iframe>';
+}
+
+/* ============================================================
+   QUIZ INTERACTION
+   ============================================================ */
+function handleQuiz(qid, opt, result){
+  const buttons=document.querySelectorAll('[onclick*="'+qid+'"]');
+  buttons.forEach(b=>{b.classList.add('disabled');});
+  const clickedBtn=document.querySelector('[onclick="handleQuiz(\''+qid+'\',\''+opt+'\',\''+result+'\')"]');
+  if(clickedBtn) clickedBtn.classList.add(result);
+  const fbCorrect=document.getElementById('fb-'+qid+'-correct');
+  const fbWrong=document.getElementById('fb-'+qid+'-wrong');
+  if(result==='correct'){
+    if(fbCorrect){fbCorrect.classList.add('show');}
+    if(fbWrong) fbWrong.classList.remove('show');
+  } else {
+    if(fbWrong){fbWrong.classList.add('show');}
+    if(fbCorrect) fbCorrect.classList.remove('show');
+  }
+}
+
+/* ============================================================
+   STEP REVEAL
+   ============================================================ */
+let stepIndex=0;
+const stepIds=['step1','step2','step3','step4','step5'];
+function revealBuildSteps(){
+  if(stepIndex<stepIds.length){
+    const el=document.getElementById(stepIds[stepIndex]);
+    if(el) el.classList.add('revealed');
+    stepIndex++;
+    if(stepIndex>=stepIds.length){
+      const btn=document.getElementById('reveal-btn');
+      if(btn){btn.textContent='All steps shown! Build it now.';btn.style.background='rgba(16,185,129,0.12)';btn.style.borderColor='rgba(16,185,129,0.3)';btn.style.color='#047857';}
+    } else {
+      const btn=document.getElementById('reveal-btn');
+      if(btn) btn.textContent='Next step ('+(stepIndex)+'/'+stepIds.length+') →';
+    }
+  }
+}
+
+/* animate first slide */
+try{animateSlide(document.querySelector('.slide.active'));}catch(e){}
+</script>
+</body>
+</html>
