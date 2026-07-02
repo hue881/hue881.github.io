@@ -1,0 +1,847 @@
+Session 4 - Scratch: Loops
+Expert Teaching Script (CS-Rigorous Explanations, Beginner-Friendly Delivery)
+Modern Chinese School - Summer 2026 AI & Coding Program
+Instructor: Mr. Hsiao "Hue" Weng
+Ages 7-13 (Grades 1-9) - Mixed-Tier (A/B/C)
+Total Time: ~110 min (Sections 2 & 3) | ~75 min compressed (Section 1)
+================================================================================
+
+HOW TO USE THIS SCRIPT
+--------------------------------------------------------------------------------
+- Text in [BRACKETS] = instructor stage directions or timing cues
+- "Quoted text" = suggested exact words to say aloud
+- -> means a natural transition or follow-up thought
+- [KEY IDEA] = deep conceptual explanation (say or adapt to the age of the room)
+- [PAUSE] = student interaction moment -- stop and wait for responses
+- [ROBOT] = the daily AI Moment tie-in (5-10 min, folded in, never a lecture)
+- TIER A = Grades 1-3 scaffolding | TIER B = Grades 3-5 core | TIER C = Grades 6-9 stretch
+
+PACING MAP (from the syllabus Daily Rhythm):
+  Warm-up (unplugged) .............. 10 min   -> Slides 1-3
+  Mini-lesson (one concept, live) .. 15-20 min -> Slides 4-8  [ROBOT folded in]
+  Guided build (all together) ...... 20 min    -> Slides 9-11
+  Movement / brain break ........... 5 min     -> Slide 12
+  Open build + challenge cards ..... 30-40 min  -> Slides 13-14
+  Share-out (opt-in, warm) ......... 10 min     -> Slides 15-16
+  (Homework assigned at close) ..... -> Slide 16
+
+  SECTION 1 (75 min): Warm-up(5) -> Mini-lesson+Robot(15) -> Guided build(20)
+  -> Break(5) -> Open build(25) -> Quick share(5). Build ONLY the square
+  (Guided Step 1); make the forever dance (Step 2) a demo-and-preview instead
+  of an all-build; homework unchanged.
+
+  CALL-BACK: This is Session 4. Yesterday (Session 3) they learned SEQUENCING
+  and EVENTS and built a cat that moved and reacted. Loops sit directly on top
+  of that: a loop is a sequence you repeat. Reference the dominoes and the
+  green flag constantly -- today builds on that skeleton.
+================================================================================
+
+
+================================================================================
+                     PART 1 -- WARM-UP (UNPLUGGED)  [~10 min]
+                          No screens. Bodies on.
+================================================================================
+
+
+--------------------------------------------------------------------------------
+SLIDE 1 -- TITLE & WELCOME  ("Scratch: Loops / Why write it 10 times when once will do?")
+[Duration: ~2 minutes]
+--------------------------------------------------------------------------------
+
+[Display the title slide as students settle. Write "LOOPS" on the board in big
+letters. Keep laptops CLOSED -- this is a no-screen, body-first warm-up. High
+energy: this is the concept kids fall in love with, because it feels like a
+superpower.]
+
+"Good morning, coders! Welcome to Session 4. Yesterday you built something real
+-- a sprite that MOVED and REACTED when you pressed a key. You used two big
+ideas: sequencing and events. Say them back to me. Sequencing... events. Yes."
+
+"Today we add the idea that makes coders LAZY in the best possible way. It is
+called a LOOP. Say it with me. Loop. One more time. Loop. Good."
+
+"Here is the promise on the slide: 'Why write it ten times when once will do?'
+By the end of today you will make the computer do something a hundred times --
+without writing it a hundred times. Three little blocks will do the work of a
+hundred. That is not a trick. That is real programming."
+
+[KEY IDEA -- say slowly, this frames the whole lesson]:
+"Here is the big idea. A sequence is steps in order -- you learned that
+yesterday. A LOOP is when you take a chunk of that sequence and tell the
+computer: 'Do this same group of steps AGAIN, a bunch of times.' Instead of
+copying, you repeat. Computers are unbelievably good at doing the same thing
+over and over without getting bored, without getting tired, and without making
+mistakes. A loop is how we hand them that job. Master loops and you can make a
+computer do a million steps with three lines of code."
+
+
+--------------------------------------------------------------------------------
+SLIDE 2 -- WARM-UP: JUMPING-JACK LOOP (UNPLUGGED / MOVEMENT)
+[Duration: ~5 minutes]
+--------------------------------------------------------------------------------
+
+[No screens. Everyone STANDS UP. This is the "brains on AND bodies on" warm-up
+-- the syllabus lets movement and the coding lesson roll into one here. You are
+the computer; the class is the sprite running your loop.]
+
+"Everybody stand up. I am going to say a number. When I do, you do that many
+jumping jacks -- out loud, count them with me. Ready? The number is... FIVE!"
+
+[PAUSE -- do 5 jumping jacks together, counting 1-2-3-4-5 out loud. Big energy.]
+
+"Now here is the sneaky question. When I said 'five,' did I tell you every
+single jack one at a time? Did I say 'jump, land, jump, land, jump, land'?"
+
+[PAUSE -- let them answer. No! You just said one number -- five.]
+
+"Exactly. I said ONE instruction -- 'do five jumping jacks' -- and you knew to
+repeat the SAME move five times. That one instruction did the work of five.
+That is a LOOP. In code we would write it like this --"
+
+[Write on the board:]
+    repeat 5
+        jumping jack
+
+"Read it out loud with me: 'repeat five... jumping jack.' Two lines. It ran
+five jumps."
+
+"Now watch what happens WITHOUT a loop. If I could not use the word 'repeat,'
+I would have to say: jumping jack, jumping jack, jumping jack, jumping jack,
+jumping jack. Five separate instructions for the exact same move. And if I
+wanted a hundred? I would be here all class just writing 'jumping jack.'"
+
+[PAUSE -- turn and tell your neighbor: what is one thing you do more than once
+in a row every day? 30 seconds. Listen for: brushing (back and forth), stairs,
+chewing, clapping. Everything repetitive is secretly a loop.]
+
+[TIER A note: keep it purely physical and joyful -- the jumping jacks ARE the
+lesson; the word "repeat" is the whole takeaway. TIER C: sharper version --
+"If your body could ONLY understand 'repeat N times,' how would you tell it to
+do 5 jacks, then 3 spins? Can one 'repeat' do both? No -- you need TWO loops.
+Hold that thought; that is nested loops, and it is your challenge card today."]
+
+
+--------------------------------------------------------------------------------
+SLIDE 3 -- CORE CONCEPT: WHY LOOPS EXIST (10 LINES vs 3 LINES)
+[Duration: ~3 minutes]
+--------------------------------------------------------------------------------
+
+[Display the "Mini-Lesson - One Big Idea" comparison: 10 copied lines on the
+left, a tiny 3-line loop on the right. Still no student screens.]
+
+"Let's lock in WHY loops exist. Look at the two sides of the slide."
+
+"On the LEFT: ten lines of code to say the same simple thing ten times. Long.
+Boring to type. And here is the real danger -- easy to forget one, or make a
+tiny typo in line seven that you will never find."
+
+"On the RIGHT: three lines. A loop that says 'do this ten times.' And here is
+the magic -- if I want a HUNDRED instead of ten, I change the number ten to a
+hundred. One character. Done. The left side would need ninety more lines."
+
+[PAUSE -- ask: "Which one would YOU rather write? Which one has fewer places
+to make a mistake?" Let them answer. The loop wins on both.]
+
+[KEY IDEA]:
+"Coders have a saying: 'Don't Repeat Yourself.' If you find yourself copying
+the same blocks over and over, stop -- that is the computer telling you to use
+a loop. Fewer lines means fewer bugs, easier changes, and clearer thinking.
+A loop does not just save typing. It makes your program smarter and safer.
+That is why loops are one of the most powerful tools in ALL of programming --
+not just Scratch. Every language you ever learn will have them."
+
+
+================================================================================
+              PART 2 -- MINI-LESSON (ONE CONCEPT, LIVE)  [~15-20 min]
+                    Teacher demos on the big screen only.
+================================================================================
+
+
+--------------------------------------------------------------------------------
+SLIDE 4 -- CORE CONCEPT: WHAT IS A LOOP? (THE CONTROL BLOCKS)
+[Duration: ~4 minutes]
+--------------------------------------------------------------------------------
+
+[Now open Scratch on the projector -- YOUR screen only. Students still watch,
+hands off keyboards. Show the block palette and click into the ORANGE Control
+category so they see where loops live.]
+
+"Here is our definition, straight from the slide: a LOOP is an instruction that
+says, 'Do this group of steps multiple times.' That group of steps inside the
+loop is a sequence -- the same idea from yesterday -- and the loop wraps around
+it and repeats it."
+
+[Point to the Control category.]
+
+"In Scratch, loops live in the ORANGE Control blocks. Yesterday your event
+blocks -- the green flag -- were YELLOW. Today's new color is ORANGE. Whenever
+you want something to repeat, go to orange."
+
+[Demo: drag a 'when green flag clicked' hat block. Then grab a 'repeat 10'
+block from Control and snap it under. Notice its shape.]
+
+"Look at the shape of this loop block. It has a MOUTH -- an open C-shape. The
+blocks you put INSIDE that mouth are the ones that repeat. Whatever is hugged
+by the loop's arms runs again and again. Blocks outside the mouth run only once."
+
+[Demo: drop a 'move 10 steps' block INSIDE the mouth of the repeat 10. Click
+the green flag. The cat scoots across in ten little hops.]
+
+[KEY IDEA]:
+"Notice what just happened. I wrote ONE 'move 10 steps' block -- but it ran ten
+times, because the loop repeated it. One block, ten actions. The loop is like a
+photocopier for behavior: you give it one instruction and it runs it as many
+times as you say. This is the whole idea. Everything else today is just choosing
+HOW MANY times, and WHEN to stop."
+
+
+--------------------------------------------------------------------------------
+SLIDE 5 -- QUICK CHECK: repeat N  vs  forever
+[Duration: ~4 minutes]
+--------------------------------------------------------------------------------
+
+[Display the "Quick Check" slide with Scenario A and Scenario B. This is the
+key decision of the day: does the loop have a fixed count, or does it run until
+the program stops? Show both loop blocks -- 'repeat 10' and 'forever' -- in the
+Control palette.]
+
+"There are two kinds of loops we meet today, and telling them apart is the most
+important skill of this lesson."
+
+"LOOP 1 -- 'repeat N.' You give it a NUMBER. It runs that exact many times, then
+STOPS on its own. 'repeat 4' runs four times. 'repeat 100' runs a hundred times.
+It counts, then quits. Use it when you know HOW MANY."
+
+"LOOP 2 -- 'forever.' No number. It runs and runs and NEVER stops on its own --
+until you click the red stop sign or quit the program. Use it when you want
+something to keep going with no set end."
+
+[Read the slide scenarios aloud:]
+"SCENARIO A -- a sprite waves hello exactly THREE times when clicked. Fixed
+count, or forever?"
+
+[PAUSE -- let them decide. Answer: repeat 3. We know the exact number: three.]
+
+"SCENARIO B -- a bouncing ball keeps moving until the player quits the game.
+Fixed count, or forever?"
+
+[PAUSE -- let them decide. Answer: forever. There is no set number of bounces
+-- it goes until the player stops.]
+
+[KEY IDEA]:
+"Here is the rule to carry forever: if you can count it, use 'repeat.' If it
+should never stop on its own, use 'forever.' A firework that bursts three times
+-- repeat 3. A heartbeat that never quits while you're alive -- forever. Pick
+the loop that matches whether the job has an ending or not. Get this one choice
+right and your program behaves exactly how you imagined."
+
+[TIER C stretch: "There is a third kind -- 'repeat until SOMETHING is true' --
+a loop that stops on a condition, not a count. We meet conditions next session.
+For now, notice 'forever' is really just 'repeat until the user quits.'"]
+
+
+--------------------------------------------------------------------------------
+SLIDE 6 -- WATCH: VIDEO 1 -- SCRATCH REPEAT & FOREVER
+[Duration: ~3 minutes video + 1 minute talk]
+--------------------------------------------------------------------------------
+
+[Play Video 1 on the projector -- a short clip showing 'repeat' and 'forever'
+in action in Scratch. Keep it under 3 minutes; you can pause it on the key
+moment where the loop wraps the blocks.]
+
+"Watch closely. See how the blocks sit INSIDE the loop's mouth, and how the
+'repeat' one stops but the 'forever' one just keeps cycling."
+
+[After the video:]
+"Turn to your neighbor and finish this sentence in your OWN words: 'A loop is
+like...' -- 20 seconds, go."
+
+[PAUSE -- listen for great metaphors: "like a merry-go-round," "like a song on
+repeat," "like brushing back and forth." Celebrate 2-3 out loud. Their own
+words mean the concept landed.]
+
+
+--------------------------------------------------------------------------------
+SLIDE 7 -- REAL LIFE vs CODE: SPOT THE PATTERN
+[Duration: ~4 minutes]
+--------------------------------------------------------------------------------
+
+[Display the "Real Life vs. Code - Spot the Pattern" slide with the everyday
+examples mapped to repeat counts: buttering slices (repeat 4), jumping jacks
+(repeat 20), drawing a snowflake spike (repeat 6). Still teacher screen only.]
+
+"Loops are not a computer thing -- they are an EVERYWHERE thing. Look at the
+slide with me."
+
+"BUTTERING TOAST: you butter each slice the same way. Four slices? That is
+'repeat 4' -- one action, four times."
+
+"JUMPING JACKS: up, down, up, down, for a count. Twenty of them is 'repeat 20'
+-- just like our warm-up."
+
+"DRAWING A SNOWFLAKE: draw one spike, rotate a little, and repeat. Six spikes
+around a center is 'repeat 6.' The same tiny move, six times, makes a whole
+snowflake."
+
+[PAUSE -- ask: "Name ONE thing YOU do every day that is secretly a loop. Tell
+your neighbor." 30 seconds. Steps to school, chewing bites, stirring, going up
+stairs -- all loops.]
+
+[KEY IDEA]:
+"Once you learn loops, you start SEEING them everywhere -- in stairs, in music
+choruses, in the days of the week that repeat, in your daily routine. That is
+exactly how a programmer's brain grows. You look at any repeated pattern and
+think, 'That's a loop -- I could tell a computer to do that in one instruction.'
+You are learning to see the world the way a coder does."
+
+
+--------------------------------------------------------------------------------
+SLIDE 8 -- [ROBOT] AI MOMENT: "AI LEARNS BY REPEATING"
+[Duration: ~4-5 minutes -- this is the daily AI tie-in, folded in]
+--------------------------------------------------------------------------------
+
+[Display the "AI Moment - AI learns by repeating" slide. Deliver with wonder,
+not as a lecture. This is the 5-10 minute AI Moment the syllabus folds into
+every day. Call back to yesterday's AI moment: sequence = training steps.]
+
+"Now my favorite part of every day -- how does today's idea connect to AI, to
+artificial intelligence?"
+
+"Yesterday we said an AI is TRAINED in a sequence of steps. Today we add the
+missing piece: that training sequence is run inside a LOOP, over and over."
+
+"Think about an AI learning to recognize a cat in a photo. Does it look at ONE
+cat picture, one time, and suddenly know cats forever?"
+
+[PAUSE -- let them answer. No!]
+
+"Right. It LOOPS through thousands of cat photos -- again and again -- and each
+time around the loop, it gets a tiny bit better at spotting what makes a cat
+look like a cat. Whiskers. Pointy ears. That certain face. Each trip through
+the loop, the pattern gets a little stronger."
+
+[Point to the slide's core line:]
+"Here is the big idea on the slide: your 'repeat' block IS the training loop of
+an AI. It is the exact same engine. More loops means more practice means a
+smarter AI -- just like practicing piano. You don't get good at piano by playing
+a song once. You LOOP it, a hundred times, and each time your fingers learn a
+little more."
+
+[PAUSE -- ask: "If you only practiced a song ONE time, would you play it well
+at a concert? So why do you think an AI needs to loop thousands of times?"]
+
+[KEY IDEA -- the takeaway]:
+"'AI learns by repeating.' The 'repeat' block you are about to use to draw a
+square is the same idea that powers a giant AI learning from millions of examples.
+The computer isn't magic -- it's a loop that runs so many times the pattern
+becomes strong. You are learning the real engine of AI today, not a toy version."
+
+[This plants the seed for Session 15's Teachable Machine day -- where they will
+WATCH a model get smarter as it loops through more examples, and fail when it
+loops through too few. Call back to today when you get there.]
+
+
+--------------------------------------------------------------------------------
+SLIDE 8b -- WATCH: VIDEO 2 -- LOOPS IN A REAL SCRATCH GAME
+[Duration: ~3 minutes video + 1 minute talk -- fold in; SECTION 1 may skip]
+--------------------------------------------------------------------------------
+
+[Play Video 2 -- a real Scratch game showing 'forever' doing the heavy lifting
+(a character constantly falling, a background always scrolling, an enemy always
+chasing). Keep it short.]
+
+"Watch for the 'forever' loop. What is the ONE thing it keeps doing the whole
+game?"
+
+[After the video:]
+"Finish this sentence: 'I noticed the forever loop was used to...' -- shout it
+out."
+
+[PAUSE -- listen for: "keep the ball bouncing," "make it always fall," "keep
+checking for a key." Affirm: forever = the always-on engine of a game.]
+
+[SECTION 1 (75 min): if time is tight, skip this video and simply name that
+"forever" runs a game's always-on motion; go straight to the guided build.]
+
+
+================================================================================
+                 PART 3 -- GUIDED BUILD (ALL TOGETHER)  [~20 min]
+                  Everyone builds the SAME thing, step by step.
+================================================================================
+
+
+--------------------------------------------------------------------------------
+SLIDE 9 -- GUIDED BUILD SETUP + STEP 1: DRAW A SQUARE WITH repeat 4
+[Duration: ~10 minutes -- go slowly, narrate every drag]
+--------------------------------------------------------------------------------
+
+[Students open Scratch NOW. Walk the room -- confirm everyone has the editor
+open with the cat before continuing. Buddy-pair the Tier A / Grade 1-2 kids.
+For drawing, you need the PEN extension -- show them the "Add Extension" button
+bottom-left and add "Pen" so the 'pen down' block appears. Display the goal
+slide.]
+
+"Screens ON. Everyone open Scratch with the cat. Thumbs up when you can see the
+cat -- good, good... [wait for all thumbs]. Buddies, help your partner get there."
+
+"Here is what every one of us will have by the end of the next twenty minutes:
+a sprite that draws a perfect SQUARE using a loop -- and a sprite that DANCES
+forever. Two loops, two payoffs. We build it together, step by step. Nobody
+gets left behind. The rule for guided build: do exactly what I do, no more, no
+less. Your own projects come later."
+
+"First, one setup step. Click 'Add Extension' at the bottom-left, and choose
+PEN. Now we have a 'pen down' block, so our cat leaves a line as it moves --
+like a marker taped to its tail. [Wait for everyone.]"
+
+"STEP 1 -- THE SQUARE. Let's think before we build. A square has FOUR equal
+sides and FOUR turns. Each turn is ninety degrees -- a perfect corner. Four
+times ninety is three hundred sixty -- one full turn all the way around. That's
+WHY the shape closes into a square."
+
+"Without a loop, I would write: move 100, turn 90, move 100, turn 90, move 100,
+turn 90, move 100, turn 90. Eight blocks. But every side is the SAME -- move,
+then turn. So we LOOP it."
+
+"Step 1a: drag a 'when green flag clicked' hat block. Under it, snap 'pen down'
+so the cat draws. [Wait. Thumbs up.]"
+
+[PAUSE -- wait for a room of thumbs. Do not move on without them.]
+
+"Step 1b: from ORANGE Control, grab 'repeat 4' and snap it under 'pen down.'
+See the mouth? Whatever goes inside repeats four times. [Wait.]"
+
+"Step 1c: INSIDE the mouth, put 'move 100 steps,' then under it 'turn 90
+degrees.' Two blocks, inside the loop. That's it. Read it with me: 'repeat
+four... move one hundred... turn ninety.' [Wait -- check every screen.]"
+
+"Now -- click the green flag. Watch your cat draw a square!"
+
+[PAUSE -- celebrate the first square. Big energy. Walk and check. Some cats
+draw offscreen -- have them drag the cat to center first, or add 'go to x:0
+y:0' at the top.]
+
+[Point to the "Try all three shapes" card:]
+"Here's the pattern hidden in the square. Sides times turn-angle equals 360.
+Square: 4 sides, turn 90. Triangle: 3 sides, turn 120. Hexagon: 6 sides, turn
+60. Change 'repeat 4' to 'repeat 3' and 'turn 90' to 'turn 120' -- you get a
+triangle! The loop count and the turn angle always multiply to 360."
+
+[KEY IDEA -- "The Big Discovery" for the square]:
+"Look what you did. You wrote 'move' ONCE and 'turn' ONCE -- but the loop ran
+them four times and drew a whole shape. Change one number and you get a totally
+different shape. THAT is the power of a loop: a little bit of code, controlled
+by one number, making something big. This is exactly how Python 'turtle'
+drawing works too -- you're previewing a lesson from a few weeks out."
+
+[TIER A: the square alone is a full success -- move + turn inside 'repeat 4.'
+Buddy them and celebrate the moment the square closes. TIER C: "Try a circle --
+'repeat 36,' 'move 10,' 'turn 10.' Why does that look round?"]
+
+
+--------------------------------------------------------------------------------
+SLIDE 10 -- GUIDED BUILD STEP 2: DANCE FOREVER (COSTUMES + forever)
+[Duration: ~8 minutes -- SECTION 1 may demo this instead of all-build]
+--------------------------------------------------------------------------------
+
+[Display the "Guided Build - Step 2" slide. Now we meet 'forever.' The Scratch
+cat has TWO costumes (costume1, costume2) -- switching them fast makes it look
+like it's dancing. Build on the projector one block at a time.]
+
+"Now the OTHER loop -- 'forever.' We're going to make the cat DANCE and never
+stop. Start a brand-new script -- do NOT attach it to your square script."
+
+"Step 2a: drag a fresh 'when green flag clicked' hat block to an EMPTY spot.
+[Wait.]"
+
+"Step 2b: from ORANGE Control, grab 'forever' -- notice it has NO number, and
+its mouth has no bottom lip, because it never ends. Snap it under the hat. [Wait.]"
+
+"Step 2c: INSIDE the forever loop, put 'next costume,' then 'wait 0.3 seconds.'
+Click the flag. Your cat flips between its two costumes over and over -- it's
+dancing! [Wait -- watch the room light up.]"
+
+[PAUSE -- celebrate. Then point to the "Try changing" card:]
+"Change the 0.3 to 0.1. Click the flag. The dance speeds up -- faster costume
+switches. That is exactly how MOVIES work: about 24 pictures per second,
+looping forward so fast your eyes see smooth motion. A loop switching pictures
+IS animation."
+
+[KEY IDEA -- the 'forever' discovery]:
+"Two big things here. First: 'forever' never stops on its own -- only the red
+stop sign ends it. Second: your cat now has TWO separate loop-scripts and they
+do not fight each other -- one drew a square and stopped, one dances endlessly.
+A sprite can run many loops, each doing its own job. That is how a real game
+keeps the background scrolling AND the player jumping AND the score counting --
+lots of loops, all at once."
+
+[SECTION 1 (75 min): DEMO this on the projector and let them watch, OR let them
+build just the square and preview the dance -- protect open-build time. Homework
+is unchanged either way.]
+
+
+--------------------------------------------------------------------------------
+SLIDE 11 -- GUIDED BUILD PAYOFF: "YOUR BODY IS A LOOP"
+[Duration: ~2 minutes -- SECTION 1 may fold into the brain break]
+--------------------------------------------------------------------------------
+
+[A quick joyful embodiment before the break, echoing yesterday's "your body is
+a sprite." Stand the class up. You are the computer calling the loop.]
+
+"Everybody stand. When I say 'repeat 4 - clap,' you clap exactly four times,
+counting out loud, then STOP. Ready -- repeat 4, clap! [Do it: 1-2-3-4, stop.]"
+
+"Now: 'forever - sway' -- sway side to side and DON'T stop until I show the stop
+sign. [Let them sway.] ...and STOP! [Make a stop-sign hand.]"
+
+"See the difference in your own body? 'repeat 4' ended by itself after four.
+'forever' only stopped when I made it stop. You just FELT the two loops."
+
+[This is the natural bridge into the movement break -- they're already standing.]
+
+
+================================================================================
+                   PART 4 -- MOVEMENT / BRAIN BREAK  [~5 min]
+================================================================================
+
+
+--------------------------------------------------------------------------------
+SLIDE 12 -- BRAIN BREAK  ("Do 10 jumping jacks = repeat 10 on your body!")
+[Duration: ~5 minutes]
+--------------------------------------------------------------------------------
+
+[Display the calm break slide. This is an essential focus reset -- honor it
+fully, do not skip it. It also happens to be a perfect loop.]
+
+"Screens down, stand up, shake it out. And to reset -- do TEN jumping jacks with
+me. That's a 'repeat 10' loop running on your own body. Count them out! [Do 10.]"
+
+"Now shake out your hands, three big deep breaths... in... and out. Roll your
+shoulders. Reset your focus."
+
+"Tiny thing to dream about while we breathe, no pressure: when we come back, YOU
+pick a shape or a project and build it with your own loop. Start imagining what
+you want to make repeat -- a spinning star, a dancing dragon, a scrolling
+pattern. Anything."
+
+[Let them move, drink water, breathe. Bring them back gently and seated.]
+
+
+================================================================================
+             PART 5 -- OPEN BUILD + CHALLENGE CARDS  [~30-40 min]
+              Apply the concept to your OWN project. Explore & stretch.
+================================================================================
+
+
+--------------------------------------------------------------------------------
+SLIDE 13 -- OPEN BUILD: THE THREE TIERS
+[Duration: ~2 min to launch, then students build ~28-38 min]
+--------------------------------------------------------------------------------
+
+[Display the three tier cards. Read the goals clearly, then release them. This
+is the heart of the session -- the longest block. Circulate constantly, coaching
+not correcting.]
+
+"Now it's YOUR turn. Same idea -- loops -- your own project. Find your tier goal
+on the slide. Everyone succeeds at their own level, and fast finishers grab a
+challenge card instead of waiting."
+
+"TIER A -- Grades 1-3: Use 'repeat 4' to draw a SQUARE, just like we did
+together. That's the whole goal -- a loop that makes a shape. Buddy pairs
+welcome and encouraged.
+   GOAL: a 'repeat 4' loop that draws a square (a preview of Python turtle!)."
+
+"TIER B -- Grades 3-5: Pick YOUR sprite. Make BOTH kinds of loop -- a 'repeat'
+loop that draws a shape or a repeating pattern, AND a 'forever' loop that
+animates or moves your sprite. Name your project!
+   GOAL: one 'repeat N' pattern PLUS one 'forever' animation, on your own sprite."
+
+"TIER C -- Grades 6-9: NESTED LOOPS. Put one loop INSIDE another to draw a grid
+of shapes or a spiral. An outer loop that repeats the whole shape, an inner loop
+that draws each shape.
+   CHALLENGE CARD: change the outer 'repeat' to 12 and the turn to 30 degrees --
+   what shape do you get? (Hint: a mandala / snowflake.)"
+
+"FINISHED EARLY? Count how many lines your loop SAVED and write it on a sticky
+note -- we'll find whose loop saved the most. Or add a sound on each loop, help
+a neighbor debug, or reach for the next tier. Nobody sits and waits in this room."
+
+[KEY IDEA -- say before releasing them]:
+"One coaching rule for open build, same as yesterday: PREDICT before you click.
+Before you press the green flag, say out loud how many times you THINK your loop
+will run, and what shape you'll get. Then click. If it surprises you -- if you
+get a triangle instead of a square -- you just found the most valuable thing in
+the room: a gap in your understanding. That surprise is where the learning is."
+
+
+--------------------------------------------------------------------------------
+SLIDE 14 -- OPEN BUILD COACHING NOTES + CHALLENGE CARD (NESTED LOOPS)
+[Use while circulating -- coaching notes not projected; challenge card shown]
+--------------------------------------------------------------------------------
+
+[Move constantly. Kneel to eye level. Praise effort and process out loud; give
+any correction quietly and privately -- this cohort is sensitive to public
+criticism. Display the "Challenge Card - Nested Loops" mandala image for Tier C.]
+
+CHALLENGE CARD SCRIPT (Tier C, say quietly to fast finishers):
+"A nested loop is a loop inside a loop. Outer loop: 'repeat 12.' Inside it, put
+your whole square-drawing loop, then a 'turn 30 degrees.' Now you draw a square,
+rotate 30 degrees, and repeat that twelve times -- twelve squares fanned around
+a center. That mandala on the slide? Nested loops made it. Twelve times thirty
+is 360 -- a full circle of squares. Try changing 12 and 30 and watch the pattern
+transform."
+
+COMMON ISSUES & QUICK FIXES:
+  - Shape doesn't close / looks wrong -> "Check your turn angle. Sides times
+    turn must equal 360. A square needs turn 90, not 100." (Point at the number,
+    let them fix it and feel the win.)
+  - Cat draws offscreen / nothing appears -> "Add 'go to x:0 y:0' at the top,
+    and make sure 'pen down' is in the script. No pen down, no line."
+  - Blocks sit OUTSIDE the loop's mouth -> "They need to be INSIDE the C-shape.
+    Drag them into the mouth until the loop's arms hug them." (The #1 loop bug.)
+  - 'forever' loop won't stop -> "That's correct! Forever never stops on its own
+    -- click the red stop sign." (Turn the 'bug' into the lesson.)
+  - Old drawing stays on screen -> "Add 'erase all' (Pen block) at the very top
+    so each run starts clean."
+  - "I'm done!" (too fast) -> hand them the nested-loop challenge card or the
+    line-saved count; never let them idle.
+
+WATCH FOR (celebrate publicly):
+  - A student who changes ONE number and gets a new shape -- name it: "You just
+    changed a loop and changed everything -- that's the power of loops!"
+  - A student debugging their own turn-angle -- "You just DEBUGGED! That's what
+    real coders do all day."
+  - Kind buddy behavior -- praise it loudly; it sets the culture.
+
+TIER A support: keep them on the square; success = a closed square from
+'repeat 4.' Buddy them and celebrate loudly when it closes.
+TIER C stretch: nested loops -> ask "what would a loop inside a loop inside a
+loop draw?" (seeds deeper structure -- and connects to Python turtle later).
+
+
+--------------------------------------------------------------------------------
+SLIDE 14b -- 2-MINUTE WARNING & SAVE
+[Duration: woven into the end of open build]
+--------------------------------------------------------------------------------
+
+"Two minutes, coders! Bring your project to a good stopping point. And IMPORTANT
+-- SAVE your work: File menu, a screenshot, or copy your project link. We never
+lose the thing we just built."
+
+[Confirm every student has saved before share-out -- especially the youngest.]
+
+
+================================================================================
+               PART 6 -- SHARE-OUT (OPT-IN, WARM)  [~10 min]
+                  Low-stakes. Nobody is ever forced to present.
+================================================================================
+
+
+--------------------------------------------------------------------------------
+SLIDE 15 -- SHARE-OUT + SENTENCE STARTERS + QUICK CHECK
+[Duration: ~7 minutes]
+--------------------------------------------------------------------------------
+
+[Display the share-out slide. Default to "pair with someone who made something
+DIFFERENT." Then invite 1-2 VOLUNTEERS only. Presenting is opt-in -- cheer for
+everyone.]
+
+"Pair up with someone who made something DIFFERENT from you. Look at their code
+-- what loops did they use? Then finish these sentences out loud to each other:"
+
+[Point to the slide's sentence starters, read them one at a time:]
+"'A loop is different from writing the same block ten times because...' "
+"'I would use forever instead of repeat N when...' "
+"'Loops connect to AI because AI also...' "
+
+[PAUSE -- 90 seconds of pair talk. Then:]
+
+"Would 1 or 2 volunteers show the whole class? Totally optional -- and we cheer
+for everyone who does."
+
+[If volunteers: warm applause every time. If none: completely fine, move on with
+zero pressure.]
+
+[Quick whole-class concept check -- fast, hands up, from the lesson:]
+"QUESTION 1: You want a sprite to wave exactly 3 times. Which loop -- repeat or
+forever?"
+[Answer: repeat 3 -- we know the exact count.]
+
+"QUESTION 2: You want a game background to scroll the WHOLE game with no set
+end. Which loop?"
+[Answer: forever -- it runs until the player quits.]
+
+"QUESTION 3: What color category holds the loop blocks in Scratch?"
+[Answer: ORANGE -- the Control blocks.]
+
+"QUESTION 4: To draw a square you use 'repeat 4' and 'turn ___ degrees'?"
+[Answer: 90 -- because 4 x 90 = 360, one full turn.]
+
+[PAUSE -- affirm correct answers warmly; gently clarify misses. No one is wrong,
+just "not yet."]
+
+
+--------------------------------------------------------------------------------
+SLIDE 16 -- WRAP-UP + HOMEWORK  ("Today's session complete! / See you Monday!")
+[Duration: ~3 minutes wrap + 1 minute to assign homework]
+--------------------------------------------------------------------------------
+
+[Display the recap/homework slide. Deliver with genuine warmth -- this should
+feel like an arrival. Note: after today comes the weekend, so it's "See you
+Monday" (Session 5 is Mon Jul 6).]
+
+"Look at what you did today. Three big wins."
+
+"YOU LEARNED: a loop repeats a group of steps, so three lines can do the work of
+a hundred. Don't repeat yourself -- loop instead."
+
+"YOU LEARNED: 'repeat N' runs a fixed number of times and stops; 'forever' runs
+until you stop it. If you can count it, repeat; if it never ends, forever."
+
+"YOU BUILT: a sprite that drew a real shape with a loop and danced forever. That
+is genuine, powerful programming -- and you made it from nothing."
+
+[KEY IDEA -- the takeaway line]:
+"Remember our AI moment: 'AI learns by repeating.' The 'repeat' block you used
+to draw a square is the same training loop that powers a giant AI learning from
+millions of examples. More loops, more practice, stronger patterns -- for your
+cat AND for AI. You are learning the real engine, not a baby version."
+
+[Assign homework -- frame it as fun finishing, ~30 min, same for all sections:]
+"Tonight's task -- about 30 minutes, the fun kind."
+
+"THE TASK (all tiers): Use a loop -- 'repeat' or 'forever' -- to make a repeating
+pattern OR an animation in Scratch. Then SAVE it: screenshot or copy the project
+link so you can show me."
+"   TIER A: make a square or triangle using 'repeat.' Screenshot and save."
+"   TIER B: make a repeating pattern AND a forever animation. Count how many
+    lines your loops SAVED."
+"   TIER C BONUS: nested loops -- build a grid of shapes or a spiral, and write
+    2 sentences on how the inner and outer loops work together."
+
+"AND the thinking bonus (everyone): in your own words, one or two sentences --
+'Loops help AI get smarter because...' There's no wrong answer, just your
+thinking."
+
+"STUCK AT HOME? Two rules from today: One -- loop blocks are ORANGE. Two --
+blocks must sit INSIDE the loop's mouth to repeat. If nothing repeats, check
+that they're hugged by the loop's arms."
+
+"Bring your loop project Monday -- we start Session 5 with a quick
+loops-lines-saved competition at warm-up, then we learn CONDITIONALS: how to
+make your sprite make DECISIONS. See you Monday, coders. You built something
+real today -- and you made a computer do a hundred things with three lines.
+That's a superpower."
+
+[Let students save and pack up knowing they wielded real power on day 4. End
+on warmth and pride.]
+
+
+================================================================================
+APPENDIX A -- COMMON PITFALLS & HOW TO HANDLE THEM
+================================================================================
+
+PITFALL: Blocks are there but nothing repeats.
+  Handle: "Are your action blocks INSIDE the loop's mouth -- hugged by the
+          C-shape arms? A block sitting below the loop, not inside it, runs only
+          once. Drag it up into the mouth until the arms wrap around it."
+
+PITFALL: The square won't close -- it looks lopsided or spirals.
+  Handle: "Check the turn angle. Sides times turn must equal 360. Four sides
+          need turn 90. If you typed 100, four turns overshoot and it won't
+          close. Change it to 90 and watch it snap shut."
+
+PITFALL: "I clicked the flag but I see no drawing."
+  Handle: "Two things. Is 'pen down' at the top of the script? No pen, no line.
+          And is the cat drawing offscreen? Add 'go to x:0 y:0' at the top so it
+          starts in the middle every time."
+
+PITFALL: The 'forever' loop won't stop and the student thinks it's broken.
+  Handle: "That's not a bug -- that's the definition! 'forever' never stops on
+          its own. Click the red stop sign next to the green flag. That's the
+          whole difference between 'forever' and 'repeat.'"
+
+PITFALL: Each run stacks a new messy drawing on the old one.
+  Handle: "Add an 'erase all' block (Pen category) at the very top of your
+          green-flag script, so every run starts on a clean stage."
+
+PITFALL: Young student (Grade 1-2) overwhelmed by choosing a number.
+  Handle: Narrow the world. "Today we only need one number: 4, for four sides.
+          Move, turn, inside 'repeat 4.' That's the whole square." Buddy them
+          and celebrate the moment it closes.
+
+PITFALL: Fast Tier-C student finishes the square in 3 minutes and is bored.
+  Handle: Hand the nested-loop challenge card immediately: "A loop inside a loop
+          -- draw a square, turn 30, repeat 12. You'll get a mandala." (Seeds
+          the structure they'll meet again in Python turtle.) Or invite them to
+          mentor a younger buddy.
+
+PITFALL: "Why use a loop? I could just copy the blocks."
+  Handle: "Let's test it. Copy 'move, turn' four times by hand -- now change the
+          shape to a hexagon. You have to edit eight blocks. With a loop you
+          change TWO numbers. Same result, way less work, way fewer mistakes.
+          That's why loops exist."
+
+
+================================================================================
+APPENDIX B -- STRETCH QUESTIONS FOR TIER C / ADVANCED STUDENTS
+================================================================================
+
+1. THE 360 RULE: Any regular shape you draw with a loop follows sides x turn =
+   360. A triangle turns 120, a pentagon turns 72. What happens as the turn
+   angle gets tiny -- say 'repeat 360, turn 1'? (Answer: it becomes a circle.
+   A circle is just a polygon with a huge number of sides.)
+
+2. NESTED LOOPS: A loop inside a loop. If the outer loop runs 12 times and the
+   inner loop runs 4 times, how many total inner steps run? (Answer: 12 x 4 = 48.
+   Seeds multiplication-as-nesting and Big-O intuition later.)
+
+3. forever = repeat until: 'forever' is really "repeat until the user quits."
+   Next session we learn conditions. How would you write a loop that stops when
+   the score hits 10? (Seeds 'repeat until' and conditionals -- Session 5.)
+
+4. AI CONNECTION: We said AI loops through examples to learn. If an AI loops
+   1,000 times vs 1,000,000 times, which learns the pattern better -- and is
+   there a point where MORE looping stops helping? (Real ML idea: diminishing
+   returns / overfitting. Great intuition for Session 15.)
+
+5. EFFICIENCY: A loop drawing 100 squares runs the same 2 blocks 100 times.
+   If each block took 1 second, how long is the loop? Now imagine an AI looping
+   over a billion photos. Why do real AIs need very fast computers? (Seeds the
+   idea of compute scale.)
+
+
+================================================================================
+APPENDIX C -- QUICK REFERENCE: TODAY'S KEY IDEAS
+================================================================================
+
+LOOP:      An instruction that repeats a group of steps multiple times.
+           Fewer lines, fewer bugs, easy to change. (Jumping jacks / buttering.)
+
+repeat N:  Runs a FIXED number of times, then stops on its own.
+           Use it when you can COUNT the repeats. (repeat 4 = a square.)
+
+forever:   Runs and NEVER stops on its own -- only the red stop sign ends it.
+           Use it when the action should never end. (A game's motion, a dance.)
+
+THE LOOP BLOCKS LIVE IN:  the ORANGE Control category.
+
+INSIDE THE MOUTH:  Only blocks placed INSIDE a loop's C-shaped mouth repeat.
+           Blocks outside the mouth run once.
+
+THE 360 RULE:  For a shape, (number of sides) x (turn angle) = 360.
+           Square: 4 x 90. Triangle: 3 x 120. Hexagon: 6 x 60.
+
+NESTED LOOP:  A loop inside a loop -- repeats a whole pattern (grids, mandalas).
+
+THE ONE-LINE TAKEAWAY:
+           "Why write it 10 times when once will do? -- Use a loop."
+
+AI TIE-IN: "AI learns by repeating." An AI LOOPS through thousands of examples,
+           getting a little better each time around. Your 'repeat' block IS the
+           training loop of an AI: more loops = more practice = a smarter model.
+
+================================================================================
+END OF SCRIPT -- Session 4 - Scratch: Loops
+Modern Chinese School - Summer 2026 - Instructor: Mr. Hue Weng
+================================================================================
