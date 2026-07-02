@@ -1,1 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Activity Sheet · Session 4 · Scratch: Loops</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --color-bg: #f4fbff;
+    --color-surface: rgba(255,255,255,0.97);
+    --color-text: #1f2a37;
+    --color-text-secondary: #374151;
+    --color-text-muted: #5b6b7e;
+    --color-accent-1: #0b63ce;
+    --color-accent-2: #10b981;
+    --color-accent-3: #f59e0b;
+    --color-accent-red: #ef4444;
+    --color-scratch-orange: #f97316;
+    --font-display: 'Fredoka', 'Trebuchet MS', sans-serif;
+    --font-body: 'Nunito', Arial, sans-serif;
+    --font-code: 'Fira Code', Consolas, monospace;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  @media print {
+    body { background: #fff !important; }
+    .no-print { display: none !important; }
+    .page-break { page-break-before: always; }
+    .card { box-shadow: none !important; border: 1.5px solid #d1d5db !important; }
+  }
+  body { font-family: var(--font-body); color: var(--color-text); background: var(--color-bg); min-height: 100vh; }
+  .print-bar {
+    background: rgba(255,255,255,0.92); backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(148,163,184,0.3);
+    padding: 10px 24px; display: flex; align-items: center;
+    justify-content: space-between; position: sticky; top: 0; z-index: 100; gap: 12px; flex-wrap: wrap;
+  }
+  .print-bar .bar-title { font-family: var(--font-display); font-size: 1.05rem; font-weight: 700; color: var(--color-scratch-orange); }
+  .print-bar .bar-sub { font-size: 0.78rem; color: var(--color-text-muted); }
+  .btn-print { background: var(--color-scratch-orange); color: #fff; border: none; padding: 8px 20px; border-radius: 999px; font-family: var(--font-body); font-size: 0.82rem; font-weight: 800; cursor: pointer; letter-spacing: 0.06em; transition: background 0.2s, transform 0.15s; }
+  .btn-print:hover { background: #c2410c; transform: translateY(-1px); }
+  .page { max-width: 920px; margin: 0 auto; padding: 32px 24px 60px; }
+  .sheet-header {
+    background: linear-gradient(135deg, #f97316 0%, #f59e0b 45%, #10b981 100%);
+    border-radius: 20px; padding: 28px 32px 24px; color: #fff; margin-bottom: 28px; position: relative; overflow: hidden;
+  }
+  .sheet-header::before { content: ''; position: absolute; top: -60px; right: -60px; width: 200px; height: 200px; background: rgba(255,255,255,0.08); border-radius: 50%; }
+  .sheet-header::after { content: ''; position: absolute; bottom: -40px; left: -40px; width: 140px; height: 140px; background: rgba(255,255,255,0.06); border-radius: 50%; }
+  .header-day { font-size: 0.75rem; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; opacity: 0.85; margin-bottom: 4px; }
+  .header-title { font-family: var(--font-display); font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 700; line-height: 1.1; margin-bottom: 6px; }
+  .header-sub { font-size: 0.88rem; opacity: 0.85; margin-bottom: 14px; }
+  .header-pills { display: flex; gap: 8px; flex-wrap: wrap; }
+  .header-pill { background: rgba(255,255,255,0.22); border: 1px solid rgba(255,255,255,0.35); border-radius: 999px; padding: 4px 14px; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
+  .student-info { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 28px; }
+  @media (max-width: 600px) { .student-info { grid-template-columns: 1fr; } }
+  .info-field { background: var(--color-surface); border-radius: 12px; padding: 12px 14px; border: 1.5px solid rgba(249,115,22,0.14); box-shadow: 0 2px 8px rgba(15,23,42,0.05); }
+  .info-label { font-size: 0.65rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-scratch-orange); margin-bottom: 6px; }
+  .info-line { border: none; border-bottom: 1.5px solid #cbd5e1; width: 100%; font-family: var(--font-body); font-size: 0.9rem; color: var(--color-text); background: transparent; outline: none; padding: 2px 0; }
+  .info-line:focus { border-bottom-color: #f97316; }
+  .section-label { display: inline-flex; align-items: center; gap: 8px; padding: 5px 16px; border-radius: 999px; border: 1px solid rgba(148,163,184,0.4); background: rgba(255,255,255,0.9); font-size: 0.72rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-scratch-orange); margin-bottom: 10px; }
+  .section-title { font-family: var(--font-display); font-size: clamp(1.3rem, 2.5vw, 1.8rem); font-weight: 700; margin-bottom: 16px; color: var(--color-text); line-height: 1.2; }
+  .card { background: var(--color-surface); border-radius: 16px; padding: 18px 20px; box-shadow: 0 4px 18px rgba(15,23,42,0.07); border: 1px solid rgba(255,255,255,0.7); margin-bottom: 16px; }
+  .card.accent-orange { border-left: 4px solid var(--color-scratch-orange); }
+  .card.accent-blue { border-left: 4px solid var(--color-accent-1); }
+  .card.accent-green { border-left: 4px solid var(--color-accent-2); }
+  .card.accent-amber { border-left: 4px solid var(--color-accent-3); }
+  .card.accent-red { border-left: 4px solid var(--color-accent-red); }
+  .card.accent-purple { border-left: 4px solid #7c3aed; }
+  .card-label { font-size: 0.68rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 8px; }
+  .card-label.orange { color: #c2410c; }
+  .card-label.blue { color: var(--color-accent-1); }
+  .card-label.green { color: #047857; }
+  .card-label.amber { color: #b45309; }
+  .card-label.red { color: #b91c1c; }
+  .card-label.purple { color: #6d28d9; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  @media (max-width: 680px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+  /* Scratch block styling */
+  .sb { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px 3px 8px; border-radius: 4px; font-family: var(--font-code); font-size: 0.8rem; font-weight: 700; color: #fff; vertical-align: middle; }
+  .sb-orange { background: #f97316; }
+  .sb-blue { background: #0b63ce; }
+  .sb-purple { background: #7c3aed; }
+  .sb-green { background: #10b981; }
+  .sb::before { content: '⬡'; font-size: 0.55rem; opacity: 0.6; }
+  /* Code block */
+  .code-block { background: #1e293b; color: #e2e8f0; border-radius: 12px; padding: 14px 18px; font-family: var(--font-code); font-size: clamp(0.68rem, 1.1vw, 0.83rem); line-height: 1.6; overflow-x: auto; border: 1px solid rgba(255,255,255,0.06); margin-bottom: 12px; white-space: pre; }
+  .kw { color: #f97316; font-weight: 700; }
+  .fn { color: #93c5fd; }
+  .num { color: #fcd34d; }
+  .cm { color: #64748b; font-style: italic; }
+  /* Write lines */
+  .write-lines { margin: 8px 0; }
+  input.write-line { border: none; border-bottom: 1.5px solid #cbd5e1; width: 100%; margin-bottom: 10px; height: 28px; display: block; background: transparent; font-family: var(--font-body); font-size: 0.88rem; color: var(--color-text); outline: none; padding: 2px 4px; }
+  input.write-line:focus { border-bottom-color: #f97316; }
+  input.write-line::placeholder { color: #bdc5d1; font-style: italic; }
+  textarea.write-area { border: 1.5px solid #cbd5e1; border-radius: 8px; width: 100%; min-height: 70px; padding: 8px; font-family: var(--font-body); font-size: 0.85rem; color: var(--color-text); resize: vertical; background: #f8fafc; outline: none; display: block; }
+  textarea.write-area:focus { outline: 2px solid rgba(249,115,22,0.3); }
+  textarea.write-area::placeholder { color: #bdc5d1; font-style: italic; }
+  input.blank-input { display: inline-block; background: rgba(249,115,22,0.12); border: none; border-bottom: 2px solid #f97316; min-width: 60px; width: 60px; height: 1.1em; border-radius: 3px; vertical-align: middle; margin: 0 2px; font-family: var(--font-code); font-size: inherit; color: #c2410c; text-align: center; outline: none; padding: 0 2px; }
+  input.blank-input:focus { background: rgba(249,115,22,0.22); }
+  input.blank-input.wide { min-width: 90px; width: 90px; }
+  input.blank-input.narrow { min-width: 36px; width: 36px; }
+  /* Tip boxes */
+  .tip-box { border-radius: 10px; padding: 10px 14px; font-size: 0.8rem; line-height: 1.5; margin-top: 10px; }
+  .tip-box.orange { background: rgba(249,115,22,0.07); color: #9a3412; }
+  .tip-box.blue { background: rgba(11,99,206,0.07); color: #1e40af; }
+  .tip-box.green { background: rgba(16,185,129,0.07); color: #065f46; }
+  .tip-box.amber { background: rgba(245,158,11,0.07); color: #92400e; }
+  .tip-box.purple { background: rgba(124,58,237,0.07); color: #5b21b6; }
+  /* Timeline */
+  .timeline { position: relative; padding-left: 22px; }
+  .timeline::before { content: ''; position: absolute; left: 8px; top: 4px; bottom: 4px; width: 3px; border-radius: 999px; background: linear-gradient(to bottom, #f97316, #f59e0b, #10b981); }
+  .timeline-step { position: relative; margin-bottom: 12px; }
+  .timeline-dot { position: absolute; left: -15px; top: 4px; width: 12px; height: 12px; border-radius: 999px; border: 2px solid #f4fbff; background: #f97316; box-shadow: 0 0 0 3px rgba(249,115,22,0.2); }
+  .timeline-dot.green { background: #10b981; }
+  .timeline-dot.blue { background: #0b63ce; }
+  .timeline-dot.amber { background: #f59e0b; }
+  /* Level badges */
+  .level-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 14px; border-radius: 999px; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 8px; }
+  .level-a { background: linear-gradient(135deg,#f59e0b,#f97316); color:#fff; }
+  .level-b { background: linear-gradient(135deg,#0b63ce,#10b981); color:#fff; }
+  .level-c { background: linear-gradient(135deg,#7c3aed,#0b63ce); color:#fff; }
+  /* Check list */
+  .check-list { list-style: none; padding: 0; }
+  .check-list li { display: flex; align-items: flex-start; gap: 8px; font-size: 0.85rem; color: var(--color-text-secondary); margin-bottom: 8px; line-height: 1.45; }
+  .check-list li .box { flex-shrink: 0; width: 17px; height: 17px; border: 2px solid #94a3b8; border-radius: 4px; margin-top: 1px; background: #fff; display: inline-block; }
+  /* Draw canvas */
+  .draw-wrap { position: relative; margin-bottom: 6px; }
+  .draw-toolbar { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; flex-wrap: wrap; }
+  .draw-toolbar label { font-size: 0.7rem; font-weight: 700; color: #64748b; }
+  .draw-color { width: 28px; height: 28px; border: none; border-radius: 6px; cursor: pointer; padding: 0; background: transparent; }
+  .draw-size { width: 70px; accent-color: #f97316; cursor: pointer; }
+  .draw-clear { background: #fee2e2; color: #b91c1c; border: none; border-radius: 6px; padding: 3px 10px; font-size: 0.72rem; font-weight: 800; cursor: pointer; letter-spacing: 0.05em; }
+  .draw-clear:hover { background: #fecaca; }
+  canvas.draw-canvas { display: block; width: 100%; border-radius: 8px; cursor: crosshair; touch-action: none; background: #fffbf5; }
+  /* Loop diagram box */
+  .loop-diagram { background: #fff7ed; border: 2px dashed #f97316; border-radius: 12px; padding: 14px; text-align: center; font-family: var(--font-code); font-size: 0.82rem; }
+  .loop-arrow { font-size: 1.1rem; color: #f97316; margin: 4px 0; display: block; }
+  /* Misc */
+  .divider { border: none; border-top: 2px dashed #dde6f0; margin: 28px 0; }
+  p, li { font-size: 0.88rem; color: var(--color-text-secondary); line-height: 1.55; }
+  strong { color: var(--color-text); }
+  code { background: #fff3e0; padding: 1px 6px; border-radius: 4px; font-family: var(--font-code); font-size: 0.82em; color: #c2410c; }
+  .mb-1 { margin-bottom: 6px; }
+  .mb-2 { margin-bottom: 10px; }
+  .mb-3 { margin-bottom: 14px; }
+  .mt-2 { margin-top: 10px; }
+  .mt-3 { margin-top: 14px; }
+  .text-center { text-align: center; }
+  .text-muted { color: var(--color-text-muted); font-size: 0.78rem; }
+  .sheet-footer { margin-top: 40px; padding: 16px 20px; border-radius: 12px; background: rgba(249,115,22,0.05); border: 1px solid rgba(249,115,22,0.12); display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; font-size: 0.76rem; color: var(--color-text-muted); }
+  .sheet-footer strong { color: var(--color-text); }
+  .grad-text { background: linear-gradient(135deg,#f97316,#f59e0b,#10b981); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  table.match-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+  table.match-table td { padding: 6px 8px; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
+  table.match-table input[type=text] { width: 36px; border: none; border-bottom: 2px solid #f97316; text-align: center; font-weight: 800; font-size: 0.9rem; color: #c2410c; background: transparent; outline: none; }
+</style>
+</head>
+<body>
 
+<!-- PRINT BAR -->
+<div class="print-bar no-print">
+  <div>
+    <div class="bar-title">🔁 Session 4 · Activity Sheet · Scratch: Loops</div>
+    <div class="bar-sub">In-class activity · Thu Jul 2, 2026 · Ages 7–13 · Differentiated A / B / C</div>
+  </div>
+  <button class="btn-print" onclick="window.print()">🖨️ Print / Save as PDF</button>
+</div>
+
+<div class="page">
+
+<!-- HEADER -->
+<div class="sheet-header">
+  <div class="header-day">Session 4 · Thursday, July 2, 2026</div>
+  <div class="header-title">🔁 Scratch: Loops Activity Sheet</div>
+  <div class="header-sub">Draw a square · Make a sprite dance · Think like a machine — and an AI!</div>
+  <div class="header-pills">
+    <span class="header-pill">🟡 Tier A · Grades 1–3</span>
+    <span class="header-pill">🔵 Tier B · Grades 3–5</span>
+    <span class="header-pill">🟢 Tier C · Grades 6–9</span>
+    <span class="header-pill">⏱ ~50 min in class</span>
+  </div>
+</div>
+
+<!-- STUDENT INFO -->
+<div class="student-info">
+  <div class="info-field">
+    <div class="info-label">👤 Your Name</div>
+    <input class="info-line" type="text" placeholder="First Last" />
+  </div>
+  <div class="info-field">
+    <div class="info-label">📅 Date</div>
+    <input class="info-line" type="text" placeholder="July 2, 2026" />
+  </div>
+  <div class="info-field">
+    <div class="info-label">🏫 Section / Period</div>
+    <input class="info-line" type="text" placeholder="Section 1 / 2 / 3" />
+  </div>
+</div>
+
+<!-- MISSION MAP -->
+<div class="section-label">🗺️ Today's Mission</div>
+<div class="section-title">What This Sheet Asks You to Do</div>
+
+<div class="grid-2 mb-3">
+  <div class="card accent-orange">
+    <div class="card-label orange">🎯 Your Mission Today</div>
+    <p class="mb-2">You will explore loops through puzzles, predict what code does, and then build your own looping Scratch project — all in one session!</p>
+    <div class="timeline">
+      <div class="timeline-step"><div class="timeline-dot"></div>
+        <p><strong>Part 1</strong> — Warm-Up: Think Like a Computer (10 min, no Scratch)</p></div>
+      <div class="timeline-step"><div class="timeline-dot blue"></div>
+        <p><strong>Part 2</strong> — Vocabulary Check: loop words</p></div>
+      <div class="timeline-step"><div class="timeline-dot blue"></div>
+        <p><strong>Part 3</strong> — Predict the Code: What will Scratch do?</p></div>
+      <div class="timeline-step"><div class="timeline-dot amber"></div>
+        <p><strong>Part 4</strong> — Build: Choose your Tier (A / B / C)</p></div>
+      <div class="timeline-step" style="margin-bottom:0"><div class="timeline-dot green"></div>
+        <p><strong>⭐ Part 5</strong> — AI Moment: How does AI practice?</p></div>
+    </div>
+  </div>
+  <div class="card accent-blue">
+    <div class="card-label blue">🔑 Key Ideas for Today</div>
+    <ul style="list-style:disc;padding-left:18px;line-height:2;">
+      <li><strong>Loop</strong> — do something many times without writing it many times</li>
+      <li><span class="sb sb-orange">repeat N</span> — runs the inside exactly N times, then stops</li>
+      <li><span class="sb sb-orange">forever</span> — keeps running until you hit the Stop button</li>
+      <li><strong>Fixed count</strong> → use <code>repeat N</code> &nbsp; · &nbsp; <strong>Never-ending</strong> → use <code>forever</code></li>
+      <li><strong>Training loop</strong> — how AI gets smarter by repeating practice!</li>
+    </ul>
+    <div class="tip-box orange mt-2">💡 <strong>Predict before you build</strong> — if you can say what the code will do before running it, you truly understand the loop!</div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- PART 1 · WARM-UP -->
+<div class="section-label">🏃 Part 1 of 5 · Warm-Up (No Scratch!)</div>
+<div class="section-title">Think Like a Computer</div>
+
+<!-- Puzzle 1 -->
+<div class="card accent-orange mb-2">
+  <div class="card-label orange">🙋 Puzzle 1 — Be the Computer (All Tiers)</div>
+  <p class="mb-2">Your teacher said: <strong>"Do 5 jumping jacks."</strong> Write the Scratch-style instructions a robot would follow. Use the loop box below — don't repeat the action 5 times! <em>Use a loop!</em></p>
+  <div class="grid-2">
+    <div>
+      <p style="font-size:0.8rem;font-weight:700;color:#9a3412;margin-bottom:6px;">🤖 Without a loop (the robot's way — bad!):</p>
+      <div class="code-block" style="font-size:0.78rem;">Jump up
+Jump up
+Jump up
+Jump up
+Jump up</div>
+      <p style="font-size:0.8rem;color:#374151;">How many lines of code? <input class="blank-input narrow" type="text" placeholder="?" /></p>
+    </div>
+    <div>
+      <p style="font-size:0.8rem;font-weight:700;color:#047857;margin-bottom:6px;">✅ With a loop (much better!) — fill in the blanks:</p>
+      <div class="code-block" style="font-size:0.78rem;"><span class="kw">repeat</span> <input class="blank-input narrow" type="text" placeholder="?" />
+  <input class="blank-input wide" type="text" placeholder="what action?" /></div>
+      <p style="font-size:0.8rem;color:#374151;">Now how many lines? <input class="blank-input narrow" type="text" placeholder="?" /></p>
+    </div>
+  </div>
+  <p class="mt-2" style="font-size:0.82rem;color:#374151;"><strong>In your own words — what does a loop save you from doing?</strong></p>
+  <div class="write-lines mt-2">
+    <input class="write-line" type="text" placeholder="A loop saves me from..." />
+  </div>
+  <div class="tip-box orange">🔁 This is exactly what the <span class="sb sb-orange">repeat</span> block does in Scratch — it wraps around your action and runs it the right number of times!</div>
+</div>
+
+<!-- Puzzle 2 -->
+<div class="card accent-blue mb-2">
+  <div class="card-label blue">🔎 Puzzle 2 — repeat or forever? (All Tiers)</div>
+  <p class="mb-2">For each situation below, circle or underline which loop you would use. Then explain why in one word or phrase.</p>
+  <table style="width:100%;font-size:0.84rem;border-collapse:collapse;">
+    <thead><tr style="background:#e0f2ff;"><th style="padding:8px;text-align:left;border-radius:6px 0 0 0;">Situation</th><th style="padding:8px;text-align:center;">repeat N?</th><th style="padding:8px;text-align:center;">forever?</th><th style="padding:8px;text-align:left;">Why?</th></tr></thead>
+    <tbody>
+      <tr style="border-bottom:1px solid #f1f5f9;"><td style="padding:8px;color:#374151;">A sprite waves hello 3 times</td><td style="padding:8px;text-align:center;"><input type="radio" name="q1" style="accent-color:#f97316;"></td><td style="padding:8px;text-align:center;"><input type="radio" name="q1" style="accent-color:#f97316;"></td><td style="padding:8px;"><input class="write-line" type="text" placeholder="because..." style="margin-bottom:0;" /></td></tr>
+      <tr style="border-bottom:1px solid #f1f5f9;"><td style="padding:8px;color:#374151;">A ball bounces across the screen as long as the game runs</td><td style="padding:8px;text-align:center;"><input type="radio" name="q2" style="accent-color:#f97316;"></td><td style="padding:8px;text-align:center;"><input type="radio" name="q2" style="accent-color:#f97316;"></td><td style="padding:8px;"><input class="write-line" type="text" placeholder="because..." style="margin-bottom:0;" /></td></tr>
+      <tr style="border-bottom:1px solid #f1f5f9;"><td style="padding:8px;color:#374151;">Draw a triangle (3 sides)</td><td style="padding:8px;text-align:center;"><input type="radio" name="q3" style="accent-color:#f97316;"></td><td style="padding:8px;text-align:center;"><input type="radio" name="q3" style="accent-color:#f97316;"></td><td style="padding:8px;"><input class="write-line" type="text" placeholder="because..." style="margin-bottom:0;" /></td></tr>
+      <tr><td style="padding:8px;color:#374151;">A sprite keeps switching costumes to look like it's dancing</td><td style="padding:8px;text-align:center;"><input type="radio" name="q4" style="accent-color:#f97316;"></td><td style="padding:8px;text-align:center;"><input type="radio" name="q4" style="accent-color:#f97316;"></td><td style="padding:8px;"><input class="write-line" type="text" placeholder="because..." style="margin-bottom:0;" /></td></tr>
+    </tbody>
+  </table>
+  <div class="tip-box blue mt-2">💡 <strong>The rule:</strong> Fixed count → <span class="sb sb-orange" style="font-size:0.7rem;">repeat N</span> &nbsp;·&nbsp; Runs until user stops → <span class="sb sb-orange" style="font-size:0.7rem;">forever</span></div>
+</div>
+
+<!-- Puzzle 3 -->
+<div class="card accent-amber mb-3">
+  <div class="card-label amber">🔢 Puzzle 3 — Count the Code Savings (Tier B + C)</div>
+  <p class="mb-2">If you draw a square <strong>without</strong> a loop, you need to write "move 100 steps" and "turn 90 degrees" four times each = <strong>8 lines</strong>. With a <code>repeat 4</code> loop you need just 3 lines.</p>
+  <div class="grid-2">
+    <div>
+      <p style="font-size:0.83rem;font-weight:700;color:#374151;margin-bottom:6px;">How many lines does a loop save?</p>
+      <p style="font-size:0.85rem;color:#374151;">8 lines − 3 lines = <input class="blank-input narrow" type="text" placeholder="?" /> lines saved</p>
+      <div class="write-lines mt-2">
+        <input class="write-line" type="text" placeholder="That's a saving of ___% fewer lines!" />
+      </div>
+    </div>
+    <div>
+      <p style="font-size:0.83rem;font-weight:700;color:#374151;margin-bottom:6px;">What if you wanted a hexagon (6 sides)?</p>
+      <p style="font-size:0.85rem;color:#374151;">Without loop: <input class="blank-input narrow" type="text" placeholder="?" /> lines. With loop: <input class="blank-input narrow" type="text" placeholder="?" /> lines. Turn angle: <input class="blank-input narrow" type="text" placeholder="?" />°</p>
+      <div class="tip-box amber mt-2">Hint: 360 ÷ number of sides = turn angle</div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- PART 2 · VOCAB -->
+<div class="section-label">📖 Part 2 of 5</div>
+<div class="section-title">Vocabulary Check</div>
+
+<div class="grid-2 mb-3">
+  <div class="card">
+    <div class="card-label orange">🔤 Match the Term — write the letter</div>
+    <p class="mb-2">Write the correct letter next to each definition.</p>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
+      <span style="background:#fff3e0;color:#c2410c;border-radius:6px;padding:3px 10px;font-weight:700;font-size:0.8rem;">A. Loop</span>
+      <span style="background:#fff3e0;color:#c2410c;border-radius:6px;padding:3px 10px;font-weight:700;font-size:0.8rem;">B. repeat N</span>
+      <span style="background:#fff3e0;color:#c2410c;border-radius:6px;padding:3px 10px;font-weight:700;font-size:0.8rem;">C. forever</span>
+      <span style="background:#fff3e0;color:#c2410c;border-radius:6px;padding:3px 10px;font-weight:700;font-size:0.8rem;">D. iteration</span>
+      <span style="background:#fff3e0;color:#c2410c;border-radius:6px;padding:3px 10px;font-weight:700;font-size:0.8rem;">E. costume</span>
+      <span style="background:#fff3e0;color:#c2410c;border-radius:6px;padding:3px 10px;font-weight:700;font-size:0.8rem;">F. training loop</span>
+    </div>
+    <table class="match-table">
+      <tr><td style="color:#374151;width:85%;">An instruction that makes code run multiple times</td><td><input type="text" placeholder="_" /></td></tr>
+      <tr><td style="color:#374151;">One single pass through a loop</td><td><input type="text" placeholder="_" /></td></tr>
+      <tr><td style="color:#374151;">Runs forever — only stops when you press the Stop button</td><td><input type="text" placeholder="_" /></td></tr>
+      <tr><td style="color:#374151;">Runs the code exactly N times, then stops</td><td><input type="text" placeholder="_" /></td></tr>
+      <tr><td style="color:#374151;">A sprite's outfit — switching them fast creates animation</td><td><input type="text" placeholder="_" /></td></tr>
+      <tr><td style="color:#374151;">How AI gets smarter — by looping through examples thousands of times</td><td><input type="text" placeholder="_" /></td></tr>
+    </table>
+  </div>
+  <div class="card accent-green">
+    <div class="card-label green">💬 In My Own Words</div>
+    <p class="mb-2">Finish each sentence starter in your own words. There is no single right answer — explain what <em>you</em> think!</p>
+    <p style="font-size:0.82rem;font-weight:700;color:#374151;margin-bottom:4px;">A loop is like…</p>
+    <textarea class="write-area" placeholder="A loop is like __________ because..."></textarea>
+    <p style="font-size:0.82rem;font-weight:700;color:#374151;margin-top:8px;margin-bottom:4px;">I would use <code>forever</code> instead of <code>repeat</code> when…</p>
+    <textarea class="write-area" placeholder="I would use forever when..."></textarea>
+    <p style="font-size:0.82rem;font-weight:700;color:#374151;margin-top:8px;margin-bottom:4px;">A loop saves a programmer time because…</p>
+    <textarea class="write-area" placeholder="A loop saves time because..."></textarea>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- PART 3 · PREDICT -->
+<div class="section-label">🔭 Part 3 of 5</div>
+<div class="section-title">Predict the Code: What Will Scratch Do?</div>
+
+<!-- Predict 1 -->
+<div class="card accent-orange mb-2">
+  <div class="card-label orange">📋 Predict 1 — The Square Script (All Tiers)</div>
+  <p class="mb-2">Look at this Scratch script. <strong>Before you build it</strong>, answer the questions below — predict what will happen!</p>
+  <div class="grid-2">
+    <div>
+      <div class="code-block" style="font-size:0.8rem;">when 🏁 clicked
+<span class="kw">repeat</span> <span class="num">4</span>
+  <span class="fn">move</span> <span class="num">100</span> steps
+  <span class="fn">turn</span> <span class="num">90</span> degrees</div>
+      <div class="tip-box orange">Remember: 4 sides × 90° = 360° = full rotation = a closed square!</div>
+    </div>
+    <div>
+      <p style="font-size:0.82rem;font-weight:700;color:#374151;margin-bottom:6px;">What shape will the sprite draw?</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;">
+        <label style="font-size:0.84rem;display:flex;align-items:center;gap:5px;cursor:pointer;"><input type="radio" name="shape1" style="accent-color:#f97316;"> Triangle</label>
+        <label style="font-size:0.84rem;display:flex;align-items:center;gap:5px;cursor:pointer;"><input type="radio" name="shape1" style="accent-color:#f97316;"> Square ✓</label>
+        <label style="font-size:0.84rem;display:flex;align-items:center;gap:5px;cursor:pointer;"><input type="radio" name="shape1" style="accent-color:#f97316;"> Hexagon</label>
+      </div>
+      <p style="font-size:0.82rem;font-weight:700;color:#374151;margin-bottom:4px;">How many times will the loop run?</p>
+      <input class="blank-input narrow" type="text" placeholder="?" />
+      <p style="font-size:0.82rem;font-weight:700;color:#374151;margin-top:8px;margin-bottom:4px;">After all loops finish, how many total degrees has the sprite turned?</p>
+      <input class="blank-input narrow" type="text" placeholder="?" style="width:70px;" /> degrees
+      <p style="font-size:0.82rem;font-weight:700;color:#374151;margin-top:8px;margin-bottom:4px;">Draw the shape you expect in this box:</p>
+      <div class="draw-wrap" style="border:2px dashed #f97316;border-radius:10px;padding:8px;background:#fffbf5;">
+        <div class="draw-toolbar">
+          <label>✏️ Draw:</label>
+          <input type="color" class="draw-color" value="#f97316" title="Pen color" />
+          <label>Size:</label>
+          <input type="range" class="draw-size" min="1" max="12" value="3" />
+          <button class="draw-clear" type="button">🗑 Clear</button>
+        </div>
+        <canvas class="draw-canvas" height="100"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Predict 2 -->
+<div class="card accent-blue mb-2">
+  <div class="card-label blue">📋 Predict 2 — The Dancing Script (Tier B + C)</div>
+  <div class="grid-2">
+    <div>
+      <div class="code-block" style="font-size:0.8rem;">when 🏁 clicked
+<span class="kw">forever</span>
+  next costume
+  <span class="fn">wait</span> <span class="num">0.3</span> seconds</div>
+      <p class="mt-2" style="font-size:0.82rem;color:#374151;">What will happen if you change <code>0.3</code> to <code>0.05</code>?</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;">
+        <label style="font-size:0.84rem;display:flex;align-items:center;gap:5px;cursor:pointer;"><input type="radio" name="speed" style="accent-color:#0b63ce;"> Dance slows down</label>
+        <label style="font-size:0.84rem;display:flex;align-items:center;gap:5px;cursor:pointer;"><input type="radio" name="speed" style="accent-color:#0b63ce;"> Dance speeds up ✓</label>
+        <label style="font-size:0.84rem;display:flex;align-items:center;gap:5px;cursor:pointer;"><input type="radio" name="speed" style="accent-color:#0b63ce;"> Nothing changes</label>
+      </div>
+    </div>
+    <div>
+      <p style="font-size:0.82rem;font-weight:700;color:#374151;margin-bottom:6px;">How many times will <code>next costume</code> run in 10 seconds with a 0.3s wait?</p>
+      <p style="font-size:0.85rem;color:#374151;">10 seconds ÷ 0.3 = <input class="blank-input wide" type="text" placeholder="about ___" /></p>
+      <p style="font-size:0.82rem;font-weight:700;color:#374151;margin-top:8px;margin-bottom:4px;">Why can't you use <code>repeat N</code> for the dancing sprite?</p>
+      <textarea class="write-area" style="min-height:55px;" placeholder="Because the dancing should..."></textarea>
+      <div class="tip-box blue mt-2">🎬 Movies use the same idea — 24 picture frames per second, looping forward, creates the illusion of movement!</div>
+    </div>
+  </div>
+</div>
+
+<!-- Predict 3 Tier C -->
+<div class="card accent-purple mb-3">
+  <div class="card-label purple">📋 Predict 3 — Nested Loops (Tier C Challenge)</div>
+  <p class="mb-2">This script has a loop <strong>inside</strong> another loop — called a <strong>nested loop</strong>. Read it carefully and answer below.</p>
+  <div class="grid-2">
+    <div>
+      <div class="code-block" style="font-size:0.78rem;">when 🏁 clicked
+<span class="kw">repeat</span> <span class="num">6</span>         <span class="cm">← outer loop</span>
+  <span class="kw">repeat</span> <span class="num">4</span>       <span class="cm">← inner loop</span>
+    <span class="fn">move</span> <span class="num">80</span> steps
+    <span class="fn">turn</span> <span class="num">90</span> degrees
+  <span class="fn">turn</span> <span class="num">60</span> degrees  <span class="cm">← between squares</span></div>
+    </div>
+    <div>
+      <p style="font-size:0.82rem;font-weight:700;color:#374151;margin-bottom:4px;">How many times does the <strong>inner</strong> loop run in total?</p>
+      <p style="font-size:0.85rem;color:#374151;">6 × 4 = <input class="blank-input narrow" type="text" placeholder="?" /> times</p>
+      <p style="font-size:0.82rem;font-weight:700;color:#374151;margin-top:8px;margin-bottom:4px;">What shape does the outer loop draw overall? (Hint: 6 × 60° = 360°)</p>
+      <input class="write-line" type="text" placeholder="The overall pattern looks like a..." />
+      <p style="font-size:0.82rem;font-weight:700;color:#374151;margin-top:8px;margin-bottom:4px;">Sketch what you think appears on screen:</p>
+      <div class="draw-wrap" style="border:2px dashed #7c3aed;border-radius:10px;padding:8px;background:#faf5ff;">
+        <div class="draw-toolbar">
+          <label>✏️ Draw:</label>
+          <input type="color" class="draw-color" value="#7c3aed" title="Pen color" />
+          <label>Size:</label>
+          <input type="range" class="draw-size" min="1" max="12" value="2" />
+          <button class="draw-clear" type="button">🗑 Clear</button>
+        </div>
+        <canvas class="draw-canvas" height="100"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- PART 4 · BUILD -->
+<div class="section-label">🔨 Part 4 of 5 · Open Build (30–40 min)</div>
+<div class="section-title">Your Scratch Build — Choose Your Tier</div>
+
+<!-- TIER A -->
+<div class="card mb-2">
+  <div style="margin-bottom:8px;"><span class="level-badge level-a">🟡 Tier A — Foundations · Grades 1–3</span></div>
+  <div class="grid-2">
+    <div>
+      <div class="card-label amber">🎯 Your Mission</div>
+      <p class="mb-2">Use <code>repeat 4</code> to draw a square. That's the whole goal — and it's a real programmer move!</p>
+      <ul class="check-list">
+        <li><span class="box"></span> Open Scratch and add the Pen extension</li>
+        <li><span class="box"></span> Drag out a <span class="sb sb-orange">when green flag clicked</span> block</li>
+        <li><span class="box"></span> Add a <span class="sb sb-orange">repeat 4</span> block</li>
+        <li><span class="box"></span> Inside: <em>move 100 steps</em> then <em>turn 90 degrees</em></li>
+        <li><span class="box"></span> Click the green flag — see your square!</li>
+      </ul>
+      <div class="tip-box amber mt-2">⭐ <strong>Bonus for Tier A:</strong> Change the number in <code>repeat</code> to 3. What shape do you get? Try 6!</div>
+    </div>
+    <div>
+      <div class="card-label orange">✍️ Reflection: After You Build</div>
+      <p style="font-size:0.82rem;font-weight:700;color:#374151;margin-bottom:4px;">My square used how many blocks total?</p>
+      <input class="write-line" type="text" placeholder="I used ___ blocks" />
+      <p style="font-size:0.82rem;font-weight:700;color:#374151;margin-bottom:4px;">What happened when I changed <code>repeat 4</code> to <code>repeat 3</code>?</p>
+      <textarea class="write-area" placeholder="When I changed it to 3, the sprite drew a..."></textarea>
+      <p style="font-size:0.82rem;font-weight:700;color:#374151;margin-top:8px;margin-bottom:4px;">One thing I'm proud of in my project today:</p>
+      <input class="write-line" type="text" placeholder="I'm proud that I..." />
+    </div>
+  </div>
+</div>
+
+<!-- TIER B -->
+<div class="card mb-2">
+  <div style="margin-bottom:8px;"><span class="level-badge level-b">🔵 Tier B — Core · Grades 3–5</span></div>
+  <div class="grid-2">
+    <div>
+      <div class="card-label blue">🎯 Your Mission</div>
+      <p class="mb-2">Build <strong>both</strong> loop types in one project: draw a square with <code>repeat 4</code>, then make a sprite dance with <code>forever</code>.</p>
+      <ul class="check-list">
+        <li><span class="box"></span> <strong>Script 1:</strong> <code>repeat 4</code> → move 100 + turn 90 → square</li>
+        <li><span class="box"></span> <strong>Script 2:</strong> <code>forever</code> → next costume + wait 0.3s → dance</li>
+        <li><span class="box"></span> Extension: add <em>move 10 steps + if on edge, bounce</em> inside the forever loop so the sprite also walks</li>
+        <li><span class="box"></span> Count the lines of code you saved with loops</li>
+      </ul>
+      <div class="tip-box blue mt-2">💡 You can have <strong>two separate scripts</strong> on the same sprite — both run at the same time when you click the green flag!</div>
+    </div>
+    <div>
+      <div class="card-label blue">✍️ Plan + Reflect</div>
+      <p style="font-size:0.82rem;font-weight:700;color:#374151;margin-bottom:4px;">Write your plan for each script (1–2 words per step):</p>
+      <p style="font-size:0.75rem;color:#374151;font-weight:700;margin-bottom:2px;">Script 1 — Square:</p>
+      <input class="write-line" type="text" placeholder="when flag → repeat ___ → move → turn" />
+      <p style="font-size:0.75rem;color:#374151;font-weight:700;margin-top:4px;margin-bottom:2px;">Script 2 — Dance:</p>
+      <input class="write-line" type="text" placeholder="when flag → forever → next costume → wait" />
+      <p style="font-size:0.82rem;font-weight:700;color:#374151;margin-top:8px;margin-bottom:4px;">How many lines did the loop save vs. writing it out manually?</p>
+      <p style="font-size:0.85rem;color:#374151;">Without loop: <input class="blank-input narrow" type="text" placeholder="?" /> lines &nbsp; With loop: <input class="blank-input narrow" type="text" placeholder="?" /> lines &nbsp; Saved: <input class="blank-input narrow" type="text" placeholder="?" /> lines</p>
+      <p style="font-size:0.82rem;font-weight:700;color:#374151;margin-top:8px;margin-bottom:4px;">What was the trickiest part to build? How did you fix it?</p>
+      <textarea class="write-area" placeholder="The tricky part was... I fixed it by..."></textarea>
+    </div>
+  </div>
+</div>
+
+<!-- TIER C -->
+<div class="card accent-purple mb-3">
+  <div style="margin-bottom:8px;"><span class="level-badge level-c">🟢 Tier C — Challenge Card · Grades 6–9</span></div>
+  <div class="grid-2">
+    <div>
+      <div class="card-label purple">🎯 Your Mission</div>
+      <p class="mb-2">Build the <strong>nested loop flower of squares</strong> — a loop inside a loop that draws a mandala-like pattern.</p>
+      <div class="code-block" style="font-size:0.78rem;margin-bottom:10px;">when 🏁 clicked
+pen down
+<span class="kw">repeat</span> <span class="num">6</span>         <span class="cm">← draw 6 squares</span>
+  <span class="kw">repeat</span> <span class="num">4</span>
+    <span class="fn">move</span> <span class="num">80</span> steps
+    <span class="fn">turn</span> <span class="num">90</span> degrees
+  <span class="fn">turn</span> <span class="num">60</span> degrees  <span class="cm">← rotate 360÷6</span></div>
+      <ul class="check-list">
+        <li><span class="box"></span> Add the Pen extension, pen down before the outer loop</li>
+        <li><span class="box"></span> Build and run the script above — do you get a flower?</li>
+        <li><span class="box"></span> <strong>Experiment:</strong> change outer loop to 8 (turn 45°). What changes?</li>
+        <li><span class="box"></span> <strong>Extension:</strong> add <em>set pen color to (pick random)</em> inside the loop for rainbow squares</li>
+      </ul>
+    </div>
+    <div>
+      <div class="card-label purple">📐 Design + Analysis</div>
+      <p style="font-size:0.82rem;font-weight:700;color:#374151;margin-bottom:4px;">Fill in this table for different outer loop counts:</p>
+      <table style="width:100%;font-size:0.8rem;border-collapse:collapse;margin-bottom:10px;">
+        <thead><tr style="background:#ede9fe;"><th style="padding:6px;text-align:center;">Outer repeat</th><th style="padding:6px;text-align:center;">Turn angle (÷360)</th><th style="padding:6px;text-align:center;">Total inner runs</th></tr></thead>
+        <tbody>
+          <tr style="border-bottom:1px solid #f1f5f9;"><td style="padding:6px;text-align:center;color:#374151;">4</td><td style="padding:6px;text-align:center;"><input type="text" style="width:45px;border:none;border-bottom:1.5px solid #7c3aed;text-align:center;background:transparent;outline:none;" placeholder="?°" /></td><td style="padding:6px;text-align:center;"><input type="text" style="width:40px;border:none;border-bottom:1.5px solid #7c3aed;text-align:center;background:transparent;outline:none;" placeholder="?" /></td></tr>
+          <tr style="border-bottom:1px solid #f1f5f9;"><td style="padding:6px;text-align:center;color:#374151;">6</td><td style="padding:6px;text-align:center;"><input type="text" style="width:45px;border:none;border-bottom:1.5px solid #7c3aed;text-align:center;background:transparent;outline:none;" placeholder="?°" /></td><td style="padding:6px;text-align:center;"><input type="text" style="width:40px;border:none;border-bottom:1.5px solid #7c3aed;text-align:center;background:transparent;outline:none;" placeholder="?" /></td></tr>
+          <tr><td style="padding:6px;text-align:center;color:#374151;">8</td><td style="padding:6px;text-align:center;"><input type="text" style="width:45px;border:none;border-bottom:1.5px solid #7c3aed;text-align:center;background:transparent;outline:none;" placeholder="?°" /></td><td style="padding:6px;text-align:center;"><input type="text" style="width:40px;border:none;border-bottom:1.5px solid #7c3aed;text-align:center;background:transparent;outline:none;" placeholder="?" /></td></tr>
+        </tbody>
+      </table>
+      <p style="font-size:0.82rem;font-weight:700;color:#374151;margin-bottom:4px;">As the outer loop count increases, what happens to the pattern?</p>
+      <textarea class="write-area" placeholder="As the outer repeat increases, the pattern..."></textarea>
+      <p style="font-size:0.82rem;font-weight:700;color:#374151;margin-top:8px;margin-bottom:4px;">Connection: A nested loop is like AI going through EVERY example in a dataset for EVERY training round. Total work = outer × inner. Explain this in your own words:</p>
+      <textarea class="write-area" placeholder="A nested loop is like AI training because..."></textarea>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- PART 5 · AI MOMENT -->
+<div class="section-label">🤖 Part 5 of 5 · AI Moment</div>
+<div class="section-title">How Does AI Practice? It Loops!</div>
+
+<div class="card accent-green mb-3">
+  <div class="card-label green">🧠 The Connection: Your Code = AI's Training Engine</div>
+  <div class="grid-2">
+    <div>
+      <p class="mb-2">When an AI learns to recognize cat photos, it doesn't look at each photo once. It <strong>loops</strong> through thousands of cat photos — over and over — getting a little better each time.</p>
+      <div class="code-block" style="font-size:0.78rem;"><span class="cm"># How AI "trains" (pseudocode):</span>
+<span class="kw">repeat</span> <span class="num">1000</span> times:
+  look at one cat photo
+  make a guess
+  check if wrong
+  adjust → gets smarter!</div>
+      <div class="tip-box green mt-2">🔁 <strong>More loops = more practice = smarter AI.</strong> Just like practicing piano — once is not enough!</div>
+    </div>
+    <div>
+      <div class="card-label green">💬 Think + Write</div>
+      <p style="font-size:0.82rem;font-weight:700;color:#374151;margin-bottom:4px;">If an AI only looped through 3 cat photos, would it be good at recognizing cats? Why or why not?</p>
+      <textarea class="write-area" placeholder="If it only saw 3 photos, the AI would..."></textarea>
+      <p style="font-size:0.82rem;font-weight:700;color:#374151;margin-top:8px;margin-bottom:4px;">In Scratch, what's the AI equivalent of your <code>repeat 4</code> square loop?</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px;">
+        <label style="font-size:0.84rem;display:flex;align-items:center;gap:5px;cursor:pointer;"><input type="radio" name="ai1" style="accent-color:#10b981;"> Seeing 4 cat photos</label>
+        <label style="font-size:0.84rem;display:flex;align-items:center;gap:5px;cursor:pointer;"><input type="radio" name="ai1" style="accent-color:#10b981;"> Making 4 guesses</label>
+        <label style="font-size:0.84rem;display:flex;align-items:center;gap:5px;cursor:pointer;"><input type="radio" name="ai1" style="accent-color:#10b981;"> 4 training rounds</label>
+      </div>
+      <p style="font-size:0.82rem;font-weight:700;color:#374151;margin-top:8px;margin-bottom:4px;">What real-life thing is a loop that helps you get better at something?</p>
+      <input class="write-line" type="text" placeholder="Practicing ___ is like a loop because..." />
+    </div>
+  </div>
+</div>
+
+<!-- EXIT TICKET -->
+<div class="section-label">🚪 Exit Ticket</div>
+<div class="section-title">Before You Leave Today</div>
+
+<div class="card accent-orange">
+  <div class="card-label orange">✏️ Complete all three — takes 3 minutes!</div>
+  <div class="grid-3" style="margin-top:6px;">
+    <div>
+      <p style="font-size:0.8rem;font-weight:800;color:#9a3412;margin-bottom:6px;">1️⃣ One thing I learned today about loops:</p>
+      <textarea class="write-area" style="min-height:60px;" placeholder="I learned that..."></textarea>
+    </div>
+    <div>
+      <p style="font-size:0.8rem;font-weight:800;color:#9a3412;margin-bottom:6px;">2️⃣ When would I use <code>forever</code> vs <code>repeat N</code>?</p>
+      <textarea class="write-area" style="min-height:60px;" placeholder="I'd use forever when... and repeat when..."></textarea>
+    </div>
+    <div>
+      <p style="font-size:0.8rem;font-weight:800;color:#9a3412;margin-bottom:6px;">3️⃣ One question I still have:</p>
+      <textarea class="write-area" style="min-height:60px;" placeholder="I'm still wondering..."></textarea>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="sheet-footer">
+  <div><strong>Summer 2026 AI Coding Program</strong> · Modern Chinese School · Session 4 · Thu Jul 2</div>
+  <div>Scratch: scratch.mit.edu &nbsp;|&nbsp; Lesson slides: hue881.github.io/mcs2026summer &nbsp;|&nbsp; Ages 7–13 · Grades 1–9</div>
+</div>
+
+</div><!-- end .page -->
+
+<script>
+(function() {
+  function initCanvas(canvas) {
+    var ctx = canvas.getContext('2d');
+    var drawing = false;
+    var lastX = 0, lastY = 0;
+    var color = '#f97316';
+    var lineWidth = 3;
+    function getPos(e) {
+      var r = canvas.getBoundingClientRect();
+      var src = e.touches ? e.touches[0] : e;
+      return { x: src.clientX - r.left, y: src.clientY - r.top };
+    }
+    function startDraw(e) {
+      drawing = true;
+      var p = getPos(e);
+      lastX = p.x; lastY = p.y;
+      ctx.beginPath(); ctx.arc(p.x, p.y, lineWidth/2, 0, Math.PI*2);
+      ctx.fillStyle = color; ctx.fill(); e.preventDefault();
+    }
+    function draw(e) {
+      if (!drawing) return;
+      var p = getPos(e);
+      ctx.beginPath(); ctx.moveTo(lastX, lastY); ctx.lineTo(p.x, p.y);
+      ctx.strokeStyle = color; ctx.lineWidth = lineWidth; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.stroke();
+      lastX = p.x; lastY = p.y; e.preventDefault();
+    }
+    function stopDraw() { drawing = false; }
+    canvas.addEventListener('mousedown', startDraw);
+    canvas.addEventListener('mousemove', draw);
+    canvas.addEventListener('mouseup', stopDraw);
+    canvas.addEventListener('mouseleave', stopDraw);
+    canvas.addEventListener('touchstart', startDraw, {passive:false});
+    canvas.addEventListener('touchmove', draw, {passive:false});
+    canvas.addEventListener('touchend', stopDraw);
+    var btn = canvas.parentElement.querySelector('.draw-clear');
+    if (btn) btn.addEventListener('click', function() { ctx.clearRect(0, 0, canvas.width, canvas.height); });
+    var colorPick = canvas.parentElement.querySelector('.draw-color');
+    if (colorPick) colorPick.addEventListener('input', function(e) { color = e.target.value; });
+    var sizePick = canvas.parentElement.querySelector('.draw-size');
+    if (sizePick) sizePick.addEventListener('input', function(e) { lineWidth = +e.target.value; });
+  }
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('canvas.draw-canvas').forEach(initCanvas);
+  });
+})();
+</script>
+</body>
+</html>
