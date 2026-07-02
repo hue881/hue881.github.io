@@ -1,1 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Homework · Session 4 · Scratch: Loops</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --color-bg: #f0fdf4;
+    --color-surface: rgba(255,255,255,0.97);
+    --color-text: #1f2a37;
+    --color-text-secondary: #374151;
+    --color-text-muted: #5b6b7e;
+    --color-accent-1: #10b981;
+    --color-accent-2: #0b63ce;
+    --color-accent-3: #f59e0b;
+    --color-scratch-orange: #f97316;
+    --font-display: 'Fredoka', 'Trebuchet MS', sans-serif;
+    --font-body: 'Nunito', Arial, sans-serif;
+    --font-code: 'Fira Code', Consolas, monospace;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  @media print {
+    body { background: #fff !important; }
+    .no-print { display: none !important; }
+    .page-break { page-break-before: always; }
+    .card { box-shadow: none !important; border: 1.5px solid #d1d5db !important; }
+  }
+  body { font-family: var(--font-body); color: var(--color-text); background: var(--color-bg); min-height: 100vh; }
+  .print-bar {
+    background: rgba(255,255,255,0.92); backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(148,163,184,0.3);
+    padding: 10px 24px; display: flex; align-items: center;
+    justify-content: space-between; position: sticky; top: 0; z-index: 100; gap: 12px; flex-wrap: wrap;
+  }
+  .print-bar .bar-title { font-family: var(--font-display); font-size: 1.05rem; font-weight: 700; color: var(--color-accent-1); }
+  .print-bar .bar-sub { font-size: 0.78rem; color: var(--color-text-muted); }
+  .btn-print { background: var(--color-accent-1); color: #fff; border: none; padding: 8px 20px; border-radius: 999px; font-family: var(--font-body); font-size: 0.82rem; font-weight: 800; cursor: pointer; letter-spacing: 0.06em; transition: background 0.2s, transform 0.15s; }
+  .btn-print:hover { background: #059669; transform: translateY(-1px); }
+  .page { max-width: 920px; margin: 0 auto; padding: 32px 24px 60px; }
+  .sheet-header {
+    background: linear-gradient(135deg, #10b981 0%, #0b63ce 50%, #7c3aed 100%);
+    border-radius: 20px; padding: 28px 32px 24px; color: #fff; margin-bottom: 28px; position: relative; overflow: hidden;
+  }
+  .sheet-header::before { content: ''; position: absolute; top: -60px; right: -60px; width: 200px; height: 200px; background: rgba(255,255,255,0.08); border-radius: 50%; }
+  .sheet-header::after { content: ''; position: absolute; bottom: -40px; left: -40px; width: 140px; height: 140px; background: rgba(255,255,255,0.06); border-radius: 50%; }
+  .header-day { font-size: 0.75rem; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; opacity: 0.85; margin-bottom: 4px; }
+  .header-title { font-family: var(--font-display); font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 700; line-height: 1.1; margin-bottom: 6px; }
+  .header-sub { font-size: 0.88rem; opacity: 0.85; margin-bottom: 14px; }
+  .header-pills { display: flex; gap: 8px; flex-wrap: wrap; }
+  .header-pill { background: rgba(255,255,255,0.22); border: 1px solid rgba(255,255,255,0.35); border-radius: 999px; padding: 4px 14px; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
+  .student-info { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 28px; }
+  @media (max-width: 600px) { .student-info { grid-template-columns: 1fr; } }
+  .info-field { background: var(--color-surface); border-radius: 12px; padding: 12px 14px; border: 1.5px solid rgba(16,185,129,0.14); box-shadow: 0 2px 8px rgba(15,23,42,0.05); }
+  .info-label { font-size: 0.65rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-accent-1); margin-bottom: 6px; }
+  .info-line { border: none; border-bottom: 1.5px solid #cbd5e1; width: 100%; font-family: var(--font-body); font-size: 0.9rem; color: var(--color-text); background: transparent; outline: none; padding: 2px 0; }
+  .info-line:focus { border-bottom-color: #10b981; }
+  .section-label { display: inline-flex; align-items: center; gap: 8px; padding: 5px 16px; border-radius: 999px; border: 1px solid rgba(148,163,184,0.4); background: rgba(255,255,255,0.9); font-size: 0.72rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-accent-1); margin-bottom: 10px; }
+  .section-title { font-family: var(--font-display); font-size: clamp(1.3rem, 2.5vw, 1.8rem); font-weight: 700; margin-bottom: 16px; color: var(--color-text); line-height: 1.2; }
+  .card { background: var(--color-surface); border-radius: 16px; padding: 18px 20px; box-shadow: 0 4px 18px rgba(15,23,42,0.07); border: 1px solid rgba(255,255,255,0.7); margin-bottom: 16px; }
+  .card.accent-green { border-left: 4px solid var(--color-accent-1); }
+  .card.accent-blue { border-left: 4px solid var(--color-accent-2); }
+  .card.accent-orange { border-left: 4px solid var(--color-scratch-orange); }
+  .card.accent-amber { border-left: 4px solid var(--color-accent-3); }
+  .card.accent-purple { border-left: 4px solid #7c3aed; }
+  .card-label { font-size: 0.68rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 8px; }
+  .card-label.green { color: #047857; }
+  .card-label.blue { color: #0b4a9e; }
+  .card-label.orange { color: #c2410c; }
+  .card-label.amber { color: #b45309; }
+  .card-label.purple { color: #6d28d9; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  @media (max-width: 680px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+  /* Scratch blocks */
+  .sb { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px 3px 8px; border-radius: 4px; font-family: var(--font-code); font-size: 0.8rem; font-weight: 700; color: #fff; vertical-align: middle; }
+  .sb-orange { background: #f97316; }
+  .sb-blue { background: #0b63ce; }
+  .sb-green { background: #10b981; }
+  .sb-purple { background: #7c3aed; }
+  .sb::before { content: '⬡'; font-size: 0.55rem; opacity: 0.6; }
+  /* Code */
+  .code-block { background: #1e293b; color: #e2e8f0; border-radius: 12px; padding: 14px 18px; font-family: var(--font-code); font-size: clamp(0.68rem, 1.1vw, 0.83rem); line-height: 1.6; overflow-x: auto; border: 1px solid rgba(255,255,255,0.06); margin-bottom: 12px; white-space: pre; }
+  .kw { color: #f97316; font-weight: 700; }
+  .fn { color: #93c5fd; }
+  .num { color: #fcd34d; }
+  .cm { color: #64748b; font-style: italic; }
+  /* Write */
+  input.write-line { border: none; border-bottom: 1.5px solid #cbd5e1; width: 100%; margin-bottom: 10px; height: 28px; display: block; background: transparent; font-family: var(--font-body); font-size: 0.88rem; color: var(--color-text); outline: none; padding: 2px 4px; }
+  input.write-line:focus { border-bottom-color: #10b981; }
+  input.write-line::placeholder { color: #bdc5d1; font-style: italic; }
+  textarea.write-area { border: 1.5px solid #cbd5e1; border-radius: 8px; width: 100%; min-height: 70px; padding: 8px; font-family: var(--font-body); font-size: 0.85rem; color: var(--color-text); resize: vertical; background: #f8fafc; outline: none; display: block; }
+  textarea.write-area:focus { outline: 2px solid rgba(16,185,129,0.3); }
+  textarea.write-area::placeholder { color: #bdc5d1; font-style: italic; }
+  input.blank-input { display: inline-block; background: rgba(16,185,129,0.10); border: none; border-bottom: 2px solid #10b981; min-width: 60px; width: 60px; height: 1.1em; border-radius: 3px; vertical-align: middle; margin: 0 2px; font-family: var(--font-code); font-size: inherit; color: #047857; text-align: center; outline: none; padding: 0 2px; }
+  input.blank-input:focus { background: rgba(16,185,129,0.18); }
+  input.blank-input.wide { min-width: 90px; width: 90px; }
+  input.blank-input.narrow { min-width: 36px; width: 36px; }
+  /* Tip boxes */
+  .tip-box { border-radius: 10px; padding: 10px 14px; font-size: 0.8rem; line-height: 1.5; margin-top: 10px; }
+  .tip-box.green { background: rgba(16,185,129,0.07); color: #065f46; }
+  .tip-box.blue { background: rgba(11,99,206,0.07); color: #1e40af; }
+  .tip-box.amber { background: rgba(245,158,11,0.07); color: #92400e; }
+  .tip-box.orange { background: rgba(249,115,22,0.07); color: #9a3412; }
+  .tip-box.purple { background: rgba(124,58,237,0.07); color: #5b21b6; }
+  /* Level badges */
+  .level-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 14px; border-radius: 999px; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 8px; }
+  .level-a { background: linear-gradient(135deg,#f59e0b,#f97316); color:#fff; }
+  .level-b { background: linear-gradient(135deg,#0b63ce,#10b981); color:#fff; }
+  .level-c { background: linear-gradient(135deg,#7c3aed,#0b63ce); color:#fff; }
+  /* Check list */
+  .check-list { list-style: none; padding: 0; }
+  .check-list li { display: flex; align-items: flex-start; gap: 8px; font-size: 0.85rem; color: var(--color-text-secondary); margin-bottom: 8px; line-height: 1.45; }
+  .check-list li .box { flex-shrink: 0; width: 17px; height: 17px; border: 2px solid #94a3b8; border-radius: 4px; margin-top: 1px; background: #fff; display: inline-block; }
+  /* Draw canvas */
+  .draw-wrap { position: relative; margin-bottom: 6px; }
+  .draw-toolbar { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; flex-wrap: wrap; }
+  .draw-toolbar label { font-size: 0.7rem; font-weight: 700; color: #64748b; }
+  .draw-color { width: 28px; height: 28px; border: none; border-radius: 6px; cursor: pointer; padding: 0; background: transparent; }
+  .draw-size { width: 70px; accent-color: #10b981; cursor: pointer; }
+  .draw-clear { background: #fee2e2; color: #b91c1c; border: none; border-radius: 6px; padding: 3px 10px; font-size: 0.72rem; font-weight: 800; cursor: pointer; }
+  .draw-clear:hover { background: #fecaca; }
+  canvas.draw-canvas { display: block; width: 100%; border-radius: 8px; cursor: crosshair; touch-action: none; background: #f0fdf4; }
+  /* Timer badge */
+  .timer-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.25); border-radius: 999px; padding: 3px 12px; font-size: 0.72rem; font-weight: 800; color: #047857; margin-left: 8px; }
+  /* Misc */
+  .divider { border: none; border-top: 2px dashed #d1fae5; margin: 28px 0; }
+  p, li { font-size: 0.88rem; color: var(--color-text-secondary); line-height: 1.55; }
+  strong { color: var(--color-text); }
+  code { background: #d1fae5; padding: 1px 6px; border-radius: 4px; font-family: var(--font-code); font-size: 0.82em; color: #047857; }
+  .mb-1 { margin-bottom: 6px; }
+  .mb-2 { margin-bottom: 10px; }
+  .mb-3 { margin-bottom: 14px; }
+  .mt-2 { margin-top: 10px; }
+  .text-center { text-align: center; }
+  .text-muted { color: var(--color-text-muted); font-size: 0.78rem; }
+  .sheet-footer { margin-top: 40px; padding: 16px 20px; border-radius: 12px; background: rgba(16,185,129,0.05); border: 1px solid rgba(16,185,129,0.12); display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; font-size: 0.76rem; color: var(--color-text-muted); }
+  .sheet-footer strong { color: var(--color-text); }
+  /* Rubric */
+  table.rubric { width: 100%; border-collapse: collapse; font-size: 0.82rem; margin-top: 8px; }
+  table.rubric th { background: #1e293b; color: #e2e8f0; padding: 8px 10px; text-align: left; font-weight: 700; }
+  table.rubric td { padding: 8px 10px; border-bottom: 1px solid #e2e8f0; vertical-align: top; color: var(--color-text-secondary); }
+  table.rubric tr:nth-child(even) td { background: rgba(241,245,249,0.6); }
+  table.rubric td:first-child { font-weight: 700; color: var(--color-text); }
+  table.rubric .pts { font-family: var(--font-code); font-size: 0.75rem; font-weight: 800; color: var(--color-accent-1); white-space: nowrap; }
+  /* Project log table */
+  .project-log { width: 100%; border-collapse: collapse; font-size: 0.84rem; }
+  .project-log th { background: #d1fae5; color: #065f46; padding: 8px; text-align: left; font-weight: 800; }
+  .project-log td { padding: 8px; border-bottom: 1px solid #e2e8f0; vertical-align: top; }
+  .project-log input[type=text] { width: 100%; border: none; border-bottom: 1.5px solid #10b981; background: transparent; font-family: var(--font-body); font-size: 0.84rem; outline: none; color: var(--color-text); }
+  /* Bilingual note */
+  .bilingual { background: rgba(11,99,206,0.05); border: 1px dashed rgba(11,99,206,0.2); border-radius: 10px; padding: 10px 14px; font-size: 0.8rem; color: #374151; margin-top: 10px; }
+  .bilingual .zh { color: #0b4a9e; font-weight: 700; margin-top: 4px; }
+</style>
+</head>
+<body>
 
+<!-- PRINT BAR -->
+<div class="print-bar no-print">
+  <div>
+    <div class="bar-title">🏠 Session 4 · Homework · Scratch: Loops</div>
+    <div class="bar-sub">30-minute at-home assignment · Due at start of Session 5 (Mon Jul 6)</div>
+  </div>
+  <button class="btn-print" onclick="window.print()">🖨️ Print / Save as PDF</button>
+</div>
+
+<div class="page">
+
+<!-- HEADER -->
+<div class="sheet-header">
+  <div class="header-day">Homework · Session 4 · Due Monday, July 6, 2026</div>
+  <div class="header-title">🏠 Scratch: Loops — 30-Minute Homework Mission</div>
+  <div class="header-sub">Build a looping pattern or animation at home · Count the code you saved · Think like an AI!</div>
+  <div class="header-pills">
+    <span class="header-pill">⏱ 30 minutes total</span>
+    <span class="header-pill">🟡 Tier A path</span>
+    <span class="header-pill">🔵 Tier B path</span>
+    <span class="header-pill">🟢 Tier C path</span>
+    <span class="header-pill">No new account needed — use today's Scratch project</span>
+  </div>
+</div>
+
+<!-- STUDENT INFO -->
+<div class="student-info">
+  <div class="info-field">
+    <div class="info-label">👤 Your Name</div>
+    <input class="info-line" type="text" placeholder="First Last" />
+  </div>
+  <div class="info-field">
+    <div class="info-label">📅 Date Due</div>
+    <input class="info-line" type="text" placeholder="Monday, July 6, 2026" />
+  </div>
+  <div class="info-field">
+    <div class="info-label">🏫 Section</div>
+    <input class="info-line" type="text" placeholder="Section 1 / 2 / 3" />
+  </div>
+</div>
+
+<!-- HOW TO USE THIS SHEET -->
+<div class="section-label">📋 How This Works</div>
+<div class="section-title">Your 30-Minute Loop Mission</div>
+
+<div class="grid-2 mb-3">
+  <div class="card accent-green">
+    <div class="card-label green">⏱ Your Time Budget (30 min total)</div>
+    <table style="width:100%;font-size:0.84rem;border-collapse:collapse;">
+      <tr style="background:#d1fae5;"><th style="padding:7px;text-align:left;">Block</th><th style="padding:7px;text-align:center;">Time</th><th style="padding:7px;text-align:left;">What to do</th></tr>
+      <tr style="border-bottom:1px solid #e2e8f0;"><td style="padding:7px;font-weight:700;">🔁 Part 1</td><td style="padding:7px;text-align:center;font-weight:700;color:#10b981;">5 min</td><td style="padding:7px;color:#374151;">Quick review: re-read today's key ideas</td></tr>
+      <tr style="border-bottom:1px solid #e2e8f0;"><td style="padding:7px;font-weight:700;">🔨 Part 2</td><td style="padding:7px;text-align:center;font-weight:700;color:#10b981;">15 min</td><td style="padding:7px;color:#374151;">Build your looping project in Scratch (your tier path)</td></tr>
+      <tr style="border-bottom:1px solid #e2e8f0;"><td style="padding:7px;font-weight:700;">📝 Part 3</td><td style="padding:7px;text-align:center;font-weight:700;color:#10b981;">5 min</td><td style="padding:7px;color:#374151;">Fill in your Project Log on this sheet</td></tr>
+      <tr><td style="padding:7px;font-weight:700;">🤔 Part 4</td><td style="padding:7px;text-align:center;font-weight:700;color:#10b981;">5 min</td><td style="padding:7px;color:#374151;">AI reflection — write 2–3 sentences</td></tr>
+    </table>
+    <div class="tip-box green mt-2">✅ <strong>Done early?</strong> Try the bonus challenge for your tier — or show a family member your project and explain what a loop is!</div>
+  </div>
+  <div class="card accent-blue">
+    <div class="card-label blue">🔑 Key Ideas to Remember</div>
+    <ul style="list-style:disc;padding-left:18px;line-height:2;">
+      <li><strong>Loop</strong> — do something many times without writing it many times</li>
+      <li><span class="sb sb-orange" style="font-size:0.72rem;">repeat N</span> stops after exactly N runs; great for shapes</li>
+      <li><span class="sb sb-orange" style="font-size:0.72rem;">forever</span> runs until Stop; great for animation and games</li>
+      <li>4 sides × 90° = 360° = a complete square</li>
+      <li><strong>Training loop</strong> — AI repeats through examples until it learns</li>
+    </ul>
+    <div class="bilingual">
+      <strong>For families:</strong> This homework takes about 30 minutes. Your child will open their Scratch project from class and add to it. If they get stuck, encourage them to describe what they <em>want</em> to happen — then try one block at a time.<br>
+      <div class="zh">家长提示：作业约需30分钟。孩子将打开今天课堂上的Scratch项目并继续完善。如果遇到困难，请鼓励他们描述想要发生什么，然后一次尝试一个积木块。</div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- PART 1 · REVIEW -->
+<div class="section-label">📖 Part 1 of 4 · Review <span class="timer-badge">⏱ 5 min</span></div>
+<div class="section-title">Quick Loop Check — Before You Build</div>
+
+<div class="card mb-3">
+  <div class="card-label green">✅ Before opening Scratch, answer these from memory</div>
+  <div class="grid-2">
+    <div>
+      <p style="font-size:0.82rem;font-weight:700;color:#374151;margin-bottom:4px;">1. What does this code do? (Fill in the blank)</p>
+      <div class="code-block" style="font-size:0.78rem;"><span class="kw">repeat</span> <span class="num">4</span>
+  <span class="fn">move</span> <span class="num">100</span> steps
+  <span class="fn">turn</span> <span class="num">90</span> degrees</div>
+      <p style="font-size:0.85rem;color:#374151;">This draws a <input class="blank-input wide" type="text" placeholder="?" /> with <input class="blank-input narrow" type="text" placeholder="?" /> sides.</p>
+      <p style="font-size:0.82rem;font-weight:700;color:#374151;margin-top:10px;margin-bottom:4px;">2. Which loop runs forever until you press Stop?</p>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;">
+        <label style="font-size:0.85rem;display:flex;align-items:center;gap:5px;cursor:pointer;"><input type="radio" name="loop_type" style="accent-color:#10b981;"> repeat N</label>
+        <label style="font-size:0.85rem;display:flex;align-items:center;gap:5px;cursor:pointer;"><input type="radio" name="loop_type" style="accent-color:#10b981;"> forever ✓</label>
+      </div>
+    </div>
+    <div>
+      <p style="font-size:0.82rem;font-weight:700;color:#374151;margin-bottom:4px;">3. Name one real-life loop you did today:</p>
+      <input class="write-line" type="text" placeholder="e.g. Washed my hands 3 times..." />
+      <p style="font-size:0.82rem;font-weight:700;color:#374151;margin-top:8px;margin-bottom:4px;">4. Which Scratch block section (color) has loops?</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <label style="font-size:0.85rem;display:flex;align-items:center;gap:5px;cursor:pointer;"><input type="radio" name="color" style="accent-color:#10b981;"> 🔵 Motion (blue)</label>
+        <label style="font-size:0.85rem;display:flex;align-items:center;gap:5px;cursor:pointer;"><input type="radio" name="color" style="accent-color:#10b981;"> 🟠 Control (orange) ✓</label>
+        <label style="font-size:0.85rem;display:flex;align-items:center;gap:5px;cursor:pointer;"><input type="radio" name="color" style="accent-color:#10b981;"> 🟣 Looks (purple)</label>
+      </div>
+      <div class="tip-box green mt-2">💡 If you got them all right — you're ready to build! If you're unsure, check the lesson at <strong>hue881.github.io/mcs2026summer</strong></div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- PART 2 · BUILD -->
+<div class="section-label">🔨 Part 2 of 4 · Build in Scratch <span class="timer-badge">⏱ 15 min</span></div>
+<div class="section-title">Choose Your Tier Path — Open Scratch!</div>
+
+<!-- TIER A -->
+<div class="card mb-2">
+  <div style="margin-bottom:8px;"><span class="level-badge level-a">🟡 Tier A — Foundations · Grades 1–3</span></div>
+  <div class="grid-2">
+    <div>
+      <div class="card-label amber">🎯 Your Mission</div>
+      <p class="mb-2">Open your Scratch project from class. Make your sprite draw a <strong>repeating pattern or animation</strong> using a loop. Here are two easy options:</p>
+      <div style="background:#fffbf5;border:2px dashed #f97316;border-radius:10px;padding:12px;margin-bottom:10px;">
+        <p style="font-size:0.82rem;font-weight:800;color:#c2410c;margin-bottom:6px;">Option A — Shape Explorer:</p>
+        <ul style="list-style:disc;padding-left:16px;font-size:0.82rem;color:#374151;line-height:1.9;">
+          <li>Keep your square from class (<code>repeat 4</code>)</li>
+          <li>Change <code>repeat 4</code> to <code>repeat 3</code> → triangle!</li>
+          <li>Try <code>repeat 6</code> → hexagon!</li>
+          <li>Change the <code>move</code> number — what happens?</li>
+        </ul>
+      </div>
+      <div style="background:#f0fdf4;border:2px dashed #10b981;border-radius:10px;padding:12px;">
+        <p style="font-size:0.82rem;font-weight:800;color:#047857;margin-bottom:6px;">Option B — Dancing Sprite:</p>
+        <ul style="list-style:disc;padding-left:16px;font-size:0.82rem;color:#374151;line-height:1.9;">
+          <li>Add a <span class="sb sb-orange" style="font-size:0.7rem;">forever</span> block</li>
+          <li>Inside: "next costume" + "wait 0.3 seconds"</li>
+          <li>Click the green flag — watch it dance!</li>
+          <li>Try changing 0.3 to 0.1 — what changes?</li>
+        </ul>
+      </div>
+    </div>
+    <div>
+      <div class="card-label amber">🏁 Checklist — done when all boxes are checked!</div>
+      <ul class="check-list">
+        <li><span class="box"></span> Opened my Scratch project from class</li>
+        <li><span class="box"></span> My loop runs at least <strong>3 times</strong></li>
+        <li><span class="box"></span> I tried changing a number inside the loop</li>
+        <li><span class="box"></span> I can explain to a family member what my loop does</li>
+        <li><span class="box"></span> I saved my project (Scratch saves automatically if logged in)</li>
+      </ul>
+      <div class="tip-box amber mt-2">⭐ <strong>Bonus Tier A:</strong> Draw two different shapes using two separate <code>repeat</code> blocks (different numbers). How are the shapes different?</div>
+    </div>
+  </div>
+</div>
+
+<!-- TIER B -->
+<div class="card mb-2">
+  <div style="margin-bottom:8px;"><span class="level-badge level-b">🔵 Tier B — Core · Grades 3–5</span></div>
+  <div class="grid-2">
+    <div>
+      <div class="card-label blue">🎯 Your Mission</div>
+      <p class="mb-2">Build a <strong>repeating animation or pattern</strong> that uses both <code>repeat</code> and <code>forever</code> in the same project. Count the code savings!</p>
+      <div style="background:#eff6ff;border:2px dashed #0b63ce;border-radius:10px;padding:12px;margin-bottom:10px;">
+        <p style="font-size:0.82rem;font-weight:800;color:#0b4a9e;margin-bottom:6px;">Core build — pick one, or combine!</p>
+        <ul style="list-style:disc;padding-left:16px;font-size:0.82rem;color:#374151;line-height:1.9;">
+          <li><strong>Repeating spiral:</strong> increase <code>move</code> steps by 5 each time inside <code>repeat 20</code></li>
+          <li><strong>Bouncing dancer:</strong> <code>forever</code> → move + bounce + switch costume + wait</li>
+          <li><strong>Clock hand:</strong> <code>repeat 360</code> → turn 1 degree + wait 0.01 sec → full rotation!</li>
+        </ul>
+      </div>
+      <div class="code-block" style="font-size:0.78rem;"><span class="cm"># Spiral pattern idea:</span>
+<span class="kw">repeat</span> <span class="num">20</span>
+  <span class="fn">move</span> steps  <span class="cm">← increase by 5 each time</span>
+  <span class="fn">turn</span> <span class="num">90</span> degrees</div>
+    </div>
+    <div>
+      <div class="card-label blue">🏁 Checklist</div>
+      <ul class="check-list">
+        <li><span class="box"></span> Project uses <span class="sb sb-orange" style="font-size:0.7rem;">repeat N</span> somewhere</li>
+        <li><span class="box"></span> Project uses <span class="sb sb-orange" style="font-size:0.7rem;">forever</span> somewhere (or both scripts use <code>repeat</code>)</li>
+        <li><span class="box"></span> I counted the code lines a loop saved me (see Part 3)</li>
+        <li><span class="box"></span> I described what my project does in one sentence</li>
+        <li><span class="box"></span> Saved my project</li>
+      </ul>
+      <div class="tip-box blue mt-2">💡 <strong>Spiral tip:</strong> In Scratch, you can't auto-increase a variable inside a loop without using a variable block — try adding a "step size" variable that grows each loop!</div>
+      <div class="tip-box amber mt-2">⭐ <strong>Bonus Tier B:</strong> Make your sprite say how many times the loop ran using a "say [ ] for 2 seconds" block after the loop ends.</div>
+    </div>
+  </div>
+</div>
+
+<!-- TIER C -->
+<div class="card accent-purple mb-3">
+  <div style="margin-bottom:8px;"><span class="level-badge level-c">🟢 Tier C — Challenge Card · Grades 6–9</span></div>
+  <div class="grid-2">
+    <div>
+      <div class="card-label purple">🎯 Your Mission</div>
+      <p class="mb-2">Build a <strong>nested loop generative art piece</strong> or a <strong>loop + variable animation</strong>. Your project should look different every time (or be more complex than today's class build).</p>
+      <div style="background:#faf5ff;border:2px dashed #7c3aed;border-radius:10px;padding:12px;margin-bottom:10px;">
+        <p style="font-size:0.82rem;font-weight:800;color:#6d28d9;margin-bottom:6px;">Challenge options (pick one or combine):</p>
+        <ul style="list-style:disc;padding-left:16px;font-size:0.82rem;color:#374151;line-height:1.9;">
+          <li><strong>Random color mandala:</strong> outer <code>repeat 12</code> → inner <code>repeat 4</code> (square) → turn 30° + random pen color each outer loop</li>
+          <li><strong>Growing spiral:</strong> <code>repeat 80</code> → move <em>step</em> steps → turn 91° → change <em>step</em> by 2</li>
+          <li><strong>Star burst:</strong> <code>repeat N</code> → move forward → turn (360÷N)° — try different N values</li>
+        </ul>
+      </div>
+      <div class="code-block" style="font-size:0.75rem;"><span class="cm"># Growing spiral (use a variable):</span>
+set [step] to 2
+<span class="kw">repeat</span> <span class="num">80</span>
+  <span class="fn">move</span> (step) steps
+  <span class="fn">turn</span> <span class="num">91</span> degrees
+  change [step] by <span class="num">2</span></div>
+    </div>
+    <div>
+      <div class="card-label purple">🏁 Checklist</div>
+      <ul class="check-list">
+        <li><span class="box"></span> Project uses at least one loop (nested or with a variable)</li>
+        <li><span class="box"></span> The pattern/animation is <strong>different</strong> from the class build</li>
+        <li><span class="box"></span> I can predict what changes when I change the loop count</li>
+        <li><span class="box"></span> Completed the Analysis table in Part 3</li>
+        <li><span class="box"></span> AI reflection written (Part 4)</li>
+        <li><span class="box"></span> Saved my project + can share the URL</li>
+      </ul>
+      <div class="tip-box purple mt-2">⭐ <strong>Bonus Tier C:</strong> Add a <code>forever</code> loop that checks a key press — when you press Space, reset the drawing and run the nested loop again. Now you have an interactive generative art piece!</div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- PART 3 · PROJECT LOG -->
+<div class="section-label">📝 Part 3 of 4 · Project Log <span class="timer-badge">⏱ 5 min</span></div>
+<div class="section-title">Record What You Built</div>
+
+<div class="card accent-green mb-3">
+  <div class="card-label green">📋 Fill this in right after you finish building in Scratch</div>
+  <p class="mb-3">Be specific — "I made a thing" is not enough. <em>"I used repeat 6 to draw 6 squares and turned 60° each time"</em> is great!</p>
+  <table class="project-log" style="margin-bottom:14px;">
+    <thead><tr><th>Question</th><th>Your Answer</th></tr></thead>
+    <tbody>
+      <tr><td>What did your project create or do?</td><td><input type="text" placeholder="My project drew / animated a ..." /></td></tr>
+      <tr><td>Which loop did you use? (<code>repeat N</code>, <code>forever</code>, or both)</td><td><input type="text" placeholder="I used ..." /></td></tr>
+      <tr><td>What number did you put in <code>repeat</code>?</td><td><input type="text" placeholder="I used repeat ___ " /></td></tr>
+      <tr><td>What was inside your loop? (List 2–3 blocks)</td><td><input type="text" placeholder="Inside the loop: move → turn → ..." /></td></tr>
+      <tr><td>What happened when you changed a number in the loop?</td><td><input type="text" placeholder="When I changed ___ to ___, the sprite ..." /></td></tr>
+    </tbody>
+  </table>
+
+  <div class="grid-2">
+    <div>
+      <div class="card-label green">📊 Count Your Code Savings</div>
+      <p style="font-size:0.82rem;font-weight:700;color:#374151;margin-bottom:6px;">How many times does your loop repeat? <input class="blank-input narrow" type="text" placeholder="N" /></p>
+      <p style="font-size:0.82rem;color:#374151;margin-bottom:4px;">If you had written it out without a loop, how many extra lines would you need?</p>
+      <p style="font-size:0.85rem;color:#374151;">My loop has <input class="blank-input narrow" type="text" placeholder="?" /> blocks inside it.</p>
+      <p style="font-size:0.85rem;color:#374151;">Without a loop: N × blocks = <input class="blank-input narrow" type="text" placeholder="?" /> × <input class="blank-input narrow" type="text" placeholder="?" /> = <input class="blank-input narrow" type="text" placeholder="?" /> lines.</p>
+      <p style="font-size:0.85rem;color:#374151;margin-top:4px;font-weight:700;">I saved: <input class="blank-input narrow" type="text" placeholder="?" /> lines of code! 🎉</p>
+    </div>
+    <div>
+      <div class="card-label green">🖼️ Sketch your project output below</div>
+      <div class="draw-wrap" style="border:2px dashed #10b981;border-radius:10px;padding:8px;background:#f0fdf4;">
+        <div class="draw-toolbar">
+          <label>✏️ Draw:</label>
+          <input type="color" class="draw-color" value="#10b981" title="Pen color" />
+          <label>Size:</label>
+          <input type="range" class="draw-size" min="1" max="12" value="2" />
+          <button class="draw-clear" type="button">🗑 Clear</button>
+        </div>
+        <canvas class="draw-canvas" height="130"></canvas>
+      </div>
+      <p class="text-muted text-center mt-2">Sketch the shape or animation frame your project makes</p>
+    </div>
+  </div>
+
+  <div class="mt-2">
+    <p style="font-size:0.82rem;font-weight:700;color:#374151;margin-bottom:4px;">Describe your project in one sentence (like you're telling a friend who wasn't there):</p>
+    <input class="write-line" type="text" placeholder="My Scratch project uses a loop to ..." />
+  </div>
+  <div class="mt-2">
+    <p style="font-size:0.82rem;font-weight:700;color:#374151;margin-bottom:4px;">One thing I tried that didn't work at first — and how I fixed it:</p>
+    <input class="write-line" type="text" placeholder="I tried ___, but it didn't work because... So I changed ..." />
+  </div>
+  <div class="mt-2">
+    <p style="font-size:0.82rem;font-weight:700;color:#374151;margin-bottom:4px;">Scratch project link (if saved online — optional but encouraged for Tier C):</p>
+    <input class="write-line" type="text" placeholder="scratch.mit.edu/projects/..." />
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- PART 4 · AI REFLECTION -->
+<div class="section-label">🤖 Part 4 of 4 · AI Reflection <span class="timer-badge">⏱ 5 min</span></div>
+<div class="section-title">Connect Your Loop to Real AI</div>
+
+<div class="card accent-blue mb-3">
+  <div class="card-label blue">🧠 Read · Think · Write</div>
+  <div class="grid-2">
+    <div>
+      <p class="mb-2">Here's how AI really trains:</p>
+      <div class="code-block" style="font-size:0.78rem;"><span class="cm"># Inside every AI (simplified):</span>
+<span class="kw">repeat</span> <span class="num">10000</span> times:
+  look at one training example
+  make a prediction
+  check: was it right?
+  if wrong → adjust a tiny bit
+<span class="cm"># after 10,000 loops → smarter AI!</span></div>
+      <div class="tip-box blue mt-2">🔁 This is called an <strong>epoch</strong> in real AI — each pass through all the training data is one epoch. A model might train for 50+ epochs!</div>
+      <p class="mt-2" style="font-size:0.82rem;color:#374151;">Real AI models like image classifiers can loop through <strong>millions of examples, thousands of times</strong>. Your computer's job is just like your Scratch loop — but much, much bigger!</p>
+    </div>
+    <div>
+      <div class="card-label blue">✍️ Write 2–3 sentences for each</div>
+      <p style="font-size:0.82rem;font-weight:700;color:#374151;margin-bottom:4px;">1. How is your Scratch loop similar to how AI trains?</p>
+      <textarea class="write-area" placeholder="My Scratch loop is similar to AI training because both..."></textarea>
+      <p style="font-size:0.82rem;font-weight:700;color:#374151;margin-top:8px;margin-bottom:4px;">2. If an AI ran its training loop only 3 times instead of 10,000, what would happen and why?</p>
+      <textarea class="write-area" placeholder="If the AI only looped 3 times, it would..."></textarea>
+      <p style="font-size:0.82rem;font-weight:700;color:#374151;margin-top:8px;margin-bottom:4px;">3. (<em>Tier B + C</em>) In your own words: what is an "epoch" and how does it relate to <code>repeat N</code>?</p>
+      <textarea class="write-area" placeholder="An epoch is like repeat N because..."></textarea>
+    </div>
+  </div>
+</div>
+
+<!-- RUBRIC -->
+<div class="section-label">📊 How This Is Graded</div>
+<div class="section-title">Homework Rubric (effort and growth — not perfection!)</div>
+
+<div class="card mb-3">
+  <table class="rubric">
+    <thead><tr><th>Category</th><th>Full Credit</th><th>Partial Credit</th><th class="pts">Points</th></tr></thead>
+    <tbody>
+      <tr><td>🔨 Build</td><td>Project uses a loop; something repeats visibly; saved in Scratch</td><td>Project attempted; loop attempted but may not run correctly</td><td class="pts">4 pts</td></tr>
+      <tr><td>📝 Project Log</td><td>All table rows filled in with specific details (not just "I did it")</td><td>Most rows filled; some answers vague</td><td class="pts">3 pts</td></tr>
+      <tr><td>📊 Code Savings</td><td>Correctly counted lines saved by the loop</td><td>Attempted the calculation; minor error</td><td class="pts">1 pt</td></tr>
+      <tr><td>🤖 AI Reflection</td><td>At least 2 reflections written in full sentences with a real connection to AI</td><td>1 reflection written; connection to AI is vague</td><td class="pts">2 pts</td></tr>
+    </tbody>
+  </table>
+  <div class="tip-box green mt-2">📣 <strong>Effort is celebrated.</strong> A project that has a bug but shows thinking earns full credit. Corrections are always private and encouraging — never public.</div>
+</div>
+
+<!-- FAMILY NOTE -->
+<div class="card accent-green">
+  <div class="card-label green">👨‍👩‍👧 A Note for Families</div>
+  <div class="grid-2">
+    <div>
+      <p class="mb-2">Ask your child to show you their Scratch project and explain:</p>
+      <ul style="list-style:disc;padding-left:18px;font-size:0.84rem;color:#374151;line-height:1.9;">
+        <li>"What does a loop do?"</li>
+        <li>"What's the difference between <code>repeat</code> and <code>forever</code>?"</li>
+        <li>"How does AI use loops to get smarter?"</li>
+      </ul>
+      <p class="mt-2" style="font-size:0.82rem;color:#374151;">If they can explain it simply, they've got it. If they get stuck — that's a great question to bring to class Monday!</p>
+    </div>
+    <div>
+      <p class="mb-2" style="font-weight:700;color:#047857;">请问您的孩子：</p>
+      <ul style="list-style:disc;padding-left:18px;font-size:0.84rem;color:#374151;line-height:1.9;">
+        <li>"循环是什么意思？"</li>
+        <li>"repeat和forever有什么不同？"</li>
+        <li>"AI怎么用循环变得更聪明？"</li>
+      </ul>
+      <div class="tip-box green mt-2">🌟 This homework is designed to take <strong>exactly 30 minutes</strong>. If your child finishes early, the bonus challenge is optional. There is no need to spend more than 30 minutes.</div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="sheet-footer">
+  <div><strong>Summer 2026 AI Coding Program</strong> · Modern Chinese School · Session 4 Homework · Due Mon Jul 6</div>
+  <div>Scratch: scratch.mit.edu &nbsp;|&nbsp; Lesson: hue881.github.io/mcs2026summer &nbsp;|&nbsp; Questions? Bring them Monday!</div>
+</div>
+
+</div><!-- end .page -->
+
+<script>
+(function() {
+  function initCanvas(canvas) {
+    var ctx = canvas.getContext('2d');
+    var drawing = false;
+    var lastX = 0, lastY = 0;
+    var color = '#10b981';
+    var lineWidth = 2;
+    function getPos(e) {
+      var r = canvas.getBoundingClientRect();
+      var src = e.touches ? e.touches[0] : e;
+      return { x: src.clientX - r.left, y: src.clientY - r.top };
+    }
+    function startDraw(e) {
+      drawing = true;
+      var p = getPos(e);
+      lastX = p.x; lastY = p.y;
+      ctx.beginPath(); ctx.arc(p.x, p.y, lineWidth/2, 0, Math.PI*2);
+      ctx.fillStyle = color; ctx.fill(); e.preventDefault();
+    }
+    function draw(e) {
+      if (!drawing) return;
+      var p = getPos(e);
+      ctx.beginPath(); ctx.moveTo(lastX, lastY); ctx.lineTo(p.x, p.y);
+      ctx.strokeStyle = color; ctx.lineWidth = lineWidth; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.stroke();
+      lastX = p.x; lastY = p.y; e.preventDefault();
+    }
+    function stopDraw() { drawing = false; }
+    canvas.addEventListener('mousedown', startDraw);
+    canvas.addEventListener('mousemove', draw);
+    canvas.addEventListener('mouseup', stopDraw);
+    canvas.addEventListener('mouseleave', stopDraw);
+    canvas.addEventListener('touchstart', startDraw, {passive:false});
+    canvas.addEventListener('touchmove', draw, {passive:false});
+    canvas.addEventListener('touchend', stopDraw);
+    var btn = canvas.parentElement.querySelector('.draw-clear');
+    if (btn) btn.addEventListener('click', function() { ctx.clearRect(0, 0, canvas.width, canvas.height); });
+    var colorPick = canvas.parentElement.querySelector('.draw-color');
+    if (colorPick) colorPick.addEventListener('input', function(e) { color = e.target.value; });
+    var sizePick = canvas.parentElement.querySelector('.draw-size');
+    if (sizePick) sizePick.addEventListener('input', function(e) { lineWidth = +e.target.value; });
+  }
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('canvas.draw-canvas').forEach(initCanvas);
+  });
+})();
+</script>
+</body>
+</html>
