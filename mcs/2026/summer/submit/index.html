@@ -1,1 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sender</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --color-bg: #f4fbff;
+      --color-surface: rgba(255,255,255,0.97);
+      --color-text: #1f2a37;
+      --color-text-secondary: #374151;
+      --color-text-muted: #5b6b7e;
+      --color-accent-1: #0b63ce;
+      --color-accent-2: #10b981;
+      --color-accent-3: #f59e0b;
+      --color-accent-red: #ef4444;
+      --color-accent-purple: #7c3aed;
+      --font-display: 'Fredoka', 'Trebuchet MS', sans-serif;
+      --font-body: 'Nunito', Arial, sans-serif;
+      --font-code: 'Fira Code', Consolas, monospace;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 20px;
+      --radius-full: 999px;
+      --transition: 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+    }
 
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-body);
+      color: var(--color-text);
+      background: var(--color-bg);
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 16px 48px;
+    }
+
+    input, button { font: inherit; color: inherit; }
+    button { cursor: pointer; background: none; border: none; }
+    :focus-visible { outline: 2px solid var(--color-accent-1); outline-offset: 3px; border-radius: var(--radius-sm); }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+    }
+
+    /* ── Page wrapper ── */
+    .page-wrap {
+      width: 100%;
+      max-width: 480px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* ── Gradient header ── */
+    .app-header {
+      background: linear-gradient(135deg, #7c3aed 0%, #0b63ce 50%, #10b981 100%);
+      border-radius: var(--radius-xl);
+      padding: 28px 28px 22px;
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+    }
+    .app-header::before {
+      content: '';
+      position: absolute; top: -50px; right: -50px;
+      width: 180px; height: 180px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 50%; pointer-events: none;
+    }
+    .app-header::after {
+      content: '';
+      position: absolute; bottom: -35px; left: -35px;
+      width: 130px; height: 130px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 50%; pointer-events: none;
+    }
+    .header-inner { position: relative; z-index: 1; }
+    .header-eyebrow {
+      font-size: 0.72rem; font-weight: 800; letter-spacing: 0.18em;
+      text-transform: uppercase; opacity: 0.85; margin-bottom: 4px;
+    }
+    .header-title {
+      font-family: var(--font-display);
+      font-size: clamp(1.5rem, 5vw, 2rem);
+      font-weight: 700; line-height: 1.1; margin-bottom: 8px;
+    }
+    .header-pills { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+    .header-pill {
+      background: rgba(255,255,255,0.22);
+      border: 1px solid rgba(255,255,255,0.35);
+      border-radius: var(--radius-full);
+      padding: 3px 13px;
+      font-size: 0.7rem; font-weight: 800; letter-spacing: 0.07em; text-transform: uppercase;
+    }
+
+    /* ── Card ── */
+    .card {
+      background: var(--color-surface);
+      border-radius: var(--radius-lg);
+      padding: 22px 24px;
+      box-shadow: 0 4px 18px rgba(15,23,42,0.08);
+      border: 1px solid rgba(255,255,255,0.7);
+    }
+    .card.accent-blue { border-left: 4px solid var(--color-accent-1); }
+
+    .section-label {
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 4px 14px; border-radius: var(--radius-full);
+      border: 1px solid rgba(148,163,184,0.4);
+      background: rgba(255,255,255,0.9);
+      font-size: 0.7rem; font-weight: 800; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--color-accent-1); margin-bottom: 12px;
+    }
+    .card-title {
+      font-family: var(--font-display); font-size: 1.25rem; font-weight: 700;
+      color: var(--color-text); margin-bottom: 4px;
+    }
+    .card-desc {
+      font-size: 0.85rem; color: var(--color-text-muted); margin-bottom: 18px; line-height: 1.5;
+    }
+
+    /* ── PIN numpad gate ── */
+    #pinGate { display: flex; flex-direction: column; gap: 0; }
+
+    .pin-dots-row {
+      display: flex; gap: 12px; justify-content: center;
+      margin: 4px 0 8px;
+    }
+    .pin-dot {
+      width: 16px; height: 16px; border-radius: var(--radius-full);
+      border: 2px solid rgba(148,163,184,0.5);
+      background: transparent;
+      transition: background var(--transition), border-color var(--transition);
+    }
+    .pin-dot.filled { background: var(--color-accent-1); border-color: var(--color-accent-1); }
+    .pin-dot.error  { background: var(--color-accent-red); border-color: var(--color-accent-red); }
+
+    .pin-error-msg {
+      text-align: center; font-size: 0.78rem; font-weight: 700; color: #b91c1c;
+      min-height: 1.2em; margin-bottom: 4px;
+    }
+
+    .numpad {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 10px; margin-top: 12px;
+    }
+    .numpad-key {
+      padding: 14px 0;
+      background: #f8fafc;
+      border: 1.5px solid rgba(148,163,184,0.3);
+      border-radius: var(--radius-md);
+      font-family: var(--font-display); font-size: 1.25rem; font-weight: 600;
+      color: var(--color-text);
+      display: flex; align-items: center; justify-content: center;
+      transition: background var(--transition), transform 80ms ease, border-color var(--transition);
+      user-select: none;
+    }
+    .numpad-key:hover { background: rgba(11,99,206,0.07); border-color: rgba(11,99,206,0.25); }
+    .numpad-key:active { transform: scale(0.95); }
+    .numpad-key.del { font-family: var(--font-body); font-size: 0.85rem; color: var(--color-text-muted); }
+    .numpad-key.empty { background: transparent; border-color: transparent; pointer-events: none; }
+
+    /* ── Main form (hidden until PIN passes) ── */
+    .main-form-wrap { display: none; flex-direction: column; gap: 18px; }
+    .main-form-wrap.unlocked { display: flex; }
+
+    /* form fields */
+    .form-label {
+      display: block; font-size: 0.65rem; font-weight: 800;
+      text-transform: uppercase; letter-spacing: 0.14em;
+      color: var(--color-accent-1); margin-bottom: 8px;
+    }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .form-group { display: flex; flex-direction: column; }
+
+    .field-input {
+      width: 100%; padding: 11px 14px;
+      border: 2px solid rgba(148,163,184,0.4);
+      border-radius: var(--radius-md);
+      background: #f8fafc;
+      font-family: var(--font-body); font-size: 0.95rem; font-weight: 600;
+      color: var(--color-text);
+      transition: border-color var(--transition), box-shadow var(--transition), background var(--transition);
+    }
+    .field-input::placeholder { color: #bdc5d1; font-weight: 400; }
+    .field-input:focus {
+      outline: none; border-color: var(--color-accent-1);
+      box-shadow: 0 0 0 3px rgba(11,99,206,0.15); background: #fff;
+    }
+
+    /* subject preview */
+    .subject-preview {
+      display: none; align-items: center; gap: 8px;
+      padding: 7px 14px; border-radius: var(--radius-full);
+      background: rgba(11,99,206,0.07);
+      border: 1.5px solid rgba(11,99,206,0.18);
+      font-size: 0.75rem; font-weight: 800; color: var(--color-accent-1);
+      width: fit-content; max-width: 100%;
+    }
+    .subject-preview.visible { display: flex; }
+    .subject-preview span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .subject-tag { opacity: 0.65; flex-shrink: 0; text-transform: uppercase; letter-spacing: 0.08em; }
+
+    /* file input */
+    input[type="file"] {
+      width: 100%; padding: 9px 12px;
+      border: 2px dashed rgba(148,163,184,0.45);
+      border-radius: var(--radius-md);
+      background: #f8fafc; font-size: 0.82rem;
+      color: var(--color-text-muted); cursor: pointer;
+      transition: border-color var(--transition);
+    }
+    input[type="file"]:hover { border-color: var(--color-accent-1); }
+    input[type="file"]::file-selector-button {
+      font-family: var(--font-body); font-size: 0.72rem; font-weight: 800;
+      padding: 4px 12px; border-radius: var(--radius-sm);
+      background: rgba(11,99,206,0.1); color: var(--color-accent-1);
+      border: 1.5px solid rgba(11,99,206,0.25);
+      cursor: pointer; margin-right: 10px; text-transform: uppercase; letter-spacing: 0.06em;
+      transition: background var(--transition);
+    }
+    input[type="file"]::file-selector-button:hover { background: var(--color-accent-1); color: #fff; }
+
+    /* attachments list */
+    .attachments-list { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
+    .attachment-item {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 8px 12px;
+      background: rgba(11,99,206,0.04);
+      border: 1.5px solid rgba(11,99,206,0.12);
+      border-radius: var(--radius-sm);
+      font-size: 0.78rem;
+    }
+    .attachment-name {
+      display: flex; align-items: center; gap: 7px;
+      font-weight: 700; color: var(--color-text); font-family: var(--font-code); font-size: 0.75rem;
+    }
+    .attachment-size { color: var(--color-text-muted); font-size: 0.72rem; }
+    .remove-btn {
+      width: 22px; height: 22px; border-radius: var(--radius-full);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--color-text-muted); font-size: 13px; line-height: 1;
+      transition: background var(--transition), color var(--transition);
+    }
+    .remove-btn:hover { background: rgba(239,68,68,0.1); color: var(--color-accent-red); }
+
+    .info-hint {
+      font-size: 0.7rem; font-weight: 700; color: var(--color-text-muted);
+      display: flex; align-items: center; gap: 5px; margin-top: 6px;
+    }
+
+    /* status */
+    .status-msg {
+      display: none; align-items: flex-start; gap: 9px;
+      padding: 10px 14px; border-radius: var(--radius-sm);
+      font-size: 0.82rem; font-weight: 700;
+    }
+    .status-msg.show { display: flex; }
+    .status-msg.success {
+      color: #047857; background: rgba(16,185,129,0.08);
+      border: 1.5px solid rgba(16,185,129,0.22);
+    }
+    .status-msg.error {
+      color: #b91c1c; background: rgba(239,68,68,0.07);
+      border: 1.5px solid rgba(239,68,68,0.18);
+    }
+    .status-msg.loading {
+      color: var(--color-accent-1); background: rgba(11,99,206,0.06);
+      border: 1.5px solid rgba(11,99,206,0.18);
+    }
+
+    /* divider */
+    .divider { border: none; border-top: 2px dashed #dde6f0; margin: 4px 0; }
+
+    /* action row */
+    .actions { display: flex; gap: 10px; }
+    .btn-send {
+      flex: 1; padding: 13px 22px;
+      background: linear-gradient(135deg, #0b63ce, #10b981);
+      color: #fff; border-radius: var(--radius-md);
+      font-family: var(--font-body); font-size: 0.92rem; font-weight: 800;
+      letter-spacing: 0.04em;
+      transition: opacity var(--transition), transform 80ms ease, box-shadow var(--transition);
+      box-shadow: 0 3px 12px rgba(11,99,206,0.30);
+    }
+    .btn-send:hover { opacity: 0.9; box-shadow: 0 5px 18px rgba(11,99,206,0.38); }
+    .btn-send:active { transform: scale(0.97); }
+    .btn-send:disabled { opacity: 0.5; cursor: not-allowed; pointer-events: none; }
+    .btn-clear {
+      padding: 13px 18px; border-radius: var(--radius-md);
+      border: 2px solid rgba(148,163,184,0.4);
+      font-size: 0.85rem; font-weight: 800; color: var(--color-text-muted);
+      transition: background var(--transition), color var(--transition);
+    }
+    .btn-clear:hover { background: rgba(148,163,184,0.1); color: var(--color-text); }
+
+    .spinner {
+      width: 17px; height: 17px; display: inline-block;
+      border: 2.5px solid rgba(255,255,255,0.35);
+      border-top-color: #fff; border-radius: 50%;
+      animation: spin 0.65s linear infinite; vertical-align: middle; margin-right: 6px;
+    }
+
+    /* page hint */
+    .page-hint {
+      text-align: center; font-size: 0.72rem; font-weight: 700;
+      color: var(--color-text-muted); letter-spacing: 0.03em;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes shake {
+      0%,100% { transform: translateX(0); }
+      20%,60%  { transform: translateX(-6px); }
+      40%,80%  { transform: translateX(6px); }
+    }
+
+    @media (max-width: 480px) {
+      body { padding: 20px 12px 40px; }
+      .app-header { padding: 22px 20px 18px; }
+      .card { padding: 18px 18px; }
+      .form-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ─────────────────────────────────────────────
+     SMTP CONFIG (hidden — not shown on page)
+     smtp.mailersend.net · Port 2525 (TLS)
+     user: MS_EIYpdT@test-ywj2lpn0m6mg7oqz.mlsender.net
+     pass: mssp.Qd1UVqb.3yxj6ljrnj74do2r.xib7P6d
+     to:   hue.weng.88@gmail.com
+     sender: Hue Weng
+     subject: [First Name]-[Last Name]
+     PIN: stored in CONFIG.pin below
+───────────────────────────────────────────── -->
+
+<div class="page-wrap">
+
+  <!-- Header -->
+  <div class="app-header">
+    <div class="header-inner">
+      <div class="header-eyebrow">MailerSend · SMTP</div>
+      <div class="header-title">✉️ Sender</div>
+      <div class="header-pills">
+        <span class="header-pill">🔐 PIN Required</span>
+        <span class="header-pill">📎 Attachments</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- PIN Gate Card -->
+  <div class="card accent-blue" id="pinCard">
+    <div class="section-label">🔒 Access Required</div>
+    <div class="card-title">Enter PIN</div>
+    <div class="card-desc">Enter your 4-digit PIN to access the form.</div>
+
+    <div id="pinGate">
+      <div class="pin-dots-row">
+        <div class="pin-dot" id="dot0"></div>
+        <div class="pin-dot" id="dot1"></div>
+        <div class="pin-dot" id="dot2"></div>
+        <div class="pin-dot" id="dot3"></div>
+      </div>
+      <div class="pin-error-msg" id="pinError" aria-live="polite"></div>
+
+      <div class="numpad" role="group" aria-label="PIN numpad">
+        <button class="numpad-key" data-val="1">1</button>
+        <button class="numpad-key" data-val="2">2</button>
+        <button class="numpad-key" data-val="3">3</button>
+        <button class="numpad-key" data-val="4">4</button>
+        <button class="numpad-key" data-val="5">5</button>
+        <button class="numpad-key" data-val="6">6</button>
+        <button class="numpad-key" data-val="7">7</button>
+        <button class="numpad-key" data-val="8">8</button>
+        <button class="numpad-key" data-val="9">9</button>
+        <button class="numpad-key empty" aria-hidden="true"></button>
+        <button class="numpad-key" data-val="0">0</button>
+        <button class="numpad-key del" id="pinDel" aria-label="Delete">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"/><line x1="18" y1="9" x2="12" y2="15"/><line x1="12" y1="9" x2="18" y2="15"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Form Card (revealed after PIN) -->
+  <div class="card accent-blue" id="formCard" style="display:none;">
+    <div class="section-label">📨 Compose</div>
+    <div class="card-title">Sender</div>
+    <div class="card-desc">Fill in the names — subject is built automatically.</div>
+
+    <div class="main-form-wrap unlocked" id="mainFormWrap">
+
+      <div class="status-msg" id="statusMsg" role="alert" aria-live="polite">
+        <span id="statusIcon"></span>
+        <span id="statusBody"></span>
+      </div>
+
+      <form id="emailForm" novalidate style="display:flex;flex-direction:column;gap:14px;">
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="firstName">First Name</label>
+            <input class="field-input" type="text" id="firstName" placeholder="Jane" required autocomplete="given-name" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="lastName">Last Name</label>
+            <input class="field-input" type="text" id="lastName" placeholder="Doe" required autocomplete="family-name" />
+          </div>
+        </div>
+
+        <!-- Live subject preview -->
+        <div class="subject-preview" id="subjectPreview">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          <span class="subject-tag">Subject:</span>
+          <span id="subjectValue"></span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Attachments</label>
+          <input type="file" id="fileInput" multiple accept="*/*" />
+          <div class="attachments-list" id="attachmentsList"></div>
+          <div class="info-hint">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            Files Base64-encoded as MIME attachments · Max ~10 MB total
+          </div>
+        </div>
+
+        <hr class="divider">
+
+        <div class="actions">
+          <button type="button" class="btn-clear" id="clearBtn">Clear</button>
+          <button type="submit" class="btn-send" id="sendBtn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="display:inline;vertical-align:middle;margin-right:6px;"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            Send
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <p class="page-hint">🔒 Credentials are hidden — secured by PIN</p>
+
+</div>
+
+<script>
+/* ── Hidden Config ── */
+const CONFIG = {
+  smtp:     'smtp.mailersend.net',
+  user:     'MS_EIYpdT@test-ywj2lpn0m6mg7oqz.mlsender.net',
+  pass:     'mlsn.34211118ac09c39a1fa15caa388d6ca551b7650de8ed90923a151cfce8aa2169',
+  to:       'hue.weng.88@gmail.com',
+  fromName: 'Hue Weng',
+  pin:      '4588'   // ← change PIN here
+};
+
+/* ── PIN Logic ── */
+let pinEntry = '';
+const PIN_LEN = CONFIG.pin.length;
+const pinError = document.getElementById('pinError');
+
+function getDots() { return [0,1,2,3].map(i => document.getElementById('dot'+i)); }
+
+function updateDots(err) {
+  getDots().forEach((d,i) => {
+    d.classList.toggle('filled', i < pinEntry.length && !err);
+    d.classList.toggle('error',  i < pinEntry.length && !!err);
+  });
+}
+
+function appendPin(v) {
+  if (pinEntry.length >= PIN_LEN) return;
+  pinEntry += v;
+  updateDots(false);
+  pinError.textContent = '';
+  if (pinEntry.length === PIN_LEN) checkPin();
+}
+
+function deletePin() {
+  if (!pinEntry.length) return;
+  pinEntry = pinEntry.slice(0,-1);
+  updateDots(false);
+  pinError.textContent = '';
+}
+
+function checkPin() {
+  if (pinEntry === CONFIG.pin) {
+    document.getElementById('pinCard').style.display = 'none';
+    document.getElementById('formCard').style.display = 'block';
+    document.getElementById('firstName').focus();
+  } else {
+    updateDots(true);
+    pinError.textContent = 'Incorrect PIN — try again';
+    setTimeout(() => { pinEntry=''; updateDots(false); pinError.textContent=''; }, 900);
+  }
+}
+
+document.querySelector('.numpad').addEventListener('click', e => {
+  const key = e.target.closest('.numpad-key');
+  if (!key || key.classList.contains('empty')) return;
+  if (key.id === 'pinDel') { deletePin(); return; }
+  appendPin(key.dataset.val);
+});
+
+document.addEventListener('keydown', e => {
+  if (document.getElementById('formCard').style.display !== 'none') return;
+  if (e.key >= '0' && e.key <= '9') appendPin(e.key);
+  else if (e.key === 'Backspace') deletePin();
+});
+
+/* ── Subject Preview ── */
+const firstNameEl = document.getElementById('firstName');
+const lastNameEl  = document.getElementById('lastName');
+const preview     = document.getElementById('subjectPreview');
+const subjectVal  = document.getElementById('subjectValue');
+
+function buildSubject() {
+  return [firstNameEl.value.trim(), lastNameEl.value.trim()].filter(Boolean).join('-');
+}
+function updatePreview() {
+  const s = buildSubject();
+  subjectVal.textContent = s;
+  preview.classList.toggle('visible', !!s);
+}
+[firstNameEl, lastNameEl].forEach(el => el.addEventListener('input', updatePreview));
+
+/* ── Attachments ── */
+let attachedFiles = [];
+const fileInput = document.getElementById('fileInput');
+const attachmentsList = document.getElementById('attachmentsList');
+
+fileInput.addEventListener('change', () => {
+  Array.from(fileInput.files).forEach(f => {
+    if (!attachedFiles.find(x => x.name===f.name && x.size===f.size)) attachedFiles.push(f);
+  });
+  renderAttachments();
+  fileInput.value = '';
+});
+
+function renderAttachments() {
+  attachmentsList.innerHTML = '';
+  attachedFiles.forEach((f,i) => {
+    const item = document.createElement('div');
+    item.className = 'attachment-item';
+    item.innerHTML = `
+      <div class="attachment-name">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        ${escapeHtml(f.name)}
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span class="attachment-size">${formatBytes(f.size)}</span>
+        <button class="remove-btn" aria-label="Remove" data-idx="${i}">✕</button>
+      </div>`;
+    attachmentsList.appendChild(item);
+  });
+  attachmentsList.querySelectorAll('.remove-btn').forEach(btn => {
+    btn.addEventListener('click', () => { attachedFiles.splice(parseInt(btn.dataset.idx),1); renderAttachments(); });
+  });
+}
+
+function formatBytes(b) {
+  if (b<1024) return b+' B';
+  if (b<1048576) return (b/1024).toFixed(1)+' KB';
+  return (b/1048576).toFixed(1)+' MB';
+}
+function escapeHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+/* ── Status ── */
+function showStatus(type, html) {
+  const el = document.getElementById('statusMsg');
+  el.className = 'status-msg show ' + type;
+  document.getElementById('statusIcon').innerHTML =
+    type==='loading' ? '<span class="spinner"></span>' :
+    type==='success' ? '✅ ' : '❌ ';
+  document.getElementById('statusBody').innerHTML = html;
+}
+function hideStatus() { document.getElementById('statusMsg').className='status-msg'; }
+
+/* ── File → Base64 ── */
+function fileToBase64(file) {
+  return new Promise((res,rej) => {
+    const r = new FileReader(); r.onload=()=>res(r.result.split(',')[1]); r.onerror=rej; r.readAsDataURL(file);
+  });
+}
+
+/* ── Send via MailerSend API ── */
+async function sendViaAPI(subject, files) {
+  const attachments = [];
+  for (const file of files) attachments.push({ filename: file.name, content: await fileToBase64(file), disposition: 'attachment' });
+  const payload = {
+    from: { email: CONFIG.user, name: CONFIG.fromName },
+    to: [{ email: CONFIG.to, name: 'Hue Weng' }],
+    subject, text: subject,
+    ...(attachments.length ? { attachments } : {})
+  };
+  const resp = await fetch('https://api.mailersend.com/v1/email', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer '+CONFIG.pass, 'X-Requested-With': 'XMLHttpRequest' },
+    body: JSON.stringify(payload)
+  });
+  if (resp.status===202||resp.status===200) return { ok:true };
+  let errMsg = `HTTP ${resp.status}`;
+  try { const j=await resp.json(); errMsg=j.message||JSON.stringify(j.errors||j); } catch(_){}
+  return { ok:false, error:errMsg };
+}
+
+/* ── Form Submit ── */
+const sendBtn = document.getElementById('sendBtn');
+document.getElementById('emailForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  hideStatus();
+  const fn = firstNameEl.value.trim(), ln = lastNameEl.value.trim();
+  if (!fn || !ln) { showStatus('error', 'Both First and Last Name are required.'); return; }
+  const subject = fn + '-' + ln;
+  sendBtn.disabled = true;
+  sendBtn.innerHTML = '<span class="spinner"></span> Sending…';
+  showStatus('loading', 'Sending your email… please wait.');
+  const result = await sendViaAPI(subject, attachedFiles);
+  sendBtn.disabled = false;
+  sendBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="display:inline;vertical-align:middle;margin-right:6px;"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Send';
+  if (result.ok) {
+    showStatus('success', `Email sent! Subject: <strong>${escapeHtml(subject)}</strong>` + (attachedFiles.length ? ` · ${attachedFiles.length} attachment${attachedFiles.length>1?'s':''}.` : ''));
+    firstNameEl.value=''; lastNameEl.value='';
+    attachedFiles=[]; renderAttachments(); updatePreview();
+  } else {
+    showStatus('error', 'Send failed: ' + escapeHtml(result.error||'Unknown error.'));
+    console.error('[MailSend]', result.error);
+  }
+});
+
+document.getElementById('clearBtn').addEventListener('click', () => {
+  firstNameEl.value=''; lastNameEl.value='';
+  attachedFiles=[]; renderAttachments(); hideStatus(); updatePreview();
+});
+</script>
+
+</body>
+</html>
