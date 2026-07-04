@@ -1,1 +1,1283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="slides-format" content="viewport">
+<title>Session 5 · Scratch: Conditionals (if / if-else)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<style type="text/tailwindcss">
+@theme {
+  --color-bg:#f0f8ff; --color-bg-deep:#dceefb; --color-surface:rgba(255,255,255,0.96);
+  --color-text:#0f2747; --color-text-secondary:#1e3a5f; --color-text-muted:#4a6380;
+  --color-accent-1:#0b63ce; --color-accent-2:#10b981; --color-accent-3:#f59e0b;
+  --color-glass-bg:rgba(255,255,255,0.88); --color-glass-border:rgba(11,99,206,0.16);
+  --color-vignette:rgba(15,23,42,0.06);
+  --font-display:"Fredoka","Trebuchet MS",sans-serif;
+  --font-body:"Nunito",Arial,sans-serif;
+}
+</style>
+<style>
+:root{
+  --color-bg:#f0f8ff; --color-text:#0f2747;
+  --glow-color-rgb:11,99,206;
+  --a1:#0b63ce; --a2:#10b981; --a3:#f59e0b; --ar:#ef4444;
+}
+*,*::before,*::after{box-sizing:border-box;}
+html,body{background:var(--color-bg);margin:0;}
+body{font-family:"Nunito",Arial,sans-serif;color:var(--color-text);overflow:hidden;height:100vh;width:100vw;}
+.deck{width:100vw;height:100vh;position:relative;}
 
+/* === SLIDE CORE === */
+.slide{
+  position:absolute;top:0;left:0;width:100%;height:100%;
+  background:radial-gradient(circle at top left,rgba(56,189,248,0.14),transparent 40%),
+             radial-gradient(circle at bottom right,rgba(16,185,129,0.10),transparent 40%),
+             var(--color-bg);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  opacity:0;transform:scale(0.96);transition:opacity 0.55s ease,transform 0.55s ease;
+  pointer-events:none;overflow:hidden;
+}
+.slide.active{opacity:1;transform:scale(1);pointer-events:all;}
+.slide>.content{position:relative;z-index:2;width:100%;max-width:1060px;padding:clamp(1rem,3vw,2.8rem);}
+
+/* Interior slides */
+.slide.interior{
+  background:
+    radial-gradient(circle at 18% 12%,rgba(11,99,206,0.16),transparent 50%),
+    radial-gradient(circle at 82% 88%,rgba(16,185,129,0.14),transparent 50%),
+    linear-gradient(160deg,#aecbe8 0%,#b9d4ea 48%,#b3ddd0 100%);
+}
+.slide.interior::after{background:radial-gradient(ellipse at center,transparent 58%,rgba(15,23,42,0.12) 100%);}
+.slide.interior .card{background:#ffffff;border:1px solid rgba(15,23,42,0.06);box-shadow:0 14px 34px rgba(15,23,42,0.18),0 2px 6px rgba(15,23,42,0.08);border-radius:18px;}
+.slide.interior .accent-card-blue{background:#eaf2fd;border:1px solid rgba(11,99,206,0.22);}
+.slide.interior .accent-card-green{background:#e6f7f0;border:1px solid rgba(5,150,105,0.22);}
+.slide.interior .accent-card-amber{background:#fdf4e3;border:1px solid rgba(245,158,11,0.28);}
+.slide.interior .accent-card-red{background:#fdeceb;border:1px solid rgba(239,68,68,0.24);}
+
+/* vignette */
+.slide::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:radial-gradient(ellipse at center,transparent 55%,var(--color-vignette) 100%);}
+
+/* === NAV === */
+.nav-controls{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:12px;z-index:100;background:rgba(255,255,255,0.92);backdrop-filter:blur(12px);padding:8px 20px;border-radius:999px;border:1px solid rgba(148,163,184,0.4);box-shadow:0 8px 28px rgba(15,23,42,0.13);}
+.nav-btn{width:34px;height:34px;border:none;background:rgba(15,23,42,0.06);color:#0b63ce;border-radius:999px;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 0.2s,transform 0.15s;}
+.nav-btn:hover{background:rgba(15,23,42,0.12);transform:translateY(-1px);}
+.slide-dots{display:flex;gap:5px;flex-wrap:wrap;max-width:400px;}
+.dot{width:8px;height:8px;border-radius:50%;background:rgba(148,163,184,0.6);cursor:pointer;transition:background 0.25s,transform 0.25s;}
+.dot.active{background:#0b63ce;transform:scale(1.4);}
+.dot.warmup{background:rgba(245,158,11,0.6);}
+.dot.warmup.active{background:#f59e0b;}
+.dot.mini{background:rgba(11,99,206,0.45);}
+.dot.mini.active{background:#0b63ce;}
+.dot.build{background:rgba(16,185,129,0.55);}
+.dot.build.active{background:#10b981;}
+.dot.share{background:rgba(139,92,246,0.55);}
+.dot.share.active{background:#8b5cf6;}
+.slide-counter{font-size:0.78rem;color:#64748b;min-width:52px;text-align:center;font-weight:700;}
+
+/* === ANIMATIONS === */
+.reveal{opacity:0;transform:translateY(16px);}
+@keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-12px);}}
+@keyframes float-slow{0%{transform:translate(0,0) scale(1);}25%{transform:translate(50px,-40px) scale(1.1);}50%{transform:translate(-30px,35px) scale(0.92);}75%{transform:translate(45px,18px) scale(1.07);}100%{transform:translate(0,0) scale(1);}}
+@keyframes float-drift{0%{transform:translate(0,0) scale(1);}33%{transform:translate(-45px,-55px) scale(1.13);}66%{transform:translate(38px,28px) scale(0.9);}100%{transform:translate(0,0) scale(1);}}
+@keyframes pulse-glow{0%,100%{box-shadow:0 0 0 0 rgba(11,99,206,0.4);}50%{box-shadow:0 0 0 12px rgba(11,99,206,0);}}
+
+.gradient-mesh{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none;}
+.blob{position:absolute;border-radius:50%;filter:blur(72px);animation:float-slow 12s ease-in-out infinite;}
+.blob:nth-child(2){animation:float-drift 16s ease-in-out infinite;}
+.blob:nth-child(3){animation:float-slow 20s ease-in-out infinite reverse;}
+.particle-canvas{position:absolute;inset:0;width:100%;height:100%;z-index:1;}
+
+/* === COMPONENTS === */
+.card{background:var(--color-surface);border-radius:16px;padding:14px 18px;box-shadow:0 8px 24px rgba(15,23,42,0.07);border:1px solid rgba(255,255,255,0.7);}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:4px 14px;border-radius:999px;border:1px solid rgba(148,163,184,0.5);background:rgba(255,255,255,0.9);font-size:0.76rem;font-weight:800;letter-spacing:0.07em;text-transform:uppercase;color:#0b63ce;}
+.pill.green{color:#047857;}
+.pill.amber{color:#b45309;}
+.pill.purple{color:#6d28d9;}
+.big-text{font-size:clamp(0.95rem,1.6vw,1.2rem);line-height:1.65;}
+.code-block{background:#0f172a;color:#e2e8f0;font-family:"Fira Code",Consolas,monospace;border-radius:12px;padding:14px 18px;font-size:clamp(0.82rem,1.3vw,1rem);line-height:1.7;overflow-x:auto;}
+.code-block .kw{color:#f59e0b;font-weight:600;}
+.code-block .str{color:#a3e635;}
+.code-block .cmt{color:#64748b;font-style:italic;}
+.code-block .num{color:#38bdf8;}
+.think-chip{display:inline-flex;align-items:center;gap:8px;padding:7px 13px;border-radius:999px;background:rgba(11,99,206,0.10);color:#1e40af;font-size:0.82rem;font-weight:700;}
+.question-chip{display:inline-flex;align-items:center;gap:8px;padding:7px 13px;border-radius:999px;background:rgba(245,158,11,0.10);color:#92400e;font-size:0.82rem;font-weight:700;}
+.vocab-tag{display:inline-flex;align-items:center;padding:4px 12px;border-radius:999px;background:rgba(11,99,206,0.08);font-size:0.84rem;font-weight:800;color:#0b63ce;}
+.grid-cards{display:grid;gap:14px;}
+@media(min-width:700px){.grid-2{grid-template-columns:repeat(2,minmax(0,1fr));}.grid-3{grid-template-columns:repeat(3,minmax(0,1fr));}}
+.grad-text{background:linear-gradient(135deg,#0b63ce 0%,#10b981 55%,#f59e0b 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+
+/* Media embed — thumbnail → click → embed */
+.media-embed{position:relative;padding-top:56.25%;border-radius:13px;overflow:hidden;background:#1e293b;cursor:pointer;}
+.media-embed img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+.media-embed .play-btn{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;}
+.media-embed .play-btn div{width:56px;height:56px;background:rgba(255,0,0,0.90);border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 18px rgba(0,0,0,0.38);transition:transform 0.2s;}
+.media-embed:hover .play-btn div{transform:scale(1.1);}
+.media-embed iframe{position:absolute;inset:0;width:100%;height:100%;border:0;border-radius:13px;}
+
+/* Decision tree */
+.dtree{display:flex;flex-direction:column;align-items:center;gap:0;}
+.dnode{padding:8px 18px;border-radius:10px;font-weight:700;font-size:clamp(0.78rem,1.2vw,0.96rem);text-align:center;border:2px solid;}
+.dnode.root{background:#dbeafe;border-color:#3b82f6;color:#1e3a8a;}
+.dnode.yes{background:#dcfce7;border-color:#22c55e;color:#14532d;}
+.dnode.no{background:#fee2e2;border-color:#ef4444;color:#7f1d1d;}
+.dnode.question{background:#fef3c7;border-color:#f59e0b;color:#78350f;}
+.dtree-row{display:flex;gap:30px;align-items:flex-start;justify-content:center;}
+.dtree-branch{display:flex;flex-direction:column;align-items:center;gap:0;}
+.dtree-line{width:2px;height:20px;background:#94a3b8;margin:0 auto;}
+.dtree-labels{display:flex;gap:80px;font-size:0.72rem;font-weight:700;color:#64748b;margin-bottom:2px;}
+
+/* progress bar */
+.progress-track{height:6px;background:rgba(11,99,206,0.15);border-radius:999px;overflow:hidden;margin-top:6px;}
+.progress-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,#0b63ce,#10b981);transition:width 0.6s ease;}
+
+/* challenge card */
+.challenge-card{background:linear-gradient(135deg,rgba(139,92,246,0.12),rgba(11,99,206,0.08));border:2px solid rgba(139,92,246,0.30);border-radius:16px;padding:14px 18px;}
+
+/* brain break */
+.break-card{background:linear-gradient(135deg,#fdf4e3,#fff7e6);border:2px solid rgba(245,158,11,0.30);border-radius:18px;padding:18px 22px;}
+
+/* tier badges */
+.tier-a{display:inline-flex;align-items:center;padding:3px 10px;border-radius:999px;background:#dcfce7;color:#14532d;font-size:0.72rem;font-weight:800;}
+.tier-b{display:inline-flex;align-items:center;padding:3px 10px;border-radius:999px;background:#dbeafe;color:#1e3a8a;font-size:0.72rem;font-weight:800;}
+.tier-c{display:inline-flex;align-items:center;padding:3px 10px;border-radius:999px;background:#ede9fe;color:#4c1d95;font-size:0.72rem;font-weight:800;}
+
+/* mouse spotlight */
+.mouse-spotlight{position:fixed;inset:0;z-index:99;pointer-events:none;}
+
+/* step numbers */
+.step-num{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#0b63ce,#10b981);color:#fff;font-weight:800;font-size:0.82rem;flex-shrink:0;}
+
+/* ai badge */
+.ai-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:999px;background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.25);color:#065f46;font-size:0.76rem;font-weight:800;}
+
+/* === TIMELINE (from index.html slide 2 format) === */
+.timeline-row{display:flex;align-items:center;gap:12px;padding:8px 0;}
+.timeline-dot{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;box-shadow:0 3px 10px rgba(0,0,0,0.12);}
+.timeline-line{width:2px;height:18px;background:linear-gradient(180deg,rgba(11,99,206,0.3),rgba(16,185,129,0.2));margin-left:16px;}
+.scratch-block{display:inline-block;border-radius:6px;padding:4px 10px;font-family:'Fira Code',Consolas,monospace;font-size:0.8rem;font-weight:700;margin:2px 3px;}
+.sb-orange{background:#f59e0b;color:#fff;}
+</style>
+</head>
+<body>
+
+<div class="mouse-spotlight" id="spotlight"></div>
+
+<div class="deck">
+
+<!-- ╔══════════════════════════════════════════════════╗ -->
+<!-- ║  SLIDE 1 · TITLE                                ║ -->
+<!-- ╚══════════════════════════════════════════════════╝ -->
+<div class="slide active" data-slide="1" data-type="title">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:480px;height:480px;top:-100px;right:-80px;background:#0b63ce;opacity:.13;"></div>
+    <div class="blob" style="width:320px;height:320px;bottom:-80px;left:-60px;background:#10b981;opacity:.11;"></div>
+    <div class="blob" style="width:200px;height:200px;top:38%;left:12%;background:#f59e0b;opacity:.09;"></div>
+  </div>
+  <canvas class="particle-canvas"></canvas>
+  <div class="content" style="text-align:center;">
+    <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/861921c8a2939609b7460d6878b488831a14c02a.jpg"
+         alt="Scratch coding blocks and cat mascot"
+         style="height:clamp(80px,14vh,130px);object-fit:cover;border-radius:16px;margin:0 auto 1rem;animation:float 3s ease-in-out infinite;box-shadow:0 12px 36px rgba(11,99,206,0.20);"
+         class="reveal">
+    <p class="pill reveal" style="margin:0 auto 0.8rem;display:inline-flex;">Session 5 · Mon Jul 6 · Week 2</p>
+    <h1 class="font-display grad-text reveal" style="font-size:clamp(2rem,5.5vw,4rem);font-weight:700;line-height:1.1;margin-bottom:0.5rem;">
+      Scratch: Conditionals
+    </h1>
+    <h2 class="font-display reveal" style="font-size:clamp(1.3rem,3vw,2.4rem);font-weight:600;color:#1e3a5f;margin-bottom:0.7rem;">
+      if &nbsp;/&nbsp; if-else
+    </h2>
+    <p class="reveal" style="font-size:clamp(0.9rem,1.6vw,1.25rem);color:#374151;margin-bottom:1.2rem;">
+      Making decisions in code — the superpower behind every smart program
+    </p>
+    <div class="reveal" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+      <span class="pill">Modern Chinese School</span>
+      <span class="pill green">Ages 7–13</span>
+      <span class="pill amber">Summer 2026</span>
+      <a href="https://hue881.github.io/mcs/2026/summer" target="_blank" rel="noopener"
+         style="display:inline-flex;align-items:center;gap:5px;padding:4px 14px;border-radius:999px;border:1px solid rgba(11,99,206,0.35);background:rgba(255,255,255,0.9);font-size:0.75rem;font-weight:800;color:#0b63ce;text-decoration:none;">
+        🔗 Course Page
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- ╔══════════════════════════════════════════════════╗ -->
+<!-- ║  SLIDE 2 · TODAY'S PLAN (Agenda)                ║ -->
+<!-- ╚══════════════════════════════════════════════════╝ -->
+<div class="slide interior" data-slide="2" data-type="lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:360px;height:360px;top:-70px;right:-60px;background:#0b63ce;opacity:0.09;"></div>
+    <div class="blob" style="width:220px;height:220px;bottom:-50px;left:-30px;background:#10b981;opacity:0.07;"></div>
+  </div>
+  <div class="content">
+    <p class="pill mb-3 reveal">📋 Today's Plan</p>
+    <h2 class="font-display reveal" style="font-weight:700;margin-bottom:1.2rem;color:#0f2747;">What are we doing today?</h2>
+    <div class="grid-cards reveal" style="gap:10px;">
+
+      <div class="timeline-row">
+        <div class="timeline-dot" style="background:#f59e0b;">🧩</div>
+        <div>
+          <strong style="color:#1f2a37;font-size:0.9rem;">10 min · Warm-Up</strong>
+          <div class="big-text" style="color:#374151;">Unplugged decision game — no screens. Your brain is already running conditionals!</div>
+        </div>
+      </div>
+      <div class="timeline-line"></div>
+
+      <div class="timeline-row">
+        <div class="timeline-dot" style="background:#0b63ce;">🎓</div>
+        <div>
+          <strong style="color:#1f2a37;font-size:0.9rem;">15–20 min · Mini-Lesson + Videos</strong>
+          <div class="big-text" style="color:#374151;">Meet <span class="scratch-block sb-orange">if then</span> and <span class="scratch-block sb-orange">if then else</span> · <span style="color:#059669;font-weight:700;">AI Moment:</span> decision trees &amp; classifiers</div>
+        </div>
+      </div>
+      <div class="timeline-line"></div>
+
+      <div class="timeline-row">
+        <div class="timeline-dot" style="background:#10b981;">🏗️</div>
+        <div>
+          <strong style="color:#1f2a37;font-size:0.9rem;">20 min · Guided Build</strong>
+          <div class="big-text" style="color:#374151;">Sprite that reacts differently based on key press or edge touch — step by step together</div>
+        </div>
+      </div>
+      <div class="timeline-line"></div>
+
+      <div class="timeline-row">
+        <div class="timeline-dot" style="background:#ef4444;">🧠</div>
+        <div>
+          <strong style="color:#1f2a37;font-size:0.9rem;">5 min · Brain Break</strong>
+          <div class="big-text" style="color:#374151;">Human Conditional game — jump, clap, spin, or freeze based on rules!</div>
+        </div>
+      </div>
+      <div class="timeline-line"></div>
+
+      <div class="timeline-row">
+        <div class="timeline-dot" style="background:#8b5cf6;">🚀</div>
+        <div>
+          <strong style="color:#1f2a37;font-size:0.9rem;">30–40 min · Open Build + Challenge Cards</strong>
+          <div class="big-text" style="color:#374151;">Apply conditionals to your own project. Three tiers — everyone has a path!</div>
+        </div>
+      </div>
+      <div class="timeline-line"></div>
+
+      <div class="timeline-row">
+        <div class="timeline-dot" style="background:#0b63ce;">🌟</div>
+        <div>
+          <strong style="color:#1f2a37;font-size:0.9rem;">10 min · Share-Out</strong>
+          <div class="big-text" style="color:#374151;">Show your neighbor or volunteer to share — always opt-in, always warm</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ║  SLIDE 3 · WARM-UP                              ║ -->
+<!-- ╚══════════════════════════════════════════════════╝ -->
+<div class="slide interior" data-slide="3" data-type="warmup">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:380px;height:380px;top:-90px;right:-70px;background:#f59e0b;opacity:.10;"></div>
+    <div class="blob" style="width:260px;height:260px;bottom:-60px;left:-50px;background:#0b63ce;opacity:.08;"></div>
+  </div>
+  <div class="content">
+    <p class="pill amber mb-3 reveal">🧩 Warm-Up · No Screens · 10 min</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.5rem,2.6vw,2.1rem);font-weight:700;margin-bottom:0.8rem;color:#0f2747;">
+      Your brain makes thousands of decisions every day
+    </h2>
+
+    <div class="grid-cards grid-2 reveal" style="gap:12px;margin-bottom:12px;">
+      <div class="card accent-card-amber" style="padding:14px 16px;">
+        <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/c40ca7bc2b8a71dac296f488af5654db33f38993.jpg"
+             alt="Traffic light with red, yellow, green lights"
+             style="width:100%;height:100px;object-fit:cover;border-radius:10px;margin-bottom:10px;">
+        <p class="question-chip" style="margin-bottom:8px;display:inline-flex;">❓ Think About It</p>
+        <p class="big-text" style="margin:0;color:#374151;">When you see a <strong>red light</strong>, what do you do? When you see <strong>green</strong>? What is your brain checking?</p>
+      </div>
+      <div class="card accent-card-blue" style="padding:14px 16px;">
+        <div style="text-align:center;margin-bottom:10px;">
+          <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/49e843e3dd4c6775c2dd6c2020f68776410966b2.jpg"
+               alt="Student raising hand in classroom"
+               style="width:100%;height:100px;object-fit:cover;border-radius:10px;">
+        </div>
+        <p class="think-chip" style="margin-bottom:8px;display:inline-flex;">🧠 Turn &amp; Talk</p>
+        <p class="big-text" style="margin:0;color:#374151;">Name <strong>3 decisions</strong> you made this morning before school. What were the conditions? What were the choices?</p>
+      </div>
+    </div>
+
+    <div class="card reveal" style="background:rgba(11,99,206,0.06);border:1px solid rgba(11,99,206,0.18);padding:12px 16px;">
+      <p style="margin:0;font-size:0.88rem;color:#1e3a5f;font-weight:700;">
+        💡 <strong>Big Idea:</strong> Every time you choose based on a condition ("IF it's raining, THEN grab an umbrella"), you're running a conditional — just like a computer program.
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ╔══════════════════════════════════════════════════╗ -->
+<!-- ║  SLIDE 4 · WHAT IS A CONDITIONAL?               ║ -->
+<!-- ╚══════════════════════════════════════════════════╝ -->
+<div class="slide interior" data-slide="4" data-type="mini-lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:360px;height:360px;top:-80px;right:-60px;background:#0b63ce;opacity:.11;"></div>
+    <div class="blob" style="width:240px;height:240px;bottom:-50px;left:-40px;background:#10b981;opacity:.08;"></div>
+  </div>
+  <div class="content">
+    <p class="pill mb-3 reveal">🎓 Mini-Lesson — Part 1</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.5rem,2.5vw,2rem);font-weight:700;margin-bottom:0.9rem;color:#0f2747;">What is a Conditional?</h2>
+
+    <div class="grid-cards grid-2 reveal" style="gap:14px;margin-bottom:12px;">
+
+      <!-- LEFT: Real Life -->
+      <div class="card" style="padding:16px 18px;">
+        <p style="font-weight:800;color:#0b63ce;margin:0 0 10px;font-size:0.92rem;">In Real Life</p>
+        <div style="display:flex;flex-direction:column;gap:9px;">
+          <div style="background:#f1f5f9;border-radius:10px;padding:11px 14px;font-size:0.93rem;color:#1e3a5f;line-height:1.6;">
+            <span style="background:#f59e0b;color:#fff;border-radius:5px;padding:2px 9px;font-weight:800;font-size:0.82rem;margin-right:6px;">IF</span>it is raining
+            <span style="background:#10b981;color:#fff;border-radius:5px;padding:2px 9px;font-weight:800;font-size:0.82rem;margin:0 6px;">THEN</span>take an umbrella
+          </div>
+          <div style="background:#f1f5f9;border-radius:10px;padding:11px 14px;font-size:0.93rem;color:#1e3a5f;line-height:1.75;">
+            <div><span style="background:#f59e0b;color:#fff;border-radius:5px;padding:2px 9px;font-weight:800;font-size:0.82rem;margin-right:6px;">IF</span>I am hungry</div>
+            <div style="padding-left:8px;"><span style="background:#10b981;color:#fff;border-radius:5px;padding:2px 9px;font-weight:800;font-size:0.82rem;margin-right:6px;">THEN</span>eat a snack</div>
+            <div style="padding-left:8px;"><span style="background:#0b63ce;color:#fff;border-radius:5px;padding:2px 9px;font-weight:800;font-size:0.82rem;margin-right:6px;">ELSE</span>keep working</div>
+          </div>
+          <div style="background:#f1f5f9;border-radius:10px;padding:11px 14px;font-size:0.93rem;color:#1e3a5f;line-height:1.6;">
+            <span style="background:#f59e0b;color:#fff;border-radius:5px;padding:2px 9px;font-weight:800;font-size:0.82rem;margin-right:6px;">IF</span>the light is green
+            <span style="background:#10b981;color:#fff;border-radius:5px;padding:2px 9px;font-weight:800;font-size:0.82rem;margin:0 6px;">THEN</span>walk
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: In Scratch — visual labeled blocks, no monospace code -->
+      <div class="card" style="padding:16px 18px;">
+        <p style="font-weight:800;color:#0b63ce;margin:0 0 10px;font-size:0.92rem;">In Scratch — what the blocks say</p>
+        <div style="display:flex;flex-direction:column;gap:11px;">
+
+          <!-- Example 1: if only -->
+          <div style="background:#fdf4e3;border:2px solid rgba(245,158,11,0.35);border-radius:12px;padding:12px 15px;">
+            <p style="font-weight:800;color:#78350f;margin:0 0 7px;font-size:0.83rem;">The <code style="background:#fff3cd;padding:1px 6px;border-radius:4px;font-size:0.82rem;">if</code> block — only runs when TRUE</p>
+            <div style="display:flex;flex-direction:column;gap:6px;font-size:0.93rem;line-height:1.5;color:#374151;">
+              <div><span style="background:#f59e0b;color:#fff;border-radius:5px;padding:2px 9px;font-weight:800;font-size:0.8rem;margin-right:7px;">IF</span>touching the edge?</div>
+              <div style="padding-left:10px;border-left:3px solid #10b981;margin-left:4px;">
+                <span style="background:#10b981;color:#fff;border-radius:5px;padding:2px 9px;font-weight:800;font-size:0.8rem;margin-right:7px;">THEN</span>say <strong>"Oops, wall!"</strong>
+              </div>
+              <div style="color:#94a3b8;font-size:0.78rem;font-style:italic;">↳ If NOT touching: nothing happens at all</div>
+            </div>
+          </div>
+
+          <!-- Example 2: if-else -->
+          <div style="background:#eaf2fd;border:2px solid rgba(11,99,206,0.28);border-radius:12px;padding:12px 15px;">
+            <p style="font-weight:800;color:#1e3a8a;margin:0 0 7px;font-size:0.83rem;">The <code style="background:#dbeafe;padding:1px 6px;border-radius:4px;font-size:0.82rem;">if … else</code> block — always runs something</p>
+            <div style="display:flex;flex-direction:column;gap:6px;font-size:0.93rem;line-height:1.5;color:#374151;">
+              <div><span style="background:#f59e0b;color:#fff;border-radius:5px;padding:2px 9px;font-weight:800;font-size:0.8rem;margin-right:7px;">IF</span>space key is pressed?</div>
+              <div style="padding-left:10px;border-left:3px solid #10b981;margin-left:4px;">
+                <span style="background:#10b981;color:#fff;border-radius:5px;padding:2px 9px;font-weight:800;font-size:0.8rem;margin-right:7px;">THEN</span>say <strong>"You pressed SPACE!"</strong>
+              </div>
+              <div style="padding-left:10px;border-left:3px solid #0b63ce;margin-left:4px;">
+                <span style="background:#0b63ce;color:#fff;border-radius:5px;padding:2px 9px;font-weight:800;font-size:0.8rem;margin-right:7px;">ELSE</span>say <strong>"No key yet…"</strong>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <div class="card reveal" style="padding:12px 16px;background:rgba(11,99,206,0.06);border:1px solid rgba(11,99,206,0.18);">
+      <p style="margin:0;font-size:0.9rem;color:#1e3a5f;">
+        <strong>A conditional</strong> lets a program <strong>make a decision</strong>. It checks a condition (true or false?) and runs different code depending on the answer — making programs <em>interactive</em> and <em>smart</em>.
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ╔══════════════════════════════════════════════════╗ -->
+<!-- ║  SLIDE 5 · IF vs IF-ELSE DIAGRAM                ║ -->
+<!-- ╚══════════════════════════════════════════════════╝ -->
+<div class="slide interior" data-slide="5" data-type="mini-lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:340px;height:340px;top:-70px;right:-50px;background:#10b981;opacity:.10;"></div>
+    <div class="blob" style="width:220px;height:220px;bottom:-40px;left:-30px;background:#0b63ce;opacity:.08;"></div>
+  </div>
+  <div class="content">
+    <p class="pill green mb-3 reveal">🎓 Mini-Lesson — Part 2</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.4rem,2.4vw,1.9rem);font-weight:700;margin-bottom:0.9rem;color:#0f2747;"><code style="background:#e8f0fe;padding:2px 8px;border-radius:6px;">if</code> vs <code style="background:#e8f0fe;padding:2px 8px;border-radius:6px;">if-else</code> — What's the difference?</h2>
+
+    <div class="grid-cards grid-2 reveal" style="gap:14px;margin-bottom:12px;">
+
+      <!-- IF block -->
+      <div class="card accent-card-blue" style="padding:16px 18px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+          <span style="font-size:1.3rem;">🔵</span>
+          <p style="font-weight:800;color:#0b63ce;margin:0;font-size:0.92rem;">The <code>if</code> block</p>
+        </div>
+        <p style="font-size:0.84rem;color:#374151;margin:0 0 10px;">Only acts when the condition is <strong>TRUE</strong>. If false — nothing happens.</p>
+        <!-- mini flowchart -->
+        <div class="dtree" style="gap:0;">
+          <div class="dnode question" style="font-size:0.78rem;padding:5px 14px;">Is it raining? 🌧️</div>
+          <div class="dtree-line"></div>
+          <div class="dtree-labels" style="gap:50px;"><span>YES ✅</span><span style="opacity:0.5">NO ❌</span></div>
+          <div class="dtree-row">
+            <div class="dtree-branch">
+              <div class="dtree-line"></div>
+              <div class="dnode yes" style="font-size:0.76rem;padding:4px 12px;">Take umbrella</div>
+            </div>
+            <div class="dtree-branch">
+              <div class="dtree-line"></div>
+              <div class="dnode" style="background:#f8fafc;border-color:#cbd5e1;color:#94a3b8;font-size:0.76rem;padding:4px 12px;">(nothing)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- IF-ELSE block -->
+      <div class="card accent-card-green" style="padding:16px 18px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+          <span style="font-size:1.3rem;">🟢</span>
+          <p style="font-weight:800;color:#047857;margin:0;font-size:0.92rem;">The <code>if-else</code> block</p>
+        </div>
+        <p style="font-size:0.84rem;color:#374151;margin:0 0 10px;">Handles <strong>both cases</strong> — something happens whether true OR false.</p>
+        <div class="dtree" style="gap:0;">
+          <div class="dnode question" style="font-size:0.78rem;padding:5px 14px;">Is it raining? 🌧️</div>
+          <div class="dtree-line"></div>
+          <div class="dtree-labels" style="gap:50px;"><span>YES ✅</span><span>NO ❌</span></div>
+          <div class="dtree-row">
+            <div class="dtree-branch">
+              <div class="dtree-line"></div>
+              <div class="dnode yes" style="font-size:0.76rem;padding:4px 12px;">Take umbrella</div>
+            </div>
+            <div class="dtree-branch">
+              <div class="dtree-line"></div>
+              <div class="dnode no" style="font-size:0.76rem;padding:4px 12px;">Wear sunglasses</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="card reveal" style="padding:11px 16px;background:rgba(245,158,11,0.07);border:1px solid rgba(245,158,11,0.22);">
+      <p style="margin:0;font-size:0.85rem;color:#78350f;">
+        <strong>Key question:</strong> Does your program need to react only when something IS true, or does it need a different reaction when it is NOT true too?
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ╔══════════════════════════════════════════════════╗ -->
+<!-- ║  SLIDE 6 · WHERE IN SCRATCH                     ║ -->
+<!-- ╚══════════════════════════════════════════════════╝ -->
+<div class="slide interior" data-slide="6" data-type="mini-lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:340px;height:340px;top:-70px;left:-50px;background:#0b63ce;opacity:.09;"></div>
+    <div class="blob" style="width:250px;height:250px;bottom:-60px;right:-40px;background:#f59e0b;opacity:.08;"></div>
+  </div>
+  <div class="content">
+    <p class="pill mb-3 reveal">🎓 Mini-Lesson — Part 3</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.4rem,2.4vw,1.9rem);font-weight:700;margin-bottom:0.9rem;color:#0f2747;">Where do you find these blocks in Scratch?</h2>
+
+    <div class="grid-cards grid-3 reveal" style="gap:12px;margin-bottom:12px;">
+
+      <div class="card" style="padding:14px 16px;text-align:center;">
+        <div style="width:44px;height:44px;background:linear-gradient(135deg,#f97316,#ef4444);border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 8px;font-size:1.3rem;">🟧</div>
+        <p style="font-weight:800;color:#0f2747;margin:0 0 5px;font-size:0.88rem;">Step 1</p>
+        <p style="font-size:0.82rem;color:#374151;margin:0;">Click the <strong>orange "Control"</strong> category in the block palette on the left.</p>
+      </div>
+
+      <div class="card" style="padding:14px 16px;text-align:center;">
+        <div style="width:44px;height:44px;background:linear-gradient(135deg,#f59e0b,#d97706);border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 8px;font-size:1.3rem;">🔍</div>
+        <p style="font-weight:800;color:#0f2747;margin:0 0 5px;font-size:0.88rem;">Step 2</p>
+        <p style="font-size:0.82rem;color:#374151;margin:0;">Find the <code style="background:#fef3c7;padding:1px 5px;border-radius:3px;">if &lt;&gt; then</code> and <code style="background:#fef3c7;padding:1px 5px;border-radius:3px;">if &lt;&gt; then … else</code> blocks.</p>
+      </div>
+
+      <div class="card" style="padding:14px 16px;text-align:center;">
+        <div style="width:44px;height:44px;background:linear-gradient(135deg,#06b6d4,#0891b2);border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 8px;font-size:1.3rem;">🔷</div>
+        <p style="font-weight:800;color:#0f2747;margin:0 0 5px;font-size:0.88rem;">Step 3</p>
+        <p style="font-size:0.82rem;color:#374151;margin:0;">Drag in a <strong>blue hexagon</strong> from "Sensing" or "Operators" to fill the diamond-shaped slot.</p>
+      </div>
+
+    </div>
+
+    <div class="card reveal accent-card-blue" style="padding:13px 16px;">
+      <p style="font-weight:800;color:#0b63ce;margin:0 0 6px;font-size:0.88rem;">The hexagon slot holds your condition — it must be TRUE or FALSE</p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <span class="vocab-tag">key [space] pressed?</span>
+        <span class="vocab-tag">touching edge?</span>
+        <span class="vocab-tag">touching [sprite]?</span>
+        <span class="vocab-tag">mouse down?</span>
+        <span class="vocab-tag">(score) &gt; 10</span>
+      </div>
+    </div>
+
+    <div class="card reveal" style="margin-top:10px;padding:10px 16px;background:rgba(11,99,206,0.06);border:1px solid rgba(11,99,206,0.18);">
+      <p style="margin:0;font-size:0.84rem;color:#1e3a5f;">
+        <strong>Notice:</strong> The hexagon shape is a visual hint that only boolean (true/false) values fit there — just like puzzle pieces that must match!
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ╔══════════════════════════════════════════════════╗ -->
+<!-- ║  SLIDE 7 · VIDEO 1                              ║ -->
+<!-- ╚══════════════════════════════════════════════════╝ -->
+<div class="slide interior" data-slide="7" data-type="mini-lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:350px;height:350px;top:-80px;right:-60px;background:#0b63ce;opacity:.10;"></div>
+    <div class="blob" style="width:220px;height:220px;bottom:-50px;left:-30px;background:#10b981;opacity:.07;"></div>
+  </div>
+  <div class="content">
+    <p class="pill mb-3 reveal">▶ Video 1 · Mini-Lesson Boost</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.4rem,2.4vw,1.9rem);font-weight:700;margin-bottom:0.8rem;color:#0f2747;">
+      How to use the <code style="background:#e8f0fe;padding:2px 8px;border-radius:6px;">if</code> Block in Scratch 3.0
+    </h2>
+
+    <div class="grid-cards grid-2 reveal" style="gap:14px;align-items:start;">
+      <div>
+        <!-- VIDEO EMBED: Q2myO8eQmrE — "How to use the If Block | Scratch 3.0 Tutorial" -->
+        <div class="media-embed" id="player-Q2myO8eQmrE" onclick="playVideo('Q2myO8eQmrE')" title="Click to play video">
+          <img src="https://img.youtube.com/vi/Q2myO8eQmrE/hqdefault.jpg" alt="How to use the If Block in Scratch 3.0 tutorial">
+          <div class="play-btn">
+            <div>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>
+            </div>
+          </div>
+        </div>
+        <p style="font-size:0.78rem;color:#64748b;margin:6px 0 0;text-align:center;">
+          <a href="https://www.youtube.com/watch?v=Q2myO8eQmrE" target="_blank" rel="noopener" style="color:#0b63ce;text-decoration:underline;">▶ YouTube · "How to use the If Block | Scratch 3.0 Tutorial"</a>
+        </p>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div class="card accent-card-blue" style="padding:12px 15px;">
+          <p style="font-weight:800;color:#0b63ce;margin:0 0 6px;font-size:0.85rem;">While watching, think about:</p>
+          <ul style="margin:0;padding-left:18px;font-size:0.85rem;color:#374151;line-height:1.65;">
+            <li>What shape is the condition slot?</li>
+            <li>What happens when the condition is <strong>false</strong>?</li>
+            <li>How is <code>if</code> different from <code>if-else</code>?</li>
+          </ul>
+        </div>
+        <div class="card" style="padding:12px 15px;background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.22);">
+          <p style="margin:0;font-size:0.84rem;color:#065f46;font-weight:700;">
+            After the video: turn to a neighbor and explain the difference in your own words — no peeking at the screen!
+          </p>
+        </div>
+        <div class="card accent-card-amber" style="padding:10px 14px;">
+          <p style="margin:0;font-size:0.82rem;color:#78350f;">
+            <strong>Duration:</strong> ~3–4 min &nbsp;|&nbsp; <strong>Level:</strong> Beginner &nbsp;|&nbsp; <strong>Tool:</strong> Scratch 3.0
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ╔══════════════════════════════════════════════════╗ -->
+<!-- ║  SLIDE 8 · AI MOMENT 🤖                         ║ -->
+<!-- ╚══════════════════════════════════════════════════╝ -->
+<div class="slide interior" data-slide="8" data-type="mini-lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:360px;height:360px;top:-80px;left:-60px;background:#10b981;opacity:.12;"></div>
+    <div class="blob" style="width:240px;height:240px;bottom:-60px;right:-40px;background:#0b63ce;opacity:.09;"></div>
+  </div>
+  <div class="content">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:0.6rem;">
+      <span class="ai-badge reveal">🤖 AI Moment</span>
+      <p class="pill green reveal">Phase 1 · Sessions 3–7</p>
+    </div>
+    <h2 class="font-display reveal" style="font-size:clamp(1.4rem,2.5vw,2rem);font-weight:700;margin-bottom:0.9rem;color:#0f2747;">
+      "AI is a giant pile of if-then rules… sort of."
+    </h2>
+
+    <div class="grid-cards grid-2 reveal" style="gap:12px;margin-bottom:12px;">
+      <div>
+        <!-- Cat decision tree -->
+        <div class="card" style="padding:14px 16px;">
+          <p style="font-weight:800;color:#0b63ce;margin:0 0 8px;font-size:0.87rem;">Is it a cat? — Decision Tree on the Board 🐱</p>
+          <div class="dtree" style="gap:0;">
+            <div class="dnode root" style="font-size:0.76rem;padding:5px 14px;">Mystery Animal</div>
+            <div class="dtree-line"></div>
+            <p style="font-size:0.7rem;color:#64748b;margin:0;font-weight:700;">Has whiskers?</p>
+            <div class="dtree-labels" style="gap:52px;margin-top:2px;"><span>YES ✅</span><span>NO ❌</span></div>
+            <div class="dtree-row">
+              <div class="dtree-branch">
+                <div class="dtree-line"></div>
+                <div class="dnode question" style="font-size:0.7rem;padding:4px 10px;">Says meow?</div>
+                <div class="dtree-line"></div>
+                <div class="dtree-labels" style="gap:30px;font-size:0.64rem;"><span>YES</span><span>NO</span></div>
+                <div class="dtree-row" style="gap:14px;">
+                  <div><div class="dtree-line"></div><div class="dnode yes" style="font-size:0.68rem;padding:3px 8px;">CAT! 🐱</div></div>
+                  <div><div class="dtree-line"></div><div class="dnode no" style="font-size:0.68rem;padding:3px 8px;">Maybe dog?</div></div>
+                </div>
+              </div>
+              <div class="dtree-branch">
+                <div class="dtree-line"></div>
+                <div class="dnode no" style="font-size:0.7rem;padding:4px 10px;">Not a cat 🐾</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div class="card accent-card-green" style="padding:13px 15px;">
+          <p style="font-weight:800;color:#065f46;margin:0 0 5px;font-size:0.87rem;">This IS a classifier!</p>
+          <p style="font-size:0.84rem;color:#374151;margin:0;">Early AI systems <em>were</em> built exactly like this — huge trees of if-then rules, written by hand by programmers.</p>
+        </div>
+        <div class="card accent-card-amber" style="padding:13px 15px;">
+          <p style="font-weight:800;color:#78350f;margin:0 0 5px;font-size:0.87rem;">But modern AI is different…</p>
+          <p style="font-size:0.84rem;color:#374151;margin:0;">Instead of humans writing every rule, modern AI <strong>learns the rules from thousands of examples</strong>. The rules become numbers (weights) — not code blocks!</p>
+        </div>
+        <div class="card" style="padding:10px 14px;background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.20);">
+          <p style="margin:0;font-size:0.82rem;color:#065f46;font-weight:700;">
+            Today's build is the first step toward understanding how classifiers work.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card reveal" style="padding:10px 15px;background:rgba(11,99,206,0.06);border:1px solid rgba(11,99,206,0.18);">
+      <p style="margin:0;font-size:0.84rem;color:#1e3a5f;">
+        <strong>Question for later:</strong> What would happen if someone showed our "Is it a cat?" tree a <em>lion</em>? Has whiskers? ✅ Says meow? ❌ … Would our tree get it right? What does this tell us about AI?
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ╔══════════════════════════════════════════════════╗ -->
+<!-- ║  SLIDE 9 · VIDEO 2                              ║ -->
+<!-- ╚══════════════════════════════════════════════════╝ -->
+<div class="slide interior" data-slide="9" data-type="mini-lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:340px;height:340px;top:-70px;right:-50px;background:#0b63ce;opacity:.10;"></div>
+    <div class="blob" style="width:220px;height:220px;bottom:-50px;left:-40px;background:#10b981;opacity:.07;"></div>
+  </div>
+  <div class="content">
+    <p class="pill mb-3 reveal">▶ Video 2 · See It in Action</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.4rem,2.4vw,1.9rem);font-weight:700;margin-bottom:0.8rem;color:#0f2747;">
+      Scratch Basics: Conditional Statements
+    </h2>
+
+    <div class="grid-cards grid-2 reveal" style="gap:14px;align-items:start;">
+      <div>
+        <!-- VIDEO EMBED: 9cqbHelu5Y4 — "Scratch Basics: Conditional Statements" Chromeworks -->
+        <div class="media-embed" id="player-9cqbHelu5Y4" onclick="playVideo('9cqbHelu5Y4')" title="Click to play video">
+          <img src="https://img.youtube.com/vi/9cqbHelu5Y4/hqdefault.jpg" alt="Scratch Basics: Conditional Statements tutorial">
+          <div class="play-btn">
+            <div>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>
+            </div>
+          </div>
+        </div>
+        <p style="font-size:0.78rem;color:#64748b;margin:6px 0 0;text-align:center;">
+          <a href="https://www.youtube.com/watch?v=9cqbHelu5Y4" target="_blank" rel="noopener" style="color:#0b63ce;text-decoration:underline;">▶ YouTube · Chromeworks — "Scratch Basics: Conditional Statements"</a>
+        </p>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div class="card accent-card-blue" style="padding:12px 15px;">
+          <p style="font-weight:800;color:#0b63ce;margin:0 0 6px;font-size:0.85rem;">This video covers all 4 conditional blocks:</p>
+          <div style="display:flex;flex-direction:column;gap:4px;">
+            <div style="display:flex;align-items:center;gap:8px;font-size:0.83rem;color:#374151;">
+              <span class="step-num" style="width:22px;height:22px;font-size:0.72rem;">1</span> <code style="background:#e8f0fe;padding:1px 5px;border-radius:3px;">if then</code> — act when true
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;font-size:0.83rem;color:#374151;">
+              <span class="step-num" style="width:22px;height:22px;font-size:0.72rem;">2</span> <code style="background:#e8f0fe;padding:1px 5px;border-radius:3px;">if then else</code> — act for both outcomes
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;font-size:0.83rem;color:#374151;">
+              <span class="step-num" style="width:22px;height:22px;font-size:0.72rem;">3</span> <code style="background:#e8f0fe;padding:1px 5px;border-radius:3px;">wait until</code> — pause until true
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;font-size:0.83rem;color:#374151;">
+              <span class="step-num" style="width:22px;height:22px;font-size:0.72rem;">4</span> <code style="background:#e8f0fe;padding:1px 5px;border-radius:3px;">repeat until</code> — loop until true
+            </div>
+          </div>
+        </div>
+        <div class="card" style="padding:12px 15px;background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.22);">
+          <p style="margin:0;font-size:0.84rem;color:#065f46;font-weight:700;">
+            Focus on <code>if then</code> and <code>if then else</code> for today. The others are tools for later!
+          </p>
+        </div>
+        <div class="card accent-card-amber" style="padding:10px 14px;">
+          <p style="margin:0;font-size:0.82rem;color:#78350f;">
+            <strong>Duration:</strong> ~4 min &nbsp;|&nbsp; <strong>Made by:</strong> Chromeworks coding academy &nbsp;|&nbsp; <strong>Level:</strong> Beginner
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ╔══════════════════════════════════════════════════╗ -->
+<!-- ║  SLIDE 10 · GUIDED BUILD — STEP BY STEP         ║ -->
+<!-- ╚══════════════════════════════════════════════════╝ -->
+<div class="slide interior" data-slide="10" data-type="build">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:360px;height:360px;top:-80px;right:-60px;background:#10b981;opacity:.12;"></div>
+    <div class="blob" style="width:240px;height:240px;bottom:-50px;left:-40px;background:#0b63ce;opacity:.09;"></div>
+  </div>
+  <div class="content">
+    <p class="pill green mb-3 reveal">🏗️ Guided Build — Step by Step (20 min)</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.4rem,2.4vw,1.9rem);font-weight:700;margin-bottom:0.9rem;color:#0f2747;">
+      Build: A Sprite That Makes Decisions
+    </h2>
+
+    <div class="grid-cards grid-2 reveal" style="gap:12px;">
+
+      <div style="display:flex;flex-direction:column;gap:10px;">
+
+        <div class="card" style="padding:12px 15px;display:flex;gap:10px;align-items:flex-start;">
+          <span class="step-num">1</span>
+          <div>
+            <p style="font-weight:800;color:#0f2747;margin:0 0 3px;font-size:0.86rem;">Open Scratch &amp; pick a sprite</p>
+            <p style="font-size:0.82rem;color:#374151;margin:0;">Open <a href="https://scratch.mit.edu" target="_blank" style="color:#0b63ce;">scratch.mit.edu</a>. Use the Scratch cat or choose any character you like.</p>
+          </div>
+        </div>
+
+        <div class="card" style="padding:12px 15px;display:flex;gap:10px;align-items:flex-start;">
+          <span class="step-num">2</span>
+          <div>
+            <p style="font-weight:800;color:#0f2747;margin:0 0 3px;font-size:0.86rem;">Add a <code>forever</code> loop</p>
+            <p style="font-size:0.82rem;color:#374151;margin:0;">Go to <strong>Control</strong> → drag in a <code>forever</code> block. Place it under <code>when green flag clicked</code>.</p>
+          </div>
+        </div>
+
+        <div class="card" style="padding:12px 15px;display:flex;gap:10px;align-items:flex-start;">
+          <span class="step-num">3</span>
+          <div>
+            <p style="font-weight:800;color:#0f2747;margin:0 0 3px;font-size:0.86rem;">Drop in an <code>if &lt;&gt; then</code></p>
+            <p style="font-size:0.82rem;color:#374151;margin:0;">From <strong>Control</strong>, drag <code>if &lt;&gt; then</code> inside the forever loop.</p>
+          </div>
+        </div>
+
+        <div class="card" style="padding:12px 15px;display:flex;gap:10px;align-items:flex-start;">
+          <span class="step-num">4</span>
+          <div>
+            <p style="font-weight:800;color:#0f2747;margin:0 0 3px;font-size:0.86rem;">Fill the hexagon with a condition</p>
+            <p style="font-size:0.82rem;color:#374151;margin:0;">From <strong>Sensing</strong> → drag <code>key [space] pressed?</code> into the hexagon slot.</p>
+          </div>
+        </div>
+
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:10px;">
+
+        <div class="card" style="padding:12px 15px;display:flex;gap:10px;align-items:flex-start;">
+          <span class="step-num">5</span>
+          <div>
+            <p style="font-weight:800;color:#0f2747;margin:0 0 3px;font-size:0.86rem;">Add a "say" inside the if</p>
+            <p style="font-size:0.82rem;color:#374151;margin:0;">From <strong>Looks</strong> → drag <code>say [Hello!] for 2 seconds</code> inside the if block.</p>
+          </div>
+        </div>
+
+        <div class="card" style="padding:12px 15px;display:flex;gap:10px;align-items:flex-start;">
+          <span class="step-num">6</span>
+          <div>
+            <p style="font-weight:800;color:#0f2747;margin:0 0 3px;font-size:0.86rem;">Test it! Press the spacebar</p>
+            <p style="font-size:0.82rem;color:#374151;margin:0;">Click the green flag ▶ — what happens? Try pressing space vs. not pressing it. What changed?</p>
+          </div>
+        </div>
+
+        <div class="card" style="padding:12px 15px;display:flex;gap:10px;align-items:flex-start;">
+          <span class="step-num" style="background:linear-gradient(135deg,#10b981,#0b63ce);">7</span>
+          <div>
+            <p style="font-weight:800;color:#047857;margin:0 0 3px;font-size:0.86rem;">Upgrade to <code>if-else</code></p>
+            <p style="font-size:0.82rem;color:#374151;margin:0;">Replace with <code>if &lt;&gt; then … else</code>. Add a second <code>say</code> for when space is <em>not</em> pressed!</p>
+          </div>
+        </div>
+
+        <div class="card accent-card-blue" style="padding:10px 14px;">
+          <p style="margin:0;font-size:0.82rem;color:#1e3a5f;">
+            <strong>Try:</strong> Change the condition to <code>touching edge?</code> — what happens at the walls?
+          </p>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ╔══════════════════════════════════════════════════╗ -->
+<!-- ║  SLIDE 11 · BRAIN BREAK                         ║ -->
+<!-- ╚══════════════════════════════════════════════════╝ -->
+<div class="slide interior" data-slide="11" data-type="break">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:380px;height:380px;top:-90px;right:-70px;background:#f59e0b;opacity:.12;"></div>
+    <div class="blob" style="width:260px;height:260px;bottom:-60px;left:-50px;background:#10b981;opacity:.10;"></div>
+  </div>
+  <div class="content" style="text-align:center;">
+    <p class="pill amber mb-3 reveal" style="margin:0 auto 0.8rem;display:inline-flex;">⏸️ Movement Break · 5 min</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.6rem,3vw,2.4rem);font-weight:700;margin-bottom:0.5rem;color:#0f2747;">
+      Stand Up &amp; Recharge!
+    </h2>
+
+    <div class="break-card reveal" style="max-width:680px;margin:0 auto 14px;">
+      <p style="font-size:1rem;font-weight:800;color:#78350f;margin:0 0 12px;">Play "Human Conditional" — let's move!</p>
+      <div style="display:flex;flex-direction:column;gap:8px;text-align:left;">
+        <div style="background:rgba(255,255,255,0.7);border-radius:10px;padding:8px 14px;font-size:0.9rem;color:#374151;">
+          <strong>IF</strong> the teacher says a number that is <strong>EVEN</strong> → jump once
+        </div>
+        <div style="background:rgba(255,255,255,0.7);border-radius:10px;padding:8px 14px;font-size:0.9rem;color:#374151;">
+          <strong>IF</strong> the number is <strong>ODD</strong> → clap once
+        </div>
+        <div style="background:rgba(255,255,255,0.7);border-radius:10px;padding:8px 14px;font-size:0.9rem;color:#374151;">
+          <strong>IF</strong> the number is <strong>bigger than 10</strong> → spin around
+        </div>
+        <div style="background:rgba(255,255,255,0.7);border-radius:10px;padding:8px 14px;font-size:0.9rem;color:#374151;">
+          <strong>ELSE</strong> (not any of the above) → freeze like a statue
+        </div>
+      </div>
+    </div>
+
+    <div class="card reveal" style="max-width:500px;margin:0 auto;padding:12px 16px;background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.20);">
+      <p style="margin:0;font-size:0.88rem;color:#065f46;font-weight:700;">
+        You just became a <em>living conditional statement</em>. Your brain is checking conditions and executing code!
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ╔══════════════════════════════════════════════════╗ -->
+<!-- ║  SLIDE 12 · OPEN BUILD + CHALLENGE CARDS        ║ -->
+<!-- ╚══════════════════════════════════════════════════╝ -->
+<div class="slide interior" data-slide="12" data-type="build">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:360px;height:360px;top:-80px;right:-60px;background:#10b981;opacity:.11;"></div>
+    <div class="blob" style="width:250px;height:250px;bottom:-60px;left:-40px;background:#0b63ce;opacity:.08;"></div>
+  </div>
+  <div class="content">
+    <p class="pill green mb-3 reveal">🎮 Open Build · 30–40 min</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.4rem,2.4vw,1.9rem);font-weight:700;margin-bottom:0.9rem;color:#0f2747;">
+      Apply it to <em>your own</em> project
+    </h2>
+
+    <div class="grid-cards grid-3 reveal" style="gap:12px;margin-bottom:12px;">
+
+      <div class="card" style="padding:14px 16px;border-top:3px solid #22c55e;">
+        <span class="tier-a">TIER A · Foundations</span>
+        <p style="font-weight:800;color:#0f2747;margin:8px 0 6px;font-size:0.87rem;">Grades 1–3</p>
+        <p style="font-size:0.82rem;color:#374151;margin:0;">Add <strong>one <code>if</code> block</strong> to your Session 4 animation — make your sprite say something when it touches the edge.</p>
+        <div class="progress-track" style="margin-top:10px;"><div class="progress-fill" style="width:33%;"></div></div>
+      </div>
+
+      <div class="card" style="padding:14px 16px;border-top:3px solid #3b82f6;">
+        <span class="tier-b">TIER B · Core</span>
+        <p style="font-weight:800;color:#0f2747;margin:8px 0 6px;font-size:0.87rem;">Grades 3–5</p>
+        <p style="font-size:0.82rem;color:#374151;margin:0;">Add an <strong><code>if-else</code> block</strong> — sprite does one thing for key-left, another for key-right. Make it change costume too!</p>
+        <div class="progress-track" style="margin-top:10px;"><div class="progress-fill" style="width:66%;"></div></div>
+      </div>
+
+      <div class="card" style="padding:14px 16px;border-top:3px solid #8b5cf6;">
+        <span class="tier-c">TIER C · Accelerated</span>
+        <p style="font-weight:800;color:#0f2747;margin:8px 0 6px;font-size:0.87rem;">Grades 6–9</p>
+        <p style="font-size:0.82rem;color:#374151;margin:0;">Use <strong>nested conditionals</strong>: put an <code>if</code> inside another <code>if</code>. For example — <em>IF touching the edge AND key pressed, say something special</em>. Try combining two conditions using the <code>and</code> / <code>or</code> operator blocks from the Operators palette. Aim for at least <strong>3 different branches</strong> total.</p>
+        <div class="progress-track" style="margin-top:10px;"><div class="progress-fill" style="width:100%;"></div></div>
+      </div>
+
+    </div>
+
+    <!-- Challenge card -->
+    <div class="challenge-card reveal" style="display:flex;gap:12px;align-items:flex-start;">
+      <span style="font-size:1.5rem;flex-shrink:0;">⭐</span>
+      <div>
+        <p style="font-weight:800;color:#4c1d95;margin:0 0 4px;font-size:0.88rem;">Challenge Card — All Tiers</p>
+        <p style="font-size:0.84rem;color:#374151;margin:0;">Build a mini "quiz game": sprite asks a question using <code>ask [] and wait</code>, then use <code>if-else</code> to say "Correct!" or "Try again!" based on the <code>answer</code>. How many questions can you add?</p>
+      </div>
+    </div>
+
+    <div class="card reveal" style="margin-top:10px;padding:10px 15px;background:rgba(11,99,206,0.06);border:1px solid rgba(11,99,206,0.18);">
+      <p style="margin:0;font-size:0.84rem;color:#1e3a5f;">
+        <strong>Fast finisher?</strong> Help a neighbor get their first conditional working — explaining code to someone else is one of the best ways to really understand it!
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ╔══════════════════════════════════════════════════╗ -->
+<!-- ║  SLIDE 13 · VOCABULARY CHECK                    ║ -->
+<!-- ╚══════════════════════════════════════════════════╝ -->
+<div class="slide interior" data-slide="13" data-type="lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:340px;height:340px;top:-70px;right:-50px;background:#0b63ce;opacity:.10;"></div>
+    <div class="blob" style="width:230px;height:230px;bottom:-50px;left:-40px;background:#f59e0b;opacity:.08;"></div>
+  </div>
+  <div class="content">
+    <p class="pill mb-3 reveal">📚 Vocabulary · 5 Key Words</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.4rem,2.4vw,1.9rem);font-weight:700;margin-bottom:0.9rem;color:#0f2747;">Words every coder knows</h2>
+
+    <div class="grid-cards grid-2 reveal" style="gap:10px;">
+
+      <div class="card" style="display:flex;gap:10px;align-items:flex-start;padding:11px 14px;">
+        <span style="font-size:1.3rem;flex-shrink:0;">🔀</span>
+        <div>
+          <span class="vocab-tag" style="margin-bottom:5px;display:inline-flex;">Conditional</span>
+          <p style="font-size:0.83rem;color:#374151;margin:4px 0 0;">A code block that runs only when a certain condition is true. "IF this THEN that."</p>
+        </div>
+      </div>
+
+      <div class="card" style="display:flex;gap:10px;align-items:flex-start;padding:11px 14px;">
+        <span style="font-size:1.3rem;flex-shrink:0;">✅</span>
+        <div>
+          <span class="vocab-tag" style="margin-bottom:5px;display:inline-flex;">Boolean</span>
+          <p style="font-size:0.83rem;color:#374151;margin:4px 0 0;">A value that is only ever <strong>TRUE</strong> or <strong>FALSE</strong>. The hexagon slot only accepts booleans!</p>
+        </div>
+      </div>
+
+      <div class="card" style="display:flex;gap:10px;align-items:flex-start;padding:11px 14px;">
+        <span style="font-size:1.3rem;flex-shrink:0;">🌿</span>
+        <div>
+          <span class="vocab-tag" style="margin-bottom:5px;display:inline-flex;">Branch</span>
+          <p style="font-size:0.83rem;color:#374151;margin:4px 0 0;">One of the paths a program can take — the "THEN" path or the "ELSE" path.</p>
+        </div>
+      </div>
+
+      <div class="card" style="display:flex;gap:10px;align-items:flex-start;padding:11px 14px;">
+        <span style="font-size:1.3rem;flex-shrink:0;">🌳</span>
+        <div>
+          <span class="vocab-tag" style="margin-bottom:5px;display:inline-flex;">Decision Tree</span>
+          <p style="font-size:0.83rem;color:#374151;margin:4px 0 0;">A diagram (or AI model) that uses a chain of conditions to classify or decide. Used in real AI!</p>
+        </div>
+      </div>
+
+      <div class="card" style="display:flex;gap:10px;align-items:flex-start;padding:11px 14px;">
+        <span style="font-size:1.3rem;flex-shrink:0;">🔁</span>
+        <div>
+          <span class="vocab-tag" style="margin-bottom:5px;display:inline-flex;">Nested if</span>
+          <p style="font-size:0.83rem;color:#374151;margin:4px 0 0;">An <code>if</code> block placed <em>inside</em> another <code>if</code> block — checking a second condition only when the first is true.</p>
+        </div>
+      </div>
+
+      <div class="card accent-card-green" style="display:flex;gap:10px;align-items:flex-start;padding:11px 14px;">
+        <span style="font-size:1.3rem;flex-shrink:0;">🔍</span>
+        <div>
+          <span class="vocab-tag" style="margin-bottom:5px;display:inline-flex;background:rgba(16,185,129,0.12);color:#065f46;">Classifier</span>
+          <p style="font-size:0.83rem;color:#374151;margin:4px 0 0;">An AI system that sorts inputs into categories using learned rules — built on the same logic as decision trees.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ╔══════════════════════════════════════════════════╗ -->
+<!-- ║  SLIDE 14 · COMMON MISTAKES                     ║ -->
+<!-- ╚══════════════════════════════════════════════════╝ -->
+<div class="slide interior" data-slide="14" data-type="lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:360px;height:360px;top:-80px;left:-60px;background:#ef4444;opacity:.08;"></div>
+    <div class="blob" style="width:240px;height:240px;bottom:-50px;right:-40px;background:#0b63ce;opacity:.08;"></div>
+  </div>
+  <div class="content">
+    <p class="pill mb-3 reveal" style="color:#ef4444;border-color:rgba(239,68,68,0.4);">🐛 Debug Corner · Common Bugs</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.4rem,2.4vw,1.9rem);font-weight:700;margin-bottom:0.9rem;color:#0f2747;">Bugs are normal — let's find them together</h2>
+
+    <div class="grid-cards grid-2 reveal" style="gap:11px;margin-bottom:10px;">
+
+      <div class="card accent-card-red" style="padding:12px 15px;">
+        <p style="font-weight:800;color:#7f1d1d;margin:0 0 5px;font-size:0.86rem;">Bug 1: Wrong block type</p>
+        <p style="font-size:0.82rem;color:#374151;margin:0;">Dragging a <em>round</em> (reporter) block into the hexagon slot — they don't fit! Make sure you use a hexagon (boolean) block like <code>key pressed?</code>, not a value like <code>x position</code>.</p>
+      </div>
+
+      <div class="card accent-card-red" style="padding:12px 15px;">
+        <p style="font-weight:800;color:#7f1d1d;margin:0 0 5px;font-size:0.86rem;">Bug 2: if is outside the forever loop</p>
+        <p style="font-size:0.82rem;color:#374151;margin:0;">If the <code>if</code> block is <em>not inside</em> a <code>forever</code> loop, it only checks the condition once — right when the flag is clicked. Most interactive projects need a continuous check!</p>
+      </div>
+
+      <div class="card accent-card-amber" style="padding:12px 15px;">
+        <p style="font-weight:800;color:#78350f;margin:0 0 5px;font-size:0.86rem;">Bug 3: Both say blocks show at once</p>
+        <p style="font-size:0.82rem;color:#374151;margin:0;">You accidentally placed both <code>say</code> blocks in the same branch (both in "then" or both in "else"). Make sure one is in the THEN section and the other is in ELSE.</p>
+      </div>
+
+      <div class="card accent-card-amber" style="padding:12px 15px;">
+        <p style="font-weight:800;color:#78350f;margin:0 0 5px;font-size:0.86rem;">Bug 4: Nothing seems to happen</p>
+        <p style="font-size:0.82rem;color:#374151;margin:0;">Did you click the <strong>green flag</strong> first? Is your sprite actually <em>touching</em> the edge or is the key the right one? Click on the condition block alone to test it — watch it flash yellow!</p>
+      </div>
+
+    </div>
+
+    <div class="card reveal" style="padding:11px 15px;background:rgba(16,185,129,0.07);border:1px solid rgba(16,185,129,0.20);">
+      <p style="margin:0;font-size:0.85rem;color:#065f46;font-weight:700;">
+        Pro move: Right-click any block and choose "Help" — Scratch will show you exactly what the block does.
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ╔══════════════════════════════════════════════════╗ -->
+<!-- ║  SLIDE 15 · SHARE-OUT                           ║ -->
+<!-- ╚══════════════════════════════════════════════════╝ -->
+<div class="slide interior" data-slide="15" data-type="share">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:360px;height:360px;top:-80px;right:-60px;background:#8b5cf6;opacity:.10;"></div>
+    <div class="blob" style="width:240px;height:240px;bottom:-50px;left:-40px;background:#10b981;opacity:.09;"></div>
+  </div>
+  <div class="content">
+    <p class="pill purple mb-3 reveal">✨ Share-Out · 10 min · Opt-In</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.4rem,2.5vw,2rem);font-weight:700;margin-bottom:0.9rem;color:#0f2747;">
+      Show your neighbor — or show the class!
+    </h2>
+
+    <div class="grid-cards grid-2 reveal" style="gap:12px;margin-bottom:12px;">
+
+      <div class="card" style="padding:14px 16px;">
+        <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/4af9e4b05b18fb8c272a1f9cad4c632736159c28.jpg"
+             alt="Student working on Scratch coding project"
+             style="width:100%;height:100px;object-fit:cover;border-radius:10px;margin-bottom:10px;">
+        <p style="font-weight:800;color:#0b63ce;margin:0 0 6px;font-size:0.87rem;">Pair Share (Default)</p>
+        <p style="font-size:0.83rem;color:#374151;margin:0;">Turn to the person next to you. Show your project and explain: "I made a conditional that does _____ when _____."</p>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:10px;">
+
+        <div class="card accent-card-blue" style="padding:12px 15px;">
+          <p style="font-weight:800;color:#0b63ce;margin:0 0 6px;font-size:0.87rem;">3 questions to ask your partner:</p>
+          <ol style="margin:0;padding-left:18px;font-size:0.83rem;color:#374151;line-height:1.65;">
+            <li>What does your conditional check?</li>
+            <li>What happens in the "then" branch?</li>
+            <li>Does your project have an "else"? Why or why not?</li>
+          </ol>
+        </div>
+
+        <div class="card" style="padding:12px 15px;background:rgba(139,92,246,0.08);border:1px solid rgba(139,92,246,0.20);">
+          <p style="font-weight:800;color:#4c1d95;margin:0 0 5px;font-size:0.87rem;">Volunteer to show the class?</p>
+          <p style="font-size:0.83rem;color:#374151;margin:0;">Raise your hand — totally optional! Point out your conditional block and describe it in one sentence.</p>
+        </div>
+
+        <div class="card accent-card-green" style="padding:10px 14px;">
+          <p style="margin:0;font-size:0.82rem;color:#065f46;font-weight:700;">
+            Remember: Bugs count too! If something didn't work, explain <em>what</em> you tried — that's real coding.
+          </p>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ╔══════════════════════════════════════════════════╗ -->
+<!-- ║  SLIDE 16 · HOMEWORK                            ║ -->
+<!-- ╚══════════════════════════════════════════════════╝ -->
+<div class="slide interior" data-slide="16" data-type="share">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:360px;height:360px;top:-80px;right:-60px;background:#0b63ce;opacity:.12;"></div>
+    <div class="blob" style="width:250px;height:250px;bottom:-60px;left:-50px;background:#f59e0b;opacity:.09;"></div>
+  </div>
+  <div class="content">
+    <p class="pill mb-3 reveal">📝 Homework · 30 min</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.4rem,2.5vw,2rem);font-weight:700;margin-bottom:0.9rem;color:#0f2747;">Tonight's Mission</h2>
+
+    <div class="grid-cards grid-2 reveal" style="gap:12px;margin-bottom:12px;">
+
+      <div class="card" style="padding:14px 16px;">
+        <p style="font-weight:800;color:#0b63ce;margin:0 0 8px;font-size:0.9rem;">The Task</p>
+        <div style="background:rgba(11,99,206,0.06);border-radius:10px;padding:10px 14px;font-size:0.87rem;color:#1e3a5f;font-weight:700;margin-bottom:8px;">
+          Add an <code>if-else</code> to a project so something <em>different</em> happens based on a condition.
+        </div>
+        <ul style="margin:0;padding-left:18px;font-size:0.83rem;color:#374151;line-height:1.75;">
+          <li>Use a project from this week or start fresh</li>
+          <li>Must use at least one <code>if-else</code> block (not just <code>if</code>)</li>
+          <li>Save your project and note the link</li>
+        </ul>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:10px;">
+
+        <div class="card accent-card-green" style="padding:12px 15px;">
+          <span class="tier-a" style="margin-bottom:6px;display:inline-flex;">TIER A</span>
+          <p style="font-size:0.82rem;color:#374151;margin:0;">Make a sprite say something different when it touches a color vs. when it doesn't. (Hint: <code>touching color []?</code> in Sensing)</p>
+        </div>
+
+        <div class="card accent-card-blue" style="padding:12px 15px;">
+          <span class="tier-b" style="margin-bottom:6px;display:inline-flex;">TIER B</span>
+          <p style="font-size:0.82rem;color:#374151;margin:0;">Add two different conditions — try <code>if</code> for one key press and <code>if-else</code> for another. Write 1 sentence describing your logic.</p>
+        </div>
+
+        <div class="card" style="padding:12px 15px;background:rgba(139,92,246,0.08);border:1px solid rgba(139,92,246,0.20);">
+          <span class="tier-c" style="margin-bottom:6px;display:inline-flex;">TIER C</span>
+          <p style="font-size:0.82rem;color:#374151;margin:0;">Build a sprite that reacts to <strong>3 different conditions</strong> using a mix of <code>if</code> and <code>if-else</code> blocks (e.g. different keys, touching edge, mouse click). Then write <strong>1–2 sentences</strong> in your own words: how is your branching logic similar to how an AI classifier decides between categories?</p>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="card reveal" style="padding:11px 15px;background:rgba(245,158,11,0.07);border:1px solid rgba(245,158,11,0.22);">
+      <p style="margin:0;font-size:0.85rem;color:#78350f;">
+        <strong>Next session (Tue Jul 7):</strong> We'll add <strong>variables</strong> to keep score. Your conditionals today will power your first real game tomorrow!
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ╔══════════════════════════════════════════════════╗ -->
+<!-- ║  SLIDE 17 · CLOSING / GREAT WORK                ║ -->
+<!-- ╚══════════════════════════════════════════════════╝ -->
+<div class="slide" data-slide="17" data-type="close">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:500px;height:500px;top:-120px;right:-100px;background:#0b63ce;opacity:.14;"></div>
+    <div class="blob" style="width:340px;height:340px;bottom:-90px;left:-70px;background:#10b981;opacity:.12;"></div>
+    <div class="blob" style="width:220px;height:220px;top:35%;left:8%;background:#f59e0b;opacity:.10;"></div>
+  </div>
+  <canvas class="particle-canvas"></canvas>
+  <div class="content" style="text-align:center;">
+    <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/4af9e4b05b18fb8c272a1f9cad4c632736159c28.jpg"
+         alt="Kids coding in Scratch"
+         style="height:clamp(70px,11vh,110px);object-fit:cover;border-radius:14px;margin:0 auto 1rem;animation:float 3s ease-in-out infinite;box-shadow:0 10px 30px rgba(11,99,206,0.18);"
+         class="reveal">
+    <h1 class="font-display grad-text reveal" style="font-size:clamp(2rem,5vw,3.8rem);font-weight:700;margin-bottom:0.4rem;">
+      Great work today!
+    </h1>
+    <p class="reveal" style="font-size:clamp(1rem,1.8vw,1.35rem);color:#374151;margin-bottom:1rem;">
+      You can now make programs that <strong>make decisions</strong>. That changes everything.
+    </p>
+
+    <div class="grid-cards grid-3 reveal" style="gap:10px;margin-bottom:1rem;max-width:860px;margin-left:auto;margin-right:auto;">
+      <div class="card" style="padding:12px 14px;text-align:left;">
+        <p style="font-weight:800;color:#0b63ce;margin:0 0 5px;font-size:0.84rem;">Today you learned:</p>
+        <ul style="margin:0;padding-left:16px;font-size:0.81rem;color:#374151;line-height:1.6;">
+          <li>What a conditional is</li>
+          <li><code>if</code> vs <code>if-else</code></li>
+          <li>Boolean conditions</li>
+          <li>How AI uses decision trees</li>
+        </ul>
+      </div>
+      <div class="card" style="padding:12px 14px;text-align:left;">
+        <p style="font-weight:800;color:#10b981;margin:0 0 5px;font-size:0.84rem;">Tonight:</p>
+        <p style="font-size:0.81rem;color:#374151;margin:0;">Add an <code>if-else</code> to your project — make something <em>different</em> happen based on a condition. Save &amp; link!</p>
+      </div>
+      <div class="card" style="padding:12px 14px;text-align:left;">
+        <p style="font-weight:800;color:#f59e0b;margin:0 0 5px;font-size:0.84rem;">Next session (Jul 7):</p>
+        <p style="font-size:0.81rem;color:#374151;margin:0;">Variables &amp; score-keeping — your conditionals meet their best friend: memory!</p>
+      </div>
+    </div>
+
+    <div class="reveal" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+      <span class="pill">Session 5 of 26</span>
+      <span class="pill green">Phase 1 — Scratch</span>
+      <a href="https://hue881.github.io/mcs/2026/summer" target="_blank" rel="noopener"
+         style="display:inline-flex;align-items:center;gap:5px;padding:4px 14px;border-radius:999px;border:1px solid rgba(11,99,206,0.35);background:rgba(255,255,255,0.9);font-size:0.75rem;font-weight:800;color:#0b63ce;text-decoration:none;">
+        🔗 Course Page
+      </a>
+    </div>
+  </div>
+</div>
+
+</div><!-- /deck -->
+
+<!-- NAVIGATION -->
+<div class="nav-controls">
+  <button class="nav-btn" onclick="changeSlide(-1)">&#8249;</button>
+  <div class="slide-dots" id="dots"></div>
+  <button class="nav-btn" onclick="changeSlide(1)">&#8250;</button>
+  <span class="slide-counter" id="counter">1 / 17</span>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════
+   DECK NAVIGATION
+   ═══════════════════════════════════════════ */
+let current = 1;
+const total = document.querySelectorAll('.slide').length;
+const dotsContainer = document.getElementById('dots');
+const counter = document.getElementById('counter');
+
+// Dot types per slide
+const dotTypes = ['','warmup','warmup','mini','mini','mini','mini','mini','mini','build','build','build','mini','mini','share','share','share'];
+
+for (let i = 1; i <= total; i++) {
+  const dot = document.createElement('div');
+  const t = dotTypes[i] || '';
+  dot.className = 'dot' + (t ? ' ' + t : '') + (i === 1 ? ' active' : '');
+  dot.onclick = () => goToSlide(i);
+  dotsContainer.appendChild(dot);
+}
+
+function goToSlide(n) {
+  const prev = document.querySelector('.slide.active');
+  const next = document.querySelector('.slide[data-slide="' + n + '"]');
+  if (prev) prev.classList.remove('active');
+  if (next) { next.classList.add('active'); next.scrollTop = 0; animateSlide(next); }
+  current = n; updateNav();
+}
+function changeSlide(dir) { let n = current + dir; if (n < 1) n = total; if (n > total) n = 1; goToSlide(n); }
+function updateNav() {
+  document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i + 1 === current));
+  counter.textContent = current + ' / ' + total;
+}
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); changeSlide(1); }
+  if (e.key === 'ArrowLeft') { e.preventDefault(); changeSlide(-1); }
+});
+let tx = 0;
+document.addEventListener('touchstart', e => { tx = e.touches[0].clientX; });
+document.addEventListener('touchend', e => { const dx = tx - e.changedTouches[0].clientX; if (Math.abs(dx) > 60) changeSlide(dx > 0 ? 1 : -1); });
+
+function animateSlide(slide) {
+  slide.querySelectorAll('.reveal').forEach((el, i) => {
+    el.style.transition = 'none'; el.style.opacity = '0'; el.style.transform = 'translateY(16px)';
+    el.offsetHeight;
+    const d = i * 0.06;
+    el.style.transition = 'opacity 0.32s ease ' + d + 's, transform 0.32s ease ' + d + 's';
+    el.style.opacity = '1'; el.style.transform = 'translateY(0)';
+  });
+}
+
+/* Video embed */
+function playVideo(videoId) {
+  const container = document.getElementById('player-' + videoId);
+  if (!container) return;
+  container.onclick = null; container.style.cursor = 'default';
+  container.innerHTML = '<iframe src="https://www.youtube.com/embed/' + videoId + '?autoplay=1&rel=0" allowfullscreen allow="autoplay; encrypted-media" style="position:absolute;inset:0;width:100%;height:100%;border:0;border-radius:13px;"></iframe>';
+}
+
+/* Mouse spotlight */
+document.addEventListener('mousemove', e => {
+  const s = document.getElementById('spotlight');
+  if (s) s.style.background = 'radial-gradient(600px circle at ' + e.clientX + 'px ' + e.clientY + 'px, rgba(11,99,206,0.05), transparent 40%)';
+});
+
+/* Particles */
+window.initParticles = function(canvas, opts) {
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const count = opts.count || 40;
+  let mx = -1000, my = -1000;
+  const [r, g, b] = [11, 99, 206];
+  let particles = [];
+  function seed() {
+    const w = canvas.offsetWidth || window.innerWidth;
+    const h = canvas.offsetHeight || window.innerHeight;
+    canvas.width = w; canvas.height = h;
+    particles = Array.from({ length: count }, () => ({
+      x: Math.random() * w, y: Math.random() * h,
+      vx: (Math.random() - .5) * .3, vy: (Math.random() - .5) * .3,
+      size: Math.random() * 2.2 + .7, alpha: Math.random() * .28 + .08
+    }));
+  }
+  seed(); requestAnimationFrame(seed); window.addEventListener('resize', seed);
+  canvas.addEventListener('mousemove', e => { const rc = canvas.getBoundingClientRect(); mx = e.clientX - rc.left; my = e.clientY - rc.top; });
+  const ownSlide = canvas.closest('.slide');
+  (function animate() {
+    if (!ownSlide || ownSlide.classList.contains('active')) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(p => {
+        const dx = p.x - mx, dy = p.y - my, dist = Math.sqrt(dx*dx + dy*dy);
+        if (dist < 120) { const f = (120-dist)/120*1.5; p.vx += (dx/dist)*f*.1; p.vy += (dy/dist)*f*.1; }
+        p.vx *= .98; p.vy *= .98; p.x += p.vx; p.y += p.vy;
+        if (p.x < 0) p.x = canvas.width; if (p.x > canvas.width) p.x = 0;
+        if (p.y < 0) p.y = canvas.height; if (p.y > canvas.height) p.y = 0;
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2);
+        ctx.fillStyle = 'rgba(' + r + ',' + g + ',' + b + ',' + p.alpha + ')'; ctx.fill();
+      });
+    }
+    requestAnimationFrame(animate);
+  })();
+};
+document.querySelectorAll('.particle-canvas').forEach(c => window.initParticles(c, { count: 55 }));
+
+try { animateSlide(document.querySelector('.slide.active')); } catch(e) {}
+</script>
+</body>
+</html>
