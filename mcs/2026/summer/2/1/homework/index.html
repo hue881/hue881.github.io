@@ -1,1 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Homework Sheet · Session 5 · Scratch Conditionals</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --color-bg: #f4fbff;
+    --color-surface: rgba(255,255,255,0.97);
+    --color-text: #1f2a37;
+    --color-text-secondary: #374151;
+    --color-text-muted: #5b6b7e;
+    --color-accent-1: #0b63ce;
+    --color-accent-2: #10b981;
+    --color-accent-3: #f59e0b;
+    --color-accent-red: #ef4444;
+    --font-display: 'Fredoka', 'Trebuchet MS', sans-serif;
+    --font-body: 'Nunito', Arial, sans-serif;
+    --font-code: 'Fira Code', Consolas, monospace;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  @media print {
+    body { background: #fff !important; }
+    .no-print { display: none !important; }
+    .page-break { page-break-before: always; }
+    .card { box-shadow: none !important; border: 1.5px solid #d1d5db !important; }
+    .code-block { border: 1.5px solid #cbd5e1 !important; }
+  }
+  body { font-family: var(--font-body); color: var(--color-text); background: var(--color-bg); min-height: 100vh; }
+  .print-bar {
+    background: rgba(255,255,255,0.92); backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(148,163,184,0.3);
+    padding: 10px 24px; display: flex; align-items: center;
+    justify-content: space-between; position: sticky; top: 0; z-index: 100; gap: 12px; flex-wrap: wrap;
+  }
+  .print-bar .bar-title { font-family: var(--font-display); font-size: 1.05rem; font-weight: 700; color: var(--color-accent-1); }
+  .print-bar .bar-sub { font-size: 0.78rem; color: var(--color-text-muted); }
+  .btn-print { background: var(--color-accent-1); color: #fff; border: none; padding: 8px 20px; border-radius: 999px; font-family: var(--font-body); font-size: 0.82rem; font-weight: 800; cursor: pointer; letter-spacing: 0.06em; transition: background 0.2s, transform 0.15s; }
+  .btn-print:hover { background: #0952b0; transform: translateY(-1px); }
+  .page { max-width: 920px; margin: 0 auto; padding: 32px 24px 60px; }
+  .sheet-header {
+    background: linear-gradient(135deg, #7c3aed 0%, #0b63ce 50%, #10b981 100%);
+    border-radius: 20px; padding: 28px 32px 24px; color: #fff; margin-bottom: 28px; position: relative; overflow: hidden;
+  }
+  .sheet-header::before { content: ''; position: absolute; top: -60px; right: -60px; width: 200px; height: 200px; background: rgba(255,255,255,0.08); border-radius: 50%; }
+  .sheet-header::after { content: ''; position: absolute; bottom: -40px; left: -40px; width: 140px; height: 140px; background: rgba(255,255,255,0.06); border-radius: 50%; }
+  .header-emoji { font-size: 2.8rem; margin-bottom: 6px; }
+  .header-day { font-size: 0.75rem; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; opacity: 0.85; margin-bottom: 4px; }
+  .header-title { font-family: var(--font-display); font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 700; line-height: 1.1; margin-bottom: 6px; }
+  .header-sub { font-size: 0.88rem; opacity: 0.85; margin-bottom: 14px; }
+  .header-pills { display: flex; gap: 8px; flex-wrap: wrap; }
+  .header-pill { background: rgba(255,255,255,0.22); border: 1px solid rgba(255,255,255,0.35); border-radius: 999px; padding: 4px 14px; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
+  .student-info { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 28px; }
+  @media (max-width: 600px) { .student-info { grid-template-columns: 1fr; } }
+  .info-field { background: var(--color-surface); border-radius: 12px; padding: 12px 14px; border: 1.5px solid rgba(11,99,206,0.14); box-shadow: 0 2px 8px rgba(15,23,42,0.05); }
+  .info-label { font-size: 0.65rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-accent-1); margin-bottom: 6px; }
+  .info-line { border: none; border-bottom: 1.5px solid #cbd5e1; width: 100%; font-family: var(--font-body); font-size: 0.9rem; color: var(--color-text); background: transparent; outline: none; padding: 2px 0; }
+  .info-line:focus { border-bottom-color: #0b63ce; }
+  .section-label { display: inline-flex; align-items: center; gap: 8px; padding: 5px 16px; border-radius: 999px; border: 1px solid rgba(148,163,184,0.4); background: rgba(255,255,255,0.9); font-size: 0.72rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-accent-1); margin-bottom: 10px; }
+  .section-title { font-family: var(--font-display); font-size: clamp(1.3rem, 2.5vw, 1.8rem); font-weight: 700; margin-bottom: 16px; color: var(--color-text); line-height: 1.2; }
+  .card { background: var(--color-surface); border-radius: 16px; padding: 18px 20px; box-shadow: 0 4px 18px rgba(15,23,42,0.07); border: 1px solid rgba(255,255,255,0.7); margin-bottom: 16px; }
+  .card.accent-blue { border-left: 4px solid var(--color-accent-1); }
+  .card.accent-green { border-left: 4px solid var(--color-accent-2); }
+  .card.accent-amber { border-left: 4px solid var(--color-accent-3); }
+  .card.accent-red { border-left: 4px solid var(--color-accent-red); }
+  .card.accent-purple { border-left: 4px solid #7c3aed; }
+  .card-label { font-size: 0.68rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 8px; }
+  .card-label.blue { color: var(--color-accent-1); }
+  .card-label.green { color: #047857; }
+  .card-label.amber { color: #b45309; }
+  .card-label.red { color: #b91c1c; }
+  .card-label.purple { color: #6d28d9; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  @media (max-width: 680px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+  .code-block { background: #1e293b; color: #e2e8f0; border-radius: 12px; padding: 14px 18px; font-family: var(--font-code); font-size: clamp(0.68rem, 1.1vw, 0.83rem); line-height: 1.6; overflow-x: auto; border: 1px solid rgba(255,255,255,0.06); margin-bottom: 12px; white-space: pre; }
+  .kw { color: #93c5fd; }
+  .nb { color: #fcd34d; }
+  .st { color: #86efac; }
+  .cm { color: #64748b; font-style: italic; }
+  .hl { color: #fcd34d; font-weight: 700; }
+  .bug { color: #f87171; font-weight: 700; }
+  .write-lines { margin: 8px 0; }
+  input.write-line { border: none; border-bottom: 1.5px solid #cbd5e1; width: 100%; margin-bottom: 10px; height: 28px; display: block; background: transparent; font-family: var(--font-body); font-size: 0.88rem; color: var(--color-text); outline: none; padding: 2px 4px; }
+  input.write-line:focus { border-bottom-color: #0b63ce; }
+  input.write-line::placeholder { color: #bdc5d1; font-style: italic; }
+  textarea.write-area { border: 1.5px solid #cbd5e1; border-radius: 8px; width: 100%; min-height: 70px; padding: 8px; font-family: var(--font-body); font-size: 0.85rem; color: var(--color-text); resize: vertical; background: #f8fafc; outline: none; display: block; }
+  textarea.write-area:focus { outline: 2px solid rgba(11,99,206,0.3); }
+  textarea.write-area::placeholder { color: #bdc5d1; font-style: italic; }
+  input.blank-input { display: inline-block; background: rgba(251,191,36,0.18); border: none; border-bottom: 2px solid #f59e0b; min-width: 60px; width: 60px; height: 1.1em; border-radius: 3px; vertical-align: middle; margin: 0 2px; font-family: var(--font-code); font-size: inherit; color: #fcd34d; text-align: center; outline: none; padding: 0 2px; }
+  input.blank-input:focus { background: rgba(251,191,36,0.32); }
+  input.blank-input.wide { min-width: 110px; width: 110px; }
+  input.blank-input.narrow { min-width: 36px; width: 36px; }
+  .timeline { position: relative; padding-left: 22px; }
+  .timeline::before { content: ''; position: absolute; left: 8px; top: 4px; bottom: 4px; width: 3px; border-radius: 999px; background: linear-gradient(to bottom, #7c3aed, #0b63ce, #10b981); }
+  .timeline-step { position: relative; margin-bottom: 12px; }
+  .timeline-dot { position: absolute; left: -15px; top: 4px; width: 12px; height: 12px; border-radius: 999px; border: 2px solid #f4fbff; background: #0b63ce; box-shadow: 0 0 0 3px rgba(11,99,206,0.2); }
+  .timeline-dot.green { background: #10b981; }
+  .timeline-dot.purple { background: #7c3aed; }
+  .timeline-dot.amber { background: #f59e0b; }
+  .tip-box { border-radius: 10px; padding: 10px 14px; font-size: 0.8rem; line-height: 1.5; margin-top: 10px; }
+  .tip-box.blue { background: rgba(11,99,206,0.07); color: #1e40af; }
+  .tip-box.green { background: rgba(16,185,129,0.07); color: #065f46; }
+  .tip-box.amber { background: rgba(245,158,11,0.07); color: #92400e; }
+  .tip-box.purple { background: rgba(124,58,237,0.07); color: #5b21b6; }
+  .formula-box { background: #1e293b; color: #e2e8f0; border-radius: 10px; padding: 10px 16px; font-family: var(--font-code); font-size: 0.88rem; text-align: center; margin-bottom: 10px; }
+  .divider { border: none; border-top: 2px dashed #dde6f0; margin: 28px 0; }
+  .check-list { list-style: none; padding: 0; }
+  .check-list li { display: flex; align-items: flex-start; gap: 8px; font-size: 0.85rem; color: var(--color-text-secondary); margin-bottom: 8px; line-height: 1.45; }
+  .check-list li .box { flex-shrink: 0; width: 17px; height: 17px; border: 2px solid #94a3b8; border-radius: 4px; margin-top: 1px; background: #fff; display: inline-block; }
+  .level-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 14px; border-radius: 999px; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 8px; }
+  .level-1 { background: linear-gradient(135deg,#0b63ce,#10b981); color:#fff; }
+  .level-2 { background: linear-gradient(135deg,#f59e0b,#ef4444); color:#fff; }
+  .level-3 { background: linear-gradient(135deg,#7c3aed,#ef4444); color:#fff; }
+  .challenge-badge { display: inline-flex; align-items: center; gap: 6px; background: linear-gradient(135deg, #f59e0b, #ef4444); color: #fff; padding: 4px 14px; border-radius: 999px; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 8px; }
+  table.rubric { width: 100%; border-collapse: collapse; font-size: 0.82rem; margin-top: 8px; }
+  table.rubric th { background: #1e293b; color: #e2e8f0; padding: 8px 10px; text-align: left; font-weight: 700; letter-spacing: 0.05em; }
+  table.rubric td { padding: 8px 10px; border-bottom: 1px solid #e2e8f0; vertical-align: top; color: var(--color-text-secondary); }
+  table.rubric tr:nth-child(even) td { background: rgba(241,245,249,0.6); }
+  table.rubric td:first-child { font-weight: 700; color: var(--color-text); }
+  table.rubric .pts { font-family: var(--font-code); font-size: 0.75rem; font-weight: 800; color: var(--color-accent-1); white-space: nowrap; }
+  .sheet-footer { margin-top: 40px; padding: 16px 20px; border-radius: 12px; background: rgba(124,58,237,0.05); border: 1px solid rgba(124,58,237,0.12); display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; font-size: 0.76rem; color: var(--color-text-muted); }
+  .sheet-footer strong { color: var(--color-text); }
+  p, li { font-size: 0.88rem; color: var(--color-text-secondary); line-height: 1.55; }
+  strong { color: var(--color-text); }
+  code { background: #e0f2ff; padding: 1px 6px; border-radius: 4px; font-family: var(--font-code); font-size: 0.82em; color: #0b63ce; }
+  .mb-1 { margin-bottom: 6px; }
+  .mb-2 { margin-bottom: 10px; }
+  .mb-3 { margin-bottom: 14px; }
+  .mt-2 { margin-top: 10px; }
+  .mt-3 { margin-top: 14px; }
+  .text-center { text-align: center; }
+  .text-muted { color: var(--color-text-muted); font-size: 0.78rem; }
+  .grad-text { background: linear-gradient(135deg,#7c3aed,#0b63ce,#10b981); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  .fsm-diagram { display: flex; align-items: center; justify-content: center; gap: 6px; flex-wrap: wrap; padding: 10px; }
+  .fsm-state { background: #e0f2ff; border: 2px solid #0b63ce; border-radius: 50px; padding: 6px 16px; font-family: var(--font-code); font-size: 0.78rem; font-weight: 700; color: #0b63ce; white-space: nowrap; }
+  .fsm-state.start { background: #ede9fe; border-color: #7c3aed; color: #6d28d9; }
+  .fsm-state.end { background: #d1fae5; border-color: #10b981; color: #047857; }
+  .fsm-arrow { font-size: 0.75rem; color: #64748b; text-align: center; white-space: nowrap; }
+  .score-table { width:100%; border-collapse:collapse; font-size:0.82rem; }
+  .score-table th { background:#1e293b; color:#e2e8f0; padding:7px 10px; text-align:left; }
+  .score-table td { padding:7px 10px; border-bottom:1px solid #e2e8f0; color:var(--color-text-secondary); vertical-align:top; }
+  .score-table tr:nth-child(even) td { background:rgba(241,245,249,0.6); }
+  .score-table td:first-child { font-weight:700; color:var(--color-text); }
+  .dark-code-write { background:#1e293b; border-radius:12px; padding:14px 18px; width:100%; font-family:var(--font-code); font-size:clamp(0.7rem,1.1vw,0.84rem); line-height:1.7; border:1px solid rgba(255,255,255,0.06); resize:vertical; display:block; outline:none; color:#e2e8f0; box-sizing:border-box; }
+  .dark-code-write:focus { outline:2px solid rgba(124,58,237,0.4); }
 
+  .draw-wrap { position:relative; margin-bottom:6px; }
+  .draw-toolbar { display:flex; align-items:center; gap:8px; margin-bottom:4px; flex-wrap:wrap; }
+  .draw-toolbar label { font-size:0.7rem; font-weight:700; color:#64748b; }
+  .draw-color { width:28px; height:28px; border:none; border-radius:6px; cursor:pointer; padding:0; background:transparent; }
+  .draw-size { width:70px; accent-color:#7c3aed; cursor:pointer; }
+  .draw-clear { background:#fee2e2; color:#b91c1c; border:none; border-radius:6px; padding:3px 10px; font-size:0.72rem; font-weight:800; cursor:pointer; letter-spacing:0.05em; }
+  .draw-clear:hover { background:#fecaca; }
+  canvas.draw-canvas { display:block; width:100%; border-radius:8px; cursor:crosshair; touch-action:none; background:#faf5ff; }
+  canvas.draw-canvas.white-bg { background:#fff; }
+
+</style>
+</head>
+<body>
+
+<!-- PRINT BAR -->
+<div class="print-bar no-print">
+  <div>
+    <div class="bar-title">📝 Session 5 · Homework Sheet</div>
+    <div class="bar-sub">Scratch Conditionals (if / if-else) · 30 min · Due Tue Jul 7</div>
+  </div>
+  <button class="btn-print" onclick="window.print()">🖨️ Print / Save as PDF</button>
+</div>
+
+<div class="page">
+
+<!-- ══════════ HEADER ══════════ -->
+<div class="sheet-header" style="background: linear-gradient(135deg, #10b981 0%, #0b63ce 55%, #7c3aed 100%);">
+  <div class="header-emoji">🏡</div>
+  <div class="header-day">Session 5 Homework · Mon Jul 6 → Due Tue Jul 7 · ~30 minutes</div>
+  <div class="header-title">Take Conditionals Home:<br>Add an if-else to Your Project</div>
+  <div class="header-sub">Use what you learned today. Pick your tier. Don't rush — 30 minutes is enough!</div>
+  <div class="header-pills">
+    <span class="header-pill">⏱ ~30 min</span>
+    <span class="header-pill">🐱 Scratch</span>
+    <span class="header-pill">Due Tue Jul 7</span>
+    <span class="header-pill">3 Tiers</span>
+    <span class="header-pill">Conditionals · if-else</span>
+  </div>
+</div>
+
+<!-- ══════════ STUDENT INFO ══════════ -->
+<div class="student-info">
+  <div class="info-field">
+    <div class="info-label">👤 Your Name</div>
+    <input class="info-line" type="text" placeholder="First Last" />
+  </div>
+  <div class="info-field">
+    <div class="info-label">📅 Due Date</div>
+    <input class="info-line" type="text" placeholder="Tue Jul 7, 2026" />
+  </div>
+  <div class="info-field">
+    <div class="info-label">🏫 Section</div>
+    <input class="info-line" type="text" placeholder="Section 1 / 2 / 3" />
+  </div>
+</div>
+
+<!-- ══════════ OVERVIEW ══════════ -->
+<div class="card accent-blue mb-3">
+  <div class="card-label blue">🎯 Tonight's Mission</div>
+  <p class="mb-2">Open the Scratch project you worked on in class today (or start a new one). Add at least <strong>one if-else block</strong> so something <em>different</em> happens depending on a condition. Follow your tier's instructions below.</p>
+  <div class="grid-3" style="gap:12px;margin-top:8px;">
+    <div style="background:#eff6ff;border-radius:10px;padding:10px 12px;text-align:center;">
+      <div style="font-weight:800;color:#0b63ce;font-size:0.82rem;margin-bottom:4px;">🌱 Tier A</div>
+      <div style="font-size:0.78rem;color:#374151;">Add 1 working <code>if-else</code> — key press changes what sprite says</div>
+    </div>
+    <div style="background:#f0fdf4;border-radius:10px;padding:10px 12px;text-align:center;">
+      <div style="font-weight:800;color:#047857;font-size:0.82rem;margin-bottom:4px;">⚡ Tier B</div>
+      <div style="font-size:0.78rem;color:#374151;">2 conditions, one <code>if</code> and one <code>if-else</code>, in a working project</div>
+    </div>
+    <div style="background:#faf5ff;border-radius:10px;padding:10px 12px;text-align:center;">
+      <div style="font-weight:800;color:#6d28d9;font-size:0.82rem;margin-bottom:4px;">🚀 Tier C</div>
+      <div style="font-size:0.78rem;color:#374151;">3 conditions, one nested, plus a written AI connection</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ RECALL ══════════ -->
+<div class="section-label">🔁 Quick Recall (5 min)</div>
+<div class="section-title">Remember the Blocks</div>
+
+<div class="grid-2" style="gap:14px;margin-bottom:16px;">
+  <div class="card accent-amber" style="padding:16px 18px;">
+    <div class="card-label amber">The <code>if then</code> block</div>
+    <div style="background:#1e293b;border-radius:10px;padding:12px 14px;font-family:var(--font-code);font-size:0.83rem;color:#e2e8f0;line-height:1.8;margin-bottom:10px;">
+      <span style="color:#93c5fd;">if</span> &lt;condition&gt; <span style="color:#93c5fd;">then</span><br>
+      &nbsp;&nbsp;<span style="color:#64748b;">// runs only when TRUE</span><br>
+      <span style="color:#93c5fd;">end</span>
+    </div>
+    <p style="font-size:0.82rem;color:#374151;">If the condition is <strong>FALSE</strong>, the inside code…</p>
+    <div style="display:flex;gap:12px;margin-top:6px;">
+      <label style="font-size:0.83rem;"><input type="radio" name="r1" /> runs anyway</label>
+      <label style="font-size:0.83rem;"><input type="radio" name="r1" /> is skipped</label>
+      <label style="font-size:0.83rem;"><input type="radio" name="r1" /> crashes</label>
+    </div>
+    <div class="tip-box amber mt-2">✅ It is <strong>skipped</strong> — nothing runs when FALSE.</div>
+  </div>
+
+  <div class="card accent-green" style="padding:16px 18px;">
+    <div class="card-label green">The <code>if then else</code> block</div>
+    <div style="background:#1e293b;border-radius:10px;padding:12px 14px;font-family:var(--font-code);font-size:0.83rem;color:#e2e8f0;line-height:1.8;margin-bottom:10px;">
+      <span style="color:#93c5fd;">if</span> &lt;condition&gt; <span style="color:#93c5fd;">then</span><br>
+      &nbsp;&nbsp;<span style="color:#86efac;">// runs when TRUE</span><br>
+      <span style="color:#93c5fd;">else</span><br>
+      &nbsp;&nbsp;<span style="color:#fca5a5;">// runs when FALSE</span><br>
+      <span style="color:#93c5fd;">end</span>
+    </div>
+    <p style="font-size:0.82rem;color:#374151;">An if-else block <strong>always</strong> runs something — true or false. Why is this useful? Write one reason:</p>
+    <input class="write-line" type="text" placeholder="It's useful because ..." style="margin-top:6px;" />
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ══════════ PLANNING ══════════ -->
+<div class="section-label">🗺️ Plan Before You Build (5 min)</div>
+<div class="section-title">Sketch Your Project First</div>
+
+<div class="card accent-blue mb-3">
+  <div class="card-label blue">✏️ Fill in your project plan before opening Scratch</div>
+  <div class="grid-2" style="gap:14px;">
+    <div>
+      <p class="mb-1" style="font-size:0.85rem;"><strong>My sprite's name / what it looks like:</strong></p>
+      <input class="write-line" type="text" placeholder="e.g. a cat named Whiskers" />
+      <p class="mb-1 mt-2" style="font-size:0.85rem;"><strong>The condition I will check (IF ___):</strong></p>
+      <input class="write-line" type="text" placeholder="e.g. key [space] pressed? / touching edge?" />
+      <p class="mb-1 mt-2" style="font-size:0.85rem;"><strong>What happens when TRUE (THEN):</strong></p>
+      <input class="write-line" type="text" placeholder="e.g. say 'Hello!' / move 10 steps" />
+      <p class="mb-1 mt-2" style="font-size:0.85rem;"><strong>What happens when FALSE (ELSE):</strong></p>
+      <input class="write-line" type="text" placeholder="e.g. say 'Waiting...' / stop" />
+    </div>
+    <div>
+      <p class="mb-1" style="font-size:0.85rem;"><strong>Sketch your sprite and stage (draw below):</strong></p>
+      <div class="draw-wrap">
+        <div class="draw-toolbar no-print">
+          <label>Color</label>
+          <input type="color" class="draw-color" value="#0b63ce" />
+          <label>Size</label>
+          <input type="range" class="draw-size" min="1" max="12" value="3" />
+          <button class="draw-clear">Clear</button>
+        </div>
+        <canvas class="draw-canvas white-bg" width="520" height="150" style="height:150px;border:1.5px dashed #cbd5e1;border-radius:8px;"></canvas>
+      </div>
+      <p class="text-muted text-center mt-2" style="font-size:0.72rem;">Draw your sprite + stage. Show where the condition happens.</p>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ══════════ TIER A ══════════ -->
+<div class="section-label">🌱 Tier A · Foundations · Gr. 1–3 · (~20 min build)</div>
+
+<div class="card accent-blue mb-3" style="border:2px solid #0b63ce;">
+  <span class="level-badge level-1" style="margin-bottom:10px;display:inline-flex;">🌱 Tier A</span>
+  <p class="mb-2" style="font-size:0.87rem;"><strong>Your Task:</strong> Add <strong>one <code>if-else</code> block</strong> to a Scratch sprite. When a key is pressed it says one thing — when it's NOT pressed it says something different.</p>
+
+  <div class="timeline" style="margin-top:8px;">
+    <div class="timeline-step">
+      <div class="timeline-dot amber"></div>
+      <p style="font-size:0.86rem;"><strong>1.</strong> Open your Scratch project from class (or start fresh). Click your sprite.</p>
+    </div>
+    <div class="timeline-step">
+      <div class="timeline-dot"></div>
+      <p style="font-size:0.86rem;"><strong>2.</strong> From <strong>Control</strong>, drag a <code>forever</code> block. Inside it, add an <code>if-else</code> block.</p>
+    </div>
+    <div class="timeline-step">
+      <div class="timeline-dot green"></div>
+      <p style="font-size:0.86rem;"><strong>3.</strong> From <strong>Sensing</strong>, put <code>&lt;key [space] pressed?&gt;</code> in the diamond. THEN: <code>say ["Woo!"]</code>. ELSE: <code>say ["Waiting..."]</code>.</p>
+    </div>
+    <div class="timeline-step">
+      <div class="timeline-dot purple"></div>
+      <p style="font-size:0.86rem;"><strong>4.</strong> Test it! Press the green flag then press space. Change the words to something you like.</p>
+    </div>
+  </div>
+
+  <div style="margin-top:12px;">
+    <p style="font-size:0.83rem;font-weight:700;color:#0b63ce;margin-bottom:6px;">📝 When I finished, my sprite said:</p>
+    <div class="grid-2" style="gap:10px;">
+      <div>
+        <p style="font-size:0.78rem;color:#5b6b7e;margin-bottom:3px;">When space IS pressed:</p>
+        <input class="write-line" type="text" placeholder='e.g. "Woo!"' />
+      </div>
+      <div>
+        <p style="font-size:0.78rem;color:#5b6b7e;margin-bottom:3px;">When space is NOT pressed:</p>
+        <input class="write-line" type="text" placeholder='e.g. "Waiting..."' />
+      </div>
+    </div>
+    <p style="font-size:0.83rem;font-weight:700;color:#0b63ce;margin-top:10px;margin-bottom:4px;">⭐ Bonus (if you have time): Add a second key (like the arrow keys) that does something different!</p>
+    <input class="write-line" type="text" placeholder="I also added ..." />
+  </div>
+</div>
+
+<!-- ══════════ TIER B ══════════ -->
+<div class="section-label">⚡ Tier B · Core · Gr. 3–5 · (~20 min build)</div>
+
+<div class="card accent-green mb-3" style="border:2px solid #10b981;">
+  <span class="level-badge level-2" style="margin-bottom:10px;display:inline-flex;">⚡ Tier B</span>
+  <p class="mb-2" style="font-size:0.87rem;"><strong>Your Task:</strong> Build a sprite project with <strong>two separate conditions</strong> — one plain <code>if</code> and one <code>if-else</code>. Both should be inside a <code>forever</code> loop.</p>
+
+  <div class="grid-2" style="gap:14px;margin-bottom:12px;">
+    <div style="background:#f0fdf4;border-radius:10px;padding:12px 14px;">
+      <p style="font-weight:800;color:#047857;font-size:0.83rem;margin-bottom:6px;">Condition 1 — plain <code>if</code></p>
+      <div style="font-size:0.83rem;line-height:1.7;color:#374151;">
+        <div>Check: <code>&lt;touching edge?&gt;</code></div>
+        <div>THEN: <code>say ["Oops! Wall!"]</code></div>
+        <div style="color:#94a3b8;font-size:0.78rem;">Nothing happens if not touching.</div>
+      </div>
+    </div>
+    <div style="background:#eff6ff;border-radius:10px;padding:12px 14px;">
+      <p style="font-weight:800;color:#1e40af;font-size:0.83rem;margin-bottom:6px;">Condition 2 — <code>if-else</code></p>
+      <div style="font-size:0.83rem;line-height:1.7;color:#374151;">
+        <div>Check: <code>&lt;key [up arrow] pressed?&gt;</code></div>
+        <div>THEN: <code>move 10 steps</code></div>
+        <div>ELSE: <code>say ["Use the UP key!"]</code></div>
+      </div>
+    </div>
+  </div>
+
+  <p style="font-size:0.83rem;font-weight:700;color:#047857;margin-bottom:8px;">📝 Fill in what happened when you tested your project:</p>
+  <table style="width:100%;font-size:0.82rem;border-collapse:collapse;margin-bottom:10px;">
+    <tr style="background:#f1f5f9;"><th style="padding:8px 10px;text-align:left;border-bottom:2px solid #e2e8f0;">Situation I tested</th><th style="padding:8px 10px;text-align:left;border-bottom:2px solid #e2e8f0;">What my sprite did</th><th style="padding:8px 10px;text-align:left;border-bottom:2px solid #e2e8f0;">Expected? ✓/✗</th></tr>
+    <tr><td style="padding:8px 10px;border-bottom:1px solid #e2e8f0;">Sprite touched the edge</td><td style="padding:8px 10px;border-bottom:1px solid #e2e8f0;"><input class="write-line" type="text" style="width:100%;" placeholder="..." /></td><td style="padding:8px 10px;border-bottom:1px solid #e2e8f0;text-align:center;">✓ / ✗</td></tr>
+    <tr style="background:#f9fafb;"><td style="padding:8px 10px;border-bottom:1px solid #e2e8f0;">Sprite did not touch edge</td><td style="padding:8px 10px;border-bottom:1px solid #e2e8f0;"><input class="write-line" type="text" style="width:100%;" placeholder="..." /></td><td style="padding:8px 10px;border-bottom:1px solid #e2e8f0;text-align:center;">✓ / ✗</td></tr>
+    <tr><td style="padding:8px 10px;border-bottom:1px solid #e2e8f0;">I pressed the UP arrow</td><td style="padding:8px 10px;border-bottom:1px solid #e2e8f0;"><input class="write-line" type="text" style="width:100%;" placeholder="..." /></td><td style="padding:8px 10px;border-bottom:1px solid #e2e8f0;text-align:center;">✓ / ✗</td></tr>
+    <tr style="background:#f9fafb;"><td style="padding:8px 10px;">I did NOT press UP arrow</td><td style="padding:8px 10px;"><input class="write-line" type="text" style="width:100%;" placeholder="..." /></td><td style="padding:8px 10px;text-align:center;">✓ / ✗</td></tr>
+  </table>
+
+  <p style="font-size:0.83rem;font-weight:700;color:#047857;margin-bottom:4px;">💬 In your own words: why is an <code>if-else</code> better than just an <code>if</code> here?</p>
+  <textarea class="write-area" placeholder="An if-else is better because it always does something — it..."></textarea>
+
+  <div class="tip-box green mt-2">⭐ <strong>Bonus:</strong> Add a 3rd condition using a different key (e.g. LEFT arrow moves sprite left). Describe what you added: <input class="write-line" type="text" style="margin-top:4px;" placeholder="I also added ..." /></div>
+</div>
+
+<!-- ══════════ TIER C ══════════ -->
+<div class="section-label">🚀 Tier C · Accelerated · Gr. 6–9 · (~25 min build)</div>
+
+<div class="card accent-purple mb-3" style="border:2px solid #7c3aed;">
+  <span class="level-badge level-3" style="margin-bottom:10px;display:inline-flex;">🚀 Tier C</span>
+  <p class="mb-2" style="font-size:0.87rem;"><strong>Your Task:</strong> Build a sprite that reacts to <strong>3 different conditions</strong> — including at least one <strong>nested conditional</strong>. Then write a short AI connection.</p>
+
+  <div class="card" style="background:#faf5ff;border:1.5px solid #ede9fe;margin-bottom:12px;padding:14px 18px;">
+    <div class="card-label purple">🔨 Requirements Checklist</div>
+    <ul class="check-list">
+      <li><span class="box"></span><strong>Condition 1:</strong> <code>if-else</code> — touching edge (say one thing) vs not touching (say another)</li>
+      <li><span class="box"></span><strong>Condition 2:</strong> <code>if-else</code> — key press moves sprite (THEN), or sprite waits (ELSE)</li>
+      <li><span class="box"></span><strong>Condition 3 (nested):</strong> Inside one of the above, add another <code>if-else</code> that checks a second condition. Example: inside "touching edge", check IF space is pressed THEN "I escaped!" ELSE "I'm stuck!"</li>
+      <li><span class="box"></span><strong>Written reflection:</strong> 2 sentences connecting your logic to AI (see below)</li>
+    </ul>
+  </div>
+
+  <div class="card" style="background:#f0fdf4;border:1.5px solid #bbf7d0;margin-bottom:12px;padding:14px 18px;">
+    <div class="card-label green">📐 Map Your Nested Logic</div>
+    <p style="font-size:0.83rem;margin-bottom:8px;">Fill in the blanks to describe your nested conditional:</p>
+    <div style="font-size:0.85rem;line-height:2.2;color:#374151;background:#fff;border-radius:8px;padding:12px 14px;border:1px solid #e2e8f0;">
+      <div><strong>OUTER IF:</strong> IF my sprite is <input class="write-line" type="text" style="display:inline-block;width:160px;" placeholder="touching ...?" /></div>
+      <div style="padding-left:20px;border-left:3px solid #10b981;margin-left:8px;">
+        <div><strong>THEN → INNER IF:</strong> IF <input class="write-line" type="text" style="display:inline-block;width:160px;" placeholder="key pressed?" /></div>
+        <div style="padding-left:20px;"><strong>THEN:</strong> <input class="write-line" type="text" style="display:inline-block;width:140px;" placeholder='say "..."' /></div>
+        <div style="padding-left:20px;"><strong>ELSE:</strong> <input class="write-line" type="text" style="display:inline-block;width:140px;" placeholder='say "..."' /></div>
+      </div>
+      <div><strong>ELSE:</strong> <input class="write-line" type="text" style="display:inline-block;width:200px;" placeholder="(outer else) ..." /></div>
+    </div>
+  </div>
+
+  <div class="card accent-purple" style="padding:14px 18px;">
+    <div class="card-label purple">🤖 AI Connection — Write 2 Sentences</div>
+    <p style="font-size:0.83rem;margin-bottom:8px;">Your nested conditional is a tiny <strong>decision tree</strong>. How is it similar to how an AI image classifier (like one that sorts photos into "cat" or "dog") makes decisions?</p>
+    <textarea class="write-area" style="min-height:80px;" placeholder="My code is similar to an AI classifier because... The main difference is..."></textarea>
+    <div class="tip-box purple mt-2">💡 <strong>Hint:</strong> Think about how both ask one question at a time (is it touching? → is space pressed?) versus how a real classifier might check hundreds of features (whiskers? color? shape?) in a tree of decisions.</div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ══════════ SUBMIT & REFLECTION ══════════ -->
+<div class="section-label">✅ Wrap-Up · All Tiers</div>
+<div class="section-title">Before You Close Scratch</div>
+
+<div class="card accent-blue mb-3">
+  <div class="card-label blue">📋 Submit Checklist — check each before you finish</div>
+  <div class="grid-2" style="gap:14px;">
+    <ul class="check-list">
+      <li><span class="box"></span>I saved my Scratch project (Ctrl+S or File → Save)</li>
+      <li><span class="box"></span>My project has at least one working <code>if-else</code> block</li>
+      <li><span class="box"></span>I tested it — it does what I planned</li>
+    </ul>
+    <ul class="check-list">
+      <li><span class="box"></span>I filled in the planning section above</li>
+      <li><span class="box"></span>I wrote at least one sentence in the reflection below</li>
+      <li><span class="box"></span>I spent about 30 minutes (not less, not much more)</li>
+    </ul>
+  </div>
+</div>
+
+<div class="card mb-3" style="background:#faf5ff;border:1.5px solid #ede9fe;">
+  <div class="card-label purple">💬 Tonight's Reflection (all tiers)</div>
+  <div class="grid-2" style="gap:14px;">
+    <div>
+      <p style="font-size:0.83rem;font-weight:700;color:#6d28d9;margin-bottom:4px;">1. What did your <code>if-else</code> block do in your project?</p>
+      <textarea class="write-area" placeholder="When _________, my sprite _________. Otherwise, it _________." style="min-height:55px;"></textarea>
+    </div>
+    <div>
+      <p style="font-size:0.83rem;font-weight:700;color:#6d28d9;margin-bottom:4px;">2. What was the hardest part? How did you figure it out?</p>
+      <textarea class="write-area" placeholder="The hardest part was _________ and I fixed it by _________." style="min-height:55px;"></textarea>
+    </div>
+  </div>
+  <p style="font-size:0.83rem;font-weight:700;color:#6d28d9;margin-top:10px;margin-bottom:4px;">3. What's ONE question you want to ask in class tomorrow?</p>
+  <input class="write-line" type="text" placeholder="Tomorrow I want to ask: ..." />
+</div>
+
+<!-- ══════════ SCORING RUBRIC ══════════ -->
+<div class="section-label no-print">📊 Scoring Guide (Teacher Use)</div>
+
+<div class="card no-print mb-3" style="border:1.5px dashed #cbd5e1;">
+  <div class="card-label" style="color:#5b6b7e;">Homework Rubric · Session 5 · 10 Points Total</div>
+  <table class="rubric">
+    <thead><tr><th>Section</th><th>What to Look For</th><th class="pts">Points</th></tr></thead>
+    <tbody>
+      <tr><td>Planning (sketch + plan filled)</td><td>Condition, THEN, ELSE, and sketch all attempted</td><td class="pts">2 pts</td></tr>
+      <tr><td>Tier A Build</td><td>One working if-else in Scratch; words written in; tested</td><td class="pts">4 pts</td></tr>
+      <tr><td>Tier B Build</td><td>Two separate conditions (if + if-else); test table completed; written explanation</td><td class="pts">4 pts</td></tr>
+      <tr><td>Tier C Build</td><td>3 conditions including one nested; logic map filled; AI reflection written</td><td class="pts">4 pts</td></tr>
+      <tr><td>Reflection (all tiers)</td><td>All 3 reflection questions answered thoughtfully</td><td class="pts">2 pts</td></tr>
+      <tr><td>⭐ Bonus (Tier A/B)</td><td>Extra condition added beyond requirement</td><td class="pts">+1</td></tr>
+    </tbody>
+  </table>
+  <div class="tip-box blue mt-2" style="font-size:0.78rem;">Grade on effort and completion, not perfection. Private, encouraging feedback only. Tier A rubric row applies only to Tier A students, etc.</div>
+</div>
+
+<!-- ══════════ FOOTER ══════════ -->
+<div class="sheet-footer">
+  <div>
+    <strong>Session 5 Homework · Scratch Conditionals</strong> &nbsp;·&nbsp; Due Tue Jul 7, 2026 &nbsp;·&nbsp; ~30 minutes
+  </div>
+  <div style="display:flex;gap:10px;align-items:center;">
+    <span>📧 hue.weng.88@gmail.com</span>
+    <span>·</span>
+    <span>🐱 scratch.mit.edu</span>
+  </div>
+</div>
+
+</div><!-- end .page -->
+
+<script>
+(function() {
+  function initCanvas(canvas) {
+    var ctx = canvas.getContext('2d');
+    var drawing = false;
+    var lastX = 0, lastY = 0;
+    var tool = canvas.dataset.tool || 'pen';
+    var color = '#1f2a37';
+    var lineWidth = 2;
+
+    function getPos(e) {
+      var r = canvas.getBoundingClientRect();
+      var src = e.touches ? e.touches[0] : e;
+      return { x: src.clientX - r.left, y: src.clientY - r.top };
+    }
+
+    function startDraw(e) {
+      drawing = true;
+      var p = getPos(e);
+      lastX = p.x; lastY = p.y;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, lineWidth/2, 0, Math.PI*2);
+      ctx.fillStyle = color;
+      ctx.fill();
+      e.preventDefault();
+    }
+    function draw(e) {
+      if (!drawing) return;
+      var p = getPos(e);
+      ctx.beginPath();
+      ctx.moveTo(lastX, lastY);
+      ctx.lineTo(p.x, p.y);
+      ctx.strokeStyle = color;
+      ctx.lineWidth = lineWidth;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      ctx.stroke();
+      lastX = p.x; lastY = p.y;
+      e.preventDefault();
+    }
+    function stopDraw() { drawing = false; }
+
+    canvas.addEventListener('mousedown', startDraw);
+    canvas.addEventListener('mousemove', draw);
+    canvas.addEventListener('mouseup', stopDraw);
+    canvas.addEventListener('mouseleave', stopDraw);
+    canvas.addEventListener('touchstart', startDraw, {passive:false});
+    canvas.addEventListener('touchmove', draw, {passive:false});
+    canvas.addEventListener('touchend', stopDraw);
+
+    // Clear button
+    var btn = canvas.parentElement.querySelector('.draw-clear');
+    if (btn) btn.addEventListener('click', function() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    });
+
+    // Color/size controls
+    var colorPick = canvas.parentElement.querySelector('.draw-color');
+    if (colorPick) colorPick.addEventListener('input', function(e) { color = e.target.value; });
+    var sizePick = canvas.parentElement.querySelector('.draw-size');
+    if (sizePick) sizePick.addEventListener('input', function(e) { lineWidth = +e.target.value; });
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('canvas.draw-canvas').forEach(initCanvas);
+  });
+})();
+</script>
+
+</body>
+</html>
