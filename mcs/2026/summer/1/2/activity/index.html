@@ -3,623 +3,784 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Activity Sheet · Session 5 · Scratch Conditionals</title>
+<title>Session 2 · Activity Sheet — Internet Safety, Responsible AI &amp; Our First Algorithm</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --color-bg: #f4fbff;
-    --color-surface: rgba(255,255,255,0.97);
-    --color-text: #1f2a37;
-    --color-text-secondary: #374151;
-    --color-text-muted: #5b6b7e;
-    --color-accent-1: #0b63ce;
-    --color-accent-2: #10b981;
-    --color-accent-3: #f59e0b;
-    --color-accent-red: #ef4444;
-    --font-display: 'Fredoka', 'Trebuchet MS', sans-serif;
-    --font-body: 'Nunito', Arial, sans-serif;
-    --font-code: 'Fira Code', Consolas, monospace;
-  }
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  @media print {
-    body { background: #fff !important; }
-    .no-print { display: none !important; }
-    .page-break { page-break-before: always; }
-    .card { box-shadow: none !important; border: 1.5px solid #d1d5db !important; }
-    .code-block { border: 1.5px solid #cbd5e1 !important; }
-  }
-  body { font-family: var(--font-body); color: var(--color-text); background: var(--color-bg); min-height: 100vh; }
-  .print-bar {
-    background: rgba(255,255,255,0.92); backdrop-filter: blur(12px);
-    border-bottom: 1px solid rgba(148,163,184,0.3);
-    padding: 10px 24px; display: flex; align-items: center;
-    justify-content: space-between; position: sticky; top: 0; z-index: 100; gap: 12px; flex-wrap: wrap;
-  }
-  .print-bar .bar-title { font-family: var(--font-display); font-size: 1.05rem; font-weight: 700; color: var(--color-accent-1); }
-  .print-bar .bar-sub { font-size: 0.78rem; color: var(--color-text-muted); }
-  .btn-print { background: var(--color-accent-1); color: #fff; border: none; padding: 8px 20px; border-radius: 999px; font-family: var(--font-body); font-size: 0.82rem; font-weight: 800; cursor: pointer; letter-spacing: 0.06em; transition: background 0.2s, transform 0.15s; }
-  .btn-print:hover { background: #0952b0; transform: translateY(-1px); }
-  .page { max-width: 920px; margin: 0 auto; padding: 32px 24px 60px; }
-  .sheet-header {
-    background: linear-gradient(135deg, #7c3aed 0%, #0b63ce 50%, #10b981 100%);
-    border-radius: 20px; padding: 28px 32px 24px; color: #fff; margin-bottom: 28px; position: relative; overflow: hidden;
-  }
-  .sheet-header::before { content: ''; position: absolute; top: -60px; right: -60px; width: 200px; height: 200px; background: rgba(255,255,255,0.08); border-radius: 50%; }
-  .sheet-header::after { content: ''; position: absolute; bottom: -40px; left: -40px; width: 140px; height: 140px; background: rgba(255,255,255,0.06); border-radius: 50%; }
-  .header-emoji { font-size: 2.8rem; margin-bottom: 6px; }
-  .header-day { font-size: 0.75rem; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; opacity: 0.85; margin-bottom: 4px; }
-  .header-title { font-family: var(--font-display); font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 700; line-height: 1.1; margin-bottom: 6px; }
-  .header-sub { font-size: 0.88rem; opacity: 0.85; margin-bottom: 14px; }
-  .header-pills { display: flex; gap: 8px; flex-wrap: wrap; }
-  .header-pill { background: rgba(255,255,255,0.22); border: 1px solid rgba(255,255,255,0.35); border-radius: 999px; padding: 4px 14px; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
-  .student-info { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 28px; }
-  @media (max-width: 600px) { .student-info { grid-template-columns: 1fr; } }
-  .info-field { background: var(--color-surface); border-radius: 12px; padding: 12px 14px; border: 1.5px solid rgba(11,99,206,0.14); box-shadow: 0 2px 8px rgba(15,23,42,0.05); }
-  .info-label { font-size: 0.65rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-accent-1); margin-bottom: 6px; }
-  .info-line { border: none; border-bottom: 1.5px solid #cbd5e1; width: 100%; font-family: var(--font-body); font-size: 0.9rem; color: var(--color-text); background: transparent; outline: none; padding: 2px 0; }
-  .info-line:focus { border-bottom-color: #0b63ce; }
-  .section-label { display: inline-flex; align-items: center; gap: 8px; padding: 5px 16px; border-radius: 999px; border: 1px solid rgba(148,163,184,0.4); background: rgba(255,255,255,0.9); font-size: 0.72rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-accent-1); margin-bottom: 10px; }
-  .section-title { font-family: var(--font-display); font-size: clamp(1.3rem, 2.5vw, 1.8rem); font-weight: 700; margin-bottom: 16px; color: var(--color-text); line-height: 1.2; }
-  .card { background: var(--color-surface); border-radius: 16px; padding: 18px 20px; box-shadow: 0 4px 18px rgba(15,23,42,0.07); border: 1px solid rgba(255,255,255,0.7); margin-bottom: 16px; }
-  .card.accent-blue { border-left: 4px solid var(--color-accent-1); }
-  .card.accent-green { border-left: 4px solid var(--color-accent-2); }
-  .card.accent-amber { border-left: 4px solid var(--color-accent-3); }
-  .card.accent-red { border-left: 4px solid var(--color-accent-red); }
-  .card.accent-purple { border-left: 4px solid #7c3aed; }
-  .card-label { font-size: 0.68rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 8px; }
-  .card-label.blue { color: var(--color-accent-1); }
-  .card-label.green { color: #047857; }
-  .card-label.amber { color: #b45309; }
-  .card-label.red { color: #b91c1c; }
-  .card-label.purple { color: #6d28d9; }
-  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
-  @media (max-width: 680px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
-  .code-block { background: #1e293b; color: #e2e8f0; border-radius: 12px; padding: 14px 18px; font-family: var(--font-code); font-size: clamp(0.68rem, 1.1vw, 0.83rem); line-height: 1.6; overflow-x: auto; border: 1px solid rgba(255,255,255,0.06); margin-bottom: 12px; white-space: pre; }
-  .kw { color: #93c5fd; }
-  .nb { color: #fcd34d; }
-  .st { color: #86efac; }
-  .cm { color: #64748b; font-style: italic; }
-  .hl { color: #fcd34d; font-weight: 700; }
-  .bug { color: #f87171; font-weight: 700; }
-  .write-lines { margin: 8px 0; }
-  input.write-line { border: none; border-bottom: 1.5px solid #cbd5e1; width: 100%; margin-bottom: 10px; height: 28px; display: block; background: transparent; font-family: var(--font-body); font-size: 0.88rem; color: var(--color-text); outline: none; padding: 2px 4px; }
-  input.write-line:focus { border-bottom-color: #0b63ce; }
-  input.write-line::placeholder { color: #bdc5d1; font-style: italic; }
-  textarea.write-area { border: 1.5px solid #cbd5e1; border-radius: 8px; width: 100%; min-height: 70px; padding: 8px; font-family: var(--font-body); font-size: 0.85rem; color: var(--color-text); resize: vertical; background: #f8fafc; outline: none; display: block; }
-  textarea.write-area:focus { outline: 2px solid rgba(11,99,206,0.3); }
-  textarea.write-area::placeholder { color: #bdc5d1; font-style: italic; }
-  input.blank-input { display: inline-block; background: rgba(251,191,36,0.18); border: none; border-bottom: 2px solid #f59e0b; min-width: 60px; width: 60px; height: 1.1em; border-radius: 3px; vertical-align: middle; margin: 0 2px; font-family: var(--font-code); font-size: inherit; color: #fcd34d; text-align: center; outline: none; padding: 0 2px; }
-  input.blank-input:focus { background: rgba(251,191,36,0.32); }
-  input.blank-input.wide { min-width: 110px; width: 110px; }
-  input.blank-input.narrow { min-width: 36px; width: 36px; }
-  .timeline { position: relative; padding-left: 22px; }
-  .timeline::before { content: ''; position: absolute; left: 8px; top: 4px; bottom: 4px; width: 3px; border-radius: 999px; background: linear-gradient(to bottom, #7c3aed, #0b63ce, #10b981); }
-  .timeline-step { position: relative; margin-bottom: 12px; }
-  .timeline-dot { position: absolute; left: -15px; top: 4px; width: 12px; height: 12px; border-radius: 999px; border: 2px solid #f4fbff; background: #0b63ce; box-shadow: 0 0 0 3px rgba(11,99,206,0.2); }
-  .timeline-dot.green { background: #10b981; }
-  .timeline-dot.purple { background: #7c3aed; }
-  .timeline-dot.amber { background: #f59e0b; }
-  .tip-box { border-radius: 10px; padding: 10px 14px; font-size: 0.8rem; line-height: 1.5; margin-top: 10px; }
-  .tip-box.blue { background: rgba(11,99,206,0.07); color: #1e40af; }
-  .tip-box.green { background: rgba(16,185,129,0.07); color: #065f46; }
-  .tip-box.amber { background: rgba(245,158,11,0.07); color: #92400e; }
-  .tip-box.purple { background: rgba(124,58,237,0.07); color: #5b21b6; }
-  .formula-box { background: #1e293b; color: #e2e8f0; border-radius: 10px; padding: 10px 16px; font-family: var(--font-code); font-size: 0.88rem; text-align: center; margin-bottom: 10px; }
-  .divider { border: none; border-top: 2px dashed #dde6f0; margin: 28px 0; }
-  .check-list { list-style: none; padding: 0; }
-  .check-list li { display: flex; align-items: flex-start; gap: 8px; font-size: 0.85rem; color: var(--color-text-secondary); margin-bottom: 8px; line-height: 1.45; }
-  .check-list li .box { flex-shrink: 0; width: 17px; height: 17px; border: 2px solid #94a3b8; border-radius: 4px; margin-top: 1px; background: #fff; display: inline-block; }
-  .level-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 14px; border-radius: 999px; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 8px; }
-  .level-1 { background: linear-gradient(135deg,#0b63ce,#10b981); color:#fff; }
-  .level-2 { background: linear-gradient(135deg,#f59e0b,#ef4444); color:#fff; }
-  .level-3 { background: linear-gradient(135deg,#7c3aed,#ef4444); color:#fff; }
-  .challenge-badge { display: inline-flex; align-items: center; gap: 6px; background: linear-gradient(135deg, #f59e0b, #ef4444); color: #fff; padding: 4px 14px; border-radius: 999px; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 8px; }
-  table.rubric { width: 100%; border-collapse: collapse; font-size: 0.82rem; margin-top: 8px; }
-  table.rubric th { background: #1e293b; color: #e2e8f0; padding: 8px 10px; text-align: left; font-weight: 700; letter-spacing: 0.05em; }
-  table.rubric td { padding: 8px 10px; border-bottom: 1px solid #e2e8f0; vertical-align: top; color: var(--color-text-secondary); }
-  table.rubric tr:nth-child(even) td { background: rgba(241,245,249,0.6); }
-  table.rubric td:first-child { font-weight: 700; color: var(--color-text); }
-  table.rubric .pts { font-family: var(--font-code); font-size: 0.75rem; font-weight: 800; color: var(--color-accent-1); white-space: nowrap; }
-  .sheet-footer { margin-top: 40px; padding: 16px 20px; border-radius: 12px; background: rgba(124,58,237,0.05); border: 1px solid rgba(124,58,237,0.12); display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; font-size: 0.76rem; color: var(--color-text-muted); }
-  .sheet-footer strong { color: var(--color-text); }
-  p, li { font-size: 0.88rem; color: var(--color-text-secondary); line-height: 1.55; }
-  strong { color: var(--color-text); }
-  code { background: #e0f2ff; padding: 1px 6px; border-radius: 4px; font-family: var(--font-code); font-size: 0.82em; color: #0b63ce; }
-  .mb-1 { margin-bottom: 6px; }
-  .mb-2 { margin-bottom: 10px; }
-  .mb-3 { margin-bottom: 14px; }
-  .mt-2 { margin-top: 10px; }
-  .mt-3 { margin-top: 14px; }
-  .text-center { text-align: center; }
-  .text-muted { color: var(--color-text-muted); font-size: 0.78rem; }
-  .grad-text { background: linear-gradient(135deg,#7c3aed,#0b63ce,#10b981); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
-  .fsm-diagram { display: flex; align-items: center; justify-content: center; gap: 6px; flex-wrap: wrap; padding: 10px; }
-  .fsm-state { background: #e0f2ff; border: 2px solid #0b63ce; border-radius: 50px; padding: 6px 16px; font-family: var(--font-code); font-size: 0.78rem; font-weight: 700; color: #0b63ce; white-space: nowrap; }
-  .fsm-state.start { background: #ede9fe; border-color: #7c3aed; color: #6d28d9; }
-  .fsm-state.end { background: #d1fae5; border-color: #10b981; color: #047857; }
-  .fsm-arrow { font-size: 0.75rem; color: #64748b; text-align: center; white-space: nowrap; }
-  .score-table { width:100%; border-collapse:collapse; font-size:0.82rem; }
-  .score-table th { background:#1e293b; color:#e2e8f0; padding:7px 10px; text-align:left; }
-  .score-table td { padding:7px 10px; border-bottom:1px solid #e2e8f0; color:var(--color-text-secondary); vertical-align:top; }
-  .score-table tr:nth-child(even) td { background:rgba(241,245,249,0.6); }
-  .score-table td:first-child { font-weight:700; color:var(--color-text); }
-  .dark-code-write { background:#1e293b; border-radius:12px; padding:14px 18px; width:100%; font-family:var(--font-code); font-size:clamp(0.7rem,1.1vw,0.84rem); line-height:1.7; border:1px solid rgba(255,255,255,0.06); resize:vertical; display:block; outline:none; color:#e2e8f0; box-sizing:border-box; }
-  .dark-code-write:focus { outline:2px solid rgba(124,58,237,0.4); }
 
-  .draw-wrap { position:relative; margin-bottom:6px; }
-  .draw-toolbar { display:flex; align-items:center; gap:8px; margin-bottom:4px; flex-wrap:wrap; }
-  .draw-toolbar label { font-size:0.7rem; font-weight:700; color:#64748b; }
-  .draw-color { width:28px; height:28px; border:none; border-radius:6px; cursor:pointer; padding:0; background:transparent; }
-  .draw-size { width:70px; accent-color:#7c3aed; cursor:pointer; }
-  .draw-clear { background:#fee2e2; color:#b91c1c; border:none; border-radius:6px; padding:3px 10px; font-size:0.72rem; font-weight:800; cursor:pointer; letter-spacing:0.05em; }
-  .draw-clear:hover { background:#fecaca; }
-  canvas.draw-canvas { display:block; width:100%; border-radius:8px; cursor:crosshair; touch-action:none; background:#faf5ff; }
-  canvas.draw-canvas.white-bg { background:#fff; }
+/* ─── DESIGN TOKENS (matching index.html exactly) ─────────────── */
+:root {
+  --bg:        #f4fbff;
+  --bg-deep:   #e0f2ff;
+  --surface:   rgba(255,255,255,0.97);
+  --text:      #1f2a37;
+  --text2:     #374151;
+  --muted:     #5b6b7e;
+  --a1:        #0b63ce;   /* blue */
+  --a2:        #10b981;   /* green */
+  --a3:        #f59e0b;   /* amber */
+  --ar:        #ef4444;   /* red */
+  --glass-bg:  rgba(255,255,255,0.88);
+  --glass-bd:  rgba(11,99,206,0.16);
+  --fd: "Fredoka","Trebuchet MS",sans-serif;
+  --fb: "Nunito",Arial,sans-serif;
+  --fc: "Fira Code",Consolas,monospace;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased;scroll-behavior:smooth}
+body{
+  font-family:var(--fb);color:var(--text);
+  background:radial-gradient(circle at top left,rgba(56,189,248,.12),transparent 40%),
+             radial-gradient(circle at bottom right,rgba(16,185,129,.09),transparent 40%),
+             var(--bg);
+  min-height:100vh;
+}
+
+/* ─── PRINT ──────────────────────────────────────────────────── */
+@media print{
+  .no-print{display:none!important}
+  .page-break{page-break-before:always}
+  body{background:#fff!important}
+  .slide-card{box-shadow:none!important;border:1.5px solid #d1d5db!important}
+}
+
+/* ─── STICKY BAR ─────────────────────────────────────────────── */
+.bar{
+  background:rgba(255,255,255,.92);backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(148,163,184,.3);
+  padding:10px 24px;display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:100;gap:12px;flex-wrap:wrap;
+}
+.bar-title{font-family:var(--fd);font-size:1.05rem;font-weight:700;color:var(--a1)}
+.bar-sub{font-size:.75rem;color:var(--muted)}
+.btn-print{
+  background:var(--a1);color:#fff;border:none;padding:8px 20px;
+  border-radius:999px;font-family:var(--fb);font-size:.8rem;font-weight:800;
+  cursor:pointer;letter-spacing:.05em;transition:background .2s,transform .15s;
+}
+.btn-print:hover{background:#0952b0;transform:translateY(-1px)}
+
+/* ─── PAGE ───────────────────────────────────────────────────── */
+.page{max-width:940px;margin:0 auto;padding:28px 20px 60px}
+
+/* ─── HERO HEADER ────────────────────────────────────────────── */
+.sheet-header{
+  background:linear-gradient(135deg,#0b63ce 0%,#10b981 55%,#f59e0b 100%);
+  border-radius:20px;padding:28px 32px 24px;color:#fff;
+  margin-bottom:26px;position:relative;overflow:hidden;
+}
+.sheet-header::before{content:"";position:absolute;top:-50px;right:-50px;width:180px;height:180px;background:rgba(255,255,255,.07);border-radius:50%}
+.sheet-header::after{content:"";position:absolute;bottom:-36px;left:-36px;width:130px;height:130px;background:rgba(255,255,255,.05);border-radius:50%}
+.hdr-day{font-size:.7rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;opacity:.85;margin-bottom:4px}
+.hdr-title{font-family:var(--fd);font-size:clamp(1.7rem,4vw,2.5rem);font-weight:700;line-height:1.1;margin-bottom:6px}
+.hdr-sub{font-size:.88rem;opacity:.88;margin-bottom:14px}
+.hdr-pills{display:flex;gap:8px;flex-wrap:wrap}
+.hpill{background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:4px 13px;font-size:.7rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+
+/* ─── STUDENT INFO ───────────────────────────────────────────── */
+.sinfo{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:26px}
+@media(max-width:580px){.sinfo{grid-template-columns:1fr}}
+.sfield{background:var(--surface);border-radius:12px;padding:11px 14px;border:1.5px solid rgba(11,99,206,.13);box-shadow:0 2px 8px rgba(15,23,42,.05)}
+.slabel{font-size:.62rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--a1);margin-bottom:5px}
+.sfield input{width:100%;border:none;border-bottom:1.5px solid #cbd5e1;background:transparent;font-family:var(--fb);font-size:.88rem;color:var(--text);outline:none;padding:3px 2px;transition:border-color .2s}
+.sfield input:focus{border-bottom-color:var(--a1)}
+
+/* ─── SECTION LABELS ─────────────────────────────────────────── */
+.sec-label{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:5px 15px;border-radius:999px;
+  border:1px solid rgba(148,163,184,.4);background:rgba(255,255,255,.9);
+  font-size:.7rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--a1);margin-bottom:9px
+}
+.sec-title{font-family:var(--fd);font-size:clamp(1.25rem,2.5vw,1.75rem);font-weight:700;margin-bottom:15px;color:var(--text);line-height:1.2}
+
+/* ─── CARDS ──────────────────────────────────────────────────── */
+.card{
+  background:var(--surface);border-radius:16px;padding:17px 19px;
+  box-shadow:0 4px 18px rgba(15,23,42,.07);border:1px solid rgba(255,255,255,.7);
+  margin-bottom:14px;
+}
+.card.ab{border-left:4px solid var(--a1)}
+.card.ag{border-left:4px solid var(--a2)}
+.card.aa{border-left:4px solid var(--a3)}
+.card.ar{border-left:4px solid var(--ar)}
+.clabel{font-size:.65rem;font-weight:800;letter-spacing:.13em;text-transform:uppercase;margin-bottom:7px}
+.clabel.b{color:var(--a1)}.clabel.g{color:#047857}.clabel.a{color:#b45309}.clabel.r{color:#b91c1c}
+
+/* ─── GRIDS ──────────────────────────────────────────────────── */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:13px}
+@media(max-width:640px){.g2,.g3{grid-template-columns:1fr}}
+
+/* ─── INPUT ELEMENTS ─────────────────────────────────────────── */
+input[type=text],textarea,select{
+  font-family:var(--fb);font-size:.86rem;color:var(--text);background:#fff;
+  border:1.5px solid #cbd5e1;border-radius:7px;outline:none;width:100%;
+  transition:border-color .2s,box-shadow .2s;
+}
+input[type=text]:focus,textarea:focus{border-color:var(--a1);box-shadow:0 0 0 3px rgba(11,99,206,.1)}
+
+/* write-on line */
+.wline{
+  display:block;width:100%;padding:5px 8px;margin-bottom:8px;
+  border:none;border-bottom:1.5px solid #cbd5e1;border-radius:0;
+  background:transparent;font-family:var(--fb);font-size:.84rem;color:var(--text);
+  outline:none;transition:border-color .2s;
+}
+.wline:focus{border-bottom-color:var(--a1)}
+.wline::placeholder{color:#94a3b8;font-size:.78rem}
+
+/* multi-line textarea */
+.warea{
+  display:block;width:100%;padding:9px 11px;min-height:74px;resize:vertical;
+  background:#f8fafc;border-radius:8px;
+  font-family:var(--fb);font-size:.83rem;color:var(--text);line-height:1.55;
+}
+.warea::placeholder{color:#94a3b8;font-size:.78rem}
+
+/* code-inline blanks */
+.blankinput{
+  display:inline-block;vertical-align:middle;margin:0 2px;
+  background:rgba(251,191,36,.13);border:none;border-bottom:2px solid #f59e0b;
+  border-radius:3px;padding:1px 5px;font-family:var(--fc);font-size:.76rem;
+  color:#fcd34d;outline:none;text-align:center;
+}
+.blankinput:focus{background:rgba(251,191,36,.25);border-bottom-color:#d97706}
+
+/* prediction grid cells */
+.pcell-input{
+  width:52px;height:50px;text-align:center;
+  font-family:var(--fc);font-size:.9rem;font-weight:700;
+  border:2px dashed #cbd5e1;border-radius:8px;background:#f8fafc;
+  color:var(--text);padding:0;
+  transition:border-color .2s,background .2s;
+}
+.pcell-input:focus{border-color:var(--a1);border-style:solid;background:#eff6ff}
+
+/* pixel design grid */
+.pxcell{
+  width:46px;height:46px;text-align:center;
+  font-family:var(--fc);font-size:.88rem;font-weight:700;
+  border:2px dashed #cbd5e1;border-radius:8px;background:#f8fafc;
+  color:var(--text);padding:0;
+  transition:background .35s,color .35s,border-color .25s;
+}
+.pxcell:focus{border-color:var(--a1);border-style:solid}
+
+/* ─── PIXEL-GRID CONTAINER ───────────────────────────────────── */
+.pgrid{display:grid;gap:4px;width:fit-content;margin:0 auto 8px}
+.pgrid-5{grid-template-columns:repeat(5,46px)}
+.pgrid-3{grid-template-columns:repeat(3,52px)}
+
+/* ─── CODE BLOCK ─────────────────────────────────────────────── */
+.codeblock{
+  background:#1e293b;color:#e2e8f0;border-radius:12px;
+  padding:13px 17px;font-family:var(--fc);font-size:clamp(.65rem,1.1vw,.8rem);
+  line-height:1.65;overflow-x:auto;
+  border:1px solid rgba(255,255,255,.06);margin-bottom:11px;
+  white-space:pre;
+}
+.kw{color:#93c5fd}.nb{color:#fcd34d}.st{color:#86efac}.cm{color:#64748b;font-style:italic}.op{color:#93c5fd}
+
+/* ─── PILL / TAG ─────────────────────────────────────────────── */
+.pill{display:inline-flex;align-items:center;gap:6px;padding:4px 13px;border-radius:999px;border:1px solid rgba(148,163,184,.5);background:rgba(255,255,255,.9);font-size:.7rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--a1)}
+.badge{display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff;padding:4px 13px;border-radius:999px;font-size:.7rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px}
+.vocab-tag{display:inline-flex;align-items:center;padding:3px 10px;border-radius:999px;background:rgba(15,23,42,.04);font-size:.78rem;font-weight:700;color:var(--a1)}
+
+/* ─── TIMELINE ───────────────────────────────────────────────── */
+.timeline{position:relative;padding-left:22px}
+.timeline::before{content:"";position:absolute;left:8px;top:4px;bottom:4px;width:3px;border-radius:999px;background:linear-gradient(to bottom,#0b63ce,#10b981)}
+.tstep{position:relative;margin-bottom:10px}
+.tdot{position:absolute;left:-15px;top:5px;width:12px;height:12px;border-radius:999px;border:2px solid var(--bg);background:#0b63ce;box-shadow:0 0 0 3px rgba(11,99,206,.18)}
+.tdot.g{background:#10b981}.tdot.a{background:#f59e0b}
+
+/* ─── TIP BOX ────────────────────────────────────────────────── */
+.tip{border-radius:10px;padding:9px 13px;font-size:.79rem;line-height:1.5;margin-top:9px}
+.tip.b{background:rgba(11,99,206,.07);color:#1e40af}
+.tip.g{background:rgba(16,185,129,.07);color:#065f46}
+.tip.a{background:rgba(245,158,11,.07);color:#92400e}
+.tip.r{background:rgba(239,68,68,.07);color:#991b1b}
+
+/* ─── FORMULA BOX ────────────────────────────────────────────── */
+.fbox{background:#1e293b;color:#e2e8f0;border-radius:10px;padding:10px 16px;font-family:var(--fc);font-size:.9rem;text-align:center;margin-bottom:10px}
+
+/* ─── RUBRIC TABLE ───────────────────────────────────────────── */
+table.rub{width:100%;border-collapse:collapse;font-size:.8rem;margin-top:7px}
+table.rub th{background:#1e293b;color:#e2e8f0;padding:8px 10px;text-align:left;font-weight:700;letter-spacing:.05em}
+table.rub td{padding:8px 10px;border-bottom:1px solid #e2e8f0;vertical-align:top;color:var(--text2)}
+table.rub tr:nth-child(even) td{background:rgba(241,245,249,.6)}
+table.rub td:first-child{font-weight:700;color:var(--text)}
+.pts{font-family:var(--fc);font-size:.73rem;font-weight:800;color:var(--a1);white-space:nowrap}
+
+/* ─── CHECKLIST ──────────────────────────────────────────────── */
+.cklist{list-style:none;padding:0}
+.cklist li{display:flex;align-items:flex-start;gap:8px;font-size:.84rem;color:var(--text2);margin-bottom:8px;line-height:1.45}
+
+/* ─── MISC ───────────────────────────────────────────────────── */
+.divider{border:none;border-top:2px dashed #dde6f0;margin:26px 0}
+.grad-text{background:linear-gradient(135deg,#0b63ce 0%,#10b981 50%,#f59e0b 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.mt1{margin-top:5px}.mt2{margin-top:9px}.mt3{margin-top:13px}
+.mb1{margin-bottom:5px}.mb2{margin-bottom:9px}.mb3{margin-bottom:13px}
+.tc{text-align:center}.tm{color:var(--muted);font-size:.74rem}
+p,li{font-size:.86rem;color:var(--text2);line-height:1.55}
+strong{color:var(--text)}
+code{background:#e0f2ff;padding:1px 5px;border-radius:4px;font-family:var(--fc);font-size:.8em;color:#0b63ce}
+.sheet-footer{margin-top:38px;padding:14px 18px;border-radius:12px;background:rgba(11,99,206,.05);border:1px solid rgba(11,99,206,.11);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:.73rem;color:var(--muted)}
+.question-chip{display:inline-flex;align-items:center;gap:8px;padding:6px 13px;border-radius:999px;background:rgba(245,158,11,.09);color:#92400e;font-size:.78rem;font-weight:700}
+.question-chip .icon{display:inline-flex;align-items:center;justify-content:center;width:17px;height:17px;border-radius:999px;background:rgba(245,158,11,.95);color:#fff;font-size:.74rem}
+
+/* ─── DRAWING CANVAS ─────────────────────────────────────────── */
+.draw-wrap{background:#fff;border:2px dashed #a5b4d0;border-radius:14px;overflow:hidden;position:relative;margin-bottom:8px}
+.draw-toolbar{display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding:7px 10px;background:#f1f5f9;border-bottom:1px solid #e2e8f0}
+.draw-toolbar label{font-size:.65rem;font-weight:800;color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
+.draw-toolbar input[type=color]{width:28px;height:28px;border:none;border-radius:6px;cursor:pointer;padding:0;background:none}
+.draw-toolbar input[type=range]{width:72px;accent-color:var(--a1)}
+.draw-btn{font-size:.7rem;font-weight:800;padding:4px 10px;border-radius:999px;border:1.5px solid #cbd5e1;background:#fff;color:var(--text);cursor:pointer;transition:background .15s,border-color .15s}
+.draw-btn:hover{background:#eff6ff;border-color:var(--a1)}
+.draw-btn.active{background:var(--a1);color:#fff;border-color:var(--a1)}
+.draw-canvas{display:block;width:100%;cursor:crosshair;touch-action:none}
+.draw-hint{font-size:.65rem;color:var(--muted);text-align:center;padding:3px 0 4px;background:#f8fafc;border-top:1px solid #e2e8f0}
+@media print{.draw-toolbar,.draw-hint{display:none!important}.draw-wrap{border:1.5px solid #cbd5e1}}
+
+/* ─── TRUE / FALSE TOGGLE BUTTONS ───────────────────────────── */
+.tf-group{display:inline-flex;gap:5px;vertical-align:middle}
+.tf-btn{
+  font-size:.75rem;font-weight:800;padding:4px 13px;border-radius:999px;
+  border:2px solid #e2e8f0;background:#f8fafc;color:var(--muted);
+  cursor:pointer;transition:all .18s;letter-spacing:.04em;
+  user-select:none;-webkit-user-select:none;
+}
+.tf-btn:hover{border-color:#94a3b8;color:var(--text)}
+.tf-btn.sel-true{background:#22c55e;border-color:#16a34a;color:#fff}
+.tf-btn.sel-false{background:#ef4444;border-color:#dc2626;color:#fff}
+@media print{
+  .tf-btn{border:1.5px solid #cbd5e1!important;background:#fff!important;color:#374151!important;font-size:.7rem}
+  .tf-btn.sel-true{background:#d1fae5!important;border-color:#22c55e!important;color:#14532d!important}
+  .tf-btn.sel-false{background:#fee2e2!important;border-color:#ef4444!important;color:#991b1b!important}
+}
+
+/* ─── SAFE / NOT SAFE TOGGLE BUTTONS ────────────────────────── */
+.sns-group{display:inline-flex;gap:5px;vertical-align:middle}
+.sns-btn{
+  font-size:.73rem;font-weight:800;padding:4px 11px;border-radius:999px;
+  border:2px solid #e2e8f0;background:#f8fafc;color:var(--muted);
+  cursor:pointer;transition:all .18s;
+  user-select:none;-webkit-user-select:none;
+}
+.sns-btn:hover{border-color:#94a3b8;color:var(--text)}
+.sns-btn.sel-safe{background:#22c55e;border-color:#16a34a;color:#fff}
+.sns-btn.sel-notsafe{background:#ef4444;border-color:#dc2626;color:#fff}
+@media print{
+  .sns-btn{border:1.5px solid #cbd5e1!important;background:#fff!important;color:#374151!important}
+  .sns-btn.sel-safe{background:#d1fae5!important;border-color:#22c55e!important;color:#14532d!important}
+  .sns-btn.sel-notsafe{background:#fee2e2!important;border-color:#ef4444!important;color:#991b1b!important}
+}
+
+.mb1{margin-bottom:6px}.mb2{margin-bottom:12px}.mb3{margin-bottom:20px}
+.mt2{margin-top:12px}.mt3{margin-top:20px}
+.divider{border:none;border-top:2px dashed #e2e8f0;margin:24px 0}
+.tip{border-radius:10px;padding:9px 13px;font-size:.8rem;line-height:1.5;margin-top:8px}
+.tip.a{background:#fef9ee;border-left:3px solid var(--a3);color:#7c5a10}
+.tip.b{background:#eff6ff;border-left:3px solid var(--a1);color:#1e40af}
+.tip.g{background:#f0fdf4;border-left:3px solid var(--a2);color:#14532d}
+.tip.r{background:#fef2f2;border-left:3px solid var(--ar);color:#991b1b}
+.tier-wrap{border-radius:12px;padding:12px 15px;margin-bottom:10px}
+.tier-a{background:#f0fdf4;border:1.5px solid #86efac}
+.tier-b{background:#eff6ff;border:1.5px solid #93c5fd}
+.tier-c{background:#fdf2f8;border:1.5px solid #d8b4fe}
+.tier-label{display:inline-flex;align-items:center;gap:5px;font-size:.68rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;border-radius:999px;padding:3px 10px;margin-bottom:8px}
+.tl-a{background:#22c55e;color:#fff}.tl-b{background:#3b82f6;color:#fff}.tl-c{background:#a855f7;color:#fff}
+.algo-row{display:flex;align-items:flex-start;gap:10px;margin-bottom:8px}
+.algo-num{min-width:26px;height:26px;border-radius:50%;background:var(--a1);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.8rem;flex-shrink:0;margin-top:1px}
+.algo-line{flex:1;border:none;border-bottom:1.5px solid #cbd5e1;background:transparent;font-family:var(--fb);font-size:.84rem;color:var(--text);outline:none;padding:2px 4px}
+.algo-line:focus{border-bottom-color:var(--a1)}
+.rule-row{display:flex;align-items:flex-start;gap:10px;padding:7px 0;border-bottom:1px solid #f1f5f9}
+.rule-num{min-width:22px;height:22px;border-radius:50%;background:var(--a2);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.74rem;flex-shrink:0;margin-top:1px}
+.scenario{border-radius:12px;padding:10px 14px;background:#f8fafc;border:1.5px solid #e2e8f0;margin-bottom:8px;font-size:.83rem}
+.robot-card{border-radius:12px;padding:12px;font-size:.82rem}
+.robot-good{background:#f0fdf4;border:2px solid #22c55e}
+.robot-bad{background:#fef2f2;border:2px solid #ef4444}
+.parent-box{background:#fffbeb;border:2px solid #fcd34d;border-radius:14px;padding:16px 18px;margin-top:20px}
+.parent-box .clabel{color:#b45309}
 
 </style>
 </head>
 <body>
 
-<!-- PRINT BAR -->
-<div class="print-bar no-print">
+<div class="bar no-print">
   <div>
-    <div class="bar-title">🔀 Session 5 · In-Class Activity Sheet</div>
-    <div class="bar-sub">Scratch Conditionals (if / if-else) · Differentiated · Ages 7–13</div>
+    <div class="bar-title">Session 2 · Activity Sheet</div>
+    <div class="bar-sub">Internet Safety, Responsible AI &amp; Our First Algorithm · Tue Jun 30</div>
   </div>
-  <button class="btn-print" onclick="window.print()">🖨️ Print / Save as PDF</button>
+  <button class="btn-print" onclick="window.print()">🖨️ Print</button>
 </div>
 
 <div class="page">
 
-<!-- ══════════ HEADER ══════════ -->
-<div class="sheet-header" style="background: linear-gradient(135deg, #f59e0b 0%, #0b63ce 55%, #10b981 100%);">
-  <div class="header-emoji">🔀</div>
-  <div class="header-day">Session 5 · Mon Jul 6 · Scratch: Conditionals — Differentiated Activity Sheet</div>
-  <div class="header-title">Make Decisions in Code:<br>if / if-else in Scratch</div>
-  <div class="header-sub">Work through every part in order. Circle your tier when you reach Part 4. Skip nothing in Parts 1–3!</div>
-  <div class="header-pills">
-    <span class="header-pill">⏱ ~60 min</span>
-    <span class="header-pill">🐱 Scratch</span>
-    <span class="header-pill">Ages 7–13</span>
-    <span class="header-pill">3 Tiers</span>
-    <span class="header-pill">Conditionals · AI Decision Trees</span>
+<div class="sheet-header">
+  <div class="hdr-day">Session 2 · Tue Jun 30 · Week 1 · Summer 2026</div>
+  <div class="hdr-title">Internet Safety, Responsible AI &amp; Our First Algorithm</div>
+  <div class="hdr-sub">Digital citizenship · Good robot habits · Your very own step-by-step recipe</div>
+  <div class="hdr-pills">
+    <span class="hpill">🌱 Tier A — Grades 1–3</span>
+    <span class="hpill">🔷 Tier B — Grades 3–5</span>
+    <span class="hpill">🚀 Tier C — Grades 6–9</span>
+    <span class="hpill">⏱ ~55 min in class</span>
   </div>
 </div>
 
-<!-- ══════════ STUDENT INFO ══════════ -->
-<div class="student-info">
-  <div class="info-field">
-    <div class="info-label">👤 Your Name</div>
-    <input class="info-line" type="text" placeholder="First Last" />
-  </div>
-  <div class="info-field">
-    <div class="info-label">📅 Date</div>
-    <input class="info-line" type="text" placeholder="Mon Jul 6, 2026" />
-  </div>
-  <div class="info-field">
-    <div class="info-label">🏫 Section</div>
-    <input class="info-line" type="text" placeholder="Section 1 / 2 / 3" />
-  </div>
+<div class="sinfo mb3">
+  <div class="sfield"><div class="slabel">Name</div><input type="text" placeholder="Your full name"/></div>
+  <div class="sfield"><div class="slabel">Grade</div><input type="text" placeholder="e.g. Grade 4"/></div>
+  <div class="sfield"><div class="slabel">Date</div><input type="text" placeholder="Jun 30, 2026"/></div>
 </div>
 
-<!-- ══════════ PART 1 · WARM-UP ══════════ -->
-<div class="section-label">🧩 Part 1 — Warm-Up (10 min) · No Screens</div>
-<div class="section-title">Your Brain Already Uses Conditionals</div>
+<!-- ══ WARM-UP ══════════════════════════════════════════════════ -->
+<div class="sec-label">🧠 Warm-Up · 10 min · All Tiers</div>
+<div class="sec-title">Think Before You Tell!</div>
 
-<div class="card accent-amber mb-3">
-  <div class="card-label amber">🌧️ Real-Life Decisions</div>
-  <p class="mb-2">Conditionals are decisions. You make them all day! Fill in the blanks below:</p>
-  <div class="grid-2" style="gap:12px;">
-    <div>
-      <p class="mb-1"><strong>IF</strong> it is raining outside, <strong>THEN</strong> I will…</p>
-      <input class="write-line" type="text" placeholder="write your answer" />
-      <p class="mb-1 mt-2"><strong>IF</strong> I finish my homework, <strong>THEN</strong> I will… <strong>ELSE</strong> I will…</p>
-      <input class="write-line" type="text" placeholder="THEN: ..." />
-      <input class="write-line" type="text" placeholder="ELSE: ..." />
-      <p class="mb-1 mt-2"><strong>IF</strong> the sprite touches the edge, <strong>THEN</strong>…</p>
-      <input class="write-line" type="text" placeholder="in Scratch, it should ..." />
+<div class="g2 mb3">
+  <div class="card ab">
+    <div class="clabel b">🤖 Puzzle 1 — The Helpful Robot</div>
+    <p class="mb2" style="font-size:.85rem;">Your new robot helper says: <strong>"What is your home address? I'll remember it for you!"</strong></p>
+    <p style="font-size:.8rem;color:var(--text2);margin-bottom:8px;">Should you tell it?</p>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
+      <span class="tf-group" data-name="wu1-tell">
+        <button class="tf-btn" data-val="true">👍 YES</button>
+        <button class="tf-btn" data-val="false">👎 NO</button>
+      </span>
+      <button class="tf-btn" style="background:#fef9ee;border-color:#f59e0b;color:#b45309;" onclick="this.classList.toggle('active')">🤔 DEPENDS</button>
     </div>
-    <div>
-      <p class="mb-2">Circle the correct word to complete each rule:</p>
-      <div style="background:#fffbeb;border-radius:10px;padding:12px 14px;font-size:0.87rem;line-height:2.0;color:#374151;">
-        <div><strong>IF</strong> the light is red, I should &nbsp;<u>&nbsp;&nbsp;STOP&nbsp;&nbsp;</u>&nbsp;/&nbsp;<u>&nbsp;&nbsp;GO&nbsp;&nbsp;</u>.</div>
-        <div><strong>IF</strong> a friend is sad, I should &nbsp;<u>&nbsp;&nbsp;IGNORE&nbsp;&nbsp;</u>&nbsp;/&nbsp;<u>&nbsp;&nbsp;CHECK IN&nbsp;&nbsp;</u>.</div>
-        <div><strong>IF</strong> it is not raining, I <u>&nbsp;&nbsp;DO&nbsp;&nbsp;</u>&nbsp;/&nbsp;<u>&nbsp;&nbsp;DON'T&nbsp;&nbsp;</u> need an umbrella.</div>
-        <div><strong>IF</strong> I am hungry AND it is lunchtime, I <u>&nbsp;&nbsp;SHOULD&nbsp;&nbsp;</u>&nbsp;/&nbsp;<u>&nbsp;&nbsp;SHOULDN'T&nbsp;&nbsp;</u> eat.</div>
-      </div>
-    </div>
+    <p style="font-size:.8rem;color:var(--text2);margin-bottom:6px;">Why? Write or draw your thinking:</p>
+    <textarea class="warea mb2" placeholder="Because..." rows="2"></textarea>
+    <div class="clabel b mb1">✏️ OR draw your answer:</div>
+    <div class="draw-wrap">
+  <div class="draw-toolbar">
+    <label>Color</label><input type="color" class="color-pick" value="#1e293b">
+    <label>Size</label><input type="range" class="size-pick" min="1" max="12" value="3">
+    <button class="draw-btn btn-pen active">✏️ Pen</button>
+    <button class="draw-btn btn-erase">⬜ Eraser</button>
+    <button class="draw-btn btn-clear">🗑️ Clear</button>
   </div>
+  <canvas class="draw-canvas" height="120" style="background:#fff;"></canvas>
+  <div class="draw-hint">Draw the robot and show what it should do instead!</div>
 </div>
-
-<div class="card accent-blue mb-3">
-  <div class="card-label blue">🤔 Turn &amp; Talk</div>
-  <p class="mb-2">Tell the person next to you: <em>"A conditional is like a fork in the road because…"</em></p>
-  <p class="mb-1">Write one sentence from your discussion here:</p>
-  <textarea class="write-area" placeholder="A conditional is like..."></textarea>
+  </div>
+  <div class="card aa">
+    <div class="clabel a">🤖 Puzzle 2 — The Confused Robot</div>
+    <p class="mb2" style="font-size:.85rem;">A robot follows instructions <em>exactly</em>. You say: <strong>"Go to school."</strong> What 3 things could go wrong?</p>
+    <div class="rule-row"><div class="rule-num">1</div><input type="text" class="wline" placeholder="It might..."/></div>
+    <div class="rule-row"><div class="rule-num">2</div><input type="text" class="wline" placeholder="It might..."/></div>
+    <div class="rule-row"><div class="rule-num">3</div><input type="text" class="wline" placeholder="It might..."/></div>
+    <div class="clabel a mt2 mb1">✏️ Draw the confused robot:</div>
+    <div class="draw-wrap">
+  <div class="draw-toolbar">
+    <label>Color</label><input type="color" class="color-pick" value="#1e293b">
+    <label>Size</label><input type="range" class="size-pick" min="1" max="12" value="3">
+    <button class="draw-btn btn-pen active">✏️ Pen</button>
+    <button class="draw-btn btn-erase">⬜ Eraser</button>
+    <button class="draw-btn btn-clear">🗑️ Clear</button>
+  </div>
+  <canvas class="draw-canvas" height="110" style="background:#fff;"></canvas>
+  <div class="draw-hint">Draw the robot getting confused by missing instructions!</div>
+</div>
+  </div>
 </div>
 
 <hr class="divider">
 
-<!-- ══════════ PART 2 · VOCABULARY ══════════ -->
-<div class="section-label">📖 Part 2 — Vocabulary Check (5 min)</div>
-<div class="section-title">Words We Use Today</div>
+<!-- ══ PART 1 — INTERNET SAFETY ══════════════════════════════════ -->
+<div class="sec-label">🛡️ Part 1 of 3 · All Tiers</div>
+<div class="sec-title">Internet Safety Rules</div>
 
-<div class="card accent-blue mb-3">
-  <div class="card-label blue">✏️ Match the term to its meaning</div>
-  <div class="grid-2" style="gap:14px;">
-    <div>
-      <p class="mb-2" style="font-size:0.8rem;color:#5b6b7e;">Write the letter of the correct definition next to each term.</p>
-      <table style="width:100%;font-size:0.85rem;border-collapse:collapse;">
-        <tr><td style="padding:6px 8px;border-bottom:1px solid #e2e8f0;"><strong>1. Conditional</strong></td><td style="padding:6px 8px;border-bottom:1px solid #e2e8f0;width:32px;"><input class="write-line" type="text" style="width:32px;" placeholder=" " /></td></tr>
-        <tr><td style="padding:6px 8px;border-bottom:1px solid #e2e8f0;"><strong>2. Boolean</strong></td><td style="padding:6px 8px;border-bottom:1px solid #e2e8f0;"><input class="write-line" type="text" style="width:32px;" placeholder=" " /></td></tr>
-        <tr><td style="padding:6px 8px;border-bottom:1px solid #e2e8f0;"><strong>3. Branch</strong></td><td style="padding:6px 8px;border-bottom:1px solid #e2e8f0;"><input class="write-line" type="text" style="width:32px;" placeholder=" " /></td></tr>
-        <tr><td style="padding:6px 8px;border-bottom:1px solid #e2e8f0;"><strong>4. if block</strong></td><td style="padding:6px 8px;border-bottom:1px solid #e2e8f0;"><input class="write-line" type="text" style="width:32px;" placeholder=" " /></td></tr>
-        <tr><td style="padding:6px 8px;"><strong>5. Decision Tree</strong></td><td style="padding:6px 8px;"><input class="write-line" type="text" style="width:32px;" placeholder=" " /></td></tr>
-      </table>
-    </div>
-    <div style="background:#f1f5f9;border-radius:10px;padding:12px 14px;">
-      <p style="font-size:0.75rem;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;color:#0b63ce;margin-bottom:8px;">Definitions</p>
-      <div style="font-size:0.82rem;line-height:1.8;color:#374151;">
-        <div><strong>A.</strong> A value that is only TRUE or FALSE</div>
-        <div><strong>B.</strong> A block that only runs code if a condition is true</div>
-        <div><strong>C.</strong> A path a program can take depending on a condition</div>
-        <div><strong>D.</strong> A rule that makes a program choose between two or more actions</div>
-        <div><strong>E.</strong> A diagram showing all possible decisions and their outcomes — like how AI classifiers work</div>
-      </div>
-    </div>
+<div class="card ab mb2">
+  <div class="clabel b">📋 Fill in the 5 Golden Rules</div>
+  <p style="font-size:.82rem;color:var(--text2);margin-bottom:10px;">Can you remember the rules from the lesson? Fill in each blank.</p>
+  <div class="rule-row"><div class="rule-num">1</div>
+    <div style="flex:1;font-size:.84rem;">Never share your real <input type="text" style="width:90px;border:none;border-bottom:1.5px solid #cbd5e1;font-family:var(--fb);background:transparent;outline:none;font-size:.84rem;" placeholder="______">, address, or phone number online.</div>
   </div>
-  <div class="tip-box blue mt-2">✅ Answers: 1-D &nbsp;|&nbsp; 2-A &nbsp;|&nbsp; 3-C &nbsp;|&nbsp; 4-B &nbsp;|&nbsp; 5-E</div>
+  <div class="rule-row"><div class="rule-num">2</div>
+    <div style="flex:1;font-size:.84rem;">Online <input type="text" style="width:90px;border:none;border-bottom:1.5px solid #cbd5e1;font-family:var(--fb);background:transparent;outline:none;font-size:.84rem;" placeholder="______"> may not be who they say they are — tell a trusted adult.</div>
+  </div>
+  <div class="rule-row"><div class="rule-num">3</div>
+    <div style="flex:1;font-size:.84rem;">Keep your <input type="text" style="width:90px;border:none;border-bottom:1.5px solid #cbd5e1;font-family:var(--fb);background:transparent;outline:none;font-size:.84rem;" placeholder="______"> secret — don't share with friends.</div>
+  </div>
+  <div class="rule-row"><div class="rule-num">4</div>
+    <div style="flex:1;font-size:.84rem;">Always <input type="text" style="width:90px;border:none;border-bottom:1.5px solid #cbd5e1;font-family:var(--fb);background:transparent;outline:none;font-size:.84rem;" placeholder="______"> before downloading anything.</div>
+  </div>
+  <div class="rule-row"><div class="rule-num">5</div>
+    <div style="flex:1;font-size:.84rem;">Be <input type="text" style="width:90px;border:none;border-bottom:1.5px solid #cbd5e1;font-family:var(--fb);background:transparent;outline:none;font-size:.84rem;" placeholder="______"> online — posts last <strong>forever</strong>!</div>
+  </div>
 </div>
 
-<div class="card accent-green mb-3">
-  <div class="card-label green">🔵 Circle T (True) or F (False)</div>
-  <table style="width:100%;font-size:0.85rem;border-collapse:collapse;">
-    <tr style="background:#f1f5f9;"><td style="padding:8px 10px;border-bottom:1px solid #e2e8f0;">An <code>if</code> block ALWAYS runs its inside code, no matter what.</td><td style="padding:8px 10px;border-bottom:1px solid #e2e8f0;font-weight:700;white-space:nowrap;">T &nbsp;&nbsp; F</td></tr>
-    <tr><td style="padding:8px 10px;border-bottom:1px solid #e2e8f0;">An <code>if-else</code> block runs the ELSE part when the condition is FALSE.</td><td style="padding:8px 10px;border-bottom:1px solid #e2e8f0;font-weight:700;white-space:nowrap;">T &nbsp;&nbsp; F</td></tr>
-    <tr style="background:#f1f5f9;"><td style="padding:8px 10px;border-bottom:1px solid #e2e8f0;">A Boolean value can be "maybe" — not just true or false.</td><td style="padding:8px 10px;border-bottom:1px solid #e2e8f0;font-weight:700;white-space:nowrap;">T &nbsp;&nbsp; F</td></tr>
-    <tr><td style="padding:8px 10px;">An AI classifier is basically a very large decision tree.</td><td style="padding:8px 10px;font-weight:700;white-space:nowrap;">T &nbsp;&nbsp; F</td></tr>
+<!-- TRUE / FALSE CARD -->
+<div class="card aa mb2">
+  <div class="clabel a">✅ True or False? — Click the right button!</div>
+  <p style="font-size:.82rem;color:var(--text2);margin-bottom:10px;">For each statement, click <strong>TRUE</strong> or <strong>FALSE</strong>. Your choice will highlight in color.</p>
+  <table style="width:100%;font-size:.82rem;border-collapse:collapse;">
+    <tr>
+      <td style="padding:8px 0;border-bottom:1px solid #f1f5f9;color:var(--text2);width:72%;">It is OK to share your full name and school with a stranger online.</td>
+      <td style="padding:8px 0;border-bottom:1px solid #f1f5f9;text-align:right;"><span class="tf-group" data-name="tf-act-1"><button class="tf-btn" data-val="true">TRUE</button><button class="tf-btn" data-val="false">FALSE</button></span></td>
+    </tr>
+    <tr>
+      <td style="padding:8px 0;border-bottom:1px solid #f1f5f9;color:var(--text2);">A strong password should be hard to guess and not shared with friends.</td>
+      <td style="padding:8px 0;border-bottom:1px solid #f1f5f9;text-align:right;"><span class="tf-group" data-name="tf-act-2"><button class="tf-btn" data-val="true">TRUE</button><button class="tf-btn" data-val="false">FALSE</button></span></td>
+    </tr>
+    <tr>
+      <td style="padding:8px 0;border-bottom:1px solid #f1f5f9;color:var(--text2);">Once you post something online, you can always delete it completely.</td>
+      <td style="padding:8px 0;border-bottom:1px solid #f1f5f9;text-align:right;"><span class="tf-group" data-name="tf-act-3"><button class="tf-btn" data-val="true">TRUE</button><button class="tf-btn" data-val="false">FALSE</button></span></td>
+    </tr>
+    <tr>
+      <td style="padding:8px 0;border-bottom:1px solid #f1f5f9;color:var(--text2);">If someone online makes you feel uncomfortable, you should tell a trusted adult.</td>
+      <td style="padding:8px 0;border-bottom:1px solid #f1f5f9;text-align:right;"><span class="tf-group" data-name="tf-act-4"><button class="tf-btn" data-val="true">TRUE</button><button class="tf-btn" data-val="false">FALSE</button></span></td>
+    </tr>
+    <tr>
+      <td style="padding:8px 0;color:var(--text2);">Downloading a free game from any website is always safe.</td>
+      <td style="padding:8px 0;text-align:right;"><span class="tf-group" data-name="tf-act-5"><button class="tf-btn" data-val="true">TRUE</button><button class="tf-btn" data-val="false">FALSE</button></span></td>
+    </tr>
   </table>
-  <div class="tip-box green mt-2">✅ Answers: F &nbsp;|&nbsp; T &nbsp;|&nbsp; F &nbsp;|&nbsp; T</div>
 </div>
 
-<hr class="divider">
-
-<!-- ══════════ PART 3 · TRACE & PREDICT ══════════ -->
-<div class="section-label">🔍 Part 3 — Read &amp; Trace (10 min)</div>
-<div class="section-title">What Will the Sprite Do?</div>
-
-<p class="mb-3">Look at each block description below. Circle what you think happens, then explain why.</p>
-
-<div class="grid-2" style="gap:14px;margin-bottom:16px;">
-
-  <div class="card accent-blue" style="padding:16px 18px;">
-    <div class="card-label blue">Block A — the <code>if</code> block</div>
-    <div style="background:#1e293b;border-radius:10px;padding:12px 14px;font-family:var(--font-code);font-size:0.82rem;color:#e2e8f0;line-height:1.7;margin-bottom:10px;">
-      <span style="color:#93c5fd;">when</span> <span style="color:#fcd34d;">green flag</span> clicked<br>
-      <span style="color:#93c5fd;">if</span> &lt;touching color [red]?&gt; <span style="color:#93c5fd;">then</span><br>
-      &nbsp;&nbsp;say [<span style="color:#86efac;">"Oops!"</span>] for 2 secs<br>
-      <span style="color:#93c5fd;">end</span>
-    </div>
-    <p class="mb-1" style="font-size:0.83rem;"><strong>IF the sprite IS touching red:</strong></p>
-    <div style="display:flex;gap:12px;margin-bottom:8px;">
-      <label style="font-size:0.83rem;"><input type="radio" name="a1" /> says "Oops!"</label>
-      <label style="font-size:0.83rem;"><input type="radio" name="a1" /> says nothing</label>
-      <label style="font-size:0.83rem;"><input type="radio" name="a1" /> stops the script</label>
-    </div>
-    <p class="mb-1" style="font-size:0.83rem;"><strong>IF the sprite is NOT touching red:</strong></p>
-    <div style="display:flex;gap:12px;margin-bottom:8px;">
-      <label style="font-size:0.83rem;"><input type="radio" name="a2" /> says "Oops!"</label>
-      <label style="font-size:0.83rem;"><input type="radio" name="a2" /> nothing happens</label>
-      <label style="font-size:0.83rem;"><input type="radio" name="a2" /> crashes</label>
-    </div>
-    <div class="tip-box blue">✅ Touching red → says "Oops!". Not touching → nothing at all.</div>
+<!-- SCENARIO CARD with Safe/Not Safe buttons -->
+<div class="card ab mb2">
+  <div class="clabel b">🎭 Scenario Judgments — Click Safe or Not Safe, then explain!</div>
+  <div class="scenario">
+    <strong>Scenario A:</strong> A website pops up: "Congratulations! You won a free iPad! Enter your address to claim it."<br>
+    <div style="margin:7px 0;"><span class="sns-group" data-name="sns-a"><button class="sns-btn" data-val="safe">✅ SAFE</button><button class="sns-btn" data-val="notsafe">⛔ NOT SAFE</button></span></div>
+    Because: <input type="text" class="wline" style="display:inline;width:60%;" placeholder="..."/>
   </div>
-
-  <div class="card accent-amber" style="padding:16px 18px;">
-    <div class="card-label amber">Block B — the <code>if-else</code> block</div>
-    <div style="background:#1e293b;border-radius:10px;padding:12px 14px;font-family:var(--font-code);font-size:0.82rem;color:#e2e8f0;line-height:1.7;margin-bottom:10px;">
-      <span style="color:#93c5fd;">when</span> <span style="color:#fcd34d;">space</span> key pressed<br>
-      <span style="color:#93c5fd;">if</span> &lt;key [space] pressed?&gt; <span style="color:#93c5fd;">then</span><br>
-      &nbsp;&nbsp;say [<span style="color:#86efac;">"Jumped!"</span>] for 1 secs<br>
-      <span style="color:#93c5fd;">else</span><br>
-      &nbsp;&nbsp;say [<span style="color:#86efac;">"Standing."</span>] for 1 secs<br>
-      <span style="color:#93c5fd;">end</span>
-    </div>
-    <p class="mb-1" style="font-size:0.83rem;"><strong>When space is pressed, the sprite says:</strong></p>
-    <div style="display:flex;gap:10px;margin-bottom:8px;flex-wrap:wrap;">
-      <label style="font-size:0.83rem;"><input type="radio" name="b1" /> "Jumped!"</label>
-      <label style="font-size:0.83rem;"><input type="radio" name="b1" /> "Standing."</label>
-      <label style="font-size:0.83rem;"><input type="radio" name="b1" /> both</label>
-    </div>
-    <p class="mb-1" style="font-size:0.83rem;"><strong>Why does the ELSE branch here never run?</strong></p>
-    <textarea class="write-area" placeholder="Hint: when does this script run?" style="min-height:50px;"></textarea>
-    <div class="tip-box amber mt-2">✅ Space is always pressed when this hat block fires → ELSE never runs (tricky!)</div>
+  <div class="scenario">
+    <strong>Scenario B:</strong> Your classmate asks for your password so they can help you log into the school computer.<br>
+    <div style="margin:7px 0;"><span class="sns-group" data-name="sns-b"><button class="sns-btn" data-val="safe">✅ SAFE</button><button class="sns-btn" data-val="notsafe">⛔ NOT SAFE</button></span></div>
+    Because: <input type="text" class="wline" style="display:inline;width:60%;" placeholder="..."/>
   </div>
-
-</div>
-
-<div class="card accent-green mb-3">
-  <div class="card-label green">🌳 Draw a Decision Tree — "Is it a cat?"</div>
-  <p class="mb-2" style="font-size:0.85rem;">This is the AI Moment from today's lesson! A classifier asks questions one at a time. Fill in the branches below:</p>
-  <div style="background:#f0fdf4;border-radius:10px;padding:16px;text-align:center;font-size:0.85rem;color:#374151;line-height:2.0;">
-    <div style="font-weight:800;color:#047857;margin-bottom:4px;">START: Is it an animal?</div>
-    <div style="display:flex;justify-content:center;gap:60px;">
-      <div style="text-align:center;">
-        <div>YES ↓</div>
-        <div style="border:2px solid #10b981;border-radius:8px;padding:4px 14px;background:#d1fae5;">Has whiskers?</div>
-        <div style="display:flex;gap:30px;margin-top:6px;">
-          <div style="text-align:center;">YES ↓<br><input class="write-line" type="text" style="width:90px;" placeholder="→ it's a ?" /></div>
-          <div style="text-align:center;">NO ↓<br><input class="write-line" type="text" style="width:90px;" placeholder="→ maybe a ?" /></div>
-        </div>
-      </div>
-      <div style="text-align:center;">
-        <div>NO ↓</div>
-        <input class="write-line" type="text" style="width:90px;" placeholder="→ not a ?" />
-      </div>
-    </div>
+  <div class="scenario">
+    <strong>Scenario C:</strong> A trusted family member helps you set up a learning app and asks for your school's name.<br>
+    <div style="margin:7px 0;"><span class="sns-group" data-name="sns-c"><button class="sns-btn" data-val="safe">✅ SAFE</button><button class="sns-btn" data-val="notsafe">⛔ NOT SAFE</button></span></div>
+    Because: <input type="text" class="wline" style="display:inline;width:60%;" placeholder="..."/>
   </div>
-  <div class="tip-box green mt-2">🤖 <strong>AI Connection:</strong> A real image classifier does this hundreds of times per image — asking questions (features) until it reaches an answer!</div>
 </div>
 
-<hr class="divider">
-
-<!-- ══════════ PART 4 · TIERED BUILD ══════════ -->
-<div class="section-label">🚀 Part 4 — Build It! Choose Your Tier (30–40 min)</div>
-<div class="section-title">Open Build — Conditionals in Action</div>
-
-<div class="card mb-3" style="background:linear-gradient(135deg,rgba(11,99,206,0.06),rgba(16,185,129,0.06));border:2px dashed #cbd5e1;padding:14px 18px;">
-  <p style="font-weight:800;color:#374151;margin-bottom:6px;">🎯 The Challenge: Build a Scratch sprite that <em>makes decisions</em> using conditionals.</p>
-  <p style="font-size:0.83rem;color:#5b6b7e;">Circle your tier below, then follow only those instructions. If you finish early, try the next tier!</p>
+<div class="clabel b mb1">✏️ Draw a poster reminding people of ONE internet safety rule:</div>
+<div class="draw-wrap">
+  <div class="draw-toolbar">
+    <label>Color</label><input type="color" class="color-pick" value="#1e293b">
+    <label>Size</label><input type="range" class="size-pick" min="1" max="12" value="3">
+    <button class="draw-btn btn-pen active">✏️ Pen</button>
+    <button class="draw-btn btn-erase">⬜ Eraser</button>
+    <button class="draw-btn btn-clear">🗑️ Clear</button>
+  </div>
+  <canvas class="draw-canvas" height="200" style="background:#fff;"></canvas>
+  <div class="draw-hint">Design your internet safety poster — add a title, picture, and the rule!</div>
 </div>
+
+<hr class="divider page-break">
+
+<!-- ══ PART 2 — ALGORITHM (Tiered) ══════════════════════════════ -->
+<div class="sec-label">⚙️ Part 2 of 3 · Tiered</div>
+<div class="sec-title">Your Algorithm Activity</div>
 
 <!-- TIER A -->
-<div class="card accent-blue mb-3" style="border:2px solid #0b63ce;">
-  <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
-    <span class="level-badge level-1">🌱 Tier A · Foundations · Gr. 1–3</span>
+<div class="tier-wrap tier-a mb3">
+  <div class="tier-label tl-a">🌱 Tier A — Grades 1–3</div>
+  <div class="clabel g">Draw and Label Your Morning Routine Algorithm</div>
+  <p style="font-size:.83rem;color:var(--text2);margin-bottom:10px;">An algorithm is a set of steps in order — like a recipe! Draw <strong>4 steps</strong> of your morning routine. Label each one.</p>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:10px;">
+    <div><div class="clabel g mb1">Step 1:</div><div class="draw-wrap">
+  <div class="draw-toolbar">
+    <label>Color</label><input type="color" class="color-pick" value="#1e293b">
+    <label>Size</label><input type="range" class="size-pick" min="1" max="12" value="3">
+    <button class="draw-btn btn-pen active">✏️ Pen</button>
+    <button class="draw-btn btn-erase">⬜ Eraser</button>
+    <button class="draw-btn btn-clear">🗑️ Clear</button>
   </div>
-  <div class="card-label blue">📋 Your Steps</div>
-  <div class="timeline" style="margin-top:10px;">
-    <div class="timeline-step">
-      <div class="timeline-dot amber"></div>
-      <p style="font-size:0.87rem;"><strong>Step 1.</strong> Open Scratch. Pick any sprite you like. Press the green flag — what does it do? Write below:</p>
-      <input class="write-line" type="text" placeholder="My sprite currently ..." style="margin-top:4px;" />
-    </div>
-    <div class="timeline-step">
-      <div class="timeline-dot"></div>
-      <p style="font-size:0.87rem;"><strong>Step 2.</strong> Go to <strong>Events</strong>. Add a <code>when [space] key pressed</code> block. Go to <strong>Sound</strong>. Add a <code>play sound</code> block inside it.</p>
-      <div class="tip-box blue" style="margin-top:6px;">👉 Press space — does your sprite make a sound? Check this box when it works: <input type="checkbox" /></div>
-    </div>
-    <div class="timeline-step">
-      <div class="timeline-dot green"></div>
-      <p style="font-size:0.87rem;"><strong>Step 3.</strong> Go to <strong>Control</strong>. Drag an <code>if then</code> block. Go to <strong>Sensing</strong>. Put <code>&lt;key [space] pressed?&gt;</code> inside the diamond. Inside the <code>if</code>, add: <code>say [Hello!] for 2 secs</code>.</p>
-      <div class="tip-box green" style="margin-top:6px;">👉 Press space — does your sprite say "Hello!"? Check when done: <input type="checkbox" /></div>
-    </div>
-    <div class="timeline-step">
-      <div class="timeline-dot purple"></div>
-      <p style="font-size:0.87rem;"><strong>Step 4.</strong> Challenge yourself! Change "Hello!" to something funny or personal. Draw what your sprite looks like in the box:</p>
-      <div class="draw-wrap mt-2">
-        <canvas class="draw-canvas white-bg" width="520" height="100" style="height:100px;border:1.5px dashed #cbd5e1;border-radius:8px;"></canvas>
-      </div>
-    </div>
+  <canvas class="draw-canvas" height="130" style="background:#fff;"></canvas>
+  <div class="draw-hint">Draw Step 1!</div>
+</div><input type="text" class="wline" placeholder="Step 1 label: e.g. Wake up!"></div>
+    <div><div class="clabel g mb1">Step 2:</div><div class="draw-wrap">
+  <div class="draw-toolbar">
+    <label>Color</label><input type="color" class="color-pick" value="#1e293b">
+    <label>Size</label><input type="range" class="size-pick" min="1" max="12" value="3">
+    <button class="draw-btn btn-pen active">✏️ Pen</button>
+    <button class="draw-btn btn-erase">⬜ Eraser</button>
+    <button class="draw-btn btn-clear">🗑️ Clear</button>
   </div>
-  <div style="margin-top:12px;">
-    <p style="font-size:0.83rem;font-weight:700;color:#0b63ce;margin-bottom:4px;">✅ What I built today:</p>
-    <input class="write-line" type="text" placeholder="My sprite says _______ when _______ ." />
-    <p style="font-size:0.83rem;font-weight:700;color:#0b63ce;margin-top:8px;margin-bottom:4px;">💬 One question I have:</p>
-    <input class="write-line" type="text" placeholder="I wonder ..." />
+  <canvas class="draw-canvas" height="130" style="background:#fff;"></canvas>
+  <div class="draw-hint">Draw Step 2!</div>
+</div><input type="text" class="wline" placeholder="Step 2 label:"></div>
+    <div><div class="clabel g mb1">Step 3:</div><div class="draw-wrap">
+  <div class="draw-toolbar">
+    <label>Color</label><input type="color" class="color-pick" value="#1e293b">
+    <label>Size</label><input type="range" class="size-pick" min="1" max="12" value="3">
+    <button class="draw-btn btn-pen active">✏️ Pen</button>
+    <button class="draw-btn btn-erase">⬜ Eraser</button>
+    <button class="draw-btn btn-clear">🗑️ Clear</button>
   </div>
+  <canvas class="draw-canvas" height="130" style="background:#fff;"></canvas>
+  <div class="draw-hint">Draw Step 3!</div>
+</div><input type="text" class="wline" placeholder="Step 3 label:"></div>
+    <div><div class="clabel g mb1">Step 4:</div><div class="draw-wrap">
+  <div class="draw-toolbar">
+    <label>Color</label><input type="color" class="color-pick" value="#1e293b">
+    <label>Size</label><input type="range" class="size-pick" min="1" max="12" value="3">
+    <button class="draw-btn btn-pen active">✏️ Pen</button>
+    <button class="draw-btn btn-erase">⬜ Eraser</button>
+    <button class="draw-btn btn-clear">🗑️ Clear</button>
+  </div>
+  <canvas class="draw-canvas" height="130" style="background:#fff;"></canvas>
+  <div class="draw-hint">Draw Step 4!</div>
+</div><input type="text" class="wline" placeholder="Step 4 label:"></div>
+  </div>
+  <div class="tip g">🌟 <strong>Buddy Swap:</strong> Show your steps to a neighbor. Can they follow them in order?</div>
 </div>
 
 <!-- TIER B -->
-<div class="card accent-green mb-3" style="border:2px solid #10b981;">
-  <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
-    <span class="level-badge level-2">⚡ Tier B · Core · Gr. 3–5</span>
+<div class="tier-wrap tier-b mb3">
+  <div class="tier-label tl-b">🔷 Tier B — Grades 3–5</div>
+  <div class="clabel b">Write a Precise 6-Step Algorithm</div>
+  <p style="font-size:.83rem;color:var(--text2);margin-bottom:10px;">Choose a daily task. Write <strong>6 precise steps</strong> a robot could follow — no gaps!</p>
+  <p style="font-size:.82rem;font-weight:700;color:var(--a1);margin-bottom:8px;">My algorithm for: <input type="text" style="width:200px;border:none;border-bottom:1.5px solid var(--a1);font-family:var(--fb);background:transparent;outline:none;font-size:.84rem;" placeholder="e.g. brushing teeth"></p>
+  <div class="algo-row"><div class="algo-num">1</div><input type="text" class="algo-line" placeholder="Step 1..."></div>
+  <div class="algo-row"><div class="algo-num">2</div><input type="text" class="algo-line" placeholder="Step 2..."></div>
+  <div class="algo-row"><div class="algo-num">3</div><input type="text" class="algo-line" placeholder="Step 3..."></div>
+  <div class="algo-row"><div class="algo-num">4</div><input type="text" class="algo-line" placeholder="Step 4..."></div>
+  <div class="algo-row"><div class="algo-num">5</div><input type="text" class="algo-line" placeholder="Step 5..."></div>
+  <div class="algo-row"><div class="algo-num">6</div><input type="text" class="algo-line" placeholder="Step 6..."></div>
+  <div style="margin-top:12px;"><div class="clabel b mb1">✏️ Sketch your algorithm as a flowchart:</div><div class="draw-wrap">
+  <div class="draw-toolbar">
+    <label>Color</label><input type="color" class="color-pick" value="#1e293b">
+    <label>Size</label><input type="range" class="size-pick" min="1" max="12" value="3">
+    <button class="draw-btn btn-pen active">✏️ Pen</button>
+    <button class="draw-btn btn-erase">⬜ Eraser</button>
+    <button class="draw-btn btn-clear">🗑️ Clear</button>
   </div>
-  <div class="card-label green">📋 Your Steps</div>
-  <div class="timeline" style="margin-top:10px;">
-    <div class="timeline-step">
-      <div class="timeline-dot amber"></div>
-      <p style="font-size:0.87rem;"><strong>Step 1.</strong> Open Scratch. Add a sprite. Go to <strong>Control</strong>, drag a <code>forever</code> loop. Inside it, put an <code>if then</code> block. From <strong>Sensing</strong>, drop <code>&lt;touching edge?&gt;</code> into the diamond.</p>
-      <input class="write-line" type="text" placeholder="What block goes inside the if?" style="margin-top:4px;" />
-    </div>
-    <div class="timeline-step">
-      <div class="timeline-dot"></div>
-      <p style="font-size:0.87rem;"><strong>Step 2.</strong> Inside the <code>if</code>, add <code>say [Oops! I hit a wall!] for 2 secs</code>. Run it — does your sprite say this when it reaches the edge? Check: <input type="checkbox" /></p>
-    </div>
-    <div class="timeline-step">
-      <div class="timeline-dot green"></div>
-      <p style="font-size:0.87rem;"><strong>Step 3.</strong> Now upgrade to <code>if-else</code>. Right-click the <code>if</code> block and select "Add Else." In the <strong>ELSE</strong> section, add: <code>say [I'm walking!] for 1 secs</code>.</p>
-      <div class="tip-box green" style="margin-top:6px;">📝 Fill in the blanks: When my sprite touches the edge, it says <input class="blank-input" type="text" />. When it does NOT touch the edge, it says <input class="blank-input wide" type="text" />.</div>
-    </div>
-    <div class="timeline-step">
-      <div class="timeline-dot purple"></div>
-      <p style="font-size:0.87rem;"><strong>Step 4.</strong> Add a second condition: when the UP arrow is pressed, the sprite moves 10 steps. Use a separate <code>if then</code> block (not inside the first one).</p>
-      <input class="write-line" type="text" placeholder="I put the 2nd if-block inside / outside the forever loop (circle one)" style="margin-top:4px;" />
-    </div>
-    <div class="timeline-step">
-      <div class="timeline-dot green"></div>
-      <p style="font-size:0.87rem;"><strong>Step 5.</strong> Test your project. What happens when you hold UP and walk into a wall? Write your observation:</p>
-      <textarea class="write-area" placeholder="When I press UP and touch the edge, I noticed ..." style="min-height:50px;margin-top:4px;"></textarea>
-    </div>
-  </div>
-  <div style="margin-top:10px;">
-    <p style="font-size:0.83rem;font-weight:700;color:#047857;margin-bottom:4px;">✅ Checklist — check each when done:</p>
-    <ul class="check-list">
-      <li><span class="box"></span>My sprite says something when touching the edge</li>
-      <li><span class="box"></span>My sprite says something DIFFERENT when not touching the edge (if-else)</li>
-      <li><span class="box"></span>A second key press moves the sprite</li>
-      <li><span class="box"></span>I can explain to a partner why if-else is better than just if here</li>
-    </ul>
-  </div>
+  <canvas class="draw-canvas" height="160" style="background:#fff;"></canvas>
+  <div class="draw-hint">Draw boxes and arrows showing each step!</div>
+</div></div>
+  <div class="tip b mt2"><strong>Add a decision:</strong> IF the toothpaste is empty, THEN ask for a new one, ELSE use what's there.</div>
+  <textarea class="warea mt2" rows="2" placeholder="IF ... THEN ... ELSE ..."></textarea>
+  <p style="font-size:.79rem;color:var(--muted);margin-top:8px;">🐛 <strong>Partner Debug:</strong> Swap with a neighbor — can they find a missing step?</p>
+  <textarea class="warea mt2" rows="2" placeholder="Bug my partner found: ... | How I fixed it: ..."></textarea>
 </div>
 
 <!-- TIER C -->
-<div class="card accent-purple mb-3" style="border:2px solid #7c3aed;">
-  <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
-    <span class="level-badge level-3">🚀 Tier C · Accelerated · Gr. 6–9</span>
-  </div>
-  <div class="card-label purple">📋 Your Steps</div>
-  <div class="timeline" style="margin-top:10px;">
-    <div class="timeline-step">
-      <div class="timeline-dot amber"></div>
-      <p style="font-size:0.87rem;"><strong>Step 1.</strong> Build the Tier B project first (touching edge if-else + key press). When that works, continue here.</p>
+<div class="tier-wrap tier-c mb3">
+  <div class="tier-label tl-c">🚀 Tier C — Grades 6–9</div>
+  <div class="clabel" style="color:#a855f7;">Full Algorithm: IF/ELSE + WHILE Loop</div>
+  <p style="font-size:.83rem;color:var(--text2);margin-bottom:10px;">Write an algorithm with <strong>8+ steps</strong>, two decision points, and one WHILE loop.</p>
+  <p style="font-size:.82rem;font-weight:700;color:#a855f7;margin-bottom:10px;">My algorithm for: <input type="text" style="width:200px;border:none;border-bottom:1.5px solid #a855f7;font-family:var(--fb);background:transparent;outline:none;font-size:.84rem;" placeholder="e.g. making breakfast"></p>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
+    <div>
+      <div class="algo-row"><div class="algo-num" style="background:#a855f7;">1</div><input type="text" class="algo-line" placeholder="Step 1..."></div>
+      <div class="algo-row"><div class="algo-num" style="background:#a855f7;">2</div><input type="text" class="algo-line" placeholder="Step 2..."></div>
+      <div class="algo-row"><div class="algo-num" style="background:#a855f7;">3</div><input type="text" class="algo-line" placeholder="Step 3..."></div>
+      <div class="algo-row"><div class="algo-num" style="background:#a855f7;">4</div><input type="text" class="algo-line" placeholder="IF ... THEN ..."></div>
+      <div class="algo-row"><div class="algo-num" style="background:#a855f7;">5</div><input type="text" class="algo-line" placeholder="ELSE ..."></div>
     </div>
-    <div class="timeline-step">
-      <div class="timeline-dot"></div>
-      <p style="font-size:0.87rem;"><strong>Step 2 — Nested Conditional.</strong> Inside your <code>if touching edge</code> block, add a <em>second</em> <code>if-else</code> block. Condition: <code>&lt;key [space] pressed?&gt;</code>. THEN: say "I escaped!" ELSE: say "I'm stuck!".</p>
-      <div class="tip-box purple" style="margin-top:6px;">This is called a <strong>nested conditional</strong> — one decision lives inside another decision. Draw the logic with arrows below:</div>
-      <div class="draw-wrap mt-2">
-        <canvas class="draw-canvas white-bg" width="520" height="100" style="height:100px;border:1.5px dashed #7c3aed;border-radius:8px;"></canvas>
-      </div>
-    </div>
-    <div class="timeline-step">
-      <div class="timeline-dot green"></div>
-      <p style="font-size:0.87rem;"><strong>Step 3 — AND / OR.</strong> Find the <strong>Operators</strong> palette (green). Try combining conditions with <code>&lt;A&gt; and &lt;B&gt;</code>. Make your sprite say "Double trigger!" only when BOTH the space key is pressed AND the sprite is touching the edge.</p>
-      <input class="write-line" type="text" placeholder="The block I used to combine conditions was: ..." style="margin-top:4px;" />
-    </div>
-    <div class="timeline-step">
-      <div class="timeline-dot purple"></div>
-      <p style="font-size:0.87rem;"><strong>Step 4 — AI Connection.</strong> Your nested conditional is a tiny decision tree. In 2–3 sentences, explain: how is what you built similar to how a photo classifier (like one that tells cats from dogs) makes decisions?</p>
-      <textarea class="write-area" placeholder="My code is similar to an AI classifier because..." style="min-height:70px;margin-top:4px;"></textarea>
+    <div>
+      <div class="algo-row"><div class="algo-num" style="background:#a855f7;">6</div><input type="text" class="algo-line" placeholder="WHILE ... DO ..."></div>
+      <div class="algo-row"><div class="algo-num" style="background:#a855f7;">7</div><input type="text" class="algo-line" placeholder="Step 7..."></div>
+      <div class="algo-row"><div class="algo-num" style="background:#a855f7;">8</div><input type="text" class="algo-line" placeholder="IF ... THEN ..."></div>
+      <div class="algo-row"><div class="algo-num" style="background:#a855f7;">9</div><input type="text" class="algo-line" placeholder="ELSE ..."></div>
+      <div class="algo-row"><div class="algo-num" style="background:#a855f7;">10</div><input type="text" class="algo-line" placeholder="OUTPUT / END"></div>
     </div>
   </div>
+  <div><div class="clabel mb1" style="color:#a855f7;">✏️ Draw your flowchart (rectangles + decision diamonds):</div><div class="draw-wrap">
+  <div class="draw-toolbar">
+    <label>Color</label><input type="color" class="color-pick" value="#1e293b">
+    <label>Size</label><input type="range" class="size-pick" min="1" max="12" value="3">
+    <button class="draw-btn btn-pen active">✏️ Pen</button>
+    <button class="draw-btn btn-erase">⬜ Eraser</button>
+    <button class="draw-btn btn-clear">🗑️ Clear</button>
+  </div>
+  <canvas class="draw-canvas" height="200" style="background:#fff;"></canvas>
+  <div class="draw-hint">Rectangles = steps, Diamonds = IF/ELSE decisions, Arrows connect them</div>
+</div></div>
   <div style="margin-top:10px;">
-    <ul class="check-list">
-      <li><span class="box"></span>Working if-else (touching edge)</li>
-      <li><span class="box"></span>Nested if-else (space inside edge check)</li>
-      <li><span class="box"></span>Used <code>and</code> or <code>or</code> operator block</li>
-      <li><span class="box"></span>Wrote the AI connection explanation</li>
-    </ul>
+    <div class="clabel mb1" style="color:#a855f7;">🐍 Python pseudocode:</div>
+    <textarea class="warea" rows="6" style="font-family:var(--fc);font-size:.82rem;" placeholder="# Python pseudocode&#10;if condition:&#10;    do_something&#10;else:&#10;    do_other_thing&#10;while condition:&#10;    repeat_step"></textarea>
+  </div>
+  <div class="tip" style="background:#fdf4ff;border-left:3px solid #a855f7;color:#6b21a8;margin-top:8px;"><strong>Challenge:</strong> Write a 5-rule Internet Safety Algorithm using the same IF/THEN format.</div>
+</div>
+
+<hr class="divider page-break">
+
+<!-- ══ PART 3 — AI MOMENT ════════════════════════════════════════ -->
+<div class="sec-label">🤖 Part 3 of 3 · All Tiers</div>
+<div class="sec-title">Good Robot / Bad Robot</div>
+
+<!-- AI TRUE/FALSE -->
+<div class="card ab mb3">
+  <div class="clabel b">🧠 AI True or False? — Click your answer!</div>
+  <p style="font-size:.82rem;color:var(--text2);margin-bottom:10px;">What do you know about Artificial Intelligence? Click TRUE or FALSE for each statement.</p>
+  <table style="width:100%;font-size:.82rem;border-collapse:collapse;">
+    <tr>
+      <td style="padding:8px 0;border-bottom:1px solid #f1f5f9;color:var(--text2);width:72%;">AI always tells the truth.</td>
+      <td style="padding:8px 0;border-bottom:1px solid #f1f5f9;text-align:right;"><span class="tf-group" data-name="tf-ai-1"><button class="tf-btn" data-val="true">TRUE</button><button class="tf-btn" data-val="false">FALSE</button></span></td>
+    </tr>
+    <tr>
+      <td style="padding:8px 0;border-bottom:1px solid #f1f5f9;color:var(--text2);">AI learns from examples, which might contain mistakes.</td>
+      <td style="padding:8px 0;border-bottom:1px solid #f1f5f9;text-align:right;"><span class="tf-group" data-name="tf-ai-2"><button class="tf-btn" data-val="true">TRUE</button><button class="tf-btn" data-val="false">FALSE</button></span></td>
+    </tr>
+    <tr>
+      <td style="padding:8px 0;border-bottom:1px solid #f1f5f9;color:var(--text2);">You should check important AI answers with a trusted source.</td>
+      <td style="padding:8px 0;border-bottom:1px solid #f1f5f9;text-align:right;"><span class="tf-group" data-name="tf-ai-3"><button class="tf-btn" data-val="true">TRUE</button><button class="tf-btn" data-val="false">FALSE</button></span></td>
+    </tr>
+    <tr>
+      <td style="padding:8px 0;color:var(--text2);">It is fine to share your home address with an AI chatbot.</td>
+      <td style="padding:8px 0;text-align:right;"><span class="tf-group" data-name="tf-ai-4"><button class="tf-btn" data-val="true">TRUE</button><button class="tf-btn" data-val="false">FALSE</button></span></td>
+    </tr>
+  </table>
+</div>
+
+<div class="g2 mb3">
+  <div class="robot-card robot-good">
+    <div class="clabel g mb1">✅ Good or Bad Robot Habits?</div>
+    <p style="font-size:.82rem;margin-bottom:8px;">Click TRUE (good habit) or FALSE (bad habit) for each:</p>
+    <table style="width:100%;font-size:.8rem;border-collapse:collapse;">
+      <tr>
+        <td style="padding:6px 0;border-bottom:1px solid #dcfce7;color:var(--text2);">Admits it might be wrong</td>
+        <td style="padding:6px 0;border-bottom:1px solid #dcfce7;text-align:right;"><span class="tf-group" data-name="tf-rb-1"><button class="tf-btn" data-val="true">TRUE</button><button class="tf-btn" data-val="false">FALSE</button></span></td>
+      </tr>
+      <tr>
+        <td style="padding:6px 0;border-bottom:1px solid #dcfce7;color:var(--text2);">Asks for your home address</td>
+        <td style="padding:6px 0;border-bottom:1px solid #dcfce7;text-align:right;"><span class="tf-group" data-name="tf-rb-2"><button class="tf-btn" data-val="true">TRUE</button><button class="tf-btn" data-val="false">FALSE</button></span></td>
+      </tr>
+      <tr>
+        <td style="padding:6px 0;border-bottom:1px solid #dcfce7;color:var(--text2);">Helps you think, doesn't think for you</td>
+        <td style="padding:6px 0;border-bottom:1px solid #dcfce7;text-align:right;"><span class="tf-group" data-name="tf-rb-3"><button class="tf-btn" data-val="true">TRUE</button><button class="tf-btn" data-val="false">FALSE</button></span></td>
+      </tr>
+      <tr>
+        <td style="padding:6px 0;color:var(--text2);">Says "this is definitely true" about everything</td>
+        <td style="padding:6px 0;text-align:right;"><span class="tf-group" data-name="tf-rb-4"><button class="tf-btn" data-val="true">TRUE</button><button class="tf-btn" data-val="false">FALSE</button></span></td>
+      </tr>
+    </table>
+    <input type="text" class="wline mt2" placeholder="My own good robot habit: ..."/>
+  </div>
+  <div>
+    <div class="clabel b mb1">✏️ Draw a Good Robot and a Bad Robot:</div>
+    <div class="draw-wrap">
+  <div class="draw-toolbar">
+    <label>Color</label><input type="color" class="color-pick" value="#1e293b">
+    <label>Size</label><input type="range" class="size-pick" min="1" max="12" value="3">
+    <button class="draw-btn btn-pen active">✏️ Pen</button>
+    <button class="draw-btn btn-erase">⬜ Eraser</button>
+    <button class="draw-btn btn-clear">🗑️ Clear</button>
+  </div>
+  <canvas class="draw-canvas" height="230" style="background:#fff;"></canvas>
+  <div class="draw-hint">Draw GOOD ROBOT on the left, BAD ROBOT on the right — show the difference!</div>
+</div>
+  </div>
+</div>
+
+<div class="card aa mb3">
+  <div class="clabel a">🎭 AI Scenarios</div>
+  <div class="scenario">
+    <strong>Scenario A:</strong> An AI tells you dinosaurs went extinct 100 years ago. Your teacher said 66 million years ago. Who do you trust?<br>
+    <textarea class="warea mt2" rows="2" placeholder="I would..."></textarea>
+  </div>
+  <div class="scenario mt2">
+    <strong>Scenario B:</strong> An AI chatbot says "Tell me your name so I can personalize your experience." Should you?<br>
+    <textarea class="warea mt2" rows="2" placeholder="My rules are..."></textarea>
   </div>
 </div>
 
 <hr class="divider">
 
-<!-- ══════════ PART 5 · REFLECTION ══════════ -->
-<div class="section-label">💬 Part 5 — Reflection &amp; Exit Ticket (5 min)</div>
-<div class="section-title">What Did You Learn Today?</div>
+<!-- ══ EXIT TICKET ═══════════════════════════════════════════════ -->
+<div class="sec-label">🎟️ Exit Ticket · All Tiers</div>
+<div class="sec-title">Before You Leave...</div>
 
-<div class="card accent-blue mb-3">
-  <div class="card-label blue">📝 Exit Ticket</div>
-  <div class="grid-2" style="gap:14px;">
+<div class="card ab mb2">
+  <div class="g2">
     <div>
-      <p class="mb-1" style="font-size:0.85rem;font-weight:700;">1. What is the difference between <code>if</code> and <code>if-else</code>?</p>
-      <textarea class="write-area" placeholder="An if block ... but an if-else block ..." style="min-height:60px;"></textarea>
+      <div class="clabel b mb1">1. What is an algorithm? (your own words)</div>
+      <textarea class="warea" rows="2" placeholder="An algorithm is..."></textarea>
+      <div class="clabel b mb1 mt2">2. Name ONE Internet Safety rule:</div>
+      <textarea class="warea" rows="2" placeholder="I will always..."></textarea>
     </div>
     <div>
-      <p class="mb-1" style="font-size:0.85rem;font-weight:700;">2. Give a real-life example of an if-else decision you made today:</p>
-      <textarea class="write-area" placeholder="IF ____________, THEN ____________, ELSE ____________" style="min-height:60px;"></textarea>
+      <div class="clabel b mb1">3. Can AI be wrong? Why?</div>
+      <textarea class="warea" rows="2" placeholder="Yes/No, because..."></textarea>
+      <div class="clabel b mb1 mt2">4. One question I still have:</div>
+      <textarea class="warea" rows="2" placeholder="I still wonder..."></textarea>
     </div>
   </div>
-  <p class="mb-1 mt-2" style="font-size:0.85rem;font-weight:700;">3. In your own words, what is a decision tree, and how does it connect to AI?</p>
-  <textarea class="write-area" placeholder="A decision tree is ... and AI uses it to ..."></textarea>
-</div>
-
-<div class="card mb-3" style="background:#faf5ff;border:1.5px solid #ede9fe;">
-  <p style="font-size:0.82rem;font-weight:800;color:#6d28d9;margin-bottom:8px;">🌡️ How are you feeling right now? Circle one:</p>
-  <div style="display:flex;gap:16px;flex-wrap:wrap;font-size:1.3rem;justify-content:center;">
-    <label>😕 Lost</label>
-    <label>🤔 Getting there</label>
-    <label>😊 I get it!</label>
-    <label>🤩 I could teach it!</label>
-  </div>
-  <div class="grid-2 mt-2" style="gap:12px;">
-    <div>
-      <p style="font-size:0.78rem;font-weight:700;color:#6d28d9;margin-bottom:4px;">One thing I did really well today:</p>
-      <input class="write-line" type="text" placeholder="I was good at ..." />
-    </div>
-    <div>
-      <p style="font-size:0.78rem;font-weight:700;color:#6d28d9;margin-bottom:4px;">One thing I still want to understand:</p>
-      <input class="write-line" type="text" placeholder="I still wonder ..." />
+  <div style="margin-top:14px;">
+    <div class="clabel b mb1">⭐ How I feel about today's lesson:</div>
+    <div style="display:flex;gap:14px;flex-wrap:wrap;font-size:.9rem;font-weight:700;">
+      <label style="cursor:pointer;"><input type="radio" name="feeling"> 😕 Still confused</label>
+      <label style="cursor:pointer;"><input type="radio" name="feeling"> 🤔 Getting there</label>
+      <label style="cursor:pointer;"><input type="radio" name="feeling"> 😊 Got it!</label>
+      <label style="cursor:pointer;"><input type="radio" name="feeling"> 🤩 Can teach a friend!</label>
     </div>
   </div>
 </div>
 
-<!-- ══════════ FOOTER ══════════ -->
-<div class="sheet-footer">
-  <div>
-    <strong>Session 5 · Scratch Conditionals</strong> &nbsp;·&nbsp; Mon Jul 6, 2026 &nbsp;·&nbsp; Summer 2026 AI Coding Program
+<div class="clabel b mb1">✏️ Draw something you learned today:</div>
+<div class="draw-wrap">
+  <div class="draw-toolbar">
+    <label>Color</label><input type="color" class="color-pick" value="#1e293b">
+    <label>Size</label><input type="range" class="size-pick" min="1" max="12" value="3">
+    <button class="draw-btn btn-pen active">✏️ Pen</button>
+    <button class="draw-btn btn-erase">⬜ Eraser</button>
+    <button class="draw-btn btn-clear">🗑️ Clear</button>
   </div>
-  <div style="display:flex;gap:10px;align-items:center;">
-    <span>📧 hue.weng.88@gmail.com</span>
-    <span>·</span>
-    <span>🐱 scratch.mit.edu</span>
-  </div>
+  <canvas class="draw-canvas" height="200" style="background:#fff;"></canvas>
+  <div class="draw-hint">Draw your biggest takeaway — a robot, a safety shield, a flowchart... be creative!</div>
 </div>
 
-</div><!-- end .page -->
+</div>
 
 <script>
-(function() {
-  function initCanvas(canvas) {
-    var ctx = canvas.getContext('2d');
-    var drawing = false;
-    var lastX = 0, lastY = 0;
-    var tool = canvas.dataset.tool || 'pen';
-    var color = '#1f2a37';
-    var lineWidth = 2;
 
-    function getPos(e) {
-      var r = canvas.getBoundingClientRect();
-      var src = e.touches ? e.touches[0] : e;
-      return { x: src.clientX - r.left, y: src.clientY - r.top };
-    }
-
-    function startDraw(e) {
-      drawing = true;
-      var p = getPos(e);
-      lastX = p.x; lastY = p.y;
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, lineWidth/2, 0, Math.PI*2);
-      ctx.fillStyle = color;
-      ctx.fill();
-      e.preventDefault();
-    }
-    function draw(e) {
-      if (!drawing) return;
-      var p = getPos(e);
-      ctx.beginPath();
-      ctx.moveTo(lastX, lastY);
-      ctx.lineTo(p.x, p.y);
-      ctx.strokeStyle = color;
-      ctx.lineWidth = lineWidth;
-      ctx.lineCap = 'round';
-      ctx.lineJoin = 'round';
-      ctx.stroke();
-      lastX = p.x; lastY = p.y;
-      e.preventDefault();
-    }
-    function stopDraw() { drawing = false; }
-
-    canvas.addEventListener('mousedown', startDraw);
-    canvas.addEventListener('mousemove', draw);
-    canvas.addEventListener('mouseup', stopDraw);
-    canvas.addEventListener('mouseleave', stopDraw);
-    canvas.addEventListener('touchstart', startDraw, {passive:false});
-    canvas.addEventListener('touchmove', draw, {passive:false});
-    canvas.addEventListener('touchend', stopDraw);
-
-    // Clear button
-    var btn = canvas.parentElement.querySelector('.draw-clear');
-    if (btn) btn.addEventListener('click', function() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-    });
-
-    // Color/size controls
-    var colorPick = canvas.parentElement.querySelector('.draw-color');
-    if (colorPick) colorPick.addEventListener('input', function(e) { color = e.target.value; });
-    var sizePick = canvas.parentElement.querySelector('.draw-size');
-    if (sizePick) sizePick.addEventListener('input', function(e) { lineWidth = +e.target.value; });
+(function(){
+  function initCanvas(wrap){
+    var canvas=wrap.querySelector('.draw-canvas'),ctx=canvas.getContext('2d');
+    var cp=wrap.querySelector('.color-pick'),sp=wrap.querySelector('.size-pick');
+    var btnP=wrap.querySelector('.btn-pen'),btnE=wrap.querySelector('.btn-erase'),btnC=wrap.querySelector('.btn-clear');
+    var drawing=false,mode='pen',lx=0,ly=0;
+    function resize(){var d=ctx.getImageData(0,0,canvas.width,canvas.height);canvas.width=canvas.offsetWidth;canvas.height=canvas.offsetHeight;ctx.fillStyle='#fff';ctx.fillRect(0,0,canvas.width,canvas.height);try{ctx.putImageData(d,0,0)}catch(e){}}
+    resize();
+    function pos(e){var r=canvas.getBoundingClientRect(),s=e.touches?e.touches[0]:e;return{x:(s.clientX-r.left)*(canvas.width/r.width),y:(s.clientY-r.top)*(canvas.height/r.height)}}
+    function start(e){e.preventDefault();drawing=true;var p=pos(e);lx=p.x;ly=p.y}
+    function move(e){if(!drawing)return;e.preventDefault();var p=pos(e);ctx.beginPath();ctx.lineWidth=mode==='eraser'?parseInt(sp.value)*4:parseInt(sp.value);ctx.strokeStyle=mode==='eraser'?'#fff':cp.value;ctx.lineCap='round';ctx.lineJoin='round';ctx.moveTo(lx,ly);ctx.lineTo(p.x,p.y);ctx.stroke();lx=p.x;ly=p.y}
+    function stop(){drawing=false}
+    canvas.addEventListener('mousedown',start);canvas.addEventListener('mousemove',move);canvas.addEventListener('mouseup',stop);canvas.addEventListener('mouseleave',stop);
+    canvas.addEventListener('touchstart',start,{passive:false});canvas.addEventListener('touchmove',move,{passive:false});canvas.addEventListener('touchend',stop);
+    btnP&&btnP.addEventListener('click',function(){mode='pen';btnP.classList.add('active');btnE&&btnE.classList.remove('active')});
+    btnE&&btnE.addEventListener('click',function(){mode='eraser';btnE.classList.add('active');btnP&&btnP.classList.remove('active')});
+    btnC&&btnC.addEventListener('click',function(){ctx.fillStyle='#fff';ctx.fillRect(0,0,canvas.width,canvas.height)});
+    window.addEventListener('resize',function(){setTimeout(resize,100)});
   }
-
-  document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('canvas.draw-canvas').forEach(initCanvas);
-  });
+  document.querySelectorAll('.draw-wrap').forEach(initCanvas);
 })();
-</script>
 
+
+// True / False toggle buttons
+document.querySelectorAll('.tf-group').forEach(function(g){
+  g.querySelectorAll('.tf-btn').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var isTrue=btn.dataset.val==='true';
+      g.querySelectorAll('.tf-btn').forEach(function(b){b.classList.remove('sel-true','sel-false')});
+      btn.classList.add(isTrue?'sel-true':'sel-false');
+    });
+  });
+});
+// Safe / Not Safe toggle buttons
+document.querySelectorAll('.sns-group').forEach(function(g){
+  g.querySelectorAll('.sns-btn').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var isSafe=btn.dataset.val==='safe';
+      g.querySelectorAll('.sns-btn').forEach(function(b){b.classList.remove('sel-safe','sel-notsafe')});
+      btn.classList.add(isSafe?'sel-safe':'sel-notsafe');
+    });
+  });
+});
+
+</script>
 </body>
 </html>
