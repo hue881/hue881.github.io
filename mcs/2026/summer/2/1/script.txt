@@ -1,0 +1,898 @@
+Session 5 - Scratch: Conditionals (if / if-else)
+Expert Teaching Script (CS-Rigorous Explanations, Beginner-Friendly Delivery)
+Modern Chinese School - Summer 2026 AI & Coding Program
+Instructor: Mr. Hsiao "Hue" Weng
+Ages 7-13 (Grades 1-9) - Mixed-Tier (A/B/C)
+Total Time: ~110 min (Sections 2 & 3) | ~75 min compressed (Section 1)
+================================================================================
+
+HOW TO USE THIS SCRIPT
+--------------------------------------------------------------------------------
+- Text in [BRACKETS] = instructor stage directions or timing cues
+- "Quoted text" = suggested exact words to say aloud
+- -> means a natural transition or follow-up thought
+- [KEY IDEA] = deep conceptual explanation (say or adapt to the age of the room)
+- [PAUSE] = student interaction moment -- stop and wait for responses
+- [ROBOT] = the daily AI Moment tie-in (5-10 min, folded in, never a lecture)
+- TIER A = Grades 1-3 scaffolding | TIER B = Grades 3-5 core | TIER C = Grades 6-9 stretch
+
+PACING MAP (from the syllabus Daily Rhythm):
+  Warm-up (unplugged) .............. 10 min   -> Slides 1-3
+  Mini-lesson (one concept, live) .. 15-20 min -> Slides 4-8  [ROBOT folded in]
+  Guided build (all together) ...... 20 min    -> Slides 9-11
+  Movement / brain break ........... 5 min     -> Slide 12
+  Open build + challenge cards ..... 30-40 min  -> Slides 13-14
+  Share-out (opt-in, warm) ......... 10 min     -> Slides 15-16
+  (Homework assigned at close) ..... -> Slide 16
+
+  SECTION 1 (75 min): Warm-up(5) -> Mini-lesson+Robot(15) -> Guided build(20)
+  -> Break(5) -> Open build(25) -> Quick share(5). Build the basic if/else
+  spacebar script (Guided Steps 1-2 through "say Hello/say nothing else");
+  treat the "touching edge?" upgrade as a demo-and-preview instead of an
+  all-build; homework unchanged.
+
+  CALL-BACK: This is Session 5. Yesterday (Session 4) they learned LOOPS
+  (repeat N and forever) and drew shapes and danced forever. Conditionals sit
+  directly on top of that: today we put a DECISION inside the loop they
+  already know how to build. Reference the orange Control category, the
+  loop's "mouth," and the AI-learns-by-repeating idea constantly -- today's
+  loop becomes SMART because it can check something before it acts.
+================================================================================
+
+
+================================================================================
+                     PART 1 -- WARM-UP (UNPLUGGED)  [~10 min]
+                          No screens. Brains on.
+================================================================================
+
+
+--------------------------------------------------------------------------------
+SLIDE 1 -- TITLE & WELCOME  ("if / if-else -- Making decisions in code")
+[Duration: ~2 minutes]
+--------------------------------------------------------------------------------
+
+[Display the title slide as students settle. Write "IF... THEN..." on the
+board in big letters. Keep laptops CLOSED -- this is a no-screen warm-up.
+Energy: curious and a little mysterious -- today's idea is the one that makes
+a program feel alive.]
+
+"Good morning, coders! Welcome to Session 5. Yesterday you built something
+that repeated forever -- a dancing cat, a square that drew itself with a
+loop. Say the two loop words back to me. Repeat... forever. Excellent."
+
+"Today we teach your loop something new: how to make a DECISION. Right now
+your loops just do the same thing, blindly, every single time. Today they
+learn to ask a question first -- and answer differently depending on what's
+true. This is the block that turns a program from a robot arm into something
+that feels like it's THINKING."
+
+"Here's the promise on the slide: 'Making decisions in code -- the
+superpower behind every smart program.' Every video game character that
+reacts to you, every app that behaves differently depending on what you do
+-- all of it starts with the block we build today."
+
+[KEY IDEA -- say slowly, this frames the whole lesson]:
+"Here is the big idea. A CONDITIONAL is a block that checks something --
+is it true or is it false? -- and then runs different code depending on the
+answer. 'IF it's raining, THEN grab an umbrella.' You already do this a
+hundred times a day without noticing. Today you teach a computer to do the
+exact same thing."
+
+
+--------------------------------------------------------------------------------
+SLIDE 2 -- WARM-UP: RED LIGHT / GREEN LIGHT, WHAT IS YOUR BRAIN CHECKING?
+[Duration: ~5 minutes]
+--------------------------------------------------------------------------------
+
+[No screens. This is the "Think About It" + "Turn & Talk" moment from the
+plan. Keep it discussion-based and physical if you like -- you can actually
+hold up red/green paper or just ask.]
+
+"Quick question to start us off: when you see a RED light, what do you do?"
+
+[PAUSE -- let them answer. Stop.]
+
+"And when you see GREEN?"
+
+[PAUSE -- let them answer. Go.]
+
+"Here's the real question: what is your BRAIN checking, right before you
+decide to stop or go?"
+
+[PAUSE -- guide them toward: the color of the light. That's the condition.]
+
+"Exactly -- your brain checks ONE thing (the color) and picks between TWO
+actions (stop or go). That is a conditional, running inside your own head,
+a thousand times a day."
+
+"Turn and talk to your neighbor for thirty seconds: name THREE decisions you
+made this morning before school. For each one, what was the CONDITION you
+were checking, and what were your CHOICES?"
+
+[PAUSE -- 30-45 seconds of pair talk. Circulate and listen. Sample back 2-3:
+'IF I was hungry, THEN I ate breakfast.' 'IF it looked cold outside, THEN I
+grabbed a jacket.' 'IF my alarm went off, THEN I got up.']
+
+[KEY IDEA]:
+"Every one of those is the same shape: IF [condition], THEN [action]. You
+have been running conditionals your whole life. Today we just give that
+shape a name and teach a computer to use it too. Say it with me: IF...
+THEN. One more time. IF... THEN."
+
+[TIER A note: keep examples very concrete and physical -- red light/green
+light, IF it's cold THEN wear a coat. TIER C stretch: "Can you think of a
+decision you made where there were actually TWO different outcomes, not
+just one? Like 'IF it's raining, grab an umbrella; ELSE, wear sunglasses.'
+Hold that thought -- that's if-ELSE, and it's the second half of today."]
+
+
+--------------------------------------------------------------------------------
+SLIDE 3 -- CORE CONCEPT: WHY CONDITIONALS EXIST (SMART vs. BLIND PROGRAMS)
+[Duration: ~3 minutes]
+--------------------------------------------------------------------------------
+
+[Display the "Big Idea" comparison slide. Still no student screens. Contrast
+yesterday's blind, always-the-same loop with today's loop that can check
+something and change its behavior.]
+
+"Let's lock in WHY conditionals exist. Think back to yesterday's dancing
+cat. It switched costumes forever, no matter what -- it never checked
+anything. It just blindly repeated."
+
+"Now imagine a cat that only dances WHEN you press the spacebar, and just
+stands still otherwise. That cat is CHECKING something before it acts.
+That's the difference between a program that just repeats and a program
+that reacts."
+
+[PAUSE -- ask: "Which one feels more like a real game character to you --
+one that does the same thing no matter what, or one that responds to
+YOU?" Let them answer. The conditional wins every time.]
+
+[KEY IDEA]:
+"A conditional lets a program make a decision. It checks a condition --
+true or false? -- and runs different code depending on the answer. That is
+what makes a program feel interactive, and honestly, what makes it feel
+smart. Without conditionals, every program would do the exact same thing
+every single time, forever, no matter what you did. Conditionals are the
+block that lets a program listen and respond."
+
+
+================================================================================
+              PART 2 -- MINI-LESSON (ONE CONCEPT, LIVE)  [~15-20 min]
+                    Teacher demos on the big screen only.
+================================================================================
+
+
+--------------------------------------------------------------------------------
+SLIDE 4 -- CORE CONCEPT: WHAT IS A CONDITIONAL? (if vs if-else)
+[Duration: ~4 minutes]
+--------------------------------------------------------------------------------
+
+[Now open Scratch on the projector -- YOUR screen only. Click into the
+ORANGE Control category so students see the if and if-else blocks live next
+to yesterday's loop blocks.]
+
+"Here is our definition, straight from the slide: a conditional checks a
+condition -- true or false -- and runs different code depending on the
+answer."
+
+[Point to the Control category.]
+
+"Conditionals live in the SAME orange Control category as yesterday's
+loops. Orange is quickly becoming your favorite color in Scratch -- it's
+where all the THINKING blocks live."
+
+[Demo: drag out an 'if <> then' block and an 'if <> then else' block side
+by side so students can see both shapes at once.]
+
+"There are two flavors today. Look at their shapes."
+
+"BLOCK 1 -- 'if <> then.' It has ONE mouth. If the condition is true, the
+blocks inside run. If the condition is false... nothing happens. Nothing at
+all. The program just skips right over it."
+
+"BLOCK 2 -- 'if <> then else.' It has TWO mouths -- a THEN mouth and an ELSE
+mouth. Something ALWAYS happens with this one: if the condition is true, the
+THEN mouth runs; if it's false, the ELSE mouth runs instead."
+
+[KEY IDEA]:
+"Here's the rule to carry forever: 'if' only reacts to TRUE -- if false, it
+does nothing. 'if-else' reacts to BOTH -- it always does something, just a
+DIFFERENT something depending on the answer. Ask yourself: does my program
+need to react only when something IS true, or does it need a different
+reaction when it is NOT true too? That question decides which block you
+reach for."
+
+
+--------------------------------------------------------------------------------
+SLIDE 5 -- THE HEXAGON SLOT: WHERE THE CONDITION LIVES
+[Duration: ~4 minutes]
+--------------------------------------------------------------------------------
+
+[Display the "Mini-Lesson Part 3" slide. Point out the diamond/hexagon-
+shaped hole inside the if block. This is the single most important visual
+detail of the day.]
+
+"Look closely at the shape INSIDE the if block -- there's a little hexagon-
+shaped hole. That hole is the CONDITION slot, and it is very picky about
+what fits inside it."
+
+[Demo: try (and visibly fail) to drop a round reporter block like 'x
+position' into the hexagon slot -- it won't snap in. Then drag a hexagon
+block like 'key space pressed?' from Sensing, and snap it in cleanly.]
+
+"See that? A ROUND block -- like 'x position,' which just holds a NUMBER --
+does not fit. Only a HEXAGON block fits, because a hexagon block always
+answers TRUE or FALSE. That shape is not just decoration -- it's Scratch
+telling you, with the block's own shape, 'only booleans allowed here.'"
+
+[KEY IDEA]:
+"A value that is only ever TRUE or FALSE is called a BOOLEAN -- named after
+a mathematician, George Boole, who studied logic built entirely out of true
+and false. 'Is the spacebar pressed?' True or false. 'Is the cat touching
+the edge?' True or false. Booleans are the only thing allowed in that
+hexagon hole, and they're the only thing a conditional can check. Numbers,
+words, positions -- none of that fits directly. It has to be a yes-or-no
+question."
+
+"To get to these blocks: Step 1, click orange Control. Step 2, find 'if
+then' and 'if then else.' Step 3, go find a hexagon in Sensing or Operators
+-- like 'key pressed?' or 'touching?' -- and drop it into that slot."
+
+[TIER C stretch: "Operators has hexagon blocks too, like 'greater than' and
+'and'/'or' -- those let you build your OWN true/false questions out of
+numbers, like 'score > 10.' We'll use those in the open build."]
+
+
+--------------------------------------------------------------------------------
+SLIDE 6 -- WATCH: VIDEO 1 -- IF BLOCK IN SCRATCH 3.0
+[Duration: ~3-4 minutes video + 1 minute talk]
+--------------------------------------------------------------------------------
+
+[Play Video 1 on the projector -- a short clip showing the 'if' block in
+action in Scratch 3.0. Prime them with the focus question before you press
+play.]
+
+"Before I hit play -- watch for ONE thing: how is 'if' different from
+'if-else'? Keep that question in your head the whole video."
+
+[Play the video, ~3-4 minutes.]
+
+"Now, WITHOUT looking back at the screen -- turn to a neighbor and explain
+the difference between if and if-else, in your OWN words. Go."
+
+[PAUSE -- 30-45 seconds of pair talk. Listen for: "if only does something
+when it's true," "if-else always does one of two things." Celebrate 2-3
+strong explanations out loud -- their own words mean the concept landed.]
+
+
+--------------------------------------------------------------------------------
+SLIDE 7 -- [ROBOT] AI MOMENT: "IS IT A CAT?" -- A DECISION TREE ON THE BOARD
+[Duration: ~5-6 minutes -- this is the daily AI tie-in, folded in]
+--------------------------------------------------------------------------------
+
+[Display the "Is it a cat?" decision-tree slide. This is the 5-10 minute AI
+Moment the syllabus folds into every day. Call back to yesterday's AI
+moment: loops = an AI practicing over and over.]
+
+"Now my favorite part of every day -- how does today's idea connect to AI?"
+
+"Yesterday we said an AI gets smarter by LOOPING through examples, over and
+over. Today's question is: once it's seen those examples, how does it
+actually DECIDE what something is?"
+
+[Draw or reveal the decision tree on the board: 'Has whiskers?' -> 'Says
+meow?' -> 'It's a cat!']
+
+"Let's build a tiny AI on the board together: a program that decides IF
+something is a cat. Step one: IF it has whiskers, keep checking. IF it also
+says meow, THEN... it's a cat!"
+
+[PAUSE -- ask: "What is this tree actually made of? Look closely." Let them
+answer. It's just if-blocks, chained together, one after another.]
+
+"Exactly -- this IS a classifier. A classifier is a program that sorts
+things into categories, and this one sorts things into 'cat' or 'not cat'
+using nothing but a chain of if-then questions. Early AI systems were built
+EXACTLY like this -- huge trees of if-then rules, written by hand by
+programmers, one condition at a time."
+
+[KEY IDEA -- the twist]:
+"But modern AI is different. Instead of a human writing every single rule
+by hand, modern AI LEARNS the rules from thousands of examples. The rules
+become numbers -- called weights -- instead of code blocks you can read.
+The AI essentially writes its OWN 'is it a cat' tree, just far more
+complicated, and stores it as math instead of blocks."
+
+[PAUSE -- the sting question]: "Here's a tricky one to sit with: what would
+happen if someone showed our little tree a LION? Has whiskers -- yes. Says
+meow -- no, it roars. Would our tree get it right?"
+
+[PAUSE -- let them wrestle with it. Answer: no, our simple tree would say
+'not a cat' -- and it would be WRONG, or at least it would be answering a
+narrower question than we meant. This is a gentle, age-appropriate seed for
+'AI can be wrong' -- more rules or more/better examples would be needed to
+handle edge cases like a lion.]
+
+"That's exactly the kind of mistake real AI can make too -- when it hasn't
+seen an example like the one in front of it, it can get confused. Today's
+build is your first real step toward understanding how classifiers work."
+
+
+--------------------------------------------------------------------------------
+SLIDE 8 -- WATCH: VIDEO 2 -- ALL FOUR CONDITIONAL BLOCKS
+[Duration: ~4 minutes video + 1 minute talk -- fold in; SECTION 1 may skip]
+--------------------------------------------------------------------------------
+
+[Play Video 2 -- covers if-then, if-then-else, wait until, and repeat until.
+Tell students clearly which two matter today.]
+
+"This video shows FOUR conditional blocks: 'if then,' 'if then else,' 'wait
+until,' and 'repeat until.' Today we only need the first two -- 'if then'
+and 'if then else.' The other two are tools you'll meet very soon, so just
+notice them for now."
+
+[Play the video, ~4 minutes.]
+
+"Quick check: which TWO blocks are our focus today?"
+
+[PAUSE -- answer: if-then and if-then-else. Affirm.]
+
+[SECTION 1 (75 min): if time is tight, skip this video; simply name the
+four blocks on the slide, point out which two matter today, and move
+straight to the guided build.]
+
+
+================================================================================
+                 PART 3 -- GUIDED BUILD (ALL TOGETHER)  [~20 min]
+                  Everyone builds the SAME thing, step by step.
+================================================================================
+
+
+--------------------------------------------------------------------------------
+SLIDE 9 -- GUIDED BUILD SETUP + STEP 1: forever + if (SPACEBAR REACTION)
+[Duration: ~10 minutes -- go slowly, narrate every drag]
+--------------------------------------------------------------------------------
+
+[Students open Scratch NOW. Walk the room -- confirm everyone has the
+editor open with a sprite before continuing. Buddy-pair the Tier A / Grade
+1-2 kids. They can use the Scratch cat or pick a new sprite -- either is
+fine.]
+
+"Screens ON. Open Scratch, pick your sprite -- the cat is great, or choose
+any character you like. Thumbs up when you're there. [Wait for all
+thumbs.] Buddies, help your partner get there."
+
+"Here is what every one of us will have by the end of the next twenty
+minutes: a sprite that reacts differently depending on whether you're
+pressing a key. We build it together, step by step -- do exactly what I do,
+no more, no less. Your own projects come later."
+
+"STEP 1 -- THE STRUCTURE. Conditionals almost always live INSIDE a loop,
+because a program needs to keep CHECKING, over and over, not just check
+once. Remember yesterday's forever loop? We're reusing it today, but this
+time we put a QUESTION inside it."
+
+"Step 1a: drag a 'when green flag clicked' hat block onto an empty spot.
+[Wait.]"
+
+"Step 1b: from orange Control, grab 'forever' and snap it underneath.
+Remember its mouth -- no bottom lip, because it never stops on its own.
+[Wait -- check every screen.]"
+
+"Step 1c: INSIDE the forever loop's mouth, drag in an 'if <> then' block.
+Notice it now has its own little mouth, nested inside the forever loop's
+mouth -- a mouth inside a mouth. [Wait.]"
+
+[PAUSE -- wait for a room of thumbs. Do not move on without them.]
+
+"Step 1d: from Sensing, find 'key [space] pressed?' -- it's a hexagon block
+-- and drag it into the if block's hexagon slot. Remember, only hexagons
+fit there. [Wait.]"
+
+"Step 1e: from Looks, drag 'say [Hello!] for 2 seconds' INSIDE the if
+block's mouth. [Wait -- check every screen.]"
+
+"Read the whole thing with me: 'forever... if key space pressed then...
+say Hello for two seconds.' Now click the green flag, and press and release
+the spacebar."
+
+[PAUSE -- let them test it. Celebrate the first "Hello!" popping up. Have
+them try NOT pressing space too -- nothing happens, which is exactly
+correct.]
+
+[KEY IDEA -- "The Big Discovery" for if]:
+"Look what just happened. The forever loop is checking the condition
+CONSTANTLY, many times per second -- like a lifeguard scanning the pool
+nonstop. The MOMENT the condition becomes true, the say block fires. And
+when you let go of space, the condition goes back to false, and the if
+block goes right back to doing nothing. That's why the if block needs to
+live inside a loop: a single check happens once and is done forever, but a
+loop's check happens again and again, so your sprite can react any time,
+not just at the very start."
+
+[TIER A: the plain if-block spacebar reaction is a full success -- forever,
+if, key pressed, say. Buddy them and celebrate the first "Hello!" TIER C:
+"Notice this if-block does NOTHING when the condition is false. What if you
+wanted it to say something ELSE instead of nothing? Hold that thought --
+that's exactly Step 2."]
+
+
+--------------------------------------------------------------------------------
+SLIDE 10 -- GUIDED BUILD STEP 2: UPGRADE TO if-else (BOTH BRANCHES)
+[Duration: ~8 minutes -- SECTION 1 may demo this instead of all-build]
+--------------------------------------------------------------------------------
+
+[Display the "Upgrade to if-else" slide. Build on the projector one block
+at a time. This is where the second mouth appears and the "always does
+something" idea becomes visible.]
+
+"Now the upgrade. We're going to replace 'if then' with 'if then else,' so
+our sprite ALWAYS says something -- one thing when space is pressed, a
+DIFFERENT thing when it's not."
+
+"Step 2a: drag out a fresh 'if <> then else' block from Control -- notice
+it has TWO mouths this time, a THEN section and an ELSE section, with a
+divider line between them. [Wait.]"
+
+"Step 2b: move your 'key space pressed?' hexagon into this new block's
+condition slot -- same hexagon, new home. [Wait.]"
+
+"Step 2c: put your 'say Hello! for 2 seconds' block into the THEN mouth --
+the top one. [Wait.]"
+
+"Step 2d: from Looks, drag a SECOND 'say [] for 2 seconds' block into the
+ELSE mouth -- the bottom one -- and change its text to something like
+'Waiting...' [Wait.]"
+
+"Step 2e: swap this whole if-else block in, in place of your old if block,
+still inside the forever loop. Click the green flag. Now: press space --
+watch what your sprite says. Let go -- watch what it says instead."
+
+[PAUSE -- celebrate. Let them toggle space on and off a few times to feel
+the branch switching live.]
+
+[Point to the "Try" card:]
+"Try changing the condition itself. Swap out 'key space pressed?' for
+'touching edge?' from Sensing. Now walk your sprite to the wall with the
+arrow keys or drag it there while the flag is running -- what happens right
+when it touches the edge, versus when it's away from it?"
+
+[KEY IDEA -- the if-else discovery]:
+"Two big things here. First: if-else ALWAYS runs one branch or the other --
+never both, never neither. It's a fork in the road, and your program always
+takes one path. Second: notice we did NOT need two separate scripts or two
+separate loops -- ONE forever loop, ONE if-else block, checking constantly
+and branching every single time through. That's a much more powerful,
+compact way to build a reactive program than yesterday's separate always-on
+scripts."
+
+[SECTION 1 (75 min): DEMO this upgrade on the projector and let them watch,
+OR let them build only through Step 1 (plain if) and preview the if-else
+upgrade as a demo -- protect open-build time. Homework is unchanged either
+way.]
+
+
+--------------------------------------------------------------------------------
+SLIDE 11 -- GUIDED BUILD PAYOFF: "YOU ARE A LIVING CONDITIONAL"
+[Duration: ~2 minutes -- SECTION 1 may fold into the brain break]
+--------------------------------------------------------------------------------
+
+[A quick joyful embodiment before the break, echoing "your body is a loop"
+from yesterday. Stand the class up. You call out conditions; they act.]
+
+"Everybody stand. Here's the rule: IF I say a color, and it's RED, you
+freeze. IF I say a color and it's GREEN, you wiggle. Ready? ...Green!
+[Let them wiggle.] ...Red! [Freeze.] ...Green! [Wiggle.] ...Red! [Freeze.]"
+
+"Stop. What did your brain just do, every single time I said a color? It
+CHECKED the condition -- red or green -- and picked a branch. You just
+became a living if-else block. Your brain was checking conditions and
+executing code, over and over, just like your Scratch script."
+
+[This is the natural bridge into the movement break -- they're already
+standing.]
+
+
+================================================================================
+                   PART 4 -- MOVEMENT / BRAIN BREAK  [~5 min]
+================================================================================
+
+
+--------------------------------------------------------------------------------
+SLIDE 12 -- BRAIN BREAK ("Human Conditional")
+[Duration: ~5 minutes]
+--------------------------------------------------------------------------------
+
+[Display the calm break slide. This is an essential focus reset -- honor it
+fully, do not skip it. Continue the "Human Conditional" game a little
+longer and calmer, then wind down into stillness and breath.]
+
+"Let's keep playing Human Conditional, but slower and sillier now. IF I
+clap once, hop on one foot. IF I clap twice, spin around. IF I clap three
+times, freeze like a statue. Ready? [Clap patterns a few times, mixing it
+up, laughing along.]"
+
+"Now freeze -- and shake it all out. Three big deep breaths... in... and
+out. Roll your shoulders. Reset your focus."
+
+"Tiny thing to dream about while we breathe, no pressure: when we come
+back, YOU decide what condition your own sprite checks -- a key, touching
+something, even the mouse. Start imagining what your sprite should do
+DIFFERENTLY depending on what happens."
+
+[Let them move, drink water, breathe. Bring them back gently and seated.]
+
+
+================================================================================
+             PART 5 -- OPEN BUILD + CHALLENGE CARDS  [~30-40 min]
+              Apply the concept to your OWN project. Explore & stretch.
+================================================================================
+
+
+--------------------------------------------------------------------------------
+SLIDE 13 -- OPEN BUILD: THE THREE TIERS
+[Duration: ~2 min to launch, then students build ~28-38 min]
+--------------------------------------------------------------------------------
+
+[Display the three tier cards. Read the goals clearly, then release them.
+This is the heart of the session -- the longest block. Circulate
+constantly, coaching not correcting.]
+
+"Now it's YOUR turn. Same idea -- conditionals -- your own project. Find
+your tier goal on the slide. Everyone succeeds at their own level, and fast
+finishers grab a challenge card instead of waiting."
+
+"TIER A -- Grades 1-3: Add ONE if block to your Session 4 animation. Make
+your sprite say something when it touches the edge.
+   GOAL: one working 'if touching edge? then say...' block, added to
+   yesterday's project. Buddy pairs welcome and encouraged."
+
+"TIER B -- Grades 3-5: Add an if-else block. Your sprite does one thing for
+the left arrow key, a DIFFERENT thing for the right arrow key -- and make
+it change costume too, not just say something.
+   GOAL: one if-else that reacts differently to two different keys, with at
+   least one costume change."
+
+"TIER C -- Grades 6-9: NESTED CONDITIONALS. Put an if inside another if.
+For example: IF touching the edge AND a key is pressed, say something
+special. Try combining two conditions with the 'and' / 'or' operator
+blocks from Operators. Aim for at least THREE different branches total.
+   CHALLENGE CARD (all tiers): build a mini quiz game -- your sprite asks a
+   question with 'ask [] and wait,' then uses if-else to say 'Correct!' or
+   'Try again!' based on the 'answer' block. How many questions can you
+   chain?"
+
+"FINISHED EARLY? Help a neighbor get their first conditional working --
+explaining code to someone else is one of the best ways to really
+understand it. Nobody sits and waits in this room."
+
+[KEY IDEA -- say before releasing them]:
+"One coaching rule for open build, same as every day: PREDICT before you
+click. Before you press the green flag, say out loud what condition you
+think will be checked, and what you expect to happen in each branch. Then
+test it. If it surprises you, you just found the most valuable thing in the
+room: a gap in your understanding. That surprise is where the learning is."
+
+
+--------------------------------------------------------------------------------
+SLIDE 14 -- OPEN BUILD COACHING NOTES + CHALLENGE CARD (QUIZ GAME)
+[Use while circulating -- coaching notes not projected; challenge card
+shown for fast finishers]
+--------------------------------------------------------------------------------
+
+[Move constantly. Kneel to eye level. Praise effort and process out loud;
+give any correction quietly and privately -- this cohort is sensitive to
+public criticism.]
+
+CHALLENGE CARD SCRIPT (say quietly to fast finishers, any tier):
+"Build a mini quiz game. Use 'ask [What is 2+2?] and wait' from Sensing.
+Then use if-else: IF answer = 4, say 'Correct!' -- ELSE, say 'Try again!'
+The 'answer' hexagon block holds whatever the player typed. Chain a second
+question after the first one closes, and see how many you can add."
+
+COMMON ISSUES & QUICK FIXES (from Debug Corner on the slide):
+  - Round block won't fit the hexagon slot -> "That's a value block, like
+    x position -- it doesn't fit. You need a HEXAGON block, like 'key
+    pressed?' or 'touching?', for the condition slot."
+  - if is outside the forever loop -> "If your if block isn't INSIDE a
+    forever loop, it only checks ONCE, right when the flag is clicked.
+    Drag it inside the loop's mouth so it checks continuously."
+  - Both say blocks show at once / neither shows -> "Check: is one say
+    block in the THEN section and the other in the ELSE section? If both
+    landed in the same mouth, only one branch will ever run, or the wrong
+    one will."
+  - "Nothing seems to happen" -> "Did you click the green flag first? Is
+    your sprite actually touching the edge, or is it the right key? Click
+    the condition block alone in the palette -- it'll flash yellow if
+    true, showing you it's working."
+  - Pro move: "Right-click any block and choose Help -- Scratch will show
+    you exactly what that block does."
+
+WATCH FOR (celebrate publicly):
+  - A student who gets if-else branching correctly on the first try --
+    name it: "You just built a real decision -- that's exactly what a
+    conditional is for!"
+  - A student who debugs a hexagon-vs-round mismatch on their own -- "You
+    just found your own bug and fixed it. That's real coding."
+  - Kind buddy behavior or peer-teaching -- praise it loudly; it sets the
+    culture.
+
+TIER A support: keep them on the single if-block touching-edge task;
+success = one working reaction. Buddy them and celebrate loudly.
+TIER C stretch: nested conditionals and and/or operators -> ask, "What
+would it take to check THREE conditions at once instead of two?" (seeds
+compound boolean logic, connects to the "is it a cat?" tree from earlier.)
+
+
+--------------------------------------------------------------------------------
+SLIDE 14b -- 2-MINUTE WARNING & SAVE
+[Duration: woven into the end of open build]
+--------------------------------------------------------------------------------
+
+"Two minutes, coders! Bring your project to a good stopping point. And
+IMPORTANT -- SAVE your work: File menu, a screenshot, or copy your project
+link. We never lose the thing we just built."
+
+[Confirm every student has saved before share-out -- especially the
+youngest.]
+
+
+================================================================================
+               PART 6 -- SHARE-OUT (OPT-IN, WARM)  [~10 min]
+                  Low-stakes. Nobody is ever forced to present.
+================================================================================
+
+
+--------------------------------------------------------------------------------
+SLIDE 15 -- SHARE-OUT + SENTENCE STARTER + QUICK CHECK
+[Duration: ~7 minutes]
+--------------------------------------------------------------------------------
+
+[Display the share-out slide. Default to pair-sharing. Then invite 1-2
+volunteers only. Presenting is opt-in -- cheer for everyone.]
+
+"Turn to the person next to you. Show your project and finish this
+sentence out loud: 'I made a conditional that does _____ when _____.'"
+
+[Point to the slide's 3 discussion questions, encourage pairs to ask each
+other:]
+"What condition did you check? What happens in each branch? Did anything
+surprise you when you tested it?"
+
+[PAUSE -- 90 seconds of pair talk. Then:]
+
+"Would 1 or 2 volunteers show the whole class? Totally optional -- and we
+cheer for everyone who does. And remember: bugs count too! If something
+didn't work, explain what you TRIED -- that's real coding."
+
+[If volunteers: warm applause every time. If none: completely fine, move on
+with zero pressure.]
+
+[Quick whole-class concept check -- fast, hands up, from the lesson:]
+"QUESTION 1: A sprite should say 'Ouch!' ONLY when it touches something red,
+and do nothing otherwise. Which block -- if, or if-else?"
+[Answer: if -- we only need a reaction for the true case.]
+
+"QUESTION 2: A sprite should say something different whether or not the
+mouse is down. Which block?"
+[Answer: if-else -- something always happens, just two different things.]
+
+"QUESTION 3: What shape must a block be to fit in a conditional's condition
+slot?"
+[Answer: a hexagon -- a boolean, true-or-false block.]
+
+"QUESTION 4: In the 'is it a cat?' tree, what do we call a program that
+sorts things into categories using a chain of if-then questions?"
+[Answer: a classifier.]
+
+[PAUSE -- affirm correct answers warmly; gently clarify misses. No one is
+wrong, just "not yet."]
+
+
+--------------------------------------------------------------------------------
+SLIDE 16 -- WRAP-UP + HOMEWORK ("Today's session complete! / See you tomorrow!")
+[Duration: ~3 minutes wrap + 1 minute to assign homework]
+--------------------------------------------------------------------------------
+
+[Display the recap/homework slide. Deliver with genuine warmth -- this
+should feel like an arrival. Session 6 (variables) is the very next class
+day, so it's "see you tomorrow."]
+
+"Look at what you did today. Three big wins."
+
+"YOU LEARNED: a conditional checks a condition -- true or false -- and runs
+different code depending on the answer. That's what makes a program
+interactive instead of blind."
+
+"YOU LEARNED: 'if' only reacts when something IS true; 'if-else' always
+reacts, just differently depending on true or false. Ask yourself which one
+your program actually needs."
+
+"YOU BUILT: a sprite that listens to you -- a key press, an edge, even a
+question you asked it -- and responds differently depending on what's
+happening. That is genuine, powerful, interactive programming."
+
+[KEY IDEA -- the takeaway line]:
+"Remember our AI moment: our 'is it a cat?' tree was a real classifier,
+built entirely out of if-then questions, just like the conditionals you
+used today. Early AI was built exactly this way, by hand. Modern AI learns
+its own version of that tree from thousands of examples, and stores it as
+numbers instead of blocks -- but the underlying idea, checking conditions
+to make a decision, is the same one you now understand from the inside."
+
+[Assign homework -- frame it as fun finishing, ~30 min, same for all
+sections:]
+"Tonight's task -- about 30 minutes, the fun kind."
+
+"THE TASK (all tiers): Add an if-else block to a project so something
+DIFFERENT happens based on a condition. Then SAVE it: screenshot or copy
+the project link so you can show me."
+"   TIER A: make a sprite say something different when it touches a color
+    vs. when it doesn't. (Hint: 'touching color []?' in Sensing.)"
+"   TIER B: add TWO different conditions -- try 'if' for one key press and
+    'if-else' for another. Write one sentence describing your logic."
+"   TIER C BONUS: build a sprite that reacts to THREE different conditions
+    using a mix of if and if-else (different keys, touching edge, mouse
+    click). Then write 1-2 sentences: how is your branching logic similar
+    to how an AI classifier decides between categories?"
+
+"STUCK AT HOME? Two rules from today: One -- the condition slot only takes
+HEXAGON blocks, never round ones. Two -- if you want something to react
+CONTINUOUSLY, your if block needs to live inside a forever loop, not sit by
+itself."
+
+"Bring your conditional project tomorrow -- we start Session 6 by adding
+VARIABLES, so your sprite can start keeping SCORE. Your conditionals today
+will power your first real game tomorrow. See you tomorrow, coders. You
+built a program that can THINK today -- that's a superpower."
+
+[Let students save and pack up knowing they wielded real power on day 5.
+End on warmth and pride.]
+
+
+================================================================================
+APPENDIX A -- COMMON PITFALLS & HOW TO HANDLE THEM
+================================================================================
+
+PITFALL: A round (reporter) block won't snap into the condition slot.
+  Handle: "That slot is a hexagon -- it only accepts true/false blocks,
+          like 'key pressed?' or 'touching?'. A round block like 'x
+          position' holds a NUMBER, not a true/false answer, so it can't
+          go there. Find a hexagon block instead."
+
+PITFALL: The if block only checks once and never reacts again.
+  Handle: "Is your if block sitting INSIDE a forever loop? By itself, an if
+          block runs once, checks once, and is done. Put it inside a
+          forever loop so it keeps checking, over and over, just like
+          yesterday's loops kept repeating."
+
+PITFALL: Both say blocks in an if-else fire, or neither does.
+  Handle: "Look at the two mouths in the if-else block -- THEN on top, ELSE
+          on the bottom, with a divider line. Make sure one say block is
+          above the line and the other is below it. If both landed in the
+          same mouth, only one branch can ever run."
+
+PITFALL: "I clicked the flag and nothing happened at all."
+  Handle: "First, is the condition even set up right -- click it alone in
+          the palette; it should flash yellow when true. Second, are you
+          actually meeting the condition -- pressing the right key, or
+          actually touching the edge? Test the condition by itself before
+          blaming the if block."
+
+PITFALL: Student confuses 'if' with 'if-else' and expects both to behave
+the same.
+  Handle: "Ask: 'if I let go of the key, does anything happen with a plain
+          if block?' No -- it does nothing when false. 'Now with if-else?'
+          Yes -- the else branch runs. That difference is the whole
+          lesson. If your program needs SOMETHING to happen either way,
+          you need if-else, not if."
+
+PITFALL: Young student (Grade 1-2) overwhelmed by choosing a condition.
+  Handle: Narrow the world. "Today we only need one hexagon: 'key space
+          pressed?'. If then say Hello. That's the whole build." Buddy
+          them and celebrate the first successful "Hello!"
+
+PITFALL: Fast Tier-C student finishes the basic if-else in 3 minutes and is
+bored.
+  Handle: Hand the quiz-game challenge card immediately, or point them to
+          nested conditionals with 'and'/'or': "IF touching edge AND key
+          pressed, say something special." Or invite them to mentor a
+          younger buddy.
+
+PITFALL: "Why not just write two separate scripts instead of if-else?"
+  Handle: "Let's test it. With two separate scripts, BOTH could try to run
+          at once, and you'd have to add your own logic to stop that. The
+          if-else block guarantees only ONE branch ever runs, automatically
+          -- it's built-in safety, not just fewer blocks."
+
+
+================================================================================
+APPENDIX B -- STRETCH QUESTIONS FOR TIER C / ADVANCED STUDENTS
+================================================================================
+
+1. AND / OR LOGIC: 'if <A> and <B> then' only runs when BOTH A and B are
+   true. 'if <A> or <B> then' runs when EITHER is true. If A is "touching
+   edge?" and B is "key space pressed?", how many of the four true/false
+   combinations of A and B make the AND-version run? The OR-version?
+   (Answer: AND runs on 1 of 4 combos; OR runs on 3 of 4. Seeds truth
+   tables and boolean logic.)
+
+2. NESTED CONDITIONALS: An if inside another if only checks the inner
+   condition when the OUTER one is already true. How is this different
+   from a single if with 'and'? (Answer: functionally similar for two
+   conditions, but nesting lets you add totally different actions at each
+   level -- useful when the branches need very different logic, not just a
+   single combined true/false check.)
+
+3. THE LION PROBLEM: Our "is it a cat?" tree used two questions: whiskers
+   and meow. A lion has whiskers but roars instead of meowing. What is the
+   SIMPLEST fix to the tree that would still correctly say "not a cat" for
+   a lion, without breaking it for real cats? (Seeds the idea that more
+   or better conditions/rules -- or more training examples for a real
+   model -- reduce mistakes, but can never guarantee zero mistakes.)
+
+4. RULES vs. LEARNED WEIGHTS: Our decision tree is a chain of if-then
+   blocks a human wrote. A real image-recognition AI has no visible
+   if-blocks at all -- just millions of numbers (weights). Why might that
+   make it harder for a human to explain exactly WHY an AI made a
+   particular decision? (Seeds the real-world "AI explainability" problem,
+   revisited in the bias/ethics sessions later in the program.)
+
+5. EFFICIENCY: If a forever loop checks its condition 30 times per second,
+   how many total checks happen in one minute? Now imagine a real AI
+   system checking thousands of conditions per prediction, on millions of
+   predictions per day. Why do real AI systems need very fast computers?
+   (Seeds the idea of compute scale, echoing yesterday's loop-efficiency
+   stretch question.)
+
+
+================================================================================
+APPENDIX C -- QUICK REFERENCE: TODAY'S KEY IDEAS
+================================================================================
+
+CONDITIONAL: A block that checks a condition (true or false) and runs
+           different code depending on the answer. ("IF it's raining, THEN
+           grab an umbrella.")
+
+if:        Runs its blocks ONLY when the condition is TRUE. If false,
+           nothing happens -- the program skips right over it.
+
+if-else:   ALWAYS runs something -- the THEN branch if true, the ELSE
+           branch if false. Never both, never neither.
+
+THE HEXAGON SLOT: Only boolean (true/false) blocks fit in a conditional's
+           condition slot -- like 'key pressed?' or 'touching?'. Round
+           value blocks (like 'x position') do not fit.
+
+CONDITIONALS + LOOPS: An if block usually lives INSIDE a forever loop, so
+           the condition gets checked continuously, not just once.
+
+BRANCH:    One of the paths a program can take -- the "THEN" path or the
+           "ELSE" path.
+
+DECISION TREE: A diagram (or AI model) that uses a chain of conditions to
+           classify or decide. Our "is it a cat?" tree was one, built from
+           plain if-then blocks.
+
+CLASSIFIER: An AI system that sorts inputs into categories using learned
+           rules -- built on the same underlying logic as a decision tree.
+
+NESTED CONDITIONAL: An if block placed INSIDE another if block -- checking
+           a second condition only when the first one is already true.
+
+THE ONE-LINE TAKEAWAY:
+           "Making decisions in code -- the superpower behind every smart
+           program."
+
+AI TIE-IN: "AI is a giant pile of if-then rules... sort of." Early AI was
+           literally hand-written decision trees, just like our "is it a
+           cat?" board example. Modern AI learns its own rules from
+           thousands of examples and stores them as numbers (weights)
+           instead of code blocks -- but the core idea, checking conditions
+           to decide, is the same one taught today.
+
+================================================================================
+END OF SCRIPT -- Session 5 - Scratch: Conditionals (if / if-else)
+Modern Chinese School - Summer 2026 - Instructor: Mr. Hue Weng
+================================================================================
