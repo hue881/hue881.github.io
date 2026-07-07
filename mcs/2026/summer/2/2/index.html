@@ -1,1 +1,1156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="slides-format" content="viewport">
+<title>Session 6 · Scratch: Variables & Score-keeping</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<style type="text/tailwindcss">
+@theme {
+  --color-bg:#f4fbff; --color-bg-deep:#e0f2ff; --color-surface:rgba(255,255,255,0.95);
+  --color-text:#1f2a37; --color-text-secondary:#374151; --color-text-muted:#5b6b7e;
+  --color-accent-1:#0b63ce; --color-accent-2:#10b981; --color-accent-3:#f59e0b;
+  --color-glass-bg:rgba(255,255,255,0.88); --color-glass-border:rgba(11,99,206,0.16);
+  --color-vignette:rgba(15,23,42,0.07);
+  --font-display:"Fredoka","Trebuchet MS",sans-serif; --font-body:"Nunito",Arial,sans-serif;
+}
+</style>
+<style>
+:root{--color-bg:#f4fbff;--color-text:#1f2a37;--glow-color-rgb:11,99,206;
+      --a1:#0b63ce;--a2:#10b981;--a3:#f59e0b;--ar:#ef4444;--fc:"Fira Code",Consolas,monospace;}
+*,*::before,*::after{box-sizing:border-box;}
+html,body{background:var(--color-bg);margin:0;}
+body{font-family:"Nunito",Arial,sans-serif;color:var(--color-text);overflow:hidden;height:100vh;width:100vw;}
+.deck{width:100vw;height:100vh;position:relative;}
+.slide{position:absolute;top:0;left:0;width:100%;height:100%;
+  background:radial-gradient(circle at top left,rgba(56,189,248,0.14),transparent 40%),
+             radial-gradient(circle at bottom right,rgba(16,185,129,0.10),transparent 40%),
+             var(--color-bg);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  opacity:0;transform:scale(0.96);transition:opacity 0.55s ease,transform 0.55s ease;
+  pointer-events:none;overflow:hidden;}
+.slide.active{opacity:1;transform:scale(1);pointer-events:all;}
+.slide>.content{position:relative;z-index:2;width:100%;max-width:1060px;padding:clamp(1.2rem,3.5vw,3rem);}
+.slide.scrolly{align-items:flex-start;justify-content:flex-start;overflow-y:auto;}
+.slide.scrolly>.content{margin:auto;padding-top:clamp(1rem,2.5vw,2rem);padding-bottom:clamp(1rem,2.5vw,2rem);}
 
+/* Nav */
+.nav-controls{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:14px;z-index:100;background:rgba(255,255,255,0.92);backdrop-filter:blur(12px);padding:9px 22px;border-radius:999px;border:1px solid rgba(148,163,184,0.4);box-shadow:0 8px 28px rgba(15,23,42,0.13);}
+.nav-btn{width:36px;height:36px;border:none;background:rgba(15,23,42,0.06);color:#0b63ce;border-radius:999px;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 0.2s,transform 0.15s;}
+.nav-btn:hover{background:rgba(15,23,42,0.12);transform:translateY(-1px);}
+.slide-dots{display:flex;gap:6px;flex-wrap:wrap;max-width:420px;}
+.slide-dots .dot{width:8px;height:8px;border-radius:50%;background:rgba(148,163,184,0.6);cursor:pointer;transition:background 0.25s,transform 0.25s;}
+.slide-dots .dot.active{background:#0b63ce;transform:scale(1.4);}
+.slide-counter{font-size:0.78rem;color:#64748b;min-width:52px;text-align:center;font-weight:700;}
+.reveal{opacity:0;transform:translateY(16px);}
+.mouse-spotlight{position:fixed;inset:0;z-index:1;pointer-events:none;}
+
+/* Cards */
+.card{background:var(--color-surface);border-radius:18px;padding:16px 20px;box-shadow:0 8px 24px rgba(15,23,42,0.07);border:1px solid rgba(255,255,255,0.7);}
+.accent-card-blue {background:rgba(11,99,206,0.07); border:1px solid rgba(11,99,206,0.18);}
+.accent-card-green{background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.20);}
+.accent-card-amber{background:rgba(245,158,11,0.08); border:1px solid rgba(245,158,11,0.22);}
+.accent-card-red  {background:rgba(239,68,68,0.07);  border:1px solid rgba(239,68,68,0.20);}
+.pill{display:inline-flex;align-items:center;gap:7px;padding:5px 14px;border-radius:999px;border:1px solid rgba(148,163,184,0.5);background:rgba(255,255,255,0.9);font-size:0.76rem;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;color:#0b63ce;}
+.pill.green{color:#047857;}
+.think-chip{display:inline-flex;align-items:center;gap:9px;padding:7px 13px;border-radius:999px;background:rgba(11,99,206,0.08);color:#1e40af;font-size:0.82rem;font-weight:700;}
+.question-chip{display:inline-flex;align-items:center;gap:9px;padding:7px 13px;border-radius:999px;background:rgba(245,158,11,0.09);color:#92400e;font-size:0.82rem;font-weight:700;}
+.big-text{font-size:clamp(1rem,1.7vw,1.22rem);line-height:1.65;}
+.media-embed{position:relative;padding-top:56.25%;border-radius:13px;overflow:hidden;background:#1e293b;cursor:pointer;}
+.media-embed img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+.media-embed .play-btn{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;}
+.media-embed .play-btn div{width:58px;height:58px;background:rgba(255,0,0,0.88);border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 18px rgba(0,0,0,0.38);transition:transform 0.2s;}
+.media-embed:hover .play-btn div{transform:scale(1.1);}
+.media-embed iframe{position:absolute;inset:0;width:100%;height:100%;border:0;border-radius:13px;}
+.vocab-tag{display:inline-flex;align-items:center;padding:5px 13px;border-radius:999px;background:rgba(15,23,42,0.04);font-size:0.85rem;font-weight:800;color:#0b63ce;}
+.grid-cards{display:grid;gap:16px;}
+@media(min-width:800px){.grid-2{grid-template-columns:repeat(2,minmax(0,1fr));}.grid-3{grid-template-columns:repeat(3,minmax(0,1fr));}.grid-4{grid-template-columns:repeat(4,minmax(0,1fr));}}
+.grad-text{background:linear-gradient(135deg,#0b63ce 0%,#10b981 50%,#f59e0b 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.gradient-mesh{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none;}
+.blob{position:absolute;border-radius:50%;filter:blur(72px);animation:float-slow 12s ease-in-out infinite;}
+.blob:nth-child(2){animation:float-drift 16s ease-in-out infinite;}
+.blob:nth-child(3){animation:float-slow 20s ease-in-out infinite reverse;}
+@keyframes float-slow{0%{transform:translate(0,0) scale(1);}25%{transform:translate(50px,-40px) scale(1.1);}50%{transform:translate(-30px,35px) scale(0.92);}75%{transform:translate(45px,18px) scale(1.07);}100%{transform:translate(0,0) scale(1);}}
+@keyframes float-drift{0%{transform:translate(0,0) scale(1) rotate(0deg);}33%{transform:translate(-45px,-55px) scale(1.13) rotate(3deg);}66%{transform:translate(38px,28px) scale(0.9) rotate(-2deg);}100%{transform:translate(0,0) scale(1) rotate(0deg);}}
+@keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-14px);}}
+.slide::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:radial-gradient(ellipse at center,transparent 55%,rgba(15,23,42,0.06) 100%);}
+.particle-canvas{position:absolute;inset:0;width:100%;height:100%;z-index:1;}
+
+/* Interior slide style */
+.slide.interior{
+  background:
+    radial-gradient(circle at 18% 12%,rgba(11,99,206,0.16),transparent 50%),
+    radial-gradient(circle at 82% 88%,rgba(16,185,129,0.14),transparent 50%),
+    linear-gradient(160deg,#aecbe8 0%,#b9d4ea 48%,#b3ddd0 100%);}
+.slide.interior::after{background:radial-gradient(ellipse at center,transparent 58%,rgba(15,23,42,0.12) 100%);}
+.slide.interior .pill{background:#ffffff;color:#0b4a9e;border:none;box-shadow:0 4px 14px rgba(8,15,30,0.25);font-size:0.8rem;}
+.slide.interior .pill.green{color:#067a55;}
+.slide.interior h2.font-display{color:#0f2747!important;text-shadow:0 1px 2px rgba(255,255,255,0.55);font-size:clamp(1.7rem,3vw,2.45rem)!important;}
+.slide.interior .grad-text{-webkit-text-fill-color:#0f2747;text-shadow:0 1px 2px rgba(255,255,255,0.55);}
+.slide.interior .card{background:#ffffff;border:1px solid rgba(15,23,42,0.06);box-shadow:0 14px 34px rgba(15,23,42,0.20),0 2px 6px rgba(15,23,42,0.10);border-radius:20px;}
+.slide.interior .accent-card-blue {background:#eaf2fd;border:1px solid rgba(11,99,206,0.22); box-shadow:0 8px 24px rgba(15,23,42,0.10);}
+.slide.interior .accent-card-green{background:#e6f7f0;border:1px solid rgba(5,150,105,0.22); box-shadow:0 8px 24px rgba(15,23,42,0.10);}
+.slide.interior .accent-card-amber{background:#fdf4e3;border:1px solid rgba(245,158,11,0.28);box-shadow:0 8px 24px rgba(15,23,42,0.10);}
+.slide.interior .accent-card-red  {background:#fdeceb;border:1px solid rgba(239,68,68,0.24); box-shadow:0 8px 24px rgba(15,23,42,0.10);}
+.slide.interior .card .big-text{color:#1e293b!important;}
+.slide.interior .card p,.slide.interior .card li{color:#2d3f55!important;}
+.slide.interior .card strong{color:#0f2747;}
+.slide.interior .think-chip{background:rgba(11,99,206,0.12);color:#0c2d6e;font-size:0.88rem;font-weight:700;}
+.slide.interior .question-chip{background:rgba(234,130,12,0.12);color:#7a3800;font-size:0.88rem;}
+.slide.interior .vocab-tag{background:rgba(11,99,206,0.10);color:#0a3a8c;font-size:0.88rem;font-weight:800;}
+.slide.interior.scrolly{background:radial-gradient(circle at top left,rgba(56,189,248,0.12),transparent 40%),radial-gradient(circle at bottom right,rgba(16,185,129,0.09),transparent 40%),#f0f8ff;}
+
+/* Tier badges */
+.tier-badge-a{display:inline-flex;align-items:center;gap:5px;background:#e6f7f0;color:#047857;border:1px solid rgba(16,185,129,0.3);padding:3px 11px;border-radius:999px;font-size:.63rem;font-weight:800;letter-spacing:.07em;text-transform:uppercase;}
+.tier-badge-b{display:inline-flex;align-items:center;gap:5px;background:#eaf2fd;color:#0b63ce;border:1px solid rgba(11,99,206,0.3);padding:3px 11px;border-radius:999px;font-size:.63rem;font-weight:800;letter-spacing:.07em;text-transform:uppercase;}
+.tier-badge-c{display:inline-flex;align-items:center;gap:5px;background:#fdf4e3;color:#b45309;border:1px solid rgba(245,158,11,0.35);padding:3px 11px;border-radius:999px;font-size:.63rem;font-weight:800;letter-spacing:.07em;text-transform:uppercase;}
+.abadge{display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff;padding:3px 12px;border-radius:999px;font-size:.63rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin-bottom:7px;}
+.tip{border-radius:10px;padding:8px 12px;font-size:.77rem;line-height:1.5;margin-top:8px;}
+.tip.b{background:rgba(11,99,206,.07);color:#1e40af;}
+.tip.g{background:rgba(16,185,129,.07);color:#065f46;}
+.tip.a{background:rgba(245,158,11,.07);color:#92400e;}
+.acode{background:#1e293b;color:#e2e8f0;border-radius:12px;padding:11px 15px;font-family:"Fira Code",Consolas,monospace;font-size:clamp(.64rem,1vw,.78rem);line-height:1.65;overflow-x:auto;border:1px solid rgba(255,255,255,.06);white-space:pre;}
+.acode .kw{color:#93c5fd}.acode .nb{color:#fcd34d}.acode .st{color:#86efac}.acode .cm{color:#64748b;font-style:italic;}
+code{background:#e0f2ff;padding:1px 5px;border-radius:4px;font-family:"Fira Code",Consolas,monospace;font-size:.82em;color:#0b63ce;}
+
+/* Step-by-step blocks */
+.step-block{display:flex;align-items:flex-start;gap:12px;padding:10px 14px;background:#fff;border-radius:14px;box-shadow:0 4px 14px rgba(15,23,42,0.07);border-left:4px solid var(--a1);margin-bottom:8px;}
+.step-num{min-width:28px;height:28px;border-radius:50%;background:var(--a1);color:#fff;font-weight:800;font-size:.82rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.step-block.green{border-color:var(--a2);}
+.step-block.green .step-num{background:var(--a2);}
+.step-block.amber{border-color:var(--a3);}
+.step-block.amber .step-num{background:var(--a3);}
+
+/* Variable box visual */
+@keyframes box-pulse{0%,100%{box-shadow:0 0 0 0 rgba(11,99,206,0);}50%{box-shadow:0 0 0 8px rgba(11,99,206,0.12);}}
+.var-box{border:3px dashed var(--a1);border-radius:16px;background:rgba(11,99,206,0.05);padding:14px 20px;text-align:center;animation:box-pulse 2.5s ease-in-out infinite;}
+
+/* Score counter animation */
+@keyframes score-pop{0%{transform:scale(1);}50%{transform:scale(1.25);}100%{transform:scale(1);}}
+.score-display{font-size:clamp(2.5rem,5vw,4rem);font-weight:800;color:var(--a1);font-family:"Fredoka",sans-serif;display:inline-block;}
+.score-display.pop{animation:score-pop 0.4s ease;}
+
+/* AI moment banner */
+.ai-moment{background:linear-gradient(135deg,rgba(11,99,206,0.10),rgba(16,185,129,0.10));border:1.5px solid rgba(11,99,206,0.22);border-radius:16px;padding:14px 18px;display:flex;align-items:flex-start;gap:12px;}
+.ai-icon{min-width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#0b63ce,#10b981);display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.1rem;flex-shrink:0;}
+
+/* Scratch block preview styling */
+.scratch-block{display:inline-flex;align-items:center;gap:6px;border-radius:8px;padding:5px 12px;font-family:"Fira Code",Consolas,monospace;font-size:.82rem;font-weight:700;color:#fff;box-shadow:0 3px 8px rgba(0,0,0,0.18);}
+.sb-orange{background:#ff8c1a;}
+.sb-yellow{background:#ffab19;}
+.sb-purple{background:#9966ff;}
+.sb-blue{background:#4c97ff;}
+.sb-green{background:#40bf4a;}
+
+/* Horizontal timeline */
+.h-timeline{display:flex;align-items:center;gap:0;width:100%;}
+.h-tnode{display:flex;flex-direction:column;align-items:center;flex:1;position:relative;}
+.h-tnode:not(:last-child)::after{content:"";position:absolute;top:18px;left:50%;width:100%;height:2px;background:rgba(11,99,206,0.25);z-index:0;}
+.h-tdot{width:36px;height:36px;border-radius:50%;background:var(--a1);color:#fff;font-weight:800;font-size:.82rem;display:flex;align-items:center;justify-content:center;z-index:1;box-shadow:0 3px 10px rgba(11,99,206,0.3);}
+.h-tlabel{font-size:.68rem;font-weight:800;color:#374151;text-align:center;margin-top:7px;line-height:1.35;}
+.h-ttime{font-size:.63rem;color:#0b63ce;font-weight:700;margin-top:2px;}
+
+/* Session plan row */
+.plan-row{display:flex;align-items:center;gap:12px;padding:9px 14px;background:#fff;border-radius:12px;box-shadow:0 3px 10px rgba(15,23,42,0.06);border:1px solid rgba(255,255,255,0.8);}
+.plan-icon{min-width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1rem;}
+.plan-row:hover{transform:translateX(3px);transition:transform 0.2s;}
+
+/* Image utility */
+.img-card{border-radius:14px;overflow:hidden;box-shadow:0 8px 24px rgba(15,23,42,0.12);}
+
+/* Break slide */
+.slide.break-slide{background:linear-gradient(135deg,#10b981 0%,#0b63ce 100%);}
+.slide.break-slide::after{background:radial-gradient(ellipse at center,transparent 50%,rgba(0,0,0,0.18) 100%);}
+
+/* Homework slide */
+.slide.hw-slide{background:linear-gradient(135deg,#f59e0b 0%,#ef4444 100%);}
+
+/* Share-out */
+.slide.shareout{background:linear-gradient(135deg,#0b63ce 0%,#8b5cf6 100%);}
+
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:0.01ms!important;transition-duration:0.2s!important;}}
+</style>
+</head>
+<body>
+<div class="mouse-spotlight"></div>
+<div class="deck">
+
+<!-- ===== SLIDE 1 · TITLE ===== -->
+<div class="slide active" data-slide="1" data-type="lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:480px;height:480px;top:-120px;right:-80px;background:#0b63ce;opacity:0.12;"></div>
+    <div class="blob" style="width:320px;height:320px;bottom:-80px;left:-60px;background:#10b981;opacity:0.10;"></div>
+    <div class="blob" style="width:220px;height:220px;top:38%;left:8%;background:#f59e0b;opacity:0.08;"></div>
+  </div>
+  <canvas class="particle-canvas"></canvas>
+  <div class="content" style="text-align:center;">
+    <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/ba1fc405beb471219e0168b23c2be7c3374a6a11.jpg" alt="Scratch Cat mascot" class="reveal" style="height:clamp(4rem,8vh,7rem);width:auto;object-fit:contain;margin:0 auto 0.8rem;display:block;border-radius:12px;animation:float 3s ease-in-out infinite;">
+    <p class="pill reveal" style="margin:0 auto 1rem;">Session 6 · Tue Jul 7 · Week 2</p>
+    <h1 class="font-display grad-text reveal" style="font-size:clamp(2rem,5.2vw,4rem);font-weight:700;line-height:1.1;margin-bottom:0.6rem;">Scratch: Variables<br>&amp; Score-keeping</h1>
+    <p class="reveal" style="font-size:clamp(0.95rem,1.7vw,1.3rem);color:#374151;margin-bottom:1.4rem;">How does a game <em>remember</em> your score?</p>
+    <div class="reveal" style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+      <span class="pill">Modern Chinese School · Summer 2026</span>
+      <span class="pill" style="font-size:0.82rem;">Mr. Hsiao "Hue" Weng</span>
+      <span class="pill green">Phase 1 · Scratch On-Ramp</span>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 2 · TODAY'S PLAN (Agenda / Daily Rhythm) ===== -->
+<div class="slide interior" data-slide="2" data-type="lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:340px;height:340px;top:-50px;right:-50px;background:#0b63ce;opacity:0.08;"></div>
+    <div class="blob" style="width:220px;height:220px;bottom:-40px;left:-30px;background:#10b981;opacity:0.07;"></div>
+  </div>
+  <div class="content">
+    <p class="pill reveal" style="margin-bottom:0.9rem;">Today's Plan</p>
+    <h2 class="font-display reveal" style="color:#0f2747;font-size:clamp(1.6rem,3vw,2.3rem);margin-bottom:1.2rem;font-weight:700;">Our Road Map for Today</h2>
+    <div style="display:flex;flex-direction:column;gap:9px;">
+      <div class="plan-row reveal">
+        <div class="plan-icon" style="background:rgba(11,99,206,0.12);color:#0b63ce;">🧩</div>
+        <div><strong style="color:#0b63ce;font-size:.88rem;">10 min · Warm-Up</strong>&nbsp;&nbsp;<span style="font-size:.82rem;color:#374151;">Unplugged puzzle — no screens, brains on!</span></div>
+        <span style="margin-left:auto;font-size:.7rem;color:#5b6b7e;font-weight:700;">Slide 3–4</span>
+      </div>
+      <div class="plan-row reveal">
+        <div class="plan-icon" style="background:rgba(11,99,206,0.10);color:#0b63ce;">📖</div>
+        <div><strong style="color:#0b63ce;font-size:.88rem;">15 min · Mini-Lesson</strong>&nbsp;&nbsp;<span style="font-size:.82rem;color:#374151;">What is a variable? The "labeled box" idea.</span></div>
+        <span style="margin-left:auto;font-size:.7rem;color:#5b6b7e;font-weight:700;">Slide 5–8</span>
+      </div>
+      <div class="plan-row reveal">
+        <div class="plan-icon" style="background:rgba(16,185,129,0.10);color:#10b981;">🎬</div>
+        <div><strong style="color:#0b63ce;font-size:.88rem;">+Videos</strong>&nbsp;&nbsp;<span style="font-size:.82rem;color:#374151;">2 short videos to see variables in action.</span></div>
+        <span style="margin-left:auto;font-size:.7rem;color:#5b6b7e;font-weight:700;">Slide 9–10</span>
+      </div>
+      <div class="plan-row reveal">
+        <div class="plan-icon" style="background:rgba(16,185,129,0.10);color:#10b981;">🔨</div>
+        <div><strong style="color:#0b63ce;font-size:.88rem;">20 min · Guided Build</strong>&nbsp;&nbsp;<span style="font-size:.82rem;color:#374151;">Add a score variable to a clicker game — together!</span></div>
+        <span style="margin-left:auto;font-size:.7rem;color:#5b6b7e;font-weight:700;">Slide 11–13</span>
+      </div>
+      <div class="plan-row reveal">
+        <div class="plan-icon" style="background:rgba(245,158,11,0.10);color:#b45309;">🏃</div>
+        <div><strong style="color:#0b63ce;font-size:.88rem;">5 min · Brain Break</strong>&nbsp;&nbsp;<span style="font-size:.82rem;color:#374151;">Stand up · stretch · breathe!</span></div>
+        <span style="margin-left:auto;font-size:.7rem;color:#5b6b7e;font-weight:700;">Slide 14</span>
+      </div>
+      <div class="plan-row reveal">
+        <div class="plan-icon" style="background:rgba(245,158,11,0.10);color:#b45309;">🚀</div>
+        <div><strong style="color:#0b63ce;font-size:.88rem;">30–40 min · Open Build</strong>&nbsp;&nbsp;<span style="font-size:.82rem;color:#374151;">Apply to your project + challenge cards.</span></div>
+        <span style="margin-left:auto;font-size:.7rem;color:#5b6b7e;font-weight:700;">Slide 15–16</span>
+      </div>
+      <div class="plan-row reveal">
+        <div class="plan-icon" style="background:rgba(139,92,246,0.10);color:#6d28d9;">🌟</div>
+        <div><strong style="color:#0b63ce;font-size:.88rem;">10 min · Share-Out</strong>&nbsp;&nbsp;<span style="font-size:.82rem;color:#374151;">Show your neighbor or volunteer!</span></div>
+        <span style="margin-left:auto;font-size:.7rem;color:#5b6b7e;font-weight:700;">Slide 17</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 3 · WARM-UP: UNPLUGGED PUZZLE ===== -->
+<div class="slide interior" data-slide="3" data-type="lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:300px;height:300px;top:-40px;right:-40px;background:#f59e0b;opacity:0.10;"></div>
+    <div class="blob" style="width:200px;height:200px;bottom:-30px;left:-30px;background:#0b63ce;opacity:0.08;"></div>
+  </div>
+  <div class="content">
+    <p class="pill reveal" style="margin-bottom:0.9rem;">🧩 Warm-Up · 10 min · Brains On, No Screens</p>
+    <h2 class="font-display reveal" style="color:#0f2747;font-size:clamp(1.5rem,2.8vw,2.2rem);margin-bottom:1rem;font-weight:700;">The Secret Keeper Game</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start;">
+      <div>
+        <p class="big-text reveal" style="color:#374151;margin-bottom:1rem;">Imagine you have a special <strong>locked box</strong>. You can put <em>any number</em> inside it, change it whenever you want, and check what's inside at any time.</p>
+        <div class="card accent-card-amber reveal" style="margin-bottom:10px;">
+          <p style="font-size:.82rem;font-weight:800;color:#92400e;margin-bottom:6px;">Think about it — turn &amp; talk:</p>
+          <ul style="font-size:.82rem;color:#374151;margin:0;padding-left:16px;line-height:1.8;">
+            <li>Your body keeps a "count" of how many steps you've taken today. <strong>Where does it store that?</strong></li>
+            <li>A basketball scoreboard shows <strong>14–9</strong>. What happens when a team scores? What changes?</li>
+            <li>In Minecraft, your XP bar goes up when you do things. <strong>How does the game remember your XP?</strong></li>
+          </ul>
+        </div>
+        <div class="think-chip reveal">
+          <span>💬</span> Share your answer with a neighbor first — no wrong answers!
+        </div>
+      </div>
+      <div class="reveal">
+        <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/2a0d018485c81e60ac35b99573a018c4787aa238.jpg" alt="Variable as a labeled box" style="width:100%;border-radius:14px;box-shadow:0 8px 24px rgba(15,23,42,0.12);">
+        <p style="font-size:.7rem;color:#5b6b7e;text-align:center;margin-top:6px;">A variable is like a labeled box that stores a value.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 4 · WARM-UP: THE BIG QUESTION ===== -->
+<div class="slide interior" data-slide="4" data-type="lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:360px;height:360px;top:-60px;right:-60px;background:#10b981;opacity:0.09;"></div>
+    <div class="blob" style="width:240px;height:240px;bottom:-50px;left:-40px;background:#0b63ce;opacity:0.07;"></div>
+  </div>
+  <div class="content" style="text-align:center;">
+    <p class="pill reveal" style="margin:0 auto 1rem;">The Central Question</p>
+    <h2 class="font-display reveal" style="color:#0f2747;font-size:clamp(1.6rem,3.2vw,2.6rem);margin-bottom:1rem;font-weight:700;">When you play a game and score a point,<br>where does that number <span class="grad-text">live</span>?</h2>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:1rem;">
+      <div class="card reveal" style="text-align:center;padding:18px 12px;">
+        <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/8a411f5360dbe40d695efa3297237e56d4543865.jpg" alt="Kid playing arcade game" style="width:100%;height:90px;object-fit:cover;border-radius:10px;margin-bottom:8px;">
+        <p style="font-size:.82rem;color:#374151;margin:0;">In an <strong>arcade game</strong> — the score updates every second</p>
+      </div>
+      <div class="card reveal" style="text-align:center;padding:18px 12px;">
+        <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/73821a8dd4900178775b0917319b1cf03df1ddec.jpg" alt="Scratch game with score" style="width:100%;height:90px;object-fit:cover;border-radius:10px;margin-bottom:8px;">
+        <p style="font-size:.82rem;color:#374151;margin:0;">In a <strong>Scratch game</strong> — same idea, you'll code it!</p>
+      </div>
+      <div class="card reveal" style="text-align:center;padding:18px 12px;">
+        <div style="width:100%;height:90px;background:linear-gradient(135deg,#0b63ce,#10b981);border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:8px;">
+          <span style="font-size:2.2rem;color:#fff;">🤖</span>
+        </div>
+        <p style="font-size:.82rem;color:#374151;margin:0;">In an <strong>AI model</strong> — its "confidence score" is stored the same way!</p>
+      </div>
+    </div>
+    <div class="think-chip reveal" style="margin:0 auto;display:inline-flex;">
+      💡 Today's answer: <strong style="margin-left:4px;">a VARIABLE!</strong>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 5 · WHAT IS A VARIABLE? ===== -->
+<div class="slide interior" data-slide="5" data-type="lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:360px;height:360px;top:-60px;right:-50px;background:#0b63ce;opacity:0.09;"></div>
+    <div class="blob" style="width:200px;height:200px;bottom:-40px;left:-30px;background:#10b981;opacity:0.07;"></div>
+  </div>
+  <div class="content">
+    <p class="pill reveal" style="margin-bottom:0.9rem;">📖 Mini-Lesson · Big Idea #1</p>
+    <h2 class="font-display reveal" style="color:#0f2747;font-size:clamp(1.5rem,2.8vw,2.2rem);margin-bottom:1rem;font-weight:700;">What Is a Variable?</h2>
+    <div style="display:grid;grid-template-columns:1.1fr 0.9fr;gap:18px;align-items:start;">
+      <div>
+        <div class="card reveal" style="margin-bottom:12px;border-left:4px solid #0b63ce;">
+          <p class="big-text" style="color:#1e293b;margin:0 0 6px;"><strong>A variable is a labeled container that stores one value.</strong></p>
+          <p style="font-size:.84rem;color:#374151;margin:0;">You give it a <em>name</em> (like <code>score</code>), and it holds a number or text. You can read it, change it, or reset it at any time while the program runs.</p>
+        </div>
+        <div class="var-box reveal" style="margin-bottom:12px;">
+          <p style="font-size:.72rem;font-weight:800;color:#5b6b7e;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px;">Variable Name</p>
+          <p style="font-size:1.3rem;font-weight:800;color:#0b63ce;margin-bottom:4px;font-family:'Fira Code',monospace;">score</p>
+          <p style="font-size:.72rem;font-weight:800;color:#5b6b7e;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px;">Value Inside</p>
+          <p class="score-display" id="scoreDemo">0</p>
+        </div>
+        <button onclick="addScore()" style="background:#0b63ce;color:#fff;border:none;border-radius:999px;padding:8px 20px;font-family:'Nunito',sans-serif;font-size:.85rem;font-weight:800;cursor:pointer;box-shadow:0 4px 12px rgba(11,99,206,0.3);transition:transform .15s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'" class="reveal">+1 Point — Try it!</button>
+        <button onclick="resetScore()" style="background:#fff;color:#0b63ce;border:1px solid rgba(11,99,206,0.3);border-radius:999px;padding:8px 18px;font-family:'Nunito',sans-serif;font-size:.85rem;font-weight:800;cursor:pointer;margin-left:8px;transition:transform .15s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'" class="reveal">Reset to 0</button>
+      </div>
+      <div>
+        <div class="card accent-card-blue reveal" style="margin-bottom:10px;">
+          <p style="font-size:.8rem;font-weight:800;color:#1e40af;margin-bottom:6px;">Three things you can do with a variable:</p>
+          <div class="step-block" style="margin-bottom:6px;border-color:#0b63ce;">
+            <div class="step-num">1</div>
+            <div><strong style="font-size:.82rem;color:#0b63ce;">Set it</strong> — give it a starting value<br><code>set score to 0</code></div>
+          </div>
+          <div class="step-block" style="margin-bottom:6px;border-color:#10b981;">
+            <div class="step-num" style="background:#10b981;">2</div>
+            <div><strong style="font-size:.82rem;color:#10b981;">Change it</strong> — add or subtract<br><code>change score by 1</code></div>
+          </div>
+          <div class="step-block" style="border-color:#f59e0b;">
+            <div class="step-num" style="background:#f59e0b;">3</div>
+            <div><strong style="font-size:.82rem;color:#b45309;">Read it</strong> — use it in a condition<br><code>if score = 10 then...</code></div>
+          </div>
+        </div>
+        <div class="tip b reveal">
+          Think of it like a scoreboard: someone holds it up, changes the number when a point is scored, and shows it to everyone in the game.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 6 · VARIABLES IN SCRATCH ===== -->
+<div class="slide interior" data-slide="6" data-type="lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:320px;height:320px;top:-50px;right:-50px;background:#9966ff;opacity:0.08;"></div>
+    <div class="blob" style="width:200px;height:200px;bottom:-40px;left:-30px;background:#0b63ce;opacity:0.07;"></div>
+  </div>
+  <div class="content">
+    <p class="pill reveal" style="margin-bottom:0.9rem;">📖 Mini-Lesson · Big Idea #2</p>
+    <h2 class="font-display reveal" style="color:#0f2747;font-size:clamp(1.5rem,2.8vw,2.2rem);margin-bottom:1rem;font-weight:700;">Variables in Scratch — The Orange Blocks</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+      <div>
+        <div class="card reveal" style="margin-bottom:10px;">
+          <p style="font-size:.8rem;font-weight:800;color:#374151;margin-bottom:8px;">Where to find them in Scratch:</p>
+          <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/1b312908ae4eb6ba6f4a8387a1f3503a71bffdb2.jpg" alt="Scratch Variables menu" style="width:100%;border-radius:10px;margin-bottom:8px;">
+          <p style="font-size:.76rem;color:#5b6b7e;margin:0;">Click the orange <strong>"Variables"</strong> category → <strong>"Make a Variable"</strong> → type a name → click OK.</p>
+        </div>
+      </div>
+      <div>
+        <div class="card accent-card-blue reveal" style="margin-bottom:10px;">
+          <p style="font-size:.8rem;font-weight:800;color:#1e40af;margin-bottom:8px;">The 4 key variable blocks:</p>
+          <div style="display:flex;flex-direction:column;gap:7px;">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span class="scratch-block sb-orange">set score to <strong>0</strong></span>
+              <span style="font-size:.76rem;color:#374151;">→ Reset at game start</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span class="scratch-block sb-orange">change score by <strong>1</strong></span>
+              <span style="font-size:.76rem;color:#374151;">→ Add 1 point</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span class="scratch-block sb-yellow">show variable <strong>score</strong></span>
+              <span style="font-size:.76rem;color:#374151;">→ Display on stage</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span class="scratch-block sb-yellow">hide variable <strong>score</strong></span>
+              <span style="font-size:.76rem;color:#374151;">→ Make invisible</span>
+            </div>
+          </div>
+        </div>
+        <div class="card accent-card-green reveal">
+          <p style="font-size:.8rem;font-weight:800;color:#065f46;margin-bottom:5px;">What does the orange oval do?</p>
+          <p style="font-size:.78rem;color:#374151;margin:0;">When you drag the orange <code>score</code> oval into another block, it <strong>reads the current value</strong> — like peeking inside the box.</p>
+        </div>
+        <div class="tip b reveal" style="margin-top:8px;">
+          <strong>Scope choice:</strong> Pick <em>"For all sprites"</em> so every sprite sees the same score. Pick <em>"For this sprite only"</em> for a private counter one sprite uses alone.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 7 · VARIABLES SHOW ON SCREEN ===== -->
+<div class="slide interior" data-slide="7" data-type="lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:300px;height:300px;top:-40px;right:-40px;background:#10b981;opacity:0.08;"></div>
+    <div class="blob" style="width:180px;height:180px;bottom:-30px;left:-20px;background:#f59e0b;opacity:0.07;"></div>
+  </div>
+  <div class="content">
+    <p class="pill reveal" style="margin-bottom:0.9rem;">📖 Mini-Lesson · Big Idea #3</p>
+    <h2 class="font-display reveal" style="color:#0f2747;font-size:clamp(1.5rem,2.8vw,2.2rem);margin-bottom:1rem;font-weight:700;">How Variables Look On-Screen</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start;">
+      <div>
+        <div class="card reveal" style="margin-bottom:10px;">
+          <p style="font-size:.82rem;font-weight:800;color:#374151;margin-bottom:8px;">The variable badge on the Stage:</p>
+          <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/1e4684f370a8e0a575dbfaabe7868901df3edb4e.jpg" alt="Scratch variable blocks changing" style="width:100%;border-radius:10px;margin-bottom:8px;">
+          <p style="font-size:.76rem;color:#5b6b7e;margin:0;">Scratch shows a little monitor on the Stage — drag it where you want it!</p>
+        </div>
+      </div>
+      <div>
+        <div class="card accent-card-amber reveal" style="margin-bottom:10px;">
+          <p style="font-size:.82rem;font-weight:800;color:#92400e;margin-bottom:6px;">Three display modes — right-click to switch:</p>
+          <div class="step-block amber" style="margin-bottom:5px;">
+            <div class="step-num" style="background:#f59e0b;font-size:.7rem;">N</div>
+            <div style="font-size:.78rem;"><strong>Normal read-out</strong> — shows name + value<br><span style="color:#5b6b7e;font-size:.7rem;">e.g. "score: 7"</span></div>
+          </div>
+          <div class="step-block amber" style="margin-bottom:5px;">
+            <div class="step-num" style="background:#f59e0b;font-size:.7rem;">L</div>
+            <div style="font-size:.78rem;"><strong>Large read-out</strong> — only the number, big!<br><span style="color:#5b6b7e;font-size:.7rem;">e.g. "7" in large font</span></div>
+          </div>
+          <div class="step-block amber">
+            <div class="step-num" style="background:#f59e0b;font-size:.7rem;">S</div>
+            <div style="font-size:.78rem;"><strong>Slider</strong> — drag a handle to change value<br><span style="color:#5b6b7e;font-size:.7rem;">Great for speed/difficulty variables!</span></div>
+          </div>
+        </div>
+        <div class="tip g reveal">
+          <strong>Uncheck the checkbox</strong> next to the variable name in the palette to hide the badge from the stage — useful when you don't want to show the player a "lives" counter until game over.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 8 · AI MOMENT: VARIABLES = MEMORY ===== -->
+<div class="slide interior" data-slide="8" data-type="lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:360px;height:360px;top:-60px;right:-50px;background:#0b63ce;opacity:0.09;"></div>
+    <div class="blob" style="width:200px;height:200px;bottom:-40px;left:-30px;background:#10b981;opacity:0.08;"></div>
+  </div>
+  <div class="content">
+    <div class="ai-moment reveal" style="margin-bottom:1rem;">
+      <div class="ai-icon">🤖</div>
+      <div>
+        <p style="font-size:.8rem;font-weight:800;color:#1e40af;margin-bottom:2px;">AI Moment · Variables = Memory</p>
+        <p style="font-size:.78rem;color:#374151;margin:0;">Today's coding concept connects directly to how AI thinks — let's see how!</p>
+      </div>
+    </div>
+    <h2 class="font-display reveal" style="color:#0f2747;font-size:clamp(1.4rem,2.6vw,2.1rem);margin-bottom:1rem;font-weight:700;">AI Keeps a "Score" Too — It's Called Confidence</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+      <div>
+        <div class="card reveal" style="margin-bottom:10px;">
+          <p style="font-size:.82rem;font-weight:800;color:#374151;margin-bottom:8px;">Your Scratch game:</p>
+          <div style="font-family:'Fira Code',monospace;font-size:.78rem;background:#f0f8ff;border-radius:10px;padding:10px 12px;line-height:1.8;">
+            <span style="color:#0b63ce;">score</span> = <span style="color:#10b981;">0</span><br>
+            <span style="color:#5b6b7e;">// player catches a star</span><br>
+            <span style="color:#0b63ce;">change score by</span> <span style="color:#10b981;">1</span><br>
+            <span style="color:#0b63ce;">score</span> = <span style="color:#10b981;">1</span>
+          </div>
+          <p style="font-size:.75rem;color:#5b6b7e;margin-top:8px;">Score starts at 0, grows with each good action.</p>
+        </div>
+        <div class="tip b reveal">
+          <strong>Key insight:</strong> When the game ends, the score is forgotten — it resets when you click the green flag. AI models can be different — they <em>save</em> what they learned!
+        </div>
+      </div>
+      <div>
+        <div class="card accent-card-blue reveal" style="margin-bottom:10px;">
+          <p style="font-size:.82rem;font-weight:800;color:#1e40af;margin-bottom:8px;">An AI model identifying a cat photo:</p>
+          <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/587db6b710a214fa2b78059d9cbe086e1d1579d2.jpg" alt="AI confidence score gauge" style="width:100%;border-radius:10px;margin-bottom:8px;height:100px;object-fit:cover;">
+          <div style="display:flex;flex-direction:column;gap:5px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <span style="font-size:.76rem;font-family:'Fira Code',monospace;color:#0b63ce;">cat_confidence</span>
+              <span style="font-size:.9rem;font-weight:800;color:#10b981;">87%</span>
+            </div>
+            <div style="height:8px;background:#e0f2ff;border-radius:999px;overflow:hidden;">
+              <div style="width:87%;height:100%;background:linear-gradient(90deg,#0b63ce,#10b981);border-radius:999px;"></div>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <span style="font-size:.76rem;font-family:'Fira Code',monospace;color:#ef4444;">dog_confidence</span>
+              <span style="font-size:.9rem;font-weight:800;color:#ef4444;">13%</span>
+            </div>
+            <div style="height:8px;background:#fdeceb;border-radius:999px;overflow:hidden;">
+              <div style="width:13%;height:100%;background:#ef4444;border-radius:999px;"></div>
+            </div>
+          </div>
+        </div>
+        <div class="tip g reveal">
+          Both your score variable and the AI's confidence variable do the same job: <strong>store a changing number</strong> that the program checks to decide what to do next.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 9 · VIDEO 1 ===== -->
+<div class="slide interior" data-slide="9" data-type="lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:300px;height:300px;top:-40px;right:-40px;background:#ef4444;opacity:0.07;"></div>
+    <div class="blob" style="width:200px;height:200px;bottom:-30px;left:-20px;background:#0b63ce;opacity:0.07;"></div>
+  </div>
+  <div class="content">
+    <p class="pill reveal" style="margin-bottom:0.9rem;">🎬 Video 1 · Watch Together</p>
+    <h2 class="font-display reveal" style="color:#0f2747;font-size:clamp(1.4rem,2.5vw,2rem);margin-bottom:0.8rem;font-weight:700;">Variables in Scratch — Explained for Kids</h2>
+    <div style="display:grid;grid-template-columns:1.4fr 0.8fr;gap:18px;align-items:start;">
+      <div>
+        <div class="media-embed reveal" id="player-jQYEMqXIeJ0" onclick="playVideo('jQYEMqXIeJ0')" title="Click to play video">
+          <img src="https://img.youtube.com/vi/jQYEMqXIeJ0/hqdefault.jpg" alt="Scratch - variables for score and lives tutorial">
+          <div class="play-btn"><div>▶</div></div>
+        </div>
+        <p style="font-size:.73rem;color:#5b6b7e;margin-top:6px;text-align:center;">
+          <a href="https://www.youtube.com/watch?v=jQYEMqXIeJ0" target="_blank" rel="noopener" style="color:#0b63ce;text-decoration:underline;">▶ YouTube · "Scratch - variables for score and lives" (~5 min)</a>
+        </p>
+      </div>
+      <div>
+        <div class="card accent-card-blue reveal" style="margin-bottom:10px;">
+          <p style="font-size:.8rem;font-weight:800;color:#1e40af;margin-bottom:6px;">Watch for these moments:</p>
+          <ul style="font-size:.8rem;color:#374151;margin:0;padding-left:16px;line-height:1.9;">
+            <li>When does <code>score</code> get set to 0?</li>
+            <li>What event makes the score go up?</li>
+            <li>How does <code>lives</code> go <em>down</em>?</li>
+          </ul>
+        </div>
+        <div class="card accent-card-green reveal">
+          <p style="font-size:.8rem;font-weight:800;color:#065f46;margin-bottom:5px;">Pause &amp; think:</p>
+          <p style="font-size:.78rem;color:#374151;margin:0;">Why does the teacher add a <code>wait 1 second</code> block? What problem does it solve?</p>
+        </div>
+        <div class="tip a reveal" style="margin-top:8px;">
+          <strong>Tier A:</strong> Notice when score = 0.<br>
+          <strong>Tier B:</strong> Notice the if-then.<br>
+          <strong>Tier C:</strong> Why use <code>change by -1</code> instead of a separate block?
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 10 · VIDEO 2 ===== -->
+<div class="slide interior" data-slide="10" data-type="lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:300px;height:300px;top:-40px;right:-40px;background:#ef4444;opacity:0.07;"></div>
+    <div class="blob" style="width:200px;height:200px;bottom:-30px;left:-20px;background:#10b981;opacity:0.07;"></div>
+  </div>
+  <div class="content">
+    <p class="pill reveal" style="margin-bottom:0.9rem;">🎬 Video 2 · Watch Together</p>
+    <h2 class="font-display reveal" style="color:#0f2747;font-size:clamp(1.4rem,2.5vw,2rem);margin-bottom:0.8rem;font-weight:700;">60-Second Scratch Tutorial: Keep Score</h2>
+    <div style="display:grid;grid-template-columns:1.4fr 0.8fr;gap:18px;align-items:start;">
+      <div>
+        <div class="media-embed reveal" id="player-ABNpEQSMMLk" onclick="playVideo('ABNpEQSMMLk')" title="Click to play video">
+          <img src="https://img.youtube.com/vi/ABNpEQSMMLk/hqdefault.jpg" alt="Keep Score - 60 Second Scratch Tutorial for Kids">
+          <div class="play-btn"><div>▶</div></div>
+        </div>
+        <p style="font-size:.73rem;color:#5b6b7e;margin-top:6px;text-align:center;">
+          <a href="https://www.youtube.com/watch?v=ABNpEQSMMLk" target="_blank" rel="noopener" style="color:#0b63ce;text-decoration:underline;">▶ YouTube · CodeWizardsHQ — "Keep Score - 60 Second Scratch Tutorial" (1 min)</a>
+        </p>
+      </div>
+      <div>
+        <div class="card accent-card-blue reveal" style="margin-bottom:10px;">
+          <p style="font-size:.8rem;font-weight:800;color:#1e40af;margin-bottom:6px;">The 3-step recipe shown:</p>
+          <div class="step-block" style="margin-bottom:5px;">
+            <div class="step-num" style="font-size:.7rem;">1</div>
+            <div style="font-size:.8rem;"><code>when green flag clicked</code></div>
+          </div>
+          <div class="step-block" style="margin-bottom:5px;">
+            <div class="step-num" style="font-size:.7rem;">2</div>
+            <div style="font-size:.8rem;"><code>set score to 0</code></div>
+          </div>
+          <div class="step-block">
+            <div class="step-num" style="font-size:.7rem;">3</div>
+            <div style="font-size:.8rem;"><code>when sprite clicked → change score by 1</code></div>
+          </div>
+        </div>
+        <div class="think-chip reveal">
+          <span>💬</span> What would you change in your own game? What <em>events</em> would add points?
+        </div>
+        <div class="tip b reveal" style="margin-top:8px;">
+          This is the <strong>exact pattern</strong> you'll build in the Guided Build — just with more detail!
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 11 · GUIDED BUILD: OVERVIEW ===== -->
+<div class="slide interior" data-slide="11" data-type="lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:360px;height:360px;top:-60px;right:-50px;background:#10b981;opacity:0.09;"></div>
+    <div class="blob" style="width:220px;height:220px;bottom:-40px;left:-30px;background:#0b63ce;opacity:0.07;"></div>
+  </div>
+  <div class="content">
+    <p class="pill reveal" style="margin-bottom:0.9rem;">🔨 Guided Build · 20 min · Let's Build Together!</p>
+    <h2 class="font-display reveal" style="color:#0f2747;font-size:clamp(1.5rem,2.8vw,2.2rem);margin-bottom:0.8rem;font-weight:700;">Mission: Add a Score to Your Scratch Game</h2>
+    <div style="display:grid;grid-template-columns:0.9fr 1.1fr;gap:16px;align-items:start;">
+      <div>
+        <div class="card reveal" style="margin-bottom:10px;">
+          <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/704012f88956e125ad997d87804b76e289675712.jpg" alt="Scratch game with score variable blocks" style="width:100%;border-radius:10px;margin-bottom:8px;">
+          <p style="font-size:.75rem;color:#5b6b7e;margin:0;">We'll build a clicker/catch game where the score goes up every time the sprite is clicked or catches an object.</p>
+        </div>
+        <div class="card accent-card-green reveal">
+          <p style="font-size:.8rem;font-weight:800;color:#065f46;margin-bottom:5px;">By the end of this build you'll have:</p>
+          <ul style="font-size:.78rem;color:#374151;margin:0;padding-left:16px;line-height:1.8;">
+            <li>A variable named <code>score</code></li>
+            <li>Score resets to 0 when game starts</li>
+            <li>Score goes up by 1 with each click</li>
+            <li>Score displayed on the stage</li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        <p style="font-size:.82rem;font-weight:800;color:#374151;margin-bottom:8px;" class="reveal">Open Scratch — let's walk through it step by step:</p>
+        <div class="step-block reveal" style="margin-bottom:7px;">
+          <div class="step-num">1</div>
+          <div style="font-size:.82rem;">Go to <strong>Variables</strong> (orange category) → click <strong>"Make a Variable"</strong></div>
+        </div>
+        <div class="step-block reveal" style="margin-bottom:7px;">
+          <div class="step-num">2</div>
+          <div style="font-size:.82rem;">Name it <code>score</code> → choose <em>"For all sprites"</em> → click <strong>OK</strong></div>
+        </div>
+        <div class="step-block reveal green" style="margin-bottom:7px;">
+          <div class="step-num" style="background:#10b981;">3</div>
+          <div style="font-size:.82rem;">In the <strong>sprite's script</strong>: drag <code>when green flag clicked</code> → <code>set score to 0</code></div>
+        </div>
+        <div class="step-block reveal green" style="margin-bottom:7px;">
+          <div class="step-num" style="background:#10b981;">4</div>
+          <div style="font-size:.82rem;">Add a second script: <code>when this sprite clicked</code> → <code>change score by 1</code></div>
+        </div>
+        <div class="step-block reveal amber">
+          <div class="step-num" style="background:#f59e0b;">5</div>
+          <div style="font-size:.82rem;"><strong>Press the green flag</strong> — click your sprite — watch the score grow!</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 12 · GUIDED BUILD: THE CODE BLOCKS ===== -->
+<div class="slide interior" data-slide="12" data-type="lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:300px;height:300px;top:-40px;right:-40px;background:#9966ff;opacity:0.08;"></div>
+    <div class="blob" style="width:200px;height:200px;bottom:-30px;left:-20px;background:#10b981;opacity:0.07;"></div>
+  </div>
+  <div class="content">
+    <p class="pill reveal" style="margin-bottom:0.9rem;">🔨 Guided Build · The Two Scripts</p>
+    <h2 class="font-display reveal" style="color:#0f2747;font-size:clamp(1.5rem,2.8vw,2.2rem);margin-bottom:0.8rem;font-weight:700;">Your Complete Code — Side by Side</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+      <div class="card reveal" style="border-top:4px solid #0b63ce;">
+        <p style="font-size:.8rem;font-weight:800;color:#0b63ce;margin-bottom:8px;">Script 1 — Game Start</p>
+        <div class="acode">
+<span class="kw">when</span> <span class="nb">green flag</span> clicked
+<span class="kw">set</span> <span class="st">score</span> <span class="kw">to</span> <span class="nb">0</span>
+        </div>
+        <p style="font-size:.76rem;color:#374151;margin-top:8px;">This script runs <strong>once</strong> when the game starts. It makes sure the score always begins at zero — not at whatever number it was last time!</p>
+      </div>
+      <div class="card reveal" style="border-top:4px solid #10b981;">
+        <p style="font-size:.8rem;font-weight:800;color:#065f46;margin-bottom:8px;">Script 2 — Scoring Points</p>
+        <div class="acode">
+<span class="kw">when</span> <span class="nb">this sprite</span> clicked
+<span class="kw">change</span> <span class="st">score</span> <span class="kw">by</span> <span class="nb">1</span>
+        </div>
+        <p style="font-size:.76rem;color:#374151;margin-top:8px;">This script runs <strong>every time</strong> the sprite is clicked. It adds 1 to whatever the current score is — and Scratch displays the new value instantly.</p>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:12px;">
+      <div class="card accent-card-blue reveal" style="text-align:center;padding:12px;">
+        <div style="font-size:1.6rem;margin-bottom:4px;">🟡</div>
+        <p style="font-size:.76rem;font-weight:800;color:#1e40af;margin-bottom:3px;">Why set to 0?</p>
+        <p style="font-size:.73rem;color:#374151;margin:0;">Without it, the score starts wherever it ended last game — try it to see what goes wrong!</p>
+      </div>
+      <div class="card accent-card-green reveal" style="text-align:center;padding:12px;">
+        <div style="font-size:1.6rem;margin-bottom:4px;">🔢</div>
+        <p style="font-size:.76rem;font-weight:800;color:#065f46;margin-bottom:3px;">Why "change by 1"?</p>
+        <p style="font-size:.73rem;color:#374151;margin:0;">"Change by" <em>adds</em> to the current value. "Set to 1" would just stay at 1 forever!</p>
+      </div>
+      <div class="card accent-card-amber reveal" style="text-align:center;padding:12px;">
+        <div style="font-size:1.6rem;margin-bottom:4px;">💡</div>
+        <p style="font-size:.76rem;font-weight:800;color:#92400e;margin-bottom:3px;">What if score &gt; 10?</p>
+        <p style="font-size:.73rem;color:#374151;margin:0;">Add an <code>if</code> block: <code>if score = 10 → say "You Win!"</code></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 13 · GUIDED BUILD: LIVES COUNTER (Tier B/C Extension) ===== -->
+<div class="slide interior" data-slide="13" data-type="lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:300px;height:300px;top:-40px;right:-40px;background:#ef4444;opacity:0.08;"></div>
+    <div class="blob" style="width:200px;height:200px;bottom:-30px;left:-20px;background:#f59e0b;opacity:0.07;"></div>
+  </div>
+  <div class="content">
+    <p class="pill reveal" style="margin-bottom:0.9rem;">🔨 Guided Build · Level Up</p>
+    <h2 class="font-display reveal" style="color:#0f2747;font-size:clamp(1.5rem,2.8vw,2.2rem);margin-bottom:0.8rem;font-weight:700;">Adding a Lives Counter — Two Variables at Once</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start;">
+      <div>
+        <div class="card reveal" style="margin-bottom:10px;border-top:4px solid #ef4444;">
+          <p style="font-size:.8rem;font-weight:800;color:#b91c1c;margin-bottom:8px;">Script 3 — Lives System</p>
+          <div class="acode">
+<span class="kw">when</span> <span class="nb">green flag</span> clicked
+<span class="kw">set</span> <span class="st">lives</span> <span class="kw">to</span> <span class="nb">3</span>
+
+<span class="kw">forever</span>
+  <span class="kw">if</span> <span class="nb">touching</span> [enemy] <span class="kw">then</span>
+    <span class="kw">change</span> <span class="st">lives</span> <span class="kw">by</span> <span class="nb">-1</span>
+    <span class="kw">wait</span> <span class="nb">1</span> seconds
+  <span class="kw">end</span>
+          </div>
+          <p style="font-size:.73rem;color:#5b6b7e;margin-top:6px;">The <code>wait 1 second</code> is crucial — without it, lives drops to 0 in milliseconds!</p>
+        </div>
+        <div class="tip b reveal">
+          <strong>Why negative?</strong> <code>change lives by -1</code> subtracts 1. Think: <em>changing by negative = going down.</em>
+        </div>
+      </div>
+      <div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div class="card accent-card-blue reveal">
+            <p style="font-size:.8rem;font-weight:800;color:#1e40af;margin-bottom:5px;">Three tiers — same concept:</p>
+            <div style="display:flex;flex-direction:column;gap:6px;">
+              <div style="display:flex;align-items:flex-start;gap:8px;">
+                <span class="tier-badge-a">Tier A</span>
+                <p style="font-size:.77rem;color:#374151;margin:0;">Add <code>score</code> only. Make sure it resets and goes up by 1 when you click.</p>
+              </div>
+              <div style="display:flex;align-items:flex-start;gap:8px;">
+                <span class="tier-badge-b">Tier B</span>
+                <p style="font-size:.77rem;color:#374151;margin:0;">Add both <code>score</code> (goes up) and <code>lives</code> (starts at 3, goes down on collision).</p>
+              </div>
+              <div style="display:flex;align-items:flex-start;gap:8px;">
+                <span class="tier-badge-c">Tier C</span>
+                <p style="font-size:.77rem;color:#374151;margin:0;">Add a <strong>high-score variable</strong> — after the game, if score &gt; highScore, update it!</p>
+              </div>
+            </div>
+          </div>
+          <div class="card accent-card-amber reveal">
+            <p style="font-size:.8rem;font-weight:800;color:#92400e;margin-bottom:5px;">Tier C challenge — High Score code:</p>
+            <div class="acode" style="font-size:.68rem;">
+<span class="cm">// at end of game:</span>
+<span class="kw">if</span> <span class="st">score</span> &gt; <span class="st">highScore</span> <span class="kw">then</span>
+  <span class="kw">set</span> <span class="st">highScore</span> <span class="kw">to</span> <span class="st">score</span>
+<span class="kw">end</span>
+            </div>
+          </div>
+          <div class="card accent-card-green reveal">
+            <p style="font-size:.78rem;color:#374151;margin:0;">
+              <strong>Quick bug check:</strong> Press green flag — does <code>lives</code> start at 3? Does <code>score</code> start at 0? If not, you're missing the <code>set</code> blocks!
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 14 · BRAIN BREAK ===== -->
+<div class="slide break-slide" data-slide="14" data-type="lesson">
+  <canvas class="particle-canvas"></canvas>
+  <div class="content" style="text-align:center;position:relative;z-index:2;">
+    <p class="reveal" style="font-size:.88rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,0.75);margin-bottom:1rem;">5 min · Brain Break</p>
+    <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/91062221ece2b2de326ad3e97b912d799cfa3b66.jpg" alt="Kids taking a stretch break" style="height:clamp(5rem,12vh,9rem);width:auto;object-fit:cover;border-radius:14px;margin:0 auto 1rem;display:block;box-shadow:0 8px 24px rgba(0,0,0,0.2);" class="reveal">
+    <h2 class="font-display reveal" style="color:#fff;font-size:clamp(1.8rem,4vw,3rem);font-weight:700;margin-bottom:0.8rem;text-shadow:0 2px 8px rgba(0,0,0,0.2);">Stand Up · Stretch · Breathe!</h2>
+    <p class="reveal" style="color:rgba(255,255,255,0.9);font-size:clamp(.95rem,1.6vw,1.2rem);margin-bottom:1.2rem;">Put your arms up and stretch high.<br>Roll your neck slowly. Take 3 deep breaths.</p>
+    <div class="reveal" style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;">
+      <div style="background:rgba(255,255,255,0.18);border-radius:14px;padding:12px 18px;text-align:center;">
+        <p style="font-size:1.4rem;margin-bottom:4px;">🙆</p>
+        <p style="font-size:.8rem;color:#fff;font-weight:700;margin:0;">Arms up &amp; stretch</p>
+      </div>
+      <div style="background:rgba(255,255,255,0.18);border-radius:14px;padding:12px 18px;text-align:center;">
+        <p style="font-size:1.4rem;margin-bottom:4px;">🌀</p>
+        <p style="font-size:.8rem;color:#fff;font-weight:700;margin:0;">Neck roll</p>
+      </div>
+      <div style="background:rgba(255,255,255,0.18);border-radius:14px;padding:12px 18px;text-align:center;">
+        <p style="font-size:1.4rem;margin-bottom:4px;">🫁</p>
+        <p style="font-size:.8rem;color:#fff;font-weight:700;margin:0;">3 deep breaths</p>
+      </div>
+    </div>
+    <p class="reveal" style="color:rgba(255,255,255,0.7);font-size:.84rem;margin-top:1.2rem;">Open Build starts in 5 minutes. Your brain will thank you!</p>
+  </div>
+</div>
+
+<!-- ===== SLIDE 15 · OPEN BUILD + CHALLENGE CARDS ===== -->
+<div class="slide interior" data-slide="15" data-type="lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:360px;height:360px;top:-60px;right:-50px;background:#f59e0b;opacity:0.10;"></div>
+    <div class="blob" style="width:220px;height:220px;bottom:-40px;left:-30px;background:#0b63ce;opacity:0.07;"></div>
+  </div>
+  <div class="content">
+    <p class="pill reveal" style="margin-bottom:0.9rem;">🚀 Open Build + Challenge Cards · 30–40 min</p>
+    <h2 class="font-display reveal" style="color:#0f2747;font-size:clamp(1.5rem,2.8vw,2.2rem);margin-bottom:1rem;font-weight:700;">Now Make It Your Own!</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
+      <div class="card accent-card-green reveal" style="padding:14px 16px;">
+        <div style="display:flex;align-items:center;gap:7px;margin-bottom:8px;">
+          <span class="tier-badge-a">Tier A · Foundations</span>
+        </div>
+        <p style="font-size:.8rem;font-weight:800;color:#047857;margin-bottom:6px;">Your build goal:</p>
+        <ul style="font-size:.78rem;color:#374151;margin:0 0 8px;padding-left:16px;line-height:1.8;">
+          <li>Add <code>score</code> variable</li>
+          <li>Set it to 0 at start</li>
+          <li>+1 when sprite is clicked</li>
+          <li>Make sure it shows on stage</li>
+        </ul>
+        <div class="tip g">
+          Stuck? Raise your hand — we build together!
+        </div>
+      </div>
+      <div class="card accent-card-blue reveal" style="padding:14px 16px;">
+        <div style="display:flex;align-items:center;gap:7px;margin-bottom:8px;">
+          <span class="tier-badge-b">Tier B · Core</span>
+        </div>
+        <p style="font-size:.8rem;font-weight:800;color:#0b63ce;margin-bottom:6px;">Your build goal:</p>
+        <ul style="font-size:.78rem;color:#374151;margin:0 0 8px;padding-left:16px;line-height:1.8;">
+          <li>Add score <em>and</em> lives counter</li>
+          <li>Score +1 on good event</li>
+          <li>Lives -1 on bad event</li>
+          <li>Add a "You Win!" message</li>
+        </ul>
+        <div class="tip b">
+          Choose your own game theme — catching stars, avoiding blocks, clicking animals!
+        </div>
+      </div>
+      <div class="card accent-card-amber reveal" style="padding:14px 16px;">
+        <div style="display:flex;align-items:center;gap:7px;margin-bottom:8px;">
+          <span class="abadge">★ Tier C · Challenge</span>
+        </div>
+        <p style="font-size:.8rem;font-weight:800;color:#b45309;margin-bottom:6px;">Your build goal:</p>
+        <ul style="font-size:.78rem;color:#374151;margin:0 0 8px;padding-left:16px;line-height:1.8;">
+          <li>High-score variable that persists during play</li>
+          <li>Display "New High Score!" if beaten</li>
+          <li>Timer variable (count down from 30)</li>
+          <li>Speed variable — game speeds up as score rises</li>
+        </ul>
+        <div class="tip a">
+          <strong>Stretch:</strong> Use a <em>variable as a slider</em> to adjust difficulty in real time!
+        </div>
+      </div>
+    </div>
+    <div class="ai-moment reveal" style="margin-top:12px;">
+      <div class="ai-icon">🤖</div>
+      <div>
+        <p style="font-size:.78rem;font-weight:800;color:#1e40af;margin-bottom:2px;">Keep asking yourself as you build:</p>
+        <p style="font-size:.76rem;color:#374151;margin:0;">What changes in my game when something happens? That changing thing is a variable! In AI, every time a model processes an image, it updates dozens of "score" variables called weights.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 16 · DEBUGGING & COMMON BUGS ===== -->
+<div class="slide interior" data-slide="16" data-type="lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:320px;height:320px;top:-50px;right:-50px;background:#ef4444;opacity:0.08;"></div>
+    <div class="blob" style="width:200px;height:200px;bottom:-40px;left:-30px;background:#0b63ce;opacity:0.07;"></div>
+  </div>
+  <div class="content">
+    <p class="pill reveal" style="margin-bottom:0.9rem;">🐛 Debugging · Common Variable Bugs</p>
+    <h2 class="font-display reveal" style="color:#0f2747;font-size:clamp(1.5rem,2.8vw,2.2rem);margin-bottom:1rem;font-weight:700;">Bug Hunters — Can You Find the Fix?</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+      <div class="card accent-card-red reveal">
+        <p style="font-size:.8rem;font-weight:800;color:#b91c1c;margin-bottom:6px;">Bug #1 — Score Starts at Old Number</p>
+        <div class="acode" style="font-size:.72rem;">
+<span class="cm">// Missing reset!</span>
+<span class="kw">when</span> <span class="nb">green flag</span> clicked
+<span class="cm">// ← no "set score to 0" here</span>
+        </div>
+        <p style="font-size:.76rem;color:#374151;margin-top:7px;"><strong>Fix:</strong> Always add <code>set score to 0</code> under <code>when green flag clicked</code>.</p>
+      </div>
+      <div class="card accent-card-red reveal">
+        <p style="font-size:.8rem;font-weight:800;color:#b91c1c;margin-bottom:6px;">Bug #2 — Score Never Changes</p>
+        <div class="acode" style="font-size:.72rem;">
+<span class="kw">when</span> <span class="nb">this sprite</span> clicked
+<span class="kw">set</span> <span class="st">score</span> <span class="kw">to</span> <span class="nb">1</span>
+<span class="cm">// ← "set to 1" stays at 1!</span>
+        </div>
+        <p style="font-size:.76rem;color:#374151;margin-top:7px;"><strong>Fix:</strong> Change <code>set score to 1</code> → <code>change score by 1</code>.</p>
+      </div>
+      <div class="card accent-card-amber reveal">
+        <p style="font-size:.8rem;font-weight:800;color:#92400e;margin-bottom:6px;">Bug #3 — Lives Vanishes Instantly</p>
+        <div class="acode" style="font-size:.72rem;">
+<span class="kw">forever</span>
+  <span class="kw">if</span> <span class="nb">touching</span> [enemy] <span class="kw">then</span>
+    <span class="kw">change</span> <span class="st">lives</span> <span class="kw">by</span> <span class="nb">-1</span>
+  <span class="cm">// ← no wait! loses life 60×/sec</span>
+        </div>
+        <p style="font-size:.76rem;color:#374151;margin-top:7px;"><strong>Fix:</strong> Add <code>wait 1 seconds</code> after the change block.</p>
+      </div>
+      <div class="card accent-card-blue reveal">
+        <p style="font-size:.8rem;font-weight:800;color:#1e40af;margin-bottom:6px;">Bug #4 — Score Invisible on Stage</p>
+        <div class="acode" style="font-size:.72rem;">
+<span class="cm">// Variable monitor is unchecked!</span>
+<span class="cm">// OR: "hide variable" block ran</span>
+        </div>
+        <p style="font-size:.76rem;color:#374151;margin-top:7px;"><strong>Fix:</strong> Check the checkbox next to <code>score</code> in the Variables palette, or add a <code>show variable score</code> block.</p>
+      </div>
+    </div>
+    <div class="tip b reveal" style="margin-top:10px;">
+      <strong>Debugging mindset:</strong> Every bug is your code being exact — it does <em>exactly</em> what you told it, even if that's not what you meant. Read your blocks out loud to find the mismatch!
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 17 · SHARE-OUT ===== -->
+<div class="slide shareout" data-slide="17" data-type="lesson">
+  <canvas class="particle-canvas"></canvas>
+  <div class="content" style="text-align:center;position:relative;z-index:2;">
+    <p class="reveal" style="font-size:.88rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,0.75);margin-bottom:1rem;">10 min · Share-Out</p>
+    <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/36663f046bda2289b27aab791763cd4dcfd47e2e.jpg" alt="Student showing their Scratch project" style="height:clamp(5rem,12vh,8rem);width:auto;object-fit:cover;border-radius:14px;margin:0 auto 0.8rem;display:block;box-shadow:0 8px 24px rgba(0,0,0,0.25);" class="reveal">
+    <h2 class="font-display reveal" style="color:#fff;font-size:clamp(1.6rem,3.5vw,2.8rem);font-weight:700;margin-bottom:0.8rem;text-shadow:0 2px 8px rgba(0,0,0,0.25);">Show Your Neighbor!</h2>
+    <p class="reveal" style="color:rgba(255,255,255,0.9);font-size:clamp(.9rem,1.6vw,1.15rem);margin-bottom:1.2rem;">Turn to the person next to you and demonstrate your score variable. Sharing is <strong>always optional!</strong></p>
+    <div class="reveal" style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:700px;margin:0 auto 1.2rem;">
+      <div style="background:rgba(255,255,255,0.18);border-radius:14px;padding:14px 12px;text-align:center;">
+        <p style="font-size:.75rem;font-weight:800;color:#fff;margin-bottom:4px;">Show &amp; tell:</p>
+        <p style="font-size:.73rem;color:rgba(255,255,255,0.85);margin:0;">"Here's my <code>score</code> variable — watch it go up when I click!"</p>
+      </div>
+      <div style="background:rgba(255,255,255,0.18);border-radius:14px;padding:14px 12px;text-align:center;">
+        <p style="font-size:.75rem;font-weight:800;color:#fff;margin-bottom:4px;">Explain:</p>
+        <p style="font-size:.73rem;color:rgba(255,255,255,0.85);margin:0;">"What does <code>change score by 1</code> actually do inside the computer?"</p>
+      </div>
+      <div style="background:rgba(255,255,255,0.18);border-radius:14px;padding:14px 12px;text-align:center;">
+        <p style="font-size:.75rem;font-weight:800;color:#fff;margin-bottom:4px;">One thing next:</p>
+        <p style="font-size:.73rem;color:rgba(255,255,255,0.85);margin:0;">"Tomorrow I want to add..."</p>
+      </div>
+    </div>
+    <p class="reveal" style="font-size:.78rem;color:rgba(255,255,255,0.7);">Volunteers welcome — no pressure! Pair demo is the default.</p>
+  </div>
+</div>
+
+<!-- ===== SLIDE 18 · HOMEWORK ===== -->
+<div class="slide hw-slide" data-slide="18" data-type="lesson">
+  <canvas class="particle-canvas"></canvas>
+  <div class="content" style="position:relative;z-index:2;">
+    <div style="display:grid;grid-template-columns:0.9fr 1.1fr;gap:18px;align-items:start;">
+      <div style="text-align:center;">
+        <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/41654616ed3d4b78882868121b5a5b5ab1708660.jpg" alt="Child coding on iPad" style="width:100%;border-radius:16px;box-shadow:0 8px 28px rgba(0,0,0,0.2);" class="reveal">
+        <p class="reveal" style="font-size:.78rem;color:rgba(255,255,255,0.8);margin-top:8px;">~30 min · Do at home tonight</p>
+      </div>
+      <div>
+        <p class="reveal" style="font-size:.88rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,0.8);margin-bottom:.7rem;">Tonight's Homework</p>
+        <h2 class="font-display reveal" style="color:#fff;font-size:clamp(1.5rem,3vw,2.3rem);font-weight:700;margin-bottom:1rem;text-shadow:0 2px 8px rgba(0,0,0,0.15);">Add a Working Score or Lives Counter to Your Game!</h2>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div style="background:rgba(255,255,255,0.20);border-radius:12px;padding:10px 14px;display:flex;align-items:flex-start;gap:10px;" class="reveal">
+            <span class="tier-badge-a" style="flex-shrink:0;">Tier A</span>
+            <p style="font-size:.8rem;color:#fff;margin:0;">Add a <code style="background:rgba(255,255,255,0.2);color:#fff;">score</code> variable. Click your sprite 5 times. Screenshot the result.</p>
+          </div>
+          <div style="background:rgba(255,255,255,0.20);border-radius:12px;padding:10px 14px;display:flex;align-items:flex-start;gap:10px;" class="reveal">
+            <span class="tier-badge-b" style="flex-shrink:0;">Tier B</span>
+            <p style="font-size:.8rem;color:#fff;margin:0;">Add a score <em>and</em> a lives counter. Make both work correctly. Write one sentence: "When I click the cat, my score changes because..."</p>
+          </div>
+          <div style="background:rgba(255,255,255,0.20);border-radius:12px;padding:10px 14px;display:flex;align-items:flex-start;gap:10px;" class="reveal">
+            <span class="tier-badge-c" style="flex-shrink:0;">Tier C</span>
+            <p style="font-size:.8rem;color:#fff;margin:0;">Add score + lives + high score. Write 2–3 sentences connecting the high-score variable to how an AI model "remembers" its best performance across training runs.</p>
+          </div>
+        </div>
+        <div style="background:rgba(255,255,255,0.20);border-radius:12px;padding:10px 14px;margin-top:8px;" class="reveal">
+          <p style="font-size:.78rem;color:#fff;margin:0;"><strong>All tiers:</strong> Save your Scratch project. Bring it to next session — on <strong>Wednesday Jul 8</strong> we SHIP our first game!</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 19 · CLOSING / KEY TAKEAWAYS ===== -->
+<div class="slide" data-slide="19" data-type="lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:480px;height:480px;top:-100px;right:-80px;background:#0b63ce;opacity:0.13;"></div>
+    <div class="blob" style="width:320px;height:320px;bottom:-80px;left:-60px;background:#10b981;opacity:0.11;"></div>
+    <div class="blob" style="width:200px;height:200px;top:40%;left:8%;background:#f59e0b;opacity:0.08;"></div>
+  </div>
+  <canvas class="particle-canvas"></canvas>
+  <div class="content" style="text-align:center;position:relative;z-index:2;">
+    <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/861921c8a2939609b7460d6878b488831a14c02a.jpg" alt="Scratch cat with colorful blocks" style="height:clamp(4rem,8vh,7rem);width:auto;object-fit:contain;border-radius:12px;margin:0 auto 0.8rem;display:block;animation:float 3s ease-in-out infinite;" class="reveal">
+    <h2 class="font-display grad-text reveal" style="font-size:clamp(1.6rem,4vw,3rem);font-weight:700;margin-bottom:0.7rem;">Today's Big 3</h2>
+    <p class="reveal" style="font-size:clamp(.88rem,1.6vw,1.1rem);color:#374151;margin-bottom:1.2rem;">Tell this to a family member tonight!</p>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:1rem;">
+      <div class="card reveal" style="text-align:center;padding:16px 12px;border-top:4px solid #0b63ce;">
+        <div style="width:42px;height:42px;border-radius:50%;background:#0b63ce;color:#fff;font-weight:800;font-size:1.1rem;display:flex;align-items:center;justify-content:center;margin:0 auto 8px;">1</div>
+        <p style="font-size:.8rem;font-weight:800;color:#0b63ce;margin-bottom:5px;">A variable is a named container</p>
+        <p style="font-size:.76rem;color:#374151;margin:0;">It stores one value that you can read, change, or reset anytime your program runs.</p>
+      </div>
+      <div class="card reveal" style="text-align:center;padding:16px 12px;border-top:4px solid #10b981;">
+        <div style="width:42px;height:42px;border-radius:50%;background:#10b981;color:#fff;font-weight:800;font-size:1.1rem;display:flex;align-items:center;justify-content:center;margin:0 auto 8px;">2</div>
+        <p style="font-size:.8rem;font-weight:800;color:#065f46;margin-bottom:5px;">Set vs. Change — not the same!</p>
+        <p style="font-size:.76rem;color:#374151;margin:0;"><code>set score to 0</code> replaces. <code>change score by 1</code> adds. Always reset at game start!</p>
+      </div>
+      <div class="card reveal" style="text-align:center;padding:16px 12px;border-top:4px solid #f59e0b;">
+        <div style="width:42px;height:42px;border-radius:50%;background:#f59e0b;color:#fff;font-weight:800;font-size:1.1rem;display:flex;align-items:center;justify-content:center;margin:0 auto 8px;">3</div>
+        <p style="font-size:.8rem;font-weight:800;color:#92400e;margin-bottom:5px;">AI uses variables too</p>
+        <p style="font-size:.76rem;color:#374151;margin:0;">An AI's "confidence score" is a variable that stores how sure the model is about its guess.</p>
+      </div>
+    </div>
+    <p class="reveal" style="font-size:.8rem;color:#5b6b7e;">Next session — Wednesday Jul 8 — <strong>"Ship It!" Build Day</strong> · Every student sends home a working game.</p>
+  </div>
+</div>
+
+</div><!-- end .deck -->
+
+<div class="nav-controls">
+  <button class="nav-btn" onclick="changeSlide(-1)">&#8249;</button>
+  <div class="slide-dots" id="dots"></div>
+  <button class="nav-btn" onclick="changeSlide(1)">&#8250;</button>
+  <span class="slide-counter" id="counter">1 / 19</span>
+</div>
+
+<script>
+/* ===== DECK NAVIGATION ===== */
+let current = 1;
+const total = document.querySelectorAll('.slide').length;
+const dotsContainer = document.getElementById('dots');
+const counter = document.getElementById('counter');
+for (let i = 1; i <= total; i++) {
+  const dot = document.createElement('div');
+  dot.className = 'dot' + (i === 1 ? ' active' : '');
+  dot.onclick = () => goToSlide(i);
+  dotsContainer.appendChild(dot);
+}
+function goToSlide(n) {
+  const prev = document.querySelector('.slide.active');
+  const next = document.querySelector('.slide[data-slide="' + n + '"]');
+  if (prev) prev.classList.remove('active');
+  if (next) { next.classList.add('active'); animateSlide(next); }
+  current = n; updateNav();
+}
+function changeSlide(dir) { let next = current + dir; if (next < 1) next = total; if (next > total) next = 1; goToSlide(next); }
+function updateNav() {
+  document.querySelectorAll('.dot').forEach((d, i) => { d.classList.toggle('active', i + 1 === current); });
+  counter.textContent = current + ' / ' + total;
+}
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); changeSlide(1); }
+  if (e.key === 'ArrowLeft') { e.preventDefault(); changeSlide(-1); }
+});
+let touchStartX = 0;
+document.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; });
+document.addEventListener('touchend', (e) => { const diff = touchStartX - e.changedTouches[0].clientX; if (Math.abs(diff) > 50) changeSlide(diff > 0 ? 1 : -1); });
+
+/* ===== REVEAL ANIMATIONS ===== */
+function animateSlide(slide) {
+  slide.querySelectorAll('.reveal').forEach((el, i) => {
+    el.style.transition = 'none';
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(16px)';
+    el.offsetHeight;
+    const delay = i * 0.07;
+    el.style.transition = 'opacity 0.35s ease ' + delay + 's, transform 0.35s ease ' + delay + 's';
+    el.style.opacity = '1';
+    el.style.transform = 'translateY(0)';
+  });
+  animateSlideEffects(slide);
+}
+
+function animateSlideEffects(slide) {
+  slide.querySelectorAll('[data-count]:not(.counted)').forEach(el => {
+    el.classList.add('counted');
+    const target = parseInt(el.dataset.count);
+    const suffix = el.dataset.suffix || '', prefix = el.dataset.prefix || '';
+    let cur = 0; const step = Math.max(1, target / 40);
+    const timer = setInterval(() => {
+      cur += step; if (cur >= target) { cur = target; clearInterval(timer); }
+      el.textContent = prefix + Math.round(cur).toLocaleString() + suffix;
+    }, 30);
+  });
+  slide.querySelectorAll('.bar-fill:not(.fill-init)').forEach((bar, i) => {
+    bar.classList.add('fill-init');
+    bar.style.width = '0%'; bar.style.transition = 'width 0.5s ease ' + (i * 0.08) + 's'; bar.offsetHeight; bar.style.width = bar.dataset.width + '%';
+  });
+  slide.querySelectorAll('.donut-ring:not(.ring-init)').forEach(ring => {
+    ring.classList.add('ring-init');
+    ring.style.strokeDashoffset = '251.3'; ring.style.transition = 'stroke-dashoffset 0.8s ease'; ring.offsetHeight;
+    ring.style.strokeDashoffset = 251.3 - (parseInt(ring.dataset.percent) / 100) * 251.3;
+  });
+}
+
+/* ===== VIDEO EMBED ===== */
+function playVideo(videoId) {
+  const container = document.getElementById('player-' + videoId);
+  if (!container) return;
+  container.innerHTML = '<iframe src="https://www.youtube.com/embed/' + videoId + '?autoplay=1&rel=0" allowfullscreen allow="autoplay; encrypted-media" style="position:absolute;inset:0;width:100%;height:100%;border:0;border-radius:13px;"></iframe>';
+}
+
+/* ===== INTERACTIVE SCORE DEMO (Slide 5) ===== */
+let demoScore = 0;
+function addScore() {
+  demoScore++;
+  const el = document.getElementById('scoreDemo');
+  if (el) {
+    el.textContent = demoScore;
+    el.classList.remove('pop');
+    void el.offsetWidth;
+    el.classList.add('pop');
+  }
+}
+function resetScore() {
+  demoScore = 0;
+  const el = document.getElementById('scoreDemo');
+  if (el) { el.textContent = '0'; }
+}
+
+/* ===== MOUSE SPOTLIGHT ===== */
+document.addEventListener('mousemove', (e) => {
+  const spotlight = document.querySelector('.mouse-spotlight');
+  if (spotlight) {
+    spotlight.style.background = 'radial-gradient(600px circle at ' + e.clientX + 'px ' + e.clientY + 'px, rgba(11,99,206,0.05), transparent 40%)';
+  }
+});
+
+/* ===== PARTICLE CANVAS ===== */
+window.initParticles = function(canvas, options) {
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight;
+  const interactive = options.interactive !== false;
+  const count = options.count || (interactive ? 45 : 16);
+  let mx = -1000, my = -1000;
+  const rgb = '11,99,206';
+  const [r, g, b] = rgb.split(',').map(Number);
+  const particles = Array.from({ length: count }, () => ({
+    x: Math.random() * canvas.width, y: Math.random() * canvas.height,
+    vx: (Math.random() - 0.5) * 0.3, vy: (Math.random() - 0.5) * 0.3,
+    size: Math.random() * 2 + 0.6, alpha: Math.random() * 0.3 + 0.08
+  }));
+  if (interactive) {
+    canvas.addEventListener('mousemove', (e) => { const rect = canvas.getBoundingClientRect(); mx = e.clientX - rect.left; my = e.clientY - rect.top; });
+    canvas.addEventListener('mouseleave', () => { mx = -1000; my = -1000; });
+  }
+  (function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(p => {
+      if (interactive) { const dx = p.x - mx, dy = p.y - my, dist = Math.sqrt(dx * dx + dy * dy); if (dist < 100) { const force = (100 - dist) / 100 * 2; p.vx += (dx / dist) * force * 0.1; p.vy += (dy / dist) * force * 0.1; } }
+      p.vx *= 0.98; p.vy *= 0.98; p.x += p.vx; p.y += p.vy;
+      if (p.x < 0) p.x = canvas.width; if (p.x > canvas.width) p.x = 0;
+      if (p.y < 0) p.y = canvas.height; if (p.y > canvas.height) p.y = 0;
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(' + r + ',' + g + ',' + b + ',' + p.alpha + ')'; ctx.fill();
+    });
+    requestAnimationFrame(animate);
+  })();
+};
+document.querySelectorAll('.particle-canvas').forEach(c => window.initParticles(c, { interactive: true, count: 45 }));
+
+try { animateSlide(document.querySelector('.slide.active')); } catch(e) { console.warn(e); }
+</script>
+</body>
+</html>
