@@ -14,6 +14,8 @@
 | **1-3** | [Scratch: Sequencing & Events](https://hue881.github.io/mcs/2026/summer/1/3) | [1-3 Activity](https://hue881.github.io/mcs/2026/summer/1/3/activity) | [1-3 Homework](https://hue881.github.io/mcs/2026/summer/1/3/homework) | -- ||
 | **1-4** | [Scratch: Loops](https://hue881.github.io/mcs/2026/summer/1/4) | [1-4 Activity](https://hue881.github.io/mcs/2026/summer/1/4/activity) | [1-4 Homework](https://hue881.github.io/mcs/2026/summer/1/4/homework) | -- ||
 | **2-1** | [Scratch: Conditionals](https://hue881.github.io/mcs/2026/summer/2/1) | [2-1 Activity](https://hue881.github.io/mcs/2026/summer/2/1/activity) | [2-1 Homework](https://hue881.github.io/mcs/2026/summer/2/1/homework) | -- ||
+| **2-2** | [Scratch: Variables
+& Score-keeping](https://hue881.github.io/mcs/2026/summer/2/2) | [2-2 Activity](https://hue881.github.io/mcs/2026/summer/2/2/activity) | [2-2 Homework](https://hue881.github.io/mcs/2026/summer/2/2/homework) | -- ||
 
 
 
