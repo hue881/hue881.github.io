@@ -1,1 +1,1026 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="slides-format" content="viewport">
+    <title>Session 7 · Ship It! Build Day · Scratch Mini-Project</title>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+    <style type="text/tailwindcss">
+        @theme {
+            --color-bg: #f0f7ff;
+            --color-bg-deep: #e4f0fc;
+            --color-surface: #ffffff;
+            --color-text: #1a2e50;
+            --color-text-secondary: #3b5278;
+            --color-text-muted: #6b87a8;
+            --color-accent-1: #2563eb;
+            --color-accent-2: #f97066;
+            --color-accent-3: #16a34a;
+            --color-glass-bg: rgba(255,255,255,0.85);
+            --color-glass-border: rgba(37,99,235,0.10);
+            --color-vignette: rgba(0,0,0,0.05);
+            --font-display: 'Nunito', sans-serif;
+            --font-body: 'DM Sans', sans-serif;
+        }
+    </style>
+
+    <style>
+        :root {
+            --color-bg: #f0f7ff;
+            --color-text: #1a2e50;
+            --glow-color-rgb: 37,99,235;
+        }
+        *, *::before, *::after { box-sizing: border-box; }
+        html, body { background: var(--color-bg); margin: 0; }
+        body { font-family: 'DM Sans', sans-serif; color: var(--color-text); overflow: hidden; height: 100vh; width: 100vw; }
+        .deck { width: 100vw; height: 100vh; position: relative; }
+        .slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--color-bg); display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; transform: scale(0.95); transition: opacity 0.7s ease, transform 0.7s ease; pointer-events: none; overflow: hidden; }
+        .slide.active { opacity: 1; transform: scale(1); pointer-events: all; }
+        .slide > .content { position: relative; z-index: 2; width: 100%; max-width: 1100px; padding: clamp(1rem, 3vw, 3rem); }
+        .nav-controls { position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 14px; z-index: 100; background: rgba(255,255,255,0.9); backdrop-filter: blur(10px); padding: 8px 20px; border-radius: 40px; border: 1px solid rgba(37,99,235,0.15); box-shadow: 0 4px 20px rgba(37,99,235,0.10); }
+        .nav-btn { width: 36px; height: 36px; border: none; background: rgba(37,99,235,0.08); color: #2563eb; border-radius: 50%; font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s; }
+        .nav-btn:hover { background: rgba(37,99,235,0.18); }
+        .slide-dots { display: flex; gap: 6px; }
+        .slide-dots .dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(37,99,235,0.2); cursor: pointer; transition: background 0.3s, transform 0.3s; }
+        .slide-dots .dot.active { background: #2563eb; transform: scale(1.4); }
+        .slide-counter { font-size: 0.78rem; color: #6b87a8; min-width: 36px; text-align: center; font-family: 'DM Sans', sans-serif; }
+        .reveal { opacity: 0; transform: translateY(20px); }
+
+        /* Gradient mesh */
+        @keyframes float-slow { 0%{transform:translate(0,0) scale(1);} 25%{transform:translate(40px,-30px) scale(1.08);} 50%{transform:translate(-30px,25px) scale(0.94);} 75%{transform:translate(35px,15px) scale(1.05);} 100%{transform:translate(0,0) scale(1);} }
+        @keyframes float-drift { 0%{transform:translate(0,0) scale(1);} 33%{transform:translate(-40px,-40px) scale(1.1);} 66%{transform:translate(30px,25px) scale(0.91);} 100%{transform:translate(0,0) scale(1);} }
+        @keyframes float { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-12px);} }
+        @keyframes bounce-gentle { 0%,100%{transform:translateY(0) scale(1);} 50%{transform:translateY(-8px) scale(1.03);} }
+        .gradient-mesh { position: absolute; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+        .blob { position: absolute; border-radius: 50%; filter: blur(70px); animation: float-slow 12s ease-in-out infinite; }
+        .blob:nth-child(2) { animation: float-drift 16s ease-in-out infinite; }
+        .blob:nth-child(3) { animation: float-slow 20s ease-in-out infinite reverse; }
+
+        /* Vignette */
+        .slide::after { content:''; position:absolute; inset:0; z-index:1; pointer-events:none; background: radial-gradient(ellipse at center, transparent 55%, var(--color-vignette) 100%); }
+
+        /* Glow pulse */
+        @keyframes glow-pulse { 0%,100%{text-shadow:0 0 20px rgba(37,99,235,0.4);} 50%{text-shadow:0 0 35px rgba(37,99,235,0.7);} }
+        .glow-pulse { animation: glow-pulse 3s ease-in-out infinite; }
+
+        /* Cards */
+        .card-light { background: #fff; border: 1px solid rgba(37,99,235,0.1); border-radius: 16px; padding: 1.2rem 1.4rem; box-shadow: 0 2px 14px rgba(37,99,235,0.07); transition: transform 0.25s, box-shadow 0.25s; }
+        .card-light:hover { transform: translateY(-4px); box-shadow: 0 8px 28px rgba(37,99,235,0.13); }
+        .card-accent-left { border-left: 4px solid #2563eb; }
+        .card-orange { border-left: 4px solid #f97066; }
+        .card-green { border-left: 4px solid #16a34a; }
+        .card-yellow { border-left: 4px solid #f59e0b; }
+
+        /* Timer bar */
+        @keyframes shrink { from{width:100%;} to{width:0%;} }
+        .timer-bar { height: 5px; border-radius: 3px; background: linear-gradient(90deg, #2563eb, #f97066); }
+
+        /* Pill badges */
+        .pill { display: inline-flex; align-items: center; gap: 6px; padding: 4px 14px; border-radius: 999px; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
+        .pill-blue { background: rgba(37,99,235,0.12); color: #1d4ed8; }
+        .pill-orange { background: rgba(249,112,102,0.14); color: #c2410c; }
+        .pill-green { background: rgba(22,163,74,0.12); color: #15803d; }
+        .pill-yellow { background: rgba(245,158,11,0.14); color: #b45309; }
+
+        /* Scratch block styles */
+        .scratch-block { display: inline-flex; align-items: center; gap: 5px; padding: 6px 14px 6px 10px; border-radius: 8px; font-family: 'DM Sans', monospace; font-weight: 700; font-size: 0.85rem; cursor: default; user-select: none; }
+        .block-purple { background: #7c3aed; color: #fff; }
+        .block-orange { background: #f97316; color: #fff; }
+        .block-blue { background: #2563eb; color: #fff; }
+        .block-yellow { background: #d97706; color: #fff; }
+        .block-green { background: #16a34a; color: #fff; }
+        .block-teal { background: #0891b2; color: #fff; }
+        .block-notch::before { content:''; display:inline-block; width:10px; height:10px; border-radius:50%; background:rgba(255,255,255,0.35); margin-right:4px; }
+
+        /* Video embed styles */
+        .video-container { position: relative; border-radius: 14px; overflow: hidden; cursor: pointer; box-shadow: 0 4px 24px rgba(37,99,235,0.15); transition: transform 0.25s, box-shadow 0.25s; }
+        .video-container:hover { transform: translateY(-3px); box-shadow: 0 10px 36px rgba(37,99,235,0.22); }
+        .video-thumb { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .play-overlay { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0,0,0,0.25); transition: background 0.2s; gap: 8px; }
+        .video-container:hover .play-overlay { background: rgba(0,0,0,0.35); }
+        .play-btn-circle { width: 56px; height: 56px; border-radius: 50%; background: rgba(255,255,255,0.95); display: flex; align-items: center; justify-content: center; }
+        .play-btn-circle svg { width: 24px; height: 24px; fill: #2563eb; margin-left: 3px; }
+        .video-label { color: #fff; font-size: 0.8rem; font-weight: 600; text-shadow: 0 1px 3px rgba(0,0,0,0.5); letter-spacing: 0.03em; }
+        .video-source-link { font-size: 0.72rem; color: rgba(255,255,255,0.8); text-shadow: 0 1px 2px rgba(0,0,0,0.4); }
+
+        /* Step number */
+        .step-num { width: 34px; height: 34px; border-radius: 50%; background: #2563eb; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 0.95rem; flex-shrink: 0; }
+
+        /* Progress tracker */
+        .progress-track-h { display: flex; align-items: center; gap: 0; }
+        .progress-node-h { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.8rem; flex-shrink: 0; }
+        .progress-line-h { flex: 1; height: 3px; }
+
+        /* Tier cards */
+        .tier-card { border-radius: 14px; padding: 1rem 1.2rem; transition: transform 0.2s, box-shadow 0.2s; }
+        .tier-card:hover { transform: translateY(-3px); box-shadow: 0 8px 28px rgba(0,0,0,0.1); }
+
+        /* Quiz card */
+        .quiz-option { padding: 10px 16px; border-radius: 10px; border: 2px solid rgba(37,99,235,0.15); background: #fff; cursor: pointer; font-weight: 600; transition: all 0.18s; font-size: 0.9rem; }
+        .quiz-option:hover { border-color: #2563eb; background: rgba(37,99,235,0.06); transform: translateX(3px); }
+        .quiz-option.correct { border-color: #16a34a; background: rgba(22,163,74,0.1); color: #15803d; }
+        .quiz-option.wrong { border-color: #ef4444; background: rgba(239,68,68,0.08); color: #b91c1c; }
+
+        /* Bar fill */
+        .hbar-track { background: rgba(37,99,235,0.1); border-radius: 999px; height: 14px; overflow: hidden; }
+        .hbar-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, #2563eb, #60a5fa); transition: width 0.8s ease; }
+
+        /* Confetti burst */
+        @keyframes confetti-fall { from{opacity:1; transform:translateY(-20px) rotate(0deg);} to{opacity:0; transform:translateY(60px) rotate(360deg);} }
+        .confetti-piece { position: absolute; width: 8px; height: 8px; border-radius: 2px; animation: confetti-fall 1.2s ease-out forwards; pointer-events: none; }
+
+        /* Ship it rocket */
+        @keyframes rocket-fly { 0%{transform:translateY(0) rotate(-5deg);} 50%{transform:translateY(-12px) rotate(5deg);} 100%{transform:translateY(0) rotate(-5deg);} }
+        .rocket-anim { animation: rocket-fly 2.5s ease-in-out infinite; display: inline-block; }
+
+        /* Mouse spotlight */
+        .mouse-spotlight { position:fixed; inset:0; z-index:99; pointer-events:none; }
+
+        @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.2s !important; } }
+    </style>
+</head>
+<body>
+
+<div class="mouse-spotlight" id="spotlight"></div>
+
+<div class="deck">
+
+    <!-- ===== SLIDE 1: TITLE ===== -->
+    <div class="slide slide-1 active" data-slide="1">
+        <div class="gradient-mesh">
+            <div class="blob" style="width:500px;height:500px;top:-120px;right:-100px;background:#2563eb;opacity:0.09;"></div>
+            <div class="blob" style="width:380px;height:380px;bottom:-80px;left:-80px;background:#f97066;opacity:0.08;"></div>
+            <div class="blob" style="width:260px;height:260px;top:35%;left:10%;background:#16a34a;opacity:0.07;"></div>
+        </div>
+        <canvas class="particle-canvas" style="position:absolute;inset:0;z-index:1;"></canvas>
+        <div class="content text-center">
+            <div style="font-size:90px;line-height:1;margin-bottom:0.5rem;animation:bounce-gentle 3s ease-in-out infinite;" class="reveal">🚀</div>
+            <div class="pill pill-blue reveal" style="margin:0 auto 1rem auto;">Session 7 · Wed Jul 8 · Week 2</div>
+            <h1 class="reveal" style="font-family:'Nunito',sans-serif;font-size:clamp(2.2rem,5.5vw,4rem);font-weight:900;color:#1a2e50;line-height:1.1;margin-bottom:0.6rem;">
+                "Ship It!" Build Day
+            </h1>
+            <p class="reveal" style="font-size:clamp(0.95rem,1.6vw,1.3rem);color:#3b5278;font-weight:500;margin-bottom:1.4rem;">Scratch Mini-Project · Every Student Launches Today</p>
+            <div class="reveal" style="display:inline-flex;gap:12px;flex-wrap:wrap;justify-content:center;">
+                <div class="pill pill-blue">Scratch</div>
+                <div class="pill pill-orange">Games &amp; Animations</div>
+                <div class="pill pill-green">AI Connection</div>
+                <div class="pill pill-yellow">Ages 7–13</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== SLIDE 2: TODAY'S PLAN ===== -->
+    <div class="slide slide-2" data-slide="2">
+        <div class="gradient-mesh">
+            <div class="blob" style="width:380px;height:380px;top:-80px;right:-60px;background:#2563eb;opacity:0.07;"></div>
+            <div class="blob" style="width:260px;height:260px;bottom:-50px;left:-40px;background:#f97066;opacity:0.06;"></div>
+        </div>
+        <div class="content">
+            <div class="pill pill-blue reveal" style="margin-bottom:0.8rem;">Today's Plan</div>
+            <h2 class="reveal" style="font-family:'Nunito',sans-serif;font-size:clamp(1.6rem,3.5vw,2.4rem);font-weight:900;color:#1a2e50;margin-bottom:0.2rem;">The Daily Rhythm — Your Map for Today</h2>
+            <p class="reveal" style="color:#3b5278;font-size:0.95rem;margin-bottom:1.2rem;">What does a great coder do every single session? The same rhythm, every time.</p>
+            <div class="progress-track-h reveal" style="margin-bottom:1.2rem;align-items:stretch;">
+                <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+                    <div class="progress-node-h" style="background:#dbeafe;color:#1d4ed8;">W</div>
+                    <div style="font-size:0.65rem;font-weight:700;color:#1d4ed8;text-align:center;max-width:52px;">Warm-Up</div>
+                    <div style="font-size:0.6rem;color:#6b87a8;">10 min</div>
+                </div>
+                <div class="progress-line-h" style="background:linear-gradient(90deg,#2563eb,#60a5fa);margin-top:16px;"></div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+                    <div class="progress-node-h" style="background:#fef3c7;color:#b45309;">L</div>
+                    <div style="font-size:0.65rem;font-weight:700;color:#b45309;text-align:center;max-width:52px;">Mini-Lesson</div>
+                    <div style="font-size:0.6rem;color:#6b87a8;">15 min</div>
+                </div>
+                <div class="progress-line-h" style="background:linear-gradient(90deg,#f59e0b,#fbbf24);margin-top:16px;"></div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+                    <div class="progress-node-h" style="background:#dcfce7;color:#15803d;">G</div>
+                    <div style="font-size:0.65rem;font-weight:700;color:#15803d;text-align:center;max-width:52px;">Guided Build</div>
+                    <div style="font-size:0.6rem;color:#6b87a8;">20 min</div>
+                </div>
+                <div class="progress-line-h" style="background:linear-gradient(90deg,#16a34a,#4ade80);margin-top:16px;"></div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+                    <div class="progress-node-h" style="background:#ffe4e6;color:#be123c;">M</div>
+                    <div style="font-size:0.65rem;font-weight:700;color:#be123c;text-align:center;max-width:52px;">Move Break</div>
+                    <div style="font-size:0.6rem;color:#6b87a8;">5 min</div>
+                </div>
+                <div class="progress-line-h" style="background:linear-gradient(90deg,#f97066,#fb923c);margin-top:16px;"></div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+                    <div class="progress-node-h" style="background:#ede9fe;color:#6d28d9;">O</div>
+                    <div style="font-size:0.65rem;font-weight:700;color:#6d28d9;text-align:center;max-width:52px;">Open Build</div>
+                    <div style="font-size:0.6rem;color:#6b87a8;">35 min</div>
+                </div>
+                <div class="progress-line-h" style="background:linear-gradient(90deg,#7c3aed,#a78bfa);margin-top:16px;"></div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+                    <div class="progress-node-h" style="background:#cffafe;color:#0e7490;">S</div>
+                    <div style="font-size:0.65rem;font-weight:700;color:#0e7490;text-align:center;max-width:52px;">Share-Out</div>
+                    <div style="font-size:0.6rem;color:#6b87a8;">10 min</div>
+                </div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;" class="reveal">
+                <div class="card-light card-accent-left" style="padding:0.8rem 1rem;">
+                    <div style="font-weight:800;font-size:0.85rem;color:#1d4ed8;margin-bottom:4px;">Session Goal</div>
+                    <div style="font-size:0.82rem;color:#3b5278;">Every student ships 1 working interactive project by end of class — guaranteed.</div>
+                </div>
+                <div class="card-light card-orange" style="padding:0.8rem 1rem;">
+                    <div style="font-weight:800;font-size:0.85rem;color:#c2410c;margin-bottom:4px;">AI Moment</div>
+                    <div style="font-size:0.82rem;color:#3b5278;">Could AI have made your project? What would it need to know? We find out.</div>
+                </div>
+                <div class="card-light card-green" style="padding:0.8rem 1rem;">
+                    <div style="font-weight:800;font-size:0.85rem;color:#15803d;margin-bottom:4px;">Homework</div>
+                    <div style="font-size:0.82rem;color:#3b5278;">Polish &amp; write 2 sentences: what it does + one thing you'd add next.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== SLIDE 3: WARM-UP ===== -->
+    <div class="slide slide-3" data-slide="3">
+        <div class="gradient-mesh">
+            <div class="blob" style="width:350px;height:350px;top:-60px;left:-60px;background:#f59e0b;opacity:0.09;"></div>
+            <div class="blob" style="width:280px;height:280px;bottom:-40px;right:-40px;background:#2563eb;opacity:0.07;"></div>
+        </div>
+        <canvas class="particle-canvas-ambient" style="position:absolute;inset:0;z-index:1;"></canvas>
+        <div class="content">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:0.8rem;" class="reveal">
+                <div class="pill pill-yellow">Warm-Up · No Screens · 10 min</div>
+            </div>
+            <h2 class="reveal" style="font-family:'Nunito',sans-serif;font-size:clamp(1.5rem,3vw,2.2rem);font-weight:900;color:#1a2e50;margin-bottom:0.3rem;">The Ingredient Game — Unpack Your Toolkit</h2>
+            <p class="reveal" style="color:#3b5278;font-size:0.92rem;margin-bottom:1rem;">You've learned 5 big ideas. Which ones does YOUR project use?</p>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;" class="reveal">
+                <div style="display:flex;flex-direction:column;gap:8px;">
+                    <div class="card-light" style="padding:0.75rem 1rem;display:flex;align-items:flex-start;gap:10px;">
+                        <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/adf9ed9d92f5e6d5b56e7136fe4354c890250453.jpg" alt="Scratch interface" style="width:60px;height:44px;object-fit:cover;border-radius:8px;flex-shrink:0;">
+                        <div>
+                            <div style="font-weight:800;font-size:0.88rem;color:#1a2e50;margin-bottom:2px;">Think About It</div>
+                            <div style="font-size:0.8rem;color:#3b5278;">You've built with <b>sequences</b>, <b>loops</b>, <b>conditionals</b>, <b>variables</b>, and <b>events</b>. Which of these are in your favorite game?</div>
+                        </div>
+                    </div>
+                    <div class="card-light card-yellow" style="padding:0.75rem 1rem;">
+                        <div style="font-weight:800;font-size:0.88rem;color:#b45309;margin-bottom:4px;">Turn &amp; Talk — 2 min</div>
+                        <div style="font-size:0.82rem;color:#3b5278;">Tell your neighbor: name a game you love. Which ONE coding ingredient makes that game fun? Be specific — not just "loops," but <i>why</i> the loop matters.</div>
+                    </div>
+                    <div class="card-light" style="padding:0.75rem 1rem;background:rgba(37,99,235,0.04);">
+                        <div style="font-weight:800;font-size:0.88rem;color:#1d4ed8;margin-bottom:4px;">Big Question</div>
+                        <div style="font-size:0.82rem;color:#3b5278;">If you could add just ONE more ingredient to Scratch to make your dream game, what would it be — and can you <i>describe</i> it in plain English?</div>
+                    </div>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:8px;">
+                    <div style="font-weight:800;font-size:0.88rem;color:#1a2e50;margin-bottom:2px;">Your 5 Coding Ingredients:</div>
+                    <div style="display:flex;flex-wrap:wrap;gap:7px;">
+                        <div class="scratch-block block-purple block-notch">Events — When flag clicked</div>
+                        <div class="scratch-block block-orange block-notch">Loops — Repeat / Forever</div>
+                        <div class="scratch-block block-blue block-notch">Motion — Move, turn</div>
+                        <div class="scratch-block block-yellow block-notch">Conditionals — If / If-Else</div>
+                        <div class="scratch-block block-teal block-notch">Variables — Score, lives</div>
+                        <div class="scratch-block block-green block-notch">Looks — Say, costume</div>
+                    </div>
+                    <div class="card-light card-green" style="padding:0.75rem 1rem;margin-top:auto;">
+                        <div style="font-weight:800;font-size:0.88rem;color:#15803d;margin-bottom:4px;">Challenge: Recipe Card</div>
+                        <div style="font-size:0.8rem;color:#3b5278;">Write down the "recipe" for your project: list exactly which blocks you'll need. Think like a chef — ingredients BEFORE you cook!</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== SLIDE 4: MINI-LESSON + AI MOMENT ===== -->
+    <div class="slide slide-4" data-slide="4">
+        <div class="gradient-mesh">
+            <div class="blob" style="width:400px;height:400px;top:-80px;right:-60px;background:#7c3aed;opacity:0.07;"></div>
+            <div class="blob" style="width:300px;height:300px;bottom:-60px;left:-40px;background:#f97066;opacity:0.07;"></div>
+        </div>
+        <div class="content">
+            <div style="display:flex;gap:10px;margin-bottom:0.7rem;align-items:center;flex-wrap:wrap;" class="reveal">
+                <div class="pill pill-blue">Mini-Lesson · 15 min</div>
+                <div class="pill" style="background:rgba(124,58,237,0.1);color:#6d28d9;">AI Moment</div>
+            </div>
+            <h2 class="reveal" style="font-family:'Nunito',sans-serif;font-size:clamp(1.4rem,2.8vw,2rem);font-weight:900;color:#1a2e50;margin-bottom:0.25rem;">What Makes a Project "Shippable"?</h2>
+            <p class="reveal" style="color:#3b5278;font-size:0.88rem;margin-bottom:0.9rem;">Professionals ship software that works — even if it's small. A shippable Scratch project has these 3 qualities:</p>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:0.9rem;" class="reveal">
+                <div class="card-light" style="padding:0.85rem 1rem;border-top:3px solid #2563eb;">
+                    <div style="font-size:1.6rem;margin-bottom:4px;">▶</div>
+                    <div style="font-weight:800;font-size:0.9rem;color:#1a2e50;margin-bottom:3px;">1. It Starts</div>
+                    <div style="font-size:0.8rem;color:#3b5278;">Click the green flag → something happens. Every time. No blank stage!</div>
+                </div>
+                <div class="card-light" style="padding:0.85rem 1rem;border-top:3px solid #f97066;">
+                    <div style="font-size:1.6rem;margin-bottom:4px;">🎮</div>
+                    <div style="font-weight:800;font-size:0.9rem;color:#1a2e50;margin-bottom:3px;">2. It Responds</div>
+                    <div style="font-size:0.8rem;color:#3b5278;">Something reacts to YOU — a key press, mouse click, or sprite touching another.</div>
+                </div>
+                <div class="card-light" style="padding:0.85rem 1rem;border-top:3px solid #16a34a;">
+                    <div style="font-size:1.6rem;margin-bottom:4px;">🏁</div>
+                    <div style="font-weight:800;font-size:0.9rem;color:#1a2e50;margin-bottom:3px;">3. It Ends (or Loops)</div>
+                    <div style="font-size:0.8rem;color:#3b5278;">Either a game over message, OR a fun loop the player can watch/play forever.</div>
+                </div>
+            </div>
+            <div style="display:grid;grid-template-columns:3fr 2fr;gap:10px;" class="reveal">
+                <div class="card-light" style="padding:0.9rem 1.1rem;background:linear-gradient(135deg,rgba(124,58,237,0.06),rgba(37,99,235,0.06));border:1px solid rgba(124,58,237,0.15);">
+                    <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+                        <div style="font-size:1.2rem;">🤖</div>
+                        <div style="font-weight:800;color:#6d28d9;font-size:0.9rem;">AI Moment — Could AI Make Your Project?</div>
+                    </div>
+                    <div style="font-size:0.82rem;color:#3b5278;margin-bottom:6px;">Today's big question: <b>What would an AI need to know to build YOUR project?</b> Think about it — AI generates things from <i>examples</i>. To make a game, it would need to have seen thousands of games first.</div>
+                    <div style="display:flex;flex-direction:column;gap:5px;">
+                        <div style="font-size:0.8rem;color:#3b5278;">→ What <b>theme</b> would you show it? (100 games like yours?)</div>
+                        <div style="font-size:0.8rem;color:#3b5278;">→ What <b>rules</b> would it need? (win, lose, move, score?)</div>
+                        <div style="font-size:0.8rem;color:#3b5278;">→ What makes YOUR project <b>uniquely yours</b> that AI couldn't copy?</div>
+                    </div>
+                </div>
+                <div class="card-light card-orange" style="padding:0.9rem 1.1rem;">
+                    <div style="font-weight:800;font-size:0.88rem;color:#c2410c;margin-bottom:6px;">Your Project Menu</div>
+                    <div style="font-size:0.8rem;color:#3b5278;margin-bottom:4px;">Choose your theme today:</div>
+                    <div style="display:flex;flex-direction:column;gap:5px;">
+                        <div style="font-size:0.82rem;font-weight:600;color:#1a2e50;">🎮 A game (catch, chase, avoid)</div>
+                        <div style="font-size:0.82rem;font-weight:600;color:#1a2e50;">🏗️ Minecraft-style builder</div>
+                        <div style="font-size:0.82rem;font-weight:600;color:#1a2e50;">🌟 Hello Kitty / character story</div>
+                        <div style="font-size:0.82rem;font-weight:600;color:#1a2e50;">🎨 Interactive animation</div>
+                        <div style="font-size:0.82rem;font-weight:700;color:#2563eb;margin-top:4px;">→ Your own idea? Ask first!</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== SLIDE 5: VIDEO 1 ===== -->
+    <div class="slide slide-5" data-slide="5">
+        <div class="gradient-mesh">
+            <div class="blob" style="width:420px;height:420px;top:-90px;right:-70px;background:#2563eb;opacity:0.08;"></div>
+            <div class="blob" style="width:300px;height:300px;bottom:-50px;left:-50px;background:#16a34a;opacity:0.07;"></div>
+        </div>
+        <div class="content">
+            <div style="display:flex;gap:10px;margin-bottom:0.7rem;align-items:center;" class="reveal">
+                <div class="pill pill-blue">Watch Together · Mini-Lesson Boost</div>
+                <div class="pill pill-green">Video 1 of 2</div>
+            </div>
+            <h2 class="reveal" style="font-family:'Nunito',sans-serif;font-size:clamp(1.4rem,2.8vw,2rem);font-weight:900;color:#1a2e50;margin-bottom:0.3rem;">See a First Game Built in Scratch</h2>
+            <p class="reveal" style="color:#3b5278;font-size:0.88rem;margin-bottom:1rem;">Watch how a real beginner game comes together — notice which blocks appear and when the creator tests their work.</p>
+            <div style="display:grid;grid-template-columns:5fr 3fr;gap:14px;align-items:start;" class="reveal">
+                <div>
+                    <div class="video-container" style="height:240px;"
+                         onclick="window.open('https://www.youtube.com/watch?v=UFL_Q9Fb8T4','_blank')">
+                        <img class="video-thumb" src="https://img.youtube.com/vi/UFL_Q9Fb8T4/hqdefault.jpg" alt="How to Make Your FIRST Game in Scratch - Kids Tutorial thumbnail">
+                        <div class="play-overlay">
+                            <div class="play-btn-circle">
+                                <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
+                            </div>
+                            <div class="video-label">How to Make Your FIRST Game in Scratch</div>
+                            <div class="video-source-link">youtube.com/watch?v=UFL_Q9Fb8T4</div>
+                        </div>
+                    </div>
+                    <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;">
+                        <div class="pill pill-blue">Ages 6–12</div>
+                        <div class="pill pill-green">Beginner</div>
+                        <div class="pill pill-yellow">~8 min · Kids Learning Time</div>
+                    </div>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:8px;">
+                    <div class="card-light card-accent-left" style="padding:0.8rem;">
+                        <div style="font-weight:800;font-size:0.85rem;color:#1d4ed8;margin-bottom:5px;">While You Watch, Think:</div>
+                        <div style="display:flex;flex-direction:column;gap:5px;">
+                            <div style="font-size:0.8rem;color:#3b5278;">→ Which <b>blocks</b> appear first? Why that order?</div>
+                            <div style="font-size:0.8rem;color:#3b5278;">→ When does the creator <b>test</b> their game?</div>
+                            <div style="font-size:0.8rem;color:#3b5278;">→ What would <i>you</i> change about the game?</div>
+                        </div>
+                    </div>
+                    <div class="card-light card-green" style="padding:0.8rem;">
+                        <div style="font-weight:800;font-size:0.85rem;color:#15803d;margin-bottom:4px;">After the Video:</div>
+                        <div style="font-size:0.8rem;color:#3b5278;">Turn to a neighbor → explain <b>one block</b> you saw and what it did. No peeking at the screen!</div>
+                    </div>
+                    <div class="card-light" style="padding:0.8rem;background:rgba(37,99,235,0.04);">
+                        <div style="font-size:0.78rem;color:#6b87a8;">Topics covered: moving with arrow keys, collectible stars, score system, sounds, timer, win condition.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== SLIDE 6: GUIDED BUILD ===== -->
+    <div class="slide slide-6" data-slide="6">
+        <div class="gradient-mesh">
+            <div class="blob" style="width:360px;height:360px;top:-60px;right:-50px;background:#16a34a;opacity:0.08;"></div>
+            <div class="blob" style="width:280px;height:280px;bottom:-50px;left:-40px;background:#2563eb;opacity:0.07;"></div>
+        </div>
+        <div class="content">
+            <div style="display:flex;gap:10px;margin-bottom:0.7rem;align-items:center;" class="reveal">
+                <div class="pill pill-green">Guided Build · Everyone Together · 20 min</div>
+            </div>
+            <h2 class="reveal" style="font-family:'Nunito',sans-serif;font-size:clamp(1.4rem,2.8vw,2rem);font-weight:900;color:#1a2e50;margin-bottom:0.25rem;">Build the "Starter Shell" — Step by Step</h2>
+            <p class="reveal" style="color:#3b5278;font-size:0.88rem;margin-bottom:0.9rem;">We build this together. Every student ends this section with a working skeleton. Then you customize it your way.</p>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;" class="reveal">
+                <div style="display:flex;flex-direction:column;gap:7px;">
+                    <div class="card-light" style="padding:0.7rem 0.9rem;display:flex;align-items:flex-start;gap:10px;">
+                        <div class="step-num">1</div>
+                        <div>
+                            <div style="font-weight:800;font-size:0.85rem;color:#1a2e50;">Open Scratch &amp; Pick Your Theme</div>
+                            <div style="font-size:0.78rem;color:#3b5278;">Go to <b>scratch.mit.edu</b> → New Project. Choose a backdrop that fits your game theme (Space, City, Nature...).</div>
+                        </div>
+                    </div>
+                    <div class="card-light" style="padding:0.7rem 0.9rem;display:flex;align-items:flex-start;gap:10px;">
+                        <div class="step-num" style="background:#f97066;">2</div>
+                        <div>
+                            <div style="font-weight:800;font-size:0.85rem;color:#1a2e50;">Choose Your Main Sprite</div>
+                            <div style="font-size:0.78rem;color:#3b5278;">Click the cat → delete or keep it. Pick a sprite that IS your player/character. Size it to about 60–80px.</div>
+                        </div>
+                    </div>
+                    <div class="card-light" style="padding:0.7rem 0.9rem;display:flex;align-items:flex-start;gap:10px;">
+                        <div class="step-num" style="background:#16a34a;">3</div>
+                        <div>
+                            <div style="font-weight:800;font-size:0.85rem;color:#1a2e50;">Add the "When Flag Clicked" Hook</div>
+                            <div style="font-size:0.78rem;color:#3b5278;">Drag <span class="scratch-block block-purple" style="font-size:0.72rem;padding:2px 8px;">When 🚩 clicked</span> onto your script. Everything starts here.</div>
+                        </div>
+                    </div>
+                    <div class="card-light" style="padding:0.7rem 0.9rem;display:flex;align-items:flex-start;gap:10px;">
+                        <div class="step-num" style="background:#7c3aed;">4</div>
+                        <div>
+                            <div style="font-weight:800;font-size:0.85rem;color:#1a2e50;">Add a Forever Loop + Movement</div>
+                            <div style="font-size:0.78rem;color:#3b5278;">Inside <span class="scratch-block block-orange" style="font-size:0.72rem;padding:2px 8px;">forever</span>, add arrow-key conditionals OR mouse-follow. Test it now!</div>
+                        </div>
+                    </div>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:7px;">
+                    <div class="card-light" style="padding:0.7rem 0.9rem;display:flex;align-items:flex-start;gap:10px;">
+                        <div class="step-num" style="background:#0891b2;">5</div>
+                        <div>
+                            <div style="font-weight:800;font-size:0.85rem;color:#1a2e50;">Add a Second Sprite + Interaction</div>
+                            <div style="font-size:0.78rem;color:#3b5278;">Add something to catch, avoid, or collect. Use <span class="scratch-block block-teal" style="font-size:0.72rem;padding:2px 8px;">touching [sprite]?</span> in a conditional.</div>
+                        </div>
+                    </div>
+                    <div class="card-light" style="padding:0.7rem 0.9rem;display:flex;align-items:flex-start;gap:10px;">
+                        <div class="step-num" style="background:#f59e0b;">6</div>
+                        <div>
+                            <div style="font-weight:800;font-size:0.85rem;color:#1a2e50;">Add a Score Variable</div>
+                            <div style="font-size:0.78rem;color:#3b5278;">Make a variable → name it "Score" → set to 0 when flag clicked → change by 1 when you catch something.</div>
+                        </div>
+                    </div>
+                    <div class="card-light card-green" style="padding:0.7rem 0.9rem;display:flex;align-items:flex-start;gap:10px;">
+                        <div class="step-num" style="background:#16a34a;">7</div>
+                        <div>
+                            <div style="font-weight:800;font-size:0.85rem;color:#15803d;">Test the Minimum Shippable Version</div>
+                            <div style="font-size:0.78rem;color:#3b5278;">Click green flag → does it start? Does it respond? Can you score? If yes — you have a <b>shippable</b> game!</div>
+                        </div>
+                    </div>
+                    <div class="card-light" style="padding:0.7rem 0.9rem;background:rgba(37,99,235,0.04);">
+                        <div style="font-weight:800;font-size:0.82rem;color:#1d4ed8;margin-bottom:3px;">Stuck? Check this first:</div>
+                        <div style="font-size:0.78rem;color:#3b5278;">Is the code inside the forever loop? Did you click the green flag? Is the right sprite selected?</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== SLIDE 7: MOVEMENT BREAK ===== -->
+    <div class="slide slide-7" data-slide="7">
+        <div class="gradient-mesh">
+            <div class="blob" style="width:500px;height:500px;top:-100px;right:-80px;background:#f97066;opacity:0.10;"></div>
+            <div class="blob" style="width:350px;height:350px;bottom:-60px;left:-60px;background:#16a34a;opacity:0.08;"></div>
+            <div class="blob" style="width:220px;height:220px;top:30%;left:40%;background:#f59e0b;opacity:0.07;"></div>
+        </div>
+        <canvas class="particle-canvas" style="position:absolute;inset:0;z-index:1;"></canvas>
+        <div class="content text-center">
+            <div class="pill pill-orange reveal" style="margin:0 auto 1rem;">Movement Break · 5 min</div>
+            <div style="font-size:72px;margin-bottom:0.5rem;animation:bounce-gentle 1.5s ease-in-out infinite;" class="reveal">🏃</div>
+            <h2 class="reveal" style="font-family:'Nunito',sans-serif;font-size:clamp(1.6rem,3.5vw,2.4rem);font-weight:900;color:#1a2e50;margin-bottom:0.4rem;">"Human Sprite" — Move Like Your Character!</h2>
+            <p class="reveal" style="color:#3b5278;font-size:0.92rem;margin-bottom:1.2rem;max-width:600px;margin-left:auto;margin-right:auto;">Stand up! I'll call out instructions. Your body IS the sprite.</p>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;max-width:680px;margin:0 auto;" class="reveal">
+                <div class="card-light" style="padding:0.8rem;text-align:center;">
+                    <div style="font-size:1.6rem;margin-bottom:4px;">⬆️⬇️⬅️➡️</div>
+                    <div style="font-weight:800;font-size:0.82rem;color:#1a2e50;">"Arrow keys pressed"</div>
+                    <div style="font-size:0.75rem;color:#6b87a8;">Step in that direction</div>
+                </div>
+                <div class="card-light" style="padding:0.8rem;text-align:center;">
+                    <div style="font-size:1.6rem;margin-bottom:4px;">💥</div>
+                    <div style="font-weight:800;font-size:0.82rem;color:#c2410c;">"Touching edge!"</div>
+                    <div style="font-size:0.75rem;color:#6b87a8;">Freeze + say "bounce!"</div>
+                </div>
+                <div class="card-light" style="padding:0.8rem;text-align:center;">
+                    <div style="font-size:1.6rem;margin-bottom:4px;">⭐</div>
+                    <div style="font-weight:800;font-size:0.82rem;color:#15803d;">"Collected a star!"</div>
+                    <div style="font-size:0.75rem;color:#6b87a8;">Jump + shout "Score!"</div>
+                </div>
+            </div>
+            <div class="card-light card-accent-left reveal" style="padding:0.8rem 1.2rem;max-width:500px;margin:1rem auto 0;text-align:left;">
+                <div style="font-size:0.85rem;color:#1d4ed8;font-weight:700;">Brains back on → what blocks controlled you just now? Which ones live in your game?</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== SLIDE 8: OPEN BUILD - TIER GUIDE ===== -->
+    <div class="slide slide-8" data-slide="8">
+        <div class="gradient-mesh">
+            <div class="blob" style="width:380px;height:380px;top:-70px;right:-60px;background:#7c3aed;opacity:0.07;"></div>
+            <div class="blob" style="width:280px;height:280px;bottom:-40px;left:-40px;background:#f59e0b;opacity:0.07;"></div>
+        </div>
+        <div class="content">
+            <div style="display:flex;gap:10px;margin-bottom:0.7rem;align-items:center;" class="reveal">
+                <div class="pill pill-blue">Open Build + Challenge Cards · 30–40 min</div>
+            </div>
+            <h2 class="reveal" style="font-family:'Nunito',sans-serif;font-size:clamp(1.4rem,2.8vw,2rem);font-weight:900;color:#1a2e50;margin-bottom:0.25rem;">Build Your Own — Find Your Level</h2>
+            <p class="reveal" style="color:#3b5278;font-size:0.88rem;margin-bottom:0.9rem;">Find your tier below. Start there — then climb! Fast finishers: grab a Challenge Card or help a neighbor.</p>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:0.9rem;" class="reveal">
+                <div class="tier-card" style="background:#eff6ff;border:2px solid #bfdbfe;">
+                    <div style="font-weight:900;font-size:0.88rem;color:#1d4ed8;margin-bottom:3px;">Tier A · Grades 1–3</div>
+                    <div class="pill pill-blue" style="margin-bottom:8px;font-size:0.7rem;">Foundations</div>
+                    <div style="font-size:0.8rem;color:#3b5278;margin-bottom:6px;">Use the starter shell from the guided build. Make your sprite move with arrow keys and say something when it touches the edge.</div>
+                    <div style="font-weight:700;font-size:0.78rem;color:#1d4ed8;">Goal: Working movement + 1 event reaction</div>
+                </div>
+                <div class="tier-card" style="background:#f0fdf4;border:2px solid #bbf7d0;">
+                    <div style="font-weight:900;font-size:0.88rem;color:#15803d;margin-bottom:3px;">Tier B · Grades 3–5</div>
+                    <div class="pill pill-green" style="margin-bottom:8px;font-size:0.7rem;">Core Track</div>
+                    <div style="font-size:0.8rem;color:#3b5278;margin-bottom:6px;">Build a catch or chase game: one moving object, one player sprite, a score variable that goes up when they touch. Add a start message!</div>
+                    <div style="font-weight:700;font-size:0.78rem;color:#15803d;">Goal: 3 shippable requirements met</div>
+                </div>
+                <div class="tier-card" style="background:#faf5ff;border:2px solid #e9d5ff;">
+                    <div style="font-weight:900;font-size:0.88rem;color:#6d28d9;margin-bottom:3px;">Tier C · Grades 6–9</div>
+                    <div class="pill" style="background:rgba(124,58,237,0.12);color:#6d28d9;margin-bottom:8px;font-size:0.7rem;display:inline-flex;padding:4px 10px;border-radius:999px;font-weight:700;">Accelerated</div>
+                    <div style="font-size:0.8rem;color:#3b5278;margin-bottom:6px;">Add multiple lives, a timer, increasing speed per score milestone, AND a proper Game Over screen that restarts on click.</div>
+                    <div style="font-weight:700;font-size:0.78rem;color:#6d28d9;">Goal: Full game loop with difficulty</div>
+                </div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;" class="reveal">
+                <div class="card-light" style="padding:0.8rem 1rem;background:linear-gradient(135deg,rgba(245,158,11,0.08),rgba(249,112,102,0.06));border:1px solid rgba(245,158,11,0.2);">
+                    <div style="font-weight:800;font-size:0.88rem;color:#b45309;margin-bottom:5px;">Challenge Card — All Tiers</div>
+                    <div style="font-size:0.8rem;color:#3b5278;">Add a sound effect using the <b>Sound</b> blocks. Then try broadcasting a message from one sprite to another — this is how complex games coordinate multiple characters!</div>
+                </div>
+                <div class="card-light card-accent-left" style="padding:0.8rem 1rem;">
+                    <div style="font-weight:800;font-size:0.88rem;color:#1d4ed8;margin-bottom:5px;">Fast Finisher?</div>
+                    <div style="font-size:0.8rem;color:#3b5278;">Help a neighbor get their first sprite moving. Explaining your code to someone else is one of the best ways to understand it even deeper — that's real teaching!</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== SLIDE 9: INTERACTIVE QUIZ ===== -->
+    <div class="slide slide-9" data-slide="9">
+        <div class="gradient-mesh">
+            <div class="blob" style="width:380px;height:380px;top:-70px;left:-60px;background:#2563eb;opacity:0.07;"></div>
+            <div class="blob" style="width:280px;height:280px;bottom:-40px;right:-40px;background:#f97066;opacity:0.07;"></div>
+        </div>
+        <div class="content">
+            <div class="pill pill-yellow reveal" style="margin-bottom:0.7rem;">Quick Check — Think First, Then Click!</div>
+            <h2 class="reveal" style="font-family:'Nunito',sans-serif;font-size:clamp(1.4rem,2.8vw,2rem);font-weight:900;color:#1a2e50;margin-bottom:0.3rem;">Predict the Output — Two Challenges</h2>
+            <p class="reveal" style="color:#3b5278;font-size:0.88rem;margin-bottom:1rem;">Don't guess — reason it through before clicking. What do these scripts actually do?</p>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;" class="reveal">
+                <div class="card-light" style="padding:1rem;">
+                    <div style="font-weight:800;font-size:0.88rem;color:#1a2e50;margin-bottom:8px;">Challenge 1 — What happens?</div>
+                    <div style="background:#1e1e2e;border-radius:10px;padding:0.9rem;margin-bottom:10px;font-size:0.8rem;font-family:monospace;color:#e2e8f0;line-height:1.7;">
+                        <div style="color:#a78bfa;">when 🚩 clicked</div>
+                        <div style="color:#f97066;padding-left:16px;">set [score] to 0</div>
+                        <div style="color:#60a5fa;">forever</div>
+                        <div style="padding-left:16px;color:#34d399;">if &lt;touching [Apple]?&gt; then</div>
+                        <div style="padding-left:32px;color:#fbbf24;">change [score] by 1</div>
+                        <div style="padding-left:32px;color:#fb7185;">go to [random position]</div>
+                    </div>
+                    <div style="font-size:0.82rem;color:#1a2e50;font-weight:700;margin-bottom:6px;">What does this game do?</div>
+                    <div style="display:flex;flex-direction:column;gap:5px;" id="quiz1">
+                        <div class="quiz-option" onclick="handleQuiz(this,'q1',false)">A) The player collects apples by clicking them</div>
+                        <div class="quiz-option" onclick="handleQuiz(this,'q1',true)">B) The apple jumps to a new spot each time the player touches it, score goes up</div>
+                        <div class="quiz-option" onclick="handleQuiz(this,'q1',false)">C) The apple falls from the sky and the player must catch it</div>
+                    </div>
+                </div>
+                <div class="card-light" style="padding:1rem;">
+                    <div style="font-weight:800;font-size:0.88rem;color:#1a2e50;margin-bottom:8px;">Challenge 2 — Spot the Bug</div>
+                    <div style="background:#1e1e2e;border-radius:10px;padding:0.9rem;margin-bottom:10px;font-size:0.8rem;font-family:monospace;color:#e2e8f0;line-height:1.7;">
+                        <div style="color:#a78bfa;">when 🚩 clicked</div>
+                        <div style="color:#f97066;padding-left:16px;">set [lives] to 3</div>
+                        <div style="color:#60a5fa;">if &lt;touching [enemy]?&gt; then</div>
+                        <div style="padding-left:16px;color:#fbbf24;">change [lives] by -1</div>
+                    </div>
+                    <div style="background:rgba(239,68,68,0.08);border-radius:8px;padding:6px 10px;margin-bottom:8px;font-size:0.78rem;color:#b91c1c;font-weight:600;">The lives counter never goes down during play. What's the bug?</div>
+                    <div style="display:flex;flex-direction:column;gap:5px;" id="quiz2">
+                        <div class="quiz-option" onclick="handleQuiz(this,'q2',false)">A) The variable "lives" is named wrong</div>
+                        <div class="quiz-option" onclick="handleQuiz(this,'q2',false)">B) It should say "change by -3" not "-1"</div>
+                        <div class="quiz-option" onclick="handleQuiz(this,'q2',true)">C) The if block is not inside a forever loop — it only checks once at the start</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== SLIDE 10: VIDEO 2 - AI CONNECTION ===== -->
+    <div class="slide slide-10" data-slide="10">
+        <div class="gradient-mesh">
+            <div class="blob" style="width:420px;height:420px;top:-90px;left:-70px;background:#7c3aed;opacity:0.08;"></div>
+            <div class="blob" style="width:300px;height:300px;bottom:-50px;right:-50px;background:#2563eb;opacity:0.07;"></div>
+        </div>
+        <div class="content">
+            <div style="display:flex;gap:10px;margin-bottom:0.7rem;align-items:center;" class="reveal">
+                <div class="pill" style="background:rgba(124,58,237,0.1);color:#6d28d9;">AI Moment · Video 2 of 2</div>
+            </div>
+            <h2 class="reveal" style="font-family:'Nunito',sans-serif;font-size:clamp(1.4rem,2.8vw,2rem);font-weight:900;color:#1a2e50;margin-bottom:0.25rem;">How AI Learns From Examples — Just Like You Did</h2>
+            <p class="reveal" style="color:#3b5278;font-size:0.88rem;margin-bottom:0.9rem;">You built a game from a blank screen using rules you learned. AI does something similar — but from millions of examples, not a teacher.</p>
+            <div style="display:grid;grid-template-columns:5fr 3fr;gap:14px;align-items:start;" class="reveal">
+                <div>
+                    <div class="video-container" style="height:230px;"
+                         onclick="window.open('https://www.youtube.com/watch?v=SOZpLKWJTJY','_blank')">
+                        <img class="video-thumb" src="https://img.youtube.com/vi/SOZpLKWJTJY/hqdefault.jpg" alt="How AI Works for Kids - Simple Explanation thumbnail">
+                        <div class="play-overlay">
+                            <div class="play-btn-circle">
+                                <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
+                            </div>
+                            <div class="video-label">How AI Works for Kids — A Simple Explanation</div>
+                            <div class="video-source-link">youtube.com/watch?v=SOZpLKWJTJY</div>
+                        </div>
+                    </div>
+                    <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;">
+                        <div class="pill pill-blue">Families &amp; Kids</div>
+                        <div class="pill" style="background:rgba(124,58,237,0.1);color:#6d28d9;">~4 min · AI Literacy for Kids</div>
+                    </div>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:8px;">
+                    <div class="card-light" style="padding:0.8rem;background:linear-gradient(135deg,rgba(124,58,237,0.06),rgba(37,99,235,0.06));border:1px solid rgba(124,58,237,0.15);">
+                        <div style="font-weight:800;font-size:0.85rem;color:#6d28d9;margin-bottom:5px;">Connect to YOUR project:</div>
+                        <div style="font-size:0.8rem;color:#3b5278;margin-bottom:4px;">The video shows AI learns by finding <i>patterns</i> in examples. Your Scratch game also follows patterns — rules you wrote yourself.</div>
+                        <div style="font-size:0.8rem;color:#3b5278;">→ <b>What's the difference?</b> You understand <i>why</i> the rule works. AI just found a statistical pattern.</div>
+                    </div>
+                    <div class="card-light card-orange" style="padding:0.8rem;">
+                        <div style="font-weight:800;font-size:0.85rem;color:#c2410c;margin-bottom:4px;">Think About This:</div>
+                        <div style="font-size:0.8rem;color:#3b5278;">If an AI watched 10,000 Scratch games, what rules might it learn? Would it understand <i>fun</i>?</div>
+                    </div>
+                    <div class="card-light card-green" style="padding:0.8rem;">
+                        <div style="font-size:0.8rem;color:#15803d;font-weight:600;">After: share one thing AI could NOT figure out about your game just from watching it.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== SLIDE 11: DEBUG CORNER ===== -->
+    <div class="slide slide-11" data-slide="11">
+        <div class="gradient-mesh">
+            <div class="blob" style="width:360px;height:360px;top:-60px;right:-50px;background:#ef4444;opacity:0.07;"></div>
+            <div class="blob" style="width:280px;height:280px;bottom:-40px;left:-40px;background:#f59e0b;opacity:0.07;"></div>
+        </div>
+        <div class="content">
+            <div class="pill pill-orange reveal" style="margin-bottom:0.7rem;">Debug Corner — When Things Go Wrong</div>
+            <h2 class="reveal" style="font-family:'Nunito',sans-serif;font-size:clamp(1.4rem,2.8vw,2rem);font-weight:900;color:#1a2e50;margin-bottom:0.25rem;">Every Bug Has a Reason — Find It!</h2>
+            <p class="reveal" style="color:#3b5278;font-size:0.88rem;margin-bottom:0.9rem;">Bugs aren't failures — they're clues. Professional coders at Google, Apple, and MIT spend 50% of their time debugging. What does yours tell you?</p>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;" class="reveal">
+                <div style="display:flex;flex-direction:column;gap:8px;">
+                    <div class="card-light card-orange" style="padding:0.8rem 1rem;">
+                        <div style="font-weight:800;font-size:0.85rem;color:#c2410c;margin-bottom:4px;">Bug 1 — Nothing Happens on Flag Click</div>
+                        <div style="font-size:0.8rem;color:#3b5278;margin-bottom:4px;"><b>Why?</b> Your code block is not connected to <span class="scratch-block block-purple" style="font-size:0.7rem;padding:2px 7px;">When 🚩 clicked</span></div>
+                        <div style="font-size:0.78rem;color:#6b87a8;">Fix: Drag the hat block to the very top of your script chain.</div>
+                    </div>
+                    <div class="card-light card-orange" style="padding:0.8rem 1rem;">
+                        <div style="font-weight:800;font-size:0.85rem;color:#c2410c;margin-bottom:4px;">Bug 2 — If Block Only Works Once</div>
+                        <div style="font-size:0.8rem;color:#3b5278;margin-bottom:4px;"><b>Why?</b> The conditional is outside the <span class="scratch-block block-orange" style="font-size:0.7rem;padding:2px 7px;">forever</span> loop.</div>
+                        <div style="font-size:0.78rem;color:#6b87a8;">Fix: Nest the <b>if</b> INSIDE the forever loop so it checks continuously.</div>
+                    </div>
+                    <div class="card-light card-orange" style="padding:0.8rem 1rem;">
+                        <div style="font-weight:800;font-size:0.85rem;color:#c2410c;margin-bottom:4px;">Bug 3 — Sprite Flies Off Screen</div>
+                        <div style="font-size:0.8rem;color:#3b5278;margin-bottom:4px;"><b>Why?</b> No edge boundary check. Movement never stops.</div>
+                        <div style="font-size:0.78rem;color:#6b87a8;">Fix: Add <span class="scratch-block block-blue" style="font-size:0.7rem;padding:2px 7px;">if on edge, bounce</span> from Motion blocks.</div>
+                    </div>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:8px;">
+                    <div class="card-light card-orange" style="padding:0.8rem 1rem;">
+                        <div style="font-weight:800;font-size:0.85rem;color:#c2410c;margin-bottom:4px;">Bug 4 — Score Counts Too Fast</div>
+                        <div style="font-size:0.8rem;color:#3b5278;margin-bottom:4px;"><b>Why?</b> The touching check fires every frame (30x per second!).</div>
+                        <div style="font-size:0.78rem;color:#6b87a8;">Fix: After touching, add <span class="scratch-block block-teal" style="font-size:0.7rem;padding:2px 7px;">wait 0.5 secs</span> OR move the object to a new spot immediately.</div>
+                    </div>
+                    <div class="card-light" style="padding:0.8rem 1rem;background:rgba(37,99,235,0.04);">
+                        <div style="font-weight:800;font-size:0.88rem;color:#1d4ed8;margin-bottom:6px;">The Debugging Mindset</div>
+                        <div style="display:flex;flex-direction:column;gap:5px;">
+                            <div style="font-size:0.8rem;color:#3b5278;display:flex;align-items:flex-start;gap:6px;"><span style="font-weight:700;color:#2563eb;">1.</span> What did I <i>expect</i> to happen?</div>
+                            <div style="font-size:0.8rem;color:#3b5278;display:flex;align-items:flex-start;gap:6px;"><span style="font-weight:700;color:#2563eb;">2.</span> What <i>actually</i> happened?</div>
+                            <div style="font-size:0.8rem;color:#3b5278;display:flex;align-items:flex-start;gap:6px;"><span style="font-weight:700;color:#2563eb;">3.</span> Which block controls that behavior?</div>
+                            <div style="font-size:0.8rem;color:#3b5278;display:flex;align-items:flex-start;gap:6px;"><span style="font-weight:700;color:#2563eb;">4.</span> Click that block alone to test it.</div>
+                        </div>
+                    </div>
+                    <div class="card-light card-green" style="padding:0.8rem 1rem;">
+                        <div style="font-weight:800;font-size:0.85rem;color:#15803d;margin-bottom:4px;">Pro Move</div>
+                        <div style="font-size:0.8rem;color:#3b5278;">Right-click any block → "Help" — Scratch shows exactly what that block does. Use it!</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== SLIDE 12: SHIP IT MOMENT ===== -->
+    <div class="slide slide-12" data-slide="12">
+        <div class="gradient-mesh">
+            <div class="blob" style="width:500px;height:500px;top:-100px;right:-80px;background:#16a34a;opacity:0.10;"></div>
+            <div class="blob" style="width:380px;height:380px;bottom:-70px;left:-60px;background:#2563eb;opacity:0.09;"></div>
+            <div class="blob" style="width:250px;height:250px;top:30%;left:40%;background:#f59e0b;opacity:0.08;"></div>
+        </div>
+        <canvas class="particle-canvas" style="position:absolute;inset:0;z-index:1;"></canvas>
+        <div class="content text-center">
+            <div class="pill pill-green reveal" style="margin:0 auto 0.8rem;">Checklist Time</div>
+            <div class="rocket-anim reveal" style="font-size:72px;margin-bottom:0.4rem;">🚀</div>
+            <h2 class="reveal" style="font-family:'Nunito',sans-serif;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:900;color:#1a2e50;margin-bottom:0.3rem;">Is It Shippable? Check It!</h2>
+            <p class="reveal" style="color:#3b5278;font-size:0.9rem;margin-bottom:1rem;max-width:560px;margin-left:auto;margin-right:auto;">Before you "launch" — run this checklist. Every YES earns your project the Ship It badge!</p>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;max-width:760px;margin:0 auto;" class="reveal">
+                <div class="card-light" style="padding:0.9rem;text-align:center;">
+                    <div style="font-size:2rem;margin-bottom:5px;">▶</div>
+                    <div style="font-weight:800;font-size:0.88rem;color:#15803d;margin-bottom:3px;">It Starts</div>
+                    <div style="font-size:0.78rem;color:#3b5278;">Click the green flag → does something happen immediately?</div>
+                    <div style="margin-top:8px;padding:4px 0;background:rgba(22,163,74,0.1);border-radius:8px;font-weight:800;font-size:0.8rem;color:#15803d;">YES / NO</div>
+                </div>
+                <div class="card-light" style="padding:0.9rem;text-align:center;">
+                    <div style="font-size:2rem;margin-bottom:5px;">🎮</div>
+                    <div style="font-weight:800;font-size:0.88rem;color:#1d4ed8;margin-bottom:3px;">It Responds</div>
+                    <div style="font-size:0.78rem;color:#3b5278;">Press a key or move the mouse → does your sprite react?</div>
+                    <div style="margin-top:8px;padding:4px 0;background:rgba(37,99,235,0.1);border-radius:8px;font-weight:800;font-size:0.8rem;color:#1d4ed8;">YES / NO</div>
+                </div>
+                <div class="card-light" style="padding:0.9rem;text-align:center;">
+                    <div style="font-size:2rem;margin-bottom:5px;">🏁</div>
+                    <div style="font-weight:800;font-size:0.88rem;color:#c2410c;margin-bottom:3px;">It Ends / Loops</div>
+                    <div style="font-size:0.78rem;color:#3b5278;">Does it have a game-over, a goal, or a satisfying loop to watch?</div>
+                    <div style="margin-top:8px;padding:4px 0;background:rgba(249,112,102,0.1);border-radius:8px;font-weight:800;font-size:0.8rem;color:#c2410c;">YES / NO</div>
+                </div>
+            </div>
+            <div class="card-light reveal" style="padding:0.9rem 1.4rem;max-width:560px;margin:0.9rem auto 0;border:2px solid rgba(22,163,74,0.3);background:rgba(22,163,74,0.05);">
+                <div style="font-weight:800;color:#15803d;font-size:0.9rem;margin-bottom:4px;">3 YES answers = Your project is SHIPPED!</div>
+                <div style="font-size:0.82rem;color:#3b5278;">Share your project link with the class. Every shipped project counts — simple and working beats fancy and broken.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== SLIDE 13: SHARE-OUT ===== -->
+    <div class="slide slide-13" data-slide="13">
+        <div class="gradient-mesh">
+            <div class="blob" style="width:380px;height:380px;top:-70px;right:-60px;background:#0891b2;opacity:0.08;"></div>
+            <div class="blob" style="width:280px;height:280px;bottom:-40px;left:-40px;background:#16a34a;opacity:0.07;"></div>
+        </div>
+        <div class="content">
+            <div class="pill" style="background:rgba(8,145,178,0.1);color:#0e7490;margin-bottom:0.7rem;display:inline-flex;padding:4px 14px;border-radius:999px;font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;" class="reveal">Share-Out · 10 min · Opt-In</div>
+            <h2 class="reveal" style="font-family:'Nunito',sans-serif;font-size:clamp(1.4rem,2.8vw,2rem);font-weight:900;color:#1a2e50;margin-bottom:0.25rem;">Show Your Neighbor — Then Volunteer!</h2>
+            <p class="reveal" style="color:#3b5278;font-size:0.88rem;margin-bottom:0.9rem;">Sharing is always optional — but talking about your code makes you understand it better. Default: show the person next to you.</p>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:0.9rem;" class="reveal">
+                <div class="card-light" style="padding:0.9rem 1.1rem;">
+                    <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+                        <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/29ec258a3997fc37df42b4809266823c483b04a5.jpg" alt="Kids working on laptops" style="width:54px;height:40px;object-fit:cover;border-radius:8px;flex-shrink:0;">
+                        <div style="font-weight:800;font-size:0.88rem;color:#0e7490;">Pair Share — Default</div>
+                    </div>
+                    <div style="font-size:0.82rem;color:#3b5278;margin-bottom:6px;">Turn to the person next to you. Show your project and explain it using this sentence:</div>
+                    <div style="background:#f0f9ff;border-radius:8px;padding:8px 10px;font-size:0.82rem;color:#0e7490;font-weight:600;border-left:3px solid #0891b2;">"My project is a ___ where the player ___. The coolest block I used is ___ because ___."</div>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:8px;">
+                    <div class="card-light" style="padding:0.8rem 1rem;">
+                        <div style="font-weight:800;font-size:0.85rem;color:#1a2e50;margin-bottom:6px;">Ask Your Partner:</div>
+                        <div style="display:flex;flex-direction:column;gap:5px;">
+                            <div style="font-size:0.8rem;color:#3b5278;">→ What would you add if you had 10 more minutes?</div>
+                            <div style="font-size:0.8rem;color:#3b5278;">→ What's the hardest bug you fixed today?</div>
+                            <div style="font-size:0.8rem;color:#3b5278;">→ Which block surprised you the most?</div>
+                        </div>
+                    </div>
+                    <div class="card-light card-green" style="padding:0.8rem 1rem;">
+                        <div style="font-weight:800;font-size:0.85rem;color:#15803d;margin-bottom:4px;">Volunteer to Show the Class?</div>
+                        <div style="font-size:0.8rem;color:#3b5278;">Raise your hand — totally optional. Point out your coolest block and describe it in ONE sentence. Bugs count too!</div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-light reveal" style="padding:0.9rem 1.2rem;background:linear-gradient(135deg,rgba(124,58,237,0.06),rgba(37,99,235,0.06));border:1px solid rgba(124,58,237,0.15);">
+                <div style="display:flex;align-items:flex-start;gap:10px;">
+                    <div style="font-size:1.3rem;">🤖</div>
+                    <div>
+                        <div style="font-weight:800;font-size:0.88rem;color:#6d28d9;margin-bottom:4px;">AI Wrap-Up Question for the Room</div>
+                        <div style="font-size:0.82rem;color:#3b5278;">Your project has rules you invented. An AI generating games would learn from patterns in thousands of games. Here's what to think about: <b>What did YOU understand about your game that an AI couldn't figure out just from watching it?</b> What was truly creative and yours?</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== SLIDE 14: VOCABULARY ===== -->
+    <div class="slide slide-14" data-slide="14">
+        <div class="gradient-mesh">
+            <div class="blob" style="width:360px;height:360px;top:-60px;left:-50px;background:#2563eb;opacity:0.07;"></div>
+            <div class="blob" style="width:260px;height:260px;bottom:-40px;right:-40px;background:#f97066;opacity:0.07;"></div>
+        </div>
+        <div class="content">
+            <div class="pill pill-blue reveal" style="margin-bottom:0.7rem;">Vocabulary · 6 Key Words</div>
+            <h2 class="reveal" style="font-family:'Nunito',sans-serif;font-size:clamp(1.4rem,2.8vw,2rem);font-weight:900;color:#1a2e50;margin-bottom:0.25rem;">Words a Coder Knows — Can You Define Them?</h2>
+            <p class="reveal" style="color:#3b5278;font-size:0.88rem;margin-bottom:0.9rem;">Cover the definitions and try to explain each word to a partner. If you can teach it, you know it.</p>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;" class="reveal">
+                <div class="card-light card-accent-left" style="padding:0.8rem 1rem;">
+                    <div style="font-weight:800;font-size:0.85rem;color:#1d4ed8;margin-bottom:3px;">Algorithm</div>
+                    <div style="font-size:0.78rem;color:#3b5278;">A precise, step-by-step set of instructions a computer follows. Your Scratch script IS an algorithm.</div>
+                </div>
+                <div class="card-light card-orange" style="padding:0.8rem 1rem;">
+                    <div style="font-weight:800;font-size:0.85rem;color:#c2410c;margin-bottom:3px;">Event</div>
+                    <div style="font-size:0.78rem;color:#3b5278;">Something that triggers code to run — like clicking the flag, pressing a key, or a sprite touching another.</div>
+                </div>
+                <div class="card-light card-green" style="padding:0.8rem 1rem;">
+                    <div style="font-weight:800;font-size:0.85rem;color:#15803d;margin-bottom:3px;">Variable</div>
+                    <div style="font-size:0.78rem;color:#3b5278;">A named container for a value that can change — like a score box that updates every time you catch something.</div>
+                </div>
+                <div class="card-light card-yellow" style="padding:0.8rem 1rem;">
+                    <div style="font-weight:800;font-size:0.85rem;color:#b45309;margin-bottom:3px;">Conditional</div>
+                    <div style="font-size:0.78rem;color:#3b5278;">Code that only runs when a condition is true — "IF touching apple THEN change score by 1." The basis of all decision-making.</div>
+                </div>
+                <div class="card-light" style="padding:0.8rem 1rem;border-left:4px solid #0891b2;">
+                    <div style="font-weight:800;font-size:0.85rem;color:#0e7490;margin-bottom:3px;">Debug</div>
+                    <div style="font-size:0.78rem;color:#3b5278;">Finding and fixing errors (bugs) in your code. The word "bug" comes from a real moth found in a computer in 1947!</div>
+                </div>
+                <div class="card-light" style="padding:0.8rem 1rem;border-left:4px solid #7c3aed;">
+                    <div style="font-weight:800;font-size:0.85rem;color:#6d28d9;margin-bottom:3px;">Training Data (AI)</div>
+                    <div style="font-size:0.78rem;color:#3b5278;">The examples AI learns from — like showing a robot 1,000 pictures of cats so it can recognize cats on its own.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== SLIDE 15: HOMEWORK ===== -->
+    <div class="slide slide-15" data-slide="15">
+        <div class="gradient-mesh">
+            <div class="blob" style="width:500px;height:500px;top:-100px;right:-80px;background:#2563eb;opacity:0.09;"></div>
+            <div class="blob" style="width:350px;height:350px;bottom:-70px;left:-60px;background:#f97066;opacity:0.08;"></div>
+            <div class="blob" style="width:220px;height:220px;top:40%;left:30%;background:#16a34a;opacity:0.07;"></div>
+        </div>
+        <canvas class="particle-canvas-ambient" style="position:absolute;inset:0;z-index:1;"></canvas>
+        <div class="content">
+            <div class="pill pill-orange reveal" style="margin-bottom:0.7rem;">Homework · 30 min Tonight</div>
+            <h2 class="reveal" style="font-family:'Nunito',sans-serif;font-size:clamp(1.4rem,2.8vw,2rem);font-weight:900;color:#1a2e50;margin-bottom:0.25rem;">Polish, Play, and Write 2 Sentences</h2>
+            <p class="reveal" style="color:#3b5278;font-size:0.88rem;margin-bottom:0.9rem;">Tonight's goal: make your shipped project a little bit better AND write about it. Two sentences only.</p>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:0.9rem;" class="reveal">
+                <div style="display:flex;flex-direction:column;gap:8px;">
+                    <div style="font-weight:800;font-size:0.88rem;color:#1a2e50;margin-bottom:2px;">All Tiers — The Task:</div>
+                    <div class="card-light" style="padding:0.8rem 1rem;display:flex;align-items:flex-start;gap:10px;">
+                        <div class="step-num" style="background:#2563eb;width:28px;height:28px;font-size:0.8rem;flex-shrink:0;">1</div>
+                        <div style="font-size:0.82rem;color:#3b5278;"><b>Polish your project</b> — add one improvement: a background, a sound, a second sprite, or a better score display.</div>
+                    </div>
+                    <div class="card-light" style="padding:0.8rem 1rem;display:flex;align-items:flex-start;gap:10px;">
+                        <div class="step-num" style="background:#f97066;width:28px;height:28px;font-size:0.8rem;flex-shrink:0;">2</div>
+                        <div style="font-size:0.82rem;color:#3b5278;"><b>Write Sentence 1:</b> "My project is a ___ where ___. It uses [events/loops/conditionals/variables] to ___."</div>
+                    </div>
+                    <div class="card-light" style="padding:0.8rem 1rem;display:flex;align-items:flex-start;gap:10px;">
+                        <div class="step-num" style="background:#16a34a;width:28px;height:28px;font-size:0.8rem;flex-shrink:0;">3</div>
+                        <div style="font-size:0.82rem;color:#3b5278;"><b>Write Sentence 2:</b> "If I had more time, I would add ___ because ___."</div>
+                    </div>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:8px;">
+                    <div class="card-light" style="padding:0.9rem 1rem;background:#eff6ff;border:1px solid #bfdbfe;">
+                        <div style="font-weight:800;font-size:0.85rem;color:#1d4ed8;margin-bottom:5px;">Tier A Bonus</div>
+                        <div style="font-size:0.8rem;color:#3b5278;">Try adding ONE new sprite to your project. Even if it just stands there! Give it a costume you like.</div>
+                    </div>
+                    <div class="card-light" style="padding:0.9rem 1rem;background:#f0fdf4;border:1px solid #bbf7d0;">
+                        <div style="font-weight:800;font-size:0.85rem;color:#15803d;margin-bottom:5px;">Tier B Bonus</div>
+                        <div style="font-size:0.8rem;color:#3b5278;">Add a "Game Over" screen: when score reaches 10, stop all and say "You Win!" for 3 seconds.</div>
+                    </div>
+                    <div class="card-light" style="padding:0.9rem 1rem;background:#faf5ff;border:1px solid #e9d5ff;">
+                        <div style="font-weight:800;font-size:0.85rem;color:#6d28d9;margin-bottom:5px;">Tier C Bonus</div>
+                        <div style="font-size:0.8rem;color:#3b5278;">Add a high-score variable that persists between rounds using the "set [highscore] to [score]" logic with an if statement.</div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-light reveal" style="padding:0.8rem 1.2rem;background:linear-gradient(135deg,rgba(124,58,237,0.06),rgba(37,99,235,0.06));border:1px solid rgba(124,58,237,0.15);">
+                <div style="display:flex;gap:10px;align-items:flex-start;">
+                    <div style="font-size:1.2rem;">🤖</div>
+                    <div style="font-size:0.82rem;color:#3b5278;"><b>AI Homework Challenge:</b> Can you describe your game in one sentence to a family member — then ask them: "Could a computer figure out how to make this game just by watching 1,000 games?" See what they say!</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== SLIDE 16: SESSION WRAP / SEE YOU NEXT TIME ===== -->
+    <div class="slide slide-16" data-slide="16">
+        <div class="gradient-mesh">
+            <div class="blob" style="width:500px;height:500px;top:-100px;right:-80px;background:#2563eb;opacity:0.10;"></div>
+            <div class="blob" style="width:400px;height:400px;bottom:-80px;left:-60px;background:#f97066;opacity:0.09;"></div>
+            <div class="blob" style="width:260px;height:260px;top:35%;left:35%;background:#16a34a;opacity:0.08;"></div>
+        </div>
+        <canvas class="particle-canvas" style="position:absolute;inset:0;z-index:1;"></canvas>
+        <div class="content text-center">
+            <div class="rocket-anim reveal" style="font-size:80px;margin-bottom:0.5rem;">🚀</div>
+            <h2 class="reveal" style="font-family:'Nunito',sans-serif;font-size:clamp(1.8rem,4.5vw,3.2rem);font-weight:900;color:#1a2e50;margin-bottom:0.4rem;">You Shipped Something Real Today!</h2>
+            <p class="reveal" style="color:#3b5278;font-size:0.92rem;margin-bottom:1.2rem;max-width:580px;margin-left:auto;margin-right:auto;">Every single student launched a working interactive project. That's not small — that's what coders do for a living.</p>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;max-width:700px;margin:0 auto 1rem;" class="reveal">
+                <div class="card-light" style="padding:0.9rem;text-align:center;">
+                    <div style="font-size:2rem;margin-bottom:4px;">🏗️</div>
+                    <div style="font-weight:800;font-size:0.85rem;color:#1a2e50;margin-bottom:3px;">Next Session</div>
+                    <div style="font-size:0.78rem;color:#3b5278;"><b>Thu Jul 9</b> — The Bridge: Same Logic, Two Languages. See your Scratch script rewritten in Python!</div>
+                </div>
+                <div class="card-light" style="padding:0.9rem;text-align:center;">
+                    <div style="font-size:2rem;margin-bottom:4px;">🎯</div>
+                    <div style="font-weight:800;font-size:0.85rem;color:#1a2e50;margin-bottom:3px;">Today You Learned</div>
+                    <div style="font-size:0.78rem;color:#3b5278;">All 5 Scratch concepts working together: events, loops, conditionals, variables, motion.</div>
+                </div>
+                <div class="card-light" style="padding:0.9rem;text-align:center;">
+                    <div style="font-size:2rem;margin-bottom:4px;">🤖</div>
+                    <div style="font-weight:800;font-size:0.85rem;color:#1a2e50;margin-bottom:3px;">AI Connection</div>
+                    <div style="font-size:0.78rem;color:#3b5278;">AI generates from patterns in examples. Your project is a pattern you invented from scratch.</div>
+                </div>
+            </div>
+            <div class="card-light reveal" style="padding:0.8rem 1.4rem;max-width:540px;margin:0 auto;border:2px solid rgba(22,163,74,0.3);background:rgba(22,163,74,0.05);">
+                <div style="font-weight:800;color:#15803d;font-size:0.9rem;margin-bottom:3px;">Effort is everything. Bugs are normal. You are coders.</div>
+                <div style="font-size:0.8rem;color:#3b5278;">Save your project link → bring questions tomorrow → keep building!</div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- NAVIGATION -->
+<div class="nav-controls">
+    <button class="nav-btn" onclick="changeSlide(-1)">&#8249;</button>
+    <div class="slide-dots" id="dots"></div>
+    <button class="nav-btn" onclick="changeSlide(1)">&#8250;</button>
+    <span class="slide-counter" id="counter">1 / 16</span>
+</div>
+
+<script>
+    /* === Deck Navigation === */
+    let current = 1;
+    const total = document.querySelectorAll('.slide').length;
+    const dotsContainer = document.getElementById('dots');
+    const counter = document.getElementById('counter');
+    for (let i = 1; i <= total; i++) { const dot = document.createElement('div'); dot.className = 'dot' + (i === 1 ? ' active' : ''); dot.onclick = () => goToSlide(i); dotsContainer.appendChild(dot); }
+    function goToSlide(n) {
+        const prev = document.querySelector('.slide.active');
+        const next = document.querySelector('.slide[data-slide="' + n + '"]');
+        if (prev) prev.classList.remove('active');
+        if (next) { next.classList.add('active'); animateSlide(next); }
+        current = n; updateNav();
+    }
+    function changeSlide(dir) { let n = current + dir; if (n < 1) n = total; if (n > total) n = 1; goToSlide(n); }
+    function updateNav() { document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i + 1 === current)); counter.textContent = current + ' / ' + total; }
+    document.addEventListener('keydown', e => { if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); changeSlide(1); } if (e.key === 'ArrowLeft') { e.preventDefault(); changeSlide(-1); } });
+    let touchStartX = 0;
+    document.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; });
+    document.addEventListener('touchend', e => { const diff = touchStartX - e.changedTouches[0].clientX; if (Math.abs(diff) > 50) changeSlide(diff > 0 ? 1 : -1); });
+
+    /* === Reveal Animation === */
+    function animateSlide(slide) {
+        slide.querySelectorAll('.reveal').forEach((el, i) => {
+            el.style.transition = 'none'; el.style.opacity = '0'; el.style.transform = 'translateY(20px)';
+            el.offsetHeight;
+            const delay = i * 0.09;
+            el.style.transition = 'opacity 0.38s ease ' + delay + 's, transform 0.38s ease ' + delay + 's';
+            el.style.opacity = '1'; el.style.transform = 'translateY(0)';
+        });
+    }
+
+    /* === Quiz Logic === */
+    const answered = {};
+    function handleQuiz(el, quizId, isCorrect) {
+        if (answered[quizId]) return;
+        answered[quizId] = true;
+        const container = document.getElementById('quiz' + quizId.replace('q',''));
+        if (!container) return;
+        container.querySelectorAll('.quiz-option').forEach(opt => {
+            opt.style.pointerEvents = 'none';
+            const wasClicked = opt === el;
+            if (wasClicked && isCorrect) opt.classList.add('correct');
+            else if (wasClicked && !isCorrect) opt.classList.add('wrong');
+        });
+        if (!isCorrect) {
+            container.querySelectorAll('.quiz-option').forEach(opt => {
+                if (opt.onclick && opt.onclick.toString().includes('true')) opt.classList.add('correct');
+            });
+        }
+    }
+
+    /* === Mouse Spotlight === */
+    document.addEventListener('mousemove', e => {
+        const s = document.getElementById('spotlight');
+        if (s) s.style.background = 'radial-gradient(600px circle at ' + e.clientX + 'px ' + e.clientY + 'px, rgba(37,99,235,0.05), transparent 40%)';
+    });
+
+    /* === Particle Canvas === */
+    window.initParticles = function(canvas, opts) {
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        canvas.width = canvas.offsetWidth || window.innerWidth;
+        canvas.height = canvas.offsetHeight || window.innerHeight;
+        const interactive = opts.interactive !== false;
+        const count = opts.count || (interactive ? 40 : 15);
+        let mx = -1000, my = -1000;
+        const particles = Array.from({length: count}, () => ({
+            x: Math.random() * canvas.width, y: Math.random() * canvas.height,
+            vx: (Math.random() - 0.5) * 0.3, vy: (Math.random() - 0.5) * 0.3,
+            size: Math.random() * 2.2 + 0.6, alpha: Math.random() * 0.25 + 0.08
+        }));
+        if (interactive) {
+            canvas.addEventListener('mousemove', e => { const r = canvas.getBoundingClientRect(); mx = e.clientX - r.left; my = e.clientY - r.top; });
+            canvas.addEventListener('mouseleave', () => { mx = -1000; my = -1000; });
+        }
+        (function anim() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                if (interactive) { const dx = p.x - mx, dy = p.y - my, dist = Math.sqrt(dx*dx+dy*dy); if (dist < 100) { const f = (100-dist)/100*1.5; p.vx += dx/dist*f*0.08; p.vy += dy/dist*f*0.08; } }
+                p.vx *= 0.98; p.vy *= 0.98; p.x += p.vx; p.y += p.vy;
+                if (p.x < 0) p.x = canvas.width; if (p.x > canvas.width) p.x = 0;
+                if (p.y < 0) p.y = canvas.height; if (p.y > canvas.height) p.y = 0;
+                ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2);
+                ctx.fillStyle = 'rgba(37,99,235,' + p.alpha + ')'; ctx.fill();
+            });
+            requestAnimationFrame(anim);
+        })();
+    };
+    document.querySelectorAll('.particle-canvas').forEach(c => window.initParticles(c, {interactive: true, count: 40}));
+    document.querySelectorAll('.particle-canvas-ambient').forEach(c => window.initParticles(c, {interactive: false, count: 15}));
+
+    /* Animate first slide on load */
+    try { animateSlide(document.querySelector('.slide.active')); } catch(e) {}
+</script>
+
+</body>
+</html>
