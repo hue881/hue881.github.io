@@ -1,1 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Activity Sheet &middot; Session 7 &middot; Ship It! Build Day</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f4fbff;--sur:rgba(255,255,255,.97);--tx:#1f2a37;--tx2:#374151;--txm:#5b6b7e;--a1:#2563eb;--a2:#16a34a;--a3:#f59e0b;--ar:#ef4444;--ap:#7c3aed;--fd:'Fredoka','Trebuchet MS',sans-serif;--fb:'Nunito',Arial,sans-serif;--fc:'Fira Code',Consolas,monospace}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+@media print{body{background:#fff!important}.no-print{display:none!important}.pb{page-break-before:always}.card{box-shadow:none!important;border:1.5px solid #d1d5db!important}}
+body{font-family:var(--fb);color:var(--tx);background:var(--bg);min-height:100vh}
+.pbar{background:rgba(255,255,255,.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(148,163,184,.3);padding:10px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;gap:12px;flex-wrap:wrap}
+.pbar-title{font-family:var(--fd);font-size:1.05rem;font-weight:700;color:var(--a1)}
+.pbar-sub{font-size:.78rem;color:var(--txm)}
+.btn-p{background:var(--a1);color:#fff;border:none;padding:8px 20px;border-radius:999px;font-family:var(--fb);font-size:.82rem;font-weight:800;cursor:pointer;letter-spacing:.06em;transition:.2s}
+.btn-p:hover{background:#1d4ed8;transform:translateY(-1px)}
+.page{max-width:920px;margin:0 auto;padding:32px 24px 60px}
+.shdr{background:linear-gradient(135deg,#2563eb 0%,#16a34a 60%,#f97066 100%);border-radius:20px;padding:28px 32px 24px;color:#fff;margin-bottom:28px;position:relative;overflow:hidden}
+.shdr::before{content:'';position:absolute;top:-60px;right:-60px;width:200px;height:200px;background:rgba(255,255,255,.08);border-radius:50%}
+.shdr::after{content:'';position:absolute;bottom:-40px;left:-40px;width:140px;height:140px;background:rgba(255,255,255,.06);border-radius:50%}
+.hday{font-size:.75rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;opacity:.85;margin-bottom:4px}
+.htitle{font-family:var(--fd);font-size:clamp(1.6rem,4vw,2.4rem);font-weight:700;line-height:1.1;margin-bottom:6px}
+.hsub{font-size:.88rem;opacity:.85;margin-bottom:14px}
+.hpills{display:flex;gap:8px;flex-wrap:wrap}
+.hpill{background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:4px 14px;font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+.sinfo{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:28px}
+@media(max-width:600px){.sinfo{grid-template-columns:1fr}}
+.ifield{background:var(--sur);border-radius:12px;padding:12px 14px;border:1.5px solid rgba(37,99,235,.14);box-shadow:0 2px 8px rgba(15,23,42,.05)}
+.ilabel{font-size:.65rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--a1);margin-bottom:6px}
+.iline{border:none;border-bottom:1.5px solid #cbd5e1;width:100%;font-family:var(--fb);font-size:.9rem;color:var(--tx);background:transparent;outline:none;padding:2px 0}
+.iline:focus{border-bottom-color:#2563eb}
+.slabel{display:inline-flex;align-items:center;gap:8px;padding:5px 16px;border-radius:999px;border:1px solid rgba(148,163,184,.4);background:rgba(255,255,255,.9);font-size:.72rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--a1);margin-bottom:10px}
+.stitle{font-family:var(--fd);font-size:clamp(1.3rem,2.5vw,1.8rem);font-weight:700;margin-bottom:16px;color:var(--tx);line-height:1.2}
+.card{background:var(--sur);border-radius:16px;padding:18px 20px;box-shadow:0 4px 18px rgba(15,23,42,.07);border:1px solid rgba(255,255,255,.7);margin-bottom:16px}
+.card.ab{border-left:4px solid var(--a1)}.card.ag{border-left:4px solid var(--a2)}.card.aa{border-left:4px solid var(--a3)}.card.ar{border-left:4px solid var(--ar)}.card.ap{border-left:4px solid var(--ap)}
+.clabel{font-size:.68rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;margin-bottom:8px}
+.cl-b{color:var(--a1)}.cl-g{color:#15803d}.cl-a{color:#b45309}.cl-r{color:#b91c1c}.cl-p{color:#6d28d9}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media(max-width:680px){.g2,.g3{grid-template-columns:1fr}}
+.wl{border:none;border-bottom:1.5px solid #cbd5e1;width:100%;margin-bottom:10px;height:28px;display:block;background:transparent;font-family:var(--fb);font-size:.88rem;color:var(--tx);outline:none;padding:2px 4px}
+.wl:focus{border-bottom-color:#2563eb}
+.wl::placeholder{color:#bdc5d1;font-style:italic}
+.wa{border:1.5px solid #cbd5e1;border-radius:8px;width:100%;min-height:70px;padding:8px;font-family:var(--fb);font-size:.85rem;color:var(--tx);resize:vertical;background:#f8fafc;outline:none;display:block}
+.wa:focus{outline:2px solid rgba(37,99,235,.3)}
+.wa::placeholder{color:#bdc5d1;font-style:italic}
+.tip{border-radius:10px;padding:10px 14px;font-size:.8rem;line-height:1.5;margin-top:10px}
+.tip.b{background:rgba(37,99,235,.07);color:#1e40af}.tip.g{background:rgba(22,163,74,.07);color:#14532d}.tip.a{background:rgba(245,158,11,.07);color:#92400e}.tip.p{background:rgba(124,58,237,.07);color:#5b21b6}
+.div{border:none;border-top:2px dashed #dde6f0;margin:28px 0}
+.chk{list-style:none;padding:0}
+.chk li{display:flex;align-items:flex-start;gap:8px;font-size:.85rem;color:var(--tx2);margin-bottom:8px;line-height:1.45}
+.chk li .bx{flex-shrink:0;width:17px;height:17px;border:2px solid #94a3b8;border-radius:4px;margin-top:1px;background:#fff;display:inline-block}
+.sb{display:inline-flex;align-items:center;gap:4px;padding:3px 10px 3px 8px;border-radius:6px;font-family:var(--fc);font-weight:700;font-size:.78rem;cursor:default;user-select:none;vertical-align:middle}
+.sbp{background:#9c27b0;color:#fff}.sbo{background:#ff9800;color:#fff}.sbb{background:#2196f3;color:#fff}.sby{background:#ffc107;color:#333}.sbt{background:#009688;color:#fff}.sbg{background:#4caf50;color:#fff}
+.lvl{display:inline-flex;align-items:center;gap:6px;padding:4px 14px;border-radius:999px;font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px}
+.la{background:linear-gradient(135deg,#2563eb,#60a5fa);color:#fff}
+.lb{background:linear-gradient(135deg,#16a34a,#4ade80);color:#fff}
+.lc{background:linear-gradient(135deg,#7c3aed,#f97066);color:#fff}
+.lx{background:linear-gradient(135deg,#f59e0b,#f97066);color:#fff}
+table.rub{width:100%;border-collapse:collapse;font-size:.82rem;margin-top:8px}
+table.rub th{background:#1e293b;color:#e2e8f0;padding:8px 10px;text-align:left;font-weight:700;letter-spacing:.05em}
+table.rub td{padding:8px 10px;border-bottom:1px solid #e2e8f0;vertical-align:top;color:var(--tx2)}
+table.rub tr:nth-child(even) td{background:rgba(241,245,249,.6)}
+table.rub td:first-child{font-weight:700;color:var(--tx)}
+table.rub .pts{font-family:var(--fc);font-size:.75rem;font-weight:800;color:var(--a1);white-space:nowrap}
+.sfooter{margin-top:40px;padding:16px 20px;border-radius:12px;background:rgba(37,99,235,.05);border:1px solid rgba(37,99,235,.12);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:.76rem;color:var(--txm)}
+.sfooter strong{color:var(--tx)}
+.gtext{background:linear-gradient(135deg,#2563eb,#16a34a,#f97066);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.mb1{margin-bottom:6px}.mb2{margin-bottom:10px}.mb3{margin-bottom:14px}.mt2{margin-top:10px}.mt3{margin-top:14px}
+.tmuted{color:var(--txm);font-size:.78rem}
+code{background:#e0f2ff;padding:1px 6px;border-radius:4px;font-family:var(--fc);font-size:.82em;color:#1d4ed8}
+.rbar{display:flex;border-radius:12px;overflow:hidden;margin-bottom:20px;border:2px solid rgba(37,99,235,.15)}
+.rb{flex:1;padding:8px 4px;text-align:center;font-size:.62rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase;line-height:1.3}
+.rw{background:#eff6ff;color:#1d4ed8;border-right:1px solid rgba(37,99,235,.15)}
+.rm{background:#f0fdf4;color:#15803d;border-right:1px solid rgba(22,163,74,.15)}
+.rg{background:#fefce8;color:#a16207;border-right:1px solid rgba(245,158,11,.15)}
+.rk{background:#fdf4ff;color:#7e22ce;border-right:1px solid rgba(124,58,237,.15)}
+.ro{background:#fff1f2;color:#be123c;border-right:1px solid rgba(249,112,102,.15)}
+.rs{background:#ecfdf5;color:#065f46}
+.dw-wrap{position:relative;margin-bottom:6px}
+.dw-tb{display:flex;align-items:center;gap:8px;margin-bottom:4px;flex-wrap:wrap}
+.dw-tb label{font-size:.7rem;font-weight:700;color:#64748b}
+.dw-color{width:28px;height:28px;border:none;border-radius:6px;cursor:pointer;padding:0;background:transparent}
+.dw-size{width:70px;accent-color:#2563eb;cursor:pointer}
+.dw-clear{background:#fee2e2;color:#b91c1c;border:none;border-radius:6px;padding:3px 10px;font-size:.72rem;font-weight:800;cursor:pointer}
+canvas.dc{display:block;width:100%;border-radius:8px;cursor:crosshair;touch-action:none;background:#f0f9ff}
+.sc-row{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border-radius:10px;margin-bottom:8px;border:1.5px solid transparent;transition:.2s}
+.sc-row:hover{border-color:#bfdbfe}
+.sc-row input[type=checkbox]{margin-top:2px;accent-color:#16a34a;width:18px;height:18px;flex-shrink:0;cursor:pointer}
+.sc-lbl{font-size:.88rem;color:var(--tx2);line-height:1.4}
+.sc-lbl strong{color:var(--tx)}
+.tl{position:relative;padding-left:22px}
+.tl::before{content:'';position:absolute;left:8px;top:4px;bottom:4px;width:3px;border-radius:999px;background:linear-gradient(to bottom,#2563eb,#16a34a,#f97066)}
+.tls{position:relative;margin-bottom:12px}
+.tld{position:absolute;left:-15px;top:4px;width:12px;height:12px;border-radius:999px;border:2px solid #f4fbff;background:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.2)}
+.tld.g{background:#16a34a}.tld.p{background:#7c3aed}.tld.a{background:#f59e0b}.tld.r{background:#f97066}
+</style>
+</head>
+<body>
+<div class="pbar no-print">
+  <div><div class="pbar-title">&#128640; Session 7 &middot; Activity Sheet</div><div class="pbar-sub">"Ship It!" Build Day &mdash; Differentiated &middot; Ages 7&ndash;13</div></div>
+  <button class="btn-p" onclick="window.print()">&#128438; Print / Save as PDF</button>
+</div>
+<div class="page">
 
+<div class="shdr">
+  <div style="font-size:2.8rem;margin-bottom:6px;">&#128640;&#127918;</div>
+  <div class="hday">Session 7 &middot; Wednesday, July 8 &middot; Week 2 &middot; Summer 2026 AI &amp; Coding Program</div>
+  <div class="htitle">Scratch Mini-Project: &ldquo;Ship It!&rdquo; Build Day</div>
+  <div class="hsub">Every student launches one interactive project today &mdash; a guaranteed win!</div>
+  <div class="hpills">
+    <span class="hpill">&#127264; Scratch</span><span class="hpill">&#8987; 110 min</span><span class="hpill">Ages 7&ndash;13</span><span class="hpill">3 Tiers</span><span class="hpill">Events &middot; Variables &middot; Loops</span>
+  </div>
+</div>
+
+<div class="sinfo">
+  <div class="ifield"><div class="ilabel">&#128100; Your Name</div><input class="iline" type="text" placeholder="First Last" /></div>
+  <div class="ifield"><div class="ilabel">&#128197; Date</div><input class="iline" type="text" value="July 8, 2026" /></div>
+  <div class="ifield"><div class="ilabel">&#127979; Section / Period</div><input class="iline" type="text" placeholder="Section 1 / 2 / 3" /></div>
+</div>
+
+<!-- DAILY RHYTHM -->
+<div class="slabel">&#8987; Today&rsquo;s Rhythm</div>
+<div class="stitle">Daily Schedule &mdash; Follow Along!</div>
+<div class="rbar">
+  <div class="rb rw">&#129504;<br>Warm-Up<br>10 min</div>
+  <div class="rb rm">&#128161;<br>Mini-Lesson<br>15&ndash;20 min</div>
+  <div class="rb rg">&#128296;<br>Guided Build<br>20 min</div>
+  <div class="rb rk">&#128131;<br>Move Break<br>5 min</div>
+  <div class="rb ro">&#128736;<br>Open Build<br>30&ndash;40 min</div>
+  <div class="rb rs">&#127908;<br>Share-Out<br>10 min</div>
+</div>
+
+<!-- PART 1: WARM-UP -->
+<div class="slabel">&#129504; Part 1 &middot; Warm-Up (10 min)</div>
+<div class="stitle">The Ingredient Game &mdash; No Screen Needed!</div>
+<div class="card ab mb2">
+  <div class="clabel cl-b">&#127918; Think About a Game You Love</div>
+  <p class="mb2">Pick any game you know &mdash; video game, board game, app game. Think about what makes it work, then answer below.</p>
+  <p style="font-size:.83rem;font-weight:700;color:#374151;margin-bottom:6px;">1. What game are you thinking about?</p>
+  <input class="wl" type="text" placeholder="My game is..." />
+  <p style="font-size:.83rem;font-weight:700;color:#374151;margin:10px 0 6px;">2. Check off every Scratch ingredient your game uses:</p>
+  <div class="g2 mb2">
+    <div>
+      <label style="display:flex;align-items:center;gap:8px;font-size:.85rem;color:#374151;margin-bottom:8px;cursor:pointer;"><input type="checkbox" style="accent-color:#9c27b0;width:16px;height:16px;"> <span class="sb sbp">Events</span> &mdash; something starts it</label>
+      <label style="display:flex;align-items:center;gap:8px;font-size:.85rem;color:#374151;margin-bottom:8px;cursor:pointer;"><input type="checkbox" style="accent-color:#ff9800;width:16px;height:16px;"> <span class="sb sbo">Loops</span> &mdash; something repeats</label>
+      <label style="display:flex;align-items:center;gap:8px;font-size:.85rem;color:#374151;margin-bottom:8px;cursor:pointer;"><input type="checkbox" style="accent-color:#2196f3;width:16px;height:16px;"> <span class="sb sbb">Motion</span> &mdash; things move</label>
+    </div>
+    <div>
+      <label style="display:flex;align-items:center;gap:8px;font-size:.85rem;color:#374151;margin-bottom:8px;cursor:pointer;"><input type="checkbox" style="accent-color:#ffc107;width:16px;height:16px;"> <span class="sb sby">Conditionals</span> &mdash; if/then choices</label>
+      <label style="display:flex;align-items:center;gap:8px;font-size:.85rem;color:#374151;margin-bottom:8px;cursor:pointer;"><input type="checkbox" style="accent-color:#009688;width:16px;height:16px;"> <span class="sb sbt">Variables</span> &mdash; score, lives</label>
+      <label style="display:flex;align-items:center;gap:8px;font-size:.85rem;color:#374151;margin-bottom:8px;cursor:pointer;"><input type="checkbox" style="accent-color:#4caf50;width:16px;height:16px;"> <span class="sb sbg">Looks</span> &mdash; costumes, messages</label>
+    </div>
+  </div>
+  <p style="font-size:.83rem;font-weight:700;color:#374151;margin-bottom:6px;">3. Which ONE ingredient makes that game most fun &mdash; and <em>why</em>?</p>
+  <div><input class="wl" type="text" placeholder="The most important ingredient is..." /><input class="wl" type="text" placeholder="It makes the game fun because..." /></div>
+</div>
+<div class="card ap mb3">
+  <div class="clabel cl-p">&#129302; AI Moment &mdash; Before You Build</div>
+  <p class="mb2">Could an AI have made this game for you? What would an AI need to <em>know</em> before it could build your game?</p>
+  <div class="g2">
+    <div>
+      <p style="font-size:.8rem;font-weight:700;color:#6d28d9;margin-bottom:4px;">What would the AI need to know?</p>
+      <input class="wl" type="text" placeholder="It would need to know the rules..." />
+      <input class="wl" type="text" placeholder="It would need examples of..." />
+    </div>
+    <div>
+      <p style="font-size:.8rem;font-weight:700;color:#6d28d9;margin-bottom:4px;">What is one thing AI <em>cannot</em> know without you telling it?</p>
+      <input class="wl" type="text" placeholder="AI can&rsquo;t know..." />
+      <input class="wl" type="text" placeholder="Because..." />
+    </div>
+  </div>
+  <div class="tip p">&#129302; AI generates from examples &mdash; trained on thousands of games. But it doesn&rsquo;t know <em>your</em> idea until you describe it. You are the creative director!</div>
+</div>
+
+<hr class="div">
+
+<!-- PART 2: MINI-LESSON -->
+<div class="slabel">&#128161; Part 2 &middot; Mini-Lesson (15 min)</div>
+<div class="stitle">What Makes a Project &ldquo;Shippable&rdquo;?</div>
+<div class="card ag mb2">
+  <div class="clabel cl-g">&#9989; The 3 Shippable Criteria</div>
+  <p class="mb2">A project is <strong>shippable</strong> when someone who has never seen it can pick it up and understand what to do. Check each one off as your teacher explains it:</p>
+  <div class="g3">
+    <div style="background:#f0fdf4;border-radius:12px;padding:14px;text-align:center;">
+      <div style="font-size:1.8rem;margin-bottom:6px;">&#127937;</div>
+      <div style="font-weight:800;font-size:.85rem;color:#15803d;margin-bottom:4px;">It STARTS</div>
+      <div style="font-size:.78rem;color:#374151;">Clicking the green flag launches the project immediately.</div>
+      <div style="margin-top:10px;"><input type="checkbox" style="accent-color:#16a34a;width:18px;height:18px;" /> <span style="font-size:.75rem;color:#15803d;font-weight:700;">Got it!</span></div>
+    </div>
+    <div style="background:#eff6ff;border-radius:12px;padding:14px;text-align:center;">
+      <div style="font-size:1.8rem;margin-bottom:6px;">&#128070;</div>
+      <div style="font-weight:800;font-size:.85rem;color:#1d4ed8;margin-bottom:4px;">It RESPONDS</div>
+      <div style="font-size:.78rem;color:#374151;">Something reacts to YOU &mdash; a key press, click, or sprite touching another.</div>
+      <div style="margin-top:10px;"><input type="checkbox" style="accent-color:#2563eb;width:18px;height:18px;" /> <span style="font-size:.75rem;color:#1d4ed8;font-weight:700;">Got it!</span></div>
+    </div>
+    <div style="background:#fff1f2;border-radius:12px;padding:14px;text-align:center;">
+      <div style="font-size:1.8rem;margin-bottom:6px;">&#128260;</div>
+      <div style="font-weight:800;font-size:.85rem;color:#be123c;margin-bottom:4px;">It ENDS or Loops</div>
+      <div style="font-size:.78rem;color:#374151;">Either a &ldquo;Game Over&rdquo; message OR a fun loop the player experiences forever.</div>
+      <div style="margin-top:10px;"><input type="checkbox" style="accent-color:#ef4444;width:18px;height:18px;" /> <span style="font-size:.75rem;color:#be123c;font-weight:700;">Got it!</span></div>
+    </div>
+  </div>
+</div>
+<div class="card aa mb3">
+  <div class="clabel cl-a">&#128506; Plan Your Project</div>
+  <p class="mb2">Before you open Scratch, decide what you&rsquo;re building. Click a theme to highlight it:</p>
+  <div class="g3 mb2">
+    <div style="border:2px solid #bfdbfe;border-radius:10px;padding:10px;text-align:center;cursor:pointer;" onclick="this.style.background=this.style.background?'':'#eff6ff'"><div style="font-size:1.5rem;">&#128640;</div><div style="font-weight:800;font-size:.8rem;color:#1d4ed8;margin-top:4px;">Space / Sci-Fi</div><div style="font-size:.7rem;color:#374151;">Catch stars, dodge meteors</div></div>
+    <div style="border:2px solid #bbf7d0;border-radius:10px;padding:10px;text-align:center;cursor:pointer;" onclick="this.style.background=this.style.background?'':'#f0fdf4'"><div style="font-size:1.5rem;">&#127754;</div><div style="font-weight:800;font-size:.8rem;color:#15803d;margin-top:4px;">Nature / Ocean</div><div style="font-size:.7rem;color:#374151;">Collect fish, avoid sharks</div></div>
+    <div style="border:2px solid #e9d5ff;border-radius:10px;padding:10px;text-align:center;cursor:pointer;" onclick="this.style.background=this.style.background?'':'#faf5ff'"><div style="font-size:1.5rem;">&#127961;</div><div style="font-weight:800;font-size:.8rem;color:#6d28d9;margin-top:4px;">City / Adventure</div><div style="font-size:.7rem;color:#374151;">Chase or explore</div></div>
+    <div style="border:2px solid #fed7aa;border-radius:10px;padding:10px;text-align:center;cursor:pointer;" onclick="this.style.background=this.style.background?'':'#fff7ed'"><div style="font-size:1.5rem;">&#128049;</div><div style="font-weight:800;font-size:.8rem;color:#b45309;margin-top:4px;">Animals</div><div style="font-size:.7rem;color:#374151;">Feed, chase, or rescue</div></div>
+    <div style="border:2px solid #fca5a5;border-radius:10px;padding:10px;text-align:center;cursor:pointer;" onclick="this.style.background=this.style.background?'':'#fff1f2'"><div style="font-size:1.5rem;">&#9917;</div><div style="font-weight:800;font-size:.8rem;color:#be123c;margin-top:4px;">Sports</div><div style="font-size:.7rem;color:#374151;">Score goals, dodge</div></div>
+    <div style="border:2px dashed #cbd5e1;border-radius:10px;padding:10px;text-align:center;"><div style="font-size:1.5rem;">&#10024;</div><div style="font-weight:800;font-size:.8rem;color:#475569;margin-top:4px;">My Own Idea</div><input type="text" style="border:none;border-bottom:1.5px solid #cbd5e1;width:90%;font-size:.72rem;text-align:center;background:transparent;outline:none;margin-top:4px;" placeholder="Write it here..." /></div>
+  </div>
+  <div class="g2">
+    <div>
+      <p style="font-size:.8rem;font-weight:700;color:#a16207;margin-bottom:4px;">My player sprite will be:</p><input class="wl" type="text" placeholder="e.g. a rocket, a fish..." />
+      <p style="font-size:.8rem;font-weight:700;color:#a16207;margin-bottom:4px;margin-top:6px;">My backdrop will be:</p><input class="wl" type="text" placeholder="e.g. space, underwater..." />
+    </div>
+    <div>
+      <p style="font-size:.8rem;font-weight:700;color:#a16207;margin-bottom:4px;">My goal / win condition is:</p><input class="wl" type="text" placeholder="e.g. collect 10 stars..." />
+      <p style="font-size:.8rem;font-weight:700;color:#a16207;margin-bottom:4px;margin-top:6px;">My challenge / lose condition is:</p><input class="wl" type="text" placeholder="e.g. touch the enemy..." />
+    </div>
+  </div>
+</div>
+
+<hr class="div">
+
+<!-- PART 3: GUIDED BUILD -->
+<div class="slabel">&#128296; Part 3 &middot; Guided Build (20 min)</div>
+<div class="stitle">Build Together &mdash; Step by Step</div>
+<p style="font-size:.88rem;color:#374151;margin-bottom:14px;">Follow along with your teacher. Check off each step as you complete it.</p>
+<div class="card ab mb3">
+  <div class="clabel cl-b">&#128736; 7-Step Build Checklist</div>
+  <div class="tl">
+    <div class="tls"><div class="tld"></div>
+      <div class="mb1"><strong>Step 1 &mdash; Open Scratch &amp; Pick Your Backdrop</strong></div>
+      <p style="font-size:.8rem;color:#374151;margin-bottom:4px;">Go to <code>scratch.mit.edu</code> &rarr; New Project &rarr; backdrop icon &rarr; choose your scene.</p>
+      <label style="font-size:.8rem;display:flex;align-items:center;gap:6px;"><input type="checkbox" style="accent-color:#2563eb;"> Done! My backdrop: <input type="text" style="border:none;border-bottom:1px solid #cbd5e1;font-size:.8rem;background:transparent;outline:none;width:130px;" placeholder="..." /></label>
+    </div>
+    <div class="tls"><div class="tld"></div>
+      <div class="mb1"><strong>Step 2 &mdash; Choose Your Sprite</strong></div>
+      <p style="font-size:.8rem;color:#374151;margin-bottom:4px;">Delete the cat or keep it. Pick your player sprite. Resize to 60&ndash;80px.</p>
+      <label style="font-size:.8rem;display:flex;align-items:center;gap:6px;"><input type="checkbox" style="accent-color:#2563eb;"> Done! My sprite: <input type="text" style="border:none;border-bottom:1px solid #cbd5e1;font-size:.8rem;background:transparent;outline:none;width:130px;" placeholder="..." /></label>
+    </div>
+    <div class="tls"><div class="tld"></div>
+      <div class="mb1"><strong>Step 3 &mdash; Add the Green Flag Event</strong></div>
+      <p style="font-size:.8rem;color:#374151;margin-bottom:4px;">From <strong>Events</strong>, drag <span class="sb sbp">When &#127937; clicked</span> onto the canvas. Everything starts here.</p>
+      <div class="tip b" style="margin-bottom:6px;">Why does the flag matter? Without it, your code runs <em>never</em>. The flag is your game&rsquo;s &ldquo;on&rdquo; switch!</div>
+      <label style="font-size:.8rem;display:flex;align-items:center;gap:6px;"><input type="checkbox" style="accent-color:#2563eb;"> Done!</label>
+    </div>
+    <div class="tls"><div class="tld g"></div>
+      <div class="mb1"><strong>Step 4 &mdash; Make It Move</strong></div>
+      <p style="font-size:.8rem;color:#374151;margin-bottom:4px;">Inside a <span class="sb sbo">forever</span> loop, add arrow-key conditionals. Test it now!</p>
+      <div class="g2 mt2">
+        <div style="background:#f0fdf4;border-radius:8px;padding:8px;font-size:.75rem;color:#374151;"><strong style="color:#15803d;">Arrow Keys:</strong> <span class="sb sby" style="font-size:.68rem;">Key [right] pressed?</span> inside If &rarr; <span class="sb sbb" style="font-size:.68rem;">Move 5 steps</span></div>
+        <div style="background:#eff6ff;border-radius:8px;padding:8px;font-size:.75rem;color:#374151;"><strong style="color:#1d4ed8;">Mouse:</strong> <span class="sb sbb" style="font-size:.68rem;">point toward mouse</span> + Move 3 steps</div>
+      </div>
+      <label style="font-size:.8rem;display:flex;align-items:center;gap:6px;margin-top:6px;"><input type="checkbox" style="accent-color:#16a34a;"> My sprite moves!</label>
+    </div>
+    <div class="tls"><div class="tld a"></div>
+      <div class="mb1"><strong>Step 5 &mdash; Add a Second Sprite</strong></div>
+      <p style="font-size:.8rem;color:#374151;margin-bottom:4px;">Add something to catch, avoid, or collect. Use <span class="sb sbt">touching [sprite]?</span> to detect collision.</p>
+      <label style="font-size:.8rem;display:flex;align-items:center;gap:6px;"><input type="checkbox" style="accent-color:#f59e0b;"> Done! Second sprite: <input type="text" style="border:none;border-bottom:1px solid #cbd5e1;font-size:.8rem;background:transparent;outline:none;width:100px;" placeholder="..." /></label>
+    </div>
+    <div class="tls"><div class="tld p"></div>
+      <div class="mb1"><strong>Step 6 &mdash; Add a Score Variable</strong></div>
+      <p style="font-size:.8rem;color:#374151;margin-bottom:4px;">Variables &rarr; Make a Variable &rarr; name it <strong>&ldquo;Score&rdquo;</strong> &rarr; Set to 0 when flag clicked &rarr; Change by 1 when sprites touch.</p>
+      <div class="tip p" style="margin-bottom:6px;">If your variable is &ldquo;score&rdquo; in some places and &ldquo;Score&rdquo; in others, Scratch treats them as <em>different</em> variables! Be consistent.</div>
+      <label style="font-size:.8rem;display:flex;align-items:center;gap:6px;"><input type="checkbox" style="accent-color:#7c3aed;"> Score is working!</label>
+    </div>
+    <div class="tls"><div class="tld r"></div>
+      <div class="mb1"><strong>Step 7 &mdash; Test &amp; Fix the Big 3 Bugs</strong></div>
+      <table style="width:100%;font-size:.77rem;border-collapse:collapse;margin-top:6px;">
+        <tr style="background:#fee2e2;"><td style="padding:5px 8px;font-weight:700;color:#b91c1c;border-radius:6px 0 0 0;width:30%;">Bug</td><td style="padding:5px 8px;font-weight:700;color:#374151;width:35%;">What you see</td><td style="padding:5px 8px;font-weight:700;color:#374151;border-radius:0 6px 0 0;">Quick fix</td></tr>
+        <tr style="border-bottom:1px solid #fecaca;"><td style="padding:5px 8px;color:#b91c1c;font-weight:700;">Code disconnected</td><td style="padding:5px 8px;">Nothing happens on flag click</td><td style="padding:5px 8px;">Snap onto <span class="sb sbp" style="font-size:.68rem;">When &#127937; clicked</span></td></tr>
+        <tr style="border-bottom:1px solid #fecaca;"><td style="padding:5px 8px;color:#b91c1c;font-weight:700;">If outside forever</td><td style="padding:5px 8px;">Sprite ignores keys after first check</td><td style="padding:5px 8px;">Move If INSIDE <span class="sb sbo" style="font-size:.68rem;">forever</span></td></tr>
+        <tr><td style="padding:5px 8px;color:#b91c1c;font-weight:700;">Score not resetting</td><td style="padding:5px 8px;">Score keeps old value from last game</td><td style="padding:5px 8px;">Add <span class="sb sbt" style="font-size:.68rem;">Set Score to 0</span> after flag event</td></tr>
+      </table>
+      <label style="font-size:.8rem;display:flex;align-items:center;gap:6px;margin-top:8px;"><input type="checkbox" style="accent-color:#ef4444;"> All 3 bugs checked &mdash; my project works!</label>
+    </div>
+  </div>
+  <div class="tip g mt2">&#127937; <strong>Before Open Build:</strong> Make sure your project starts on flag click, your sprite moves, and score changes on touch. That&rsquo;s the minimum shippable product!</div>
+</div>
+
+<hr class="div pb">
+
+<!-- PART 4: MOVEMENT BREAK -->
+<div class="slabel">&#128131; Movement Break (5 min)</div>
+<div class="stitle">You Are the Sprite!</div>
+<div class="card ap mb3">
+  <div class="clabel cl-p">&#128507; Human Sprite Activity</div>
+  <p class="mb2">Stand up! Your teacher calls out instructions. Your body IS the sprite. Act out what Scratch would do.</p>
+  <div class="g2">
+    <div><div class="chk">
+      <li><span class="bx"></span> &ldquo;Green Flag&rdquo; &rarr; freeze in start position</li>
+      <li><span class="bx"></span> &ldquo;Arrow Right&rdquo; &rarr; step right 3 steps</li>
+      <li><span class="bx"></span> &ldquo;Arrow Left&rdquo; &rarr; step left 3 steps</li>
+      <li><span class="bx"></span> &ldquo;Forever loop&rdquo; &rarr; keep repeating the last action</li>
+    </div></div>
+    <div><div class="chk">
+      <li><span class="bx"></span> &ldquo;Touch edge&rdquo; &rarr; bounce back and turn around</li>
+      <li><span class="bx"></span> &ldquo;Touch a classmate&rdquo; &rarr; say &ldquo;Got it!&rdquo; and clap once (+1 point)</li>
+      <li><span class="bx"></span> &ldquo;Game Over&rdquo; &rarr; sit back down slowly</li>
+      <li><span class="bx"></span> &ldquo;Reset&rdquo; &rarr; return to starting position</li>
+    </div></div>
+  </div>
+  <p style="font-size:.8rem;font-weight:700;color:#6d28d9;margin-top:10px;margin-bottom:4px;">After the activity: What did the &ldquo;forever loop&rdquo; feel like in your body?</p>
+  <input class="wl" type="text" placeholder="The forever loop felt like..." />
+</div>
+
+<!-- PART 5: OPEN BUILD -->
+<div class="slabel">&#128736; Part 5 &middot; Open Build (30&ndash;40 min)</div>
+<div class="stitle">Find Your Tier and Build!</div>
+<p style="font-size:.88rem;color:#374151;margin-bottom:14px;">Find your tier below. Start there &mdash; then climb! Fast finishers: grab a Challenge Card or help a neighbor.</p>
+
+<!-- Tier A -->
+<div class="card mb2" style="border:2px solid #bfdbfe;background:#f8faff;">
+  <div style="margin-bottom:8px;"><span class="lvl la">Tier A &mdash; Foundations &middot; Grades 1&ndash;3</span></div>
+  <div class="clabel cl-b">&#127374; Goal: Working movement + 1 event reaction</div>
+  <p class="mb2" style="font-size:.85rem;color:#374151;">Use the starter from the guided build. Sprite moves with arrow keys and says something when it touches the edge.</p>
+  <div class="g2 mb2">
+    <div style="background:#eff6ff;border-radius:10px;padding:12px;">
+      <p style="font-size:.78rem;font-weight:800;color:#1d4ed8;margin-bottom:8px;">Your checklist:</p>
+      <div class="chk">
+        <li><span class="bx"></span> <span class="sb sbp" style="font-size:.68rem;">When &#127937; clicked</span> at the top</li>
+        <li><span class="bx"></span> Sprite moves when I press arrow keys</li>
+        <li><span class="bx"></span> Sprite says something when it touches edge</li>
+        <li><span class="bx"></span> Click the flag &rarr; it starts!</li>
+      </div>
+    </div>
+    <div style="background:#f0f9ff;border-radius:10px;padding:12px;">
+      <p style="font-size:.78rem;font-weight:800;color:#0369a1;margin-bottom:6px;">Blocks to find &amp; snap:</p>
+      <div style="display:flex;flex-direction:column;gap:5px;">
+        <span class="sb sbp" style="font-size:.68rem;">When &#127937; clicked</span>
+        <span class="sb sbo" style="font-size:.68rem;">forever { }</span>
+        <span class="sb sby" style="font-size:.68rem;">if key [right] pressed?</span>
+        <span class="sb sbb" style="font-size:.68rem;">move 5 steps</span>
+        <span class="sb sby" style="font-size:.68rem;">if touching edge?</span>
+        <span class="sb sbg" style="font-size:.68rem;">say [Hello!] for 2 secs</span>
+      </div>
+    </div>
+  </div>
+  <p style="font-size:.8rem;font-weight:700;color:#1d4ed8;margin-bottom:4px;">What does your sprite say when it touches the edge?</p>
+  <input class="wl" type="text" placeholder='My sprite says "..."' />
+  <div class="tip b">Buddy tip: One person finds the block, the other snaps it on. Switch after each step!</div>
+</div>
+
+<!-- Tier B -->
+<div class="card mb2" style="border:2px solid #bbf7d0;background:#f8fff9;">
+  <div style="margin-bottom:8px;"><span class="lvl lb">Tier B &mdash; Core &middot; Grades 3&ndash;5</span></div>
+  <div class="clabel cl-g">&#9989; Goal: A catch/chase game with score</div>
+  <p class="mb2" style="font-size:.85rem;color:#374151;">Player sprite, second sprite, score variable that goes up on touch, and a start message.</p>
+  <div class="g2 mb2">
+    <div>
+      <p style="font-size:.78rem;font-weight:800;color:#15803d;margin-bottom:8px;">Your checklist:</p>
+      <div class="chk">
+        <li><span class="bx"></span> Player sprite moves smoothly</li>
+        <li><span class="bx"></span> Second sprite appears/moves on its own</li>
+        <li><span class="bx"></span> Score variable set to 0 at start</li>
+        <li><span class="bx"></span> Score +1 when sprites touch</li>
+        <li><span class="bx"></span> Start message appears</li>
+        <li><span class="bx"></span> Green flag restarts everything cleanly</li>
+      </div>
+    </div>
+    <div style="background:#f0fdf4;border-radius:10px;padding:12px;font-size:.72rem;color:#374151;">
+      <p style="font-size:.78rem;font-weight:800;color:#15803d;margin-bottom:6px;">Code pattern:</p>
+      <span class="sb sbp" style="font-size:.65rem;">When &#127937; clicked</span><br>
+      <span style="padding-left:10px;">&rarr; <span class="sb sbt" style="font-size:.65rem;">Set Score to 0</span></span><br>
+      <span style="padding-left:10px;">&rarr; <span class="sb sbg" style="font-size:.65rem;">Say &ldquo;Ready?&rdquo; 1 sec</span></span><br>
+      <span style="padding-left:10px;">&rarr; <span class="sb sbo" style="font-size:.65rem;">forever</span></span><br>
+      <span style="padding-left:22px;">&rarr; <span class="sb sby" style="font-size:.65rem;">if touching [sprite2]?</span></span><br>
+      <span style="padding-left:36px;">&rarr; <span class="sb sbt" style="font-size:.65rem;">Change Score by 1</span></span>
+    </div>
+  </div>
+  <div class="g2">
+    <div><p style="font-size:.8rem;font-weight:700;color:#15803d;margin-bottom:4px;">What is your game called?</p><input class="wl" type="text" placeholder="My game is called..." /></div>
+    <div><p style="font-size:.8rem;font-weight:700;color:#15803d;margin-bottom:4px;">How does a player WIN?</p><input class="wl" type="text" placeholder="You win by..." /></div>
+  </div>
+</div>
+
+<!-- Tier C -->
+<div class="card mb2" style="border:2px solid #e9d5ff;background:#fdf9ff;">
+  <div style="margin-bottom:8px;"><span class="lvl lc">Tier C &mdash; Accelerated &middot; Grades 6&ndash;9</span></div>
+  <div class="clabel cl-p">&#128995; Goal: Full game loop with difficulty scaling</div>
+  <p class="mb2" style="font-size:.85rem;color:#374151;">Add a <strong>Lives counter</strong>, a <strong>Game Over screen</strong>, and a <strong>speed-up mechanism</strong> so the game gets harder as score increases.</p>
+  <div class="g2 mb2">
+    <div>
+      <p style="font-size:.78rem;font-weight:800;color:#6d28d9;margin-bottom:8px;">Your checklist:</p>
+      <div class="chk">
+        <li><span class="bx"></span> All Tier B goals complete</li>
+        <li><span class="bx"></span> Lives variable (start 3, &minus;1 on collision)</li>
+        <li><span class="bx"></span> Game Over screen when lives = 0</li>
+        <li><span class="bx"></span> Enemy speeds up every 5 points</li>
+        <li><span class="bx"></span> Restart without refresh (broadcast &ldquo;restart&rdquo;)</li>
+        <li><span class="bx"></span> Custom start screen with title</li>
+      </div>
+    </div>
+    <div>
+      <p style="font-size:.78rem;font-weight:800;color:#6d28d9;margin-bottom:6px;">Think through:</p>
+      <p style="font-size:.75rem;color:#374151;margin-bottom:2px;">How do you make speed increase? (Hint: variable + change)</p>
+      <input class="wl" type="text" placeholder="I&rsquo;ll make speed increase by..." />
+      <p style="font-size:.75rem;color:#374151;margin-bottom:2px;margin-top:6px;">What Scratch feature lets one sprite tell another to do something?</p>
+      <input class="wl" type="text" placeholder="I can use..." />
+    </div>
+  </div>
+  <div class="tip p">Stretch: Add a <strong>sound effect</strong> with Sound blocks. Then try broadcasting a message from one sprite to another &mdash; this is how complex games coordinate multiple characters!</div>
+</div>
+
+<!-- Challenge Card -->
+<div class="card mb3" style="border:2px solid #fde68a;background:#fffbeb;">
+  <div style="margin-bottom:8px;"><span class="lvl lx">&#11088; Challenge Card &mdash; All Tiers</span></div>
+  <div class="clabel cl-a">&#127926; Sound + Broadcasting</div>
+  <div class="g2">
+    <div>
+      <p style="font-size:.83rem;color:#374151;margin-bottom:6px;">Add a sound effect using the <strong>Sound blocks</strong>.</p>
+      <label style="font-size:.8rem;display:flex;align-items:center;gap:6px;cursor:pointer;"><input type="checkbox" style="accent-color:#f59e0b;"> Sound added!</label>
+      <p style="font-size:.8rem;font-weight:700;color:#b45309;margin-top:8px;margin-bottom:2px;">What sound &amp; why?</p>
+      <input class="wl" type="text" placeholder="I added [sound] because..." />
+    </div>
+    <div>
+      <p style="font-size:.83rem;color:#374151;margin-bottom:6px;">Try using <strong>Broadcast</strong> to send a message between sprites.</p>
+      <label style="font-size:.8rem;display:flex;align-items:center;gap:6px;cursor:pointer;"><input type="checkbox" style="accent-color:#f59e0b;"> Broadcast tried!</label>
+      <p style="font-size:.8rem;font-weight:700;color:#b45309;margin-top:8px;margin-bottom:2px;">What did you broadcast &amp; what responded?</p>
+      <input class="wl" type="text" placeholder="I broadcast [X] and [sprite] responded by..." />
+    </div>
+  </div>
+</div>
+
+<hr class="div">
+
+<!-- PART 6: SHARE-OUT -->
+<div class="slabel">&#127908; Part 6 &middot; Share-Out (10 min)</div>
+<div class="stitle">Show Your Neighbor &mdash; Then Reflect</div>
+<div class="card ag mb2">
+  <div class="clabel cl-g">&#128101; Pair-Share Protocol</div>
+  <p class="mb2">Turn to the person next to you. Take turns showing your project. Use these sentence starters:</p>
+  <div class="g2 mb2">
+    <div style="background:#f0fdf4;border-radius:10px;padding:12px;">
+      <p style="font-size:.78rem;font-weight:800;color:#15803d;margin-bottom:6px;">Presenting your project:</p>
+      <p style="font-size:.82rem;color:#374151;font-style:italic;margin-bottom:4px;">&ldquo;My project is about <u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u>.&rdquo;</p>
+      <p style="font-size:.82rem;color:#374151;font-style:italic;margin-bottom:4px;">&ldquo;You play by doing <u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u>.&rdquo;</p>
+      <p style="font-size:.82rem;color:#374151;font-style:italic;">&ldquo;One thing I&rsquo;m proud of is <u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u>.&rdquo;</p>
+    </div>
+    <div style="background:#eff6ff;border-radius:10px;padding:12px;">
+      <p style="font-size:.78rem;font-weight:800;color:#1d4ed8;margin-bottom:6px;">After watching your partner&rsquo;s:</p>
+      <p style="font-size:.82rem;color:#374151;font-style:italic;margin-bottom:4px;">&ldquo;I notice <u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u> in yours.&rdquo;</p>
+      <p style="font-size:.82rem;color:#374151;font-style:italic;margin-bottom:4px;">&ldquo;One question I have is <u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u>.&rdquo;</p>
+      <p style="font-size:.82rem;color:#374151;font-style:italic;">&ldquo;One idea you could add is <u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u>.&rdquo;</p>
+    </div>
+  </div>
+  <div class="g2">
+    <div><p style="font-size:.8rem;font-weight:700;color:#374151;margin-bottom:4px;">What did your partner build?</p><input class="wl" type="text" placeholder="My partner built..." /></div>
+    <div><p style="font-size:.8rem;font-weight:700;color:#374151;margin-bottom:4px;">One idea your partner gave you:</p><input class="wl" type="text" placeholder="They suggested I could..." /></div>
+  </div>
+</div>
+
+<div class="card ab mb3">
+  <div class="clabel cl-b">&#128640; Ship-It! Final Launch Checklist</div>
+  <p style="font-size:.83rem;color:#374151;margin-bottom:12px;">Before you close Scratch, check all three boxes:</p>
+  <div style="background:#f0f9ff;border-radius:12px;padding:14px;">
+    <div class="sc-row"><input type="checkbox"><div class="sc-lbl"><strong>It STARTS</strong> &mdash; Clicking the green flag launches my project with no errors.</div></div>
+    <div class="sc-row"><input type="checkbox"><div class="sc-lbl"><strong>It RESPONDS</strong> &mdash; Something reacts when the player presses a key or moves the mouse.</div></div>
+    <div class="sc-row"><input type="checkbox"><div class="sc-lbl"><strong>It ENDS or LOOPS</strong> &mdash; There is a clear win, game over, or the player can keep going in a loop.</div></div>
+  </div>
+  <p style="font-size:.8rem;font-weight:700;color:#2563eb;margin-top:10px;margin-bottom:4px;">My Scratch project title or link:</p>
+  <input class="wl" type="text" placeholder="scratch.mit.edu/projects/... or My Game Title" />
+</div>
+
+<!-- REFLECTION -->
+<div class="slabel">&#128172; Reflection</div>
+<div class="stitle">Exit Ticket &amp; Growth Check</div>
+<div class="card mb3">
+  <div class="g2">
+    <div>
+      <div class="clabel cl-b">&#129504; Exit Ticket</div>
+      <p style="font-size:.8rem;font-weight:700;color:#374151;margin:8px 0 3px;">1. What does your project do? (Explain to a younger sibling.)</p>
+      <div><input class="wl" type="text" placeholder="My project..." /><input class="wl" type="text" placeholder="..." /></div>
+      <p style="font-size:.8rem;font-weight:700;color:#374151;margin:8px 0 3px;">2. What was the hardest part &amp; how did you fix it?</p>
+      <div><input class="wl" type="text" placeholder="The hardest part was..." /><input class="wl" type="text" placeholder="I fixed it by..." /></div>
+      <p style="font-size:.8rem;font-weight:700;color:#374151;margin:8px 0 3px;">3. One thing you&rsquo;d add if you had more time:</p>
+      <input class="wl" type="text" placeholder="I would add..." />
+    </div>
+    <div>
+      <div class="clabel cl-g">&#127807; Growth Mindset Check</div>
+      <p style="font-size:.8rem;color:#374151;margin-bottom:8px;">Circle the one that describes you today:</p>
+      <div style="display:flex;flex-direction:column;gap:7px;font-size:.83rem;color:#374151;">
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;"><input type="radio" name="mood" style="accent-color:#2563eb;"> I got stuck but kept trying</label>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;"><input type="radio" name="mood" style="accent-color:#16a34a;"> I figured something out by myself</label>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;"><input type="radio" name="mood" style="accent-color:#7c3aed;"> I helped a classmate understand</label>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;"><input type="radio" name="mood" style="accent-color:#f59e0b;"> I finished early and tackled a bonus!</label>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;"><input type="radio" name="mood" style="accent-color:#ef4444;"> I SHIPPED it &mdash; and I&rsquo;m proud!</label>
+      </div>
+      <p style="font-size:.8rem;font-weight:700;color:#6d28d9;margin:12px 0 4px;">One thing I still want to learn:</p>
+      <input class="wl" type="text" placeholder="..." />
+      <p style="font-size:.8rem;font-weight:700;color:#15803d;margin:8px 0 4px;">One thing I did really well today:</p>
+      <input class="wl" type="text" placeholder="..." />
+    </div>
+  </div>
+</div>
+
+<!-- RUBRIC -->
+<div class="slabel">&#128202; Scoring</div>
+<div class="stitle">Rubric &amp; Points</div>
+<div class="card mb3">
+  <table class="rub">
+    <thead><tr><th>Section</th><th>What to Look For</th><th>Points</th></tr></thead>
+    <tbody>
+      <tr><td>Part 1 &mdash; Warm-Up &amp; Planning</td><td>Ingredient check done; theme chosen; sprite, backdrop, goal, challenge all filled in</td><td class="pts">3 pts</td></tr>
+      <tr><td>Part 2 &mdash; Mini-Lesson</td><td>3 shippable criteria checked; AI Moment questions answered; project plan complete</td><td class="pts">2 pts</td></tr>
+      <tr><td>Part 3 &mdash; Guided Build</td><td>All 7 steps checked off; bug table reviewed; tip question answered</td><td class="pts">3 pts</td></tr>
+      <tr><td>Part 4 &mdash; Movement Break</td><td>Forever loop reflection answered (participation check)</td><td class="pts">1 pt</td></tr>
+      <tr><td>Part 5A &mdash; Tier A Build</td><td>Sprite moves with arrow keys; says something at edge; flag works</td><td class="pts">4 pts</td></tr>
+      <tr><td>Part 5B &mdash; Tier B Build</td><td>Player + second sprite + score variable all working; restarts cleanly</td><td class="pts">5 pts</td></tr>
+      <tr><td>Part 5C &mdash; Tier C Build</td><td>All Tier B goals + lives counter + speed scaling + Game Over screen</td><td class="pts">6 pts</td></tr>
+      <tr><td>Part 6 &mdash; Share-Out &amp; Reflection</td><td>Pair-share recorded; ship-it checklist signed off; exit ticket complete</td><td class="pts">3 pts</td></tr>
+      <tr><td>&#11088; Challenge Card</td><td>Sound added AND broadcast used, both documented</td><td class="pts">+2</td></tr>
+    </tbody>
+  </table>
+  <div style="display:flex;justify-content:flex-end;margin-top:10px;gap:24px;font-size:.82rem;color:#374151;">
+    <span>Tier A: <strong style="font-family:var(--fc);color:#2563eb;">____ / 17</strong></span>
+    <span>Tier B: <strong style="font-family:var(--fc);color:#16a34a;">____ / 18</strong></span>
+    <span>Tier C: <strong style="font-family:var(--fc);color:#7c3aed;">____ / 19</strong></span>
+  </div>
+</div>
+
+<div class="sfooter">
+  <div><strong>Session 7 &middot; &ldquo;Ship It!&rdquo; Build Day</strong> &middot; Differentiated Activity Sheet &middot; Mr. Hsiao &ldquo;Hue&rdquo; Weng &middot; Summer 2026<br>
+  <span class="gtext" style="font-weight:800;">Events &middot; Loops &middot; Conditionals &middot; Variables &middot; Sprites &middot; Ship It!</span></div>
+  <div style="text-align:right;">Ages 7&ndash;13 &middot; Grades 1&ndash;9<br><span style="font-size:.7rem;">&#128640; Every student ships today &mdash; small wins build big confidence!</span></div>
+</div>
+
+</div>
+<script>
+(function(){
+  function initCanvas(c){
+    var ctx=c.getContext('2d'),drawing=false,lx=0,ly=0,color='#1f2a37',lw=2;
+    function gp(e){var r=c.getBoundingClientRect(),s=e.touches?e.touches[0]:e;return{x:s.clientX-r.left,y:s.clientY-r.top};}
+    function sd(e){drawing=true;var p=gp(e);lx=p.x;ly=p.y;e.preventDefault();}
+    function dr(e){if(!drawing)return;var p=gp(e);ctx.beginPath();ctx.moveTo(lx,ly);ctx.lineTo(p.x,p.y);ctx.strokeStyle=color;ctx.lineWidth=lw;ctx.lineCap='round';ctx.stroke();lx=p.x;ly=p.y;e.preventDefault();}
+    function st(){drawing=false;}
+    c.addEventListener('mousedown',sd);c.addEventListener('mousemove',dr);c.addEventListener('mouseup',st);c.addEventListener('mouseleave',st);
+    c.addEventListener('touchstart',sd,{passive:false});c.addEventListener('touchmove',dr,{passive:false});c.addEventListener('touchend',st);
+    var btn=c.parentElement?c.parentElement.querySelector('.dw-clear'):null;
+    if(btn)btn.addEventListener('click',function(){ctx.clearRect(0,0,c.width,c.height);});
+    var cp=c.parentElement?c.parentElement.querySelector('.dw-color'):null;
+    if(cp)cp.addEventListener('input',function(e){color=e.target.value;});
+    var sp=c.parentElement?c.parentElement.querySelector('.dw-size'):null;
+    if(sp)sp.addEventListener('input',function(e){lw=+e.target.value;});
+  }
+  document.addEventListener('DOMContentLoaded',function(){document.querySelectorAll('canvas.dc').forEach(initCanvas);});
+})();
+</script>
+</body>
+</html>
