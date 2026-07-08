@@ -1,1 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Homework Sheet · Session 7 · "Ship It!" Polish &amp; Reflect</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --color-bg: #f4fbff;
+    --color-surface: rgba(255,255,255,0.97);
+    --color-text: #1f2a37;
+    --color-text-secondary: #374151;
+    --color-text-muted: #5b6b7e;
+    --color-accent-1: #2563eb;
+    --color-accent-2: #16a34a;
+    --color-accent-3: #f59e0b;
+    --color-accent-red: #ef4444;
+    --color-accent-purple: #7c3aed;
+    --font-display: 'Fredoka', 'Trebuchet MS', sans-serif;
+    --font-body: 'Nunito', Arial, sans-serif;
+    --font-code: 'Fira Code', Consolas, monospace;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  @media print {
+    body { background: #fff !important; }
+    .no-print { display: none !important; }
+    .page-break { page-break-before: always; }
+    .card { box-shadow: none !important; border: 1.5px solid #d1d5db !important; }
+  }
+  body { font-family: var(--font-body); color: var(--color-text); background: var(--color-bg); min-height: 100vh; }
+  .print-bar { background: rgba(255,255,255,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(148,163,184,0.3); padding: 10px 24px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; gap: 12px; flex-wrap: wrap; }
+  .print-bar .bar-title { font-family: var(--font-display); font-size: 1.05rem; font-weight: 700; color: var(--color-accent-2); }
+  .print-bar .bar-sub { font-size: 0.78rem; color: var(--color-text-muted); }
+  .btn-print { background: var(--color-accent-2); color: #fff; border: none; padding: 8px 20px; border-radius: 999px; font-family: var(--font-body); font-size: 0.82rem; font-weight: 800; cursor: pointer; letter-spacing: 0.06em; transition: background 0.2s, transform 0.15s; }
+  .btn-print:hover { background: #15803d; transform: translateY(-1px); }
+  .page { max-width: 920px; margin: 0 auto; padding: 32px 24px 60px; }
+  .sheet-header { background: linear-gradient(135deg, #16a34a 0%, #2563eb 55%, #7c3aed 100%); border-radius: 20px; padding: 28px 32px 24px; color: #fff; margin-bottom: 28px; position: relative; overflow: hidden; }
+  .sheet-header::before { content: ''; position: absolute; top: -60px; right: -60px; width: 200px; height: 200px; background: rgba(255,255,255,0.08); border-radius: 50%; }
+  .sheet-header::after { content: ''; position: absolute; bottom: -40px; left: -40px; width: 140px; height: 140px; background: rgba(255,255,255,0.06); border-radius: 50%; }
+  .header-emoji { font-size: 2.8rem; margin-bottom: 6px; }
+  .header-day { font-size: 0.75rem; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; opacity: 0.85; margin-bottom: 4px; }
+  .header-title { font-family: var(--font-display); font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 700; line-height: 1.1; margin-bottom: 6px; }
+  .header-sub { font-size: 0.88rem; opacity: 0.85; margin-bottom: 14px; }
+  .header-pills { display: flex; gap: 8px; flex-wrap: wrap; }
+  .header-pill { background: rgba(255,255,255,0.22); border: 1px solid rgba(255,255,255,0.35); border-radius: 999px; padding: 4px 14px; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
+  .student-info { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 28px; }
+  @media (max-width: 600px) { .student-info { grid-template-columns: 1fr; } }
+  .info-field { background: var(--color-surface); border-radius: 12px; padding: 12px 14px; border: 1.5px solid rgba(22,163,74,0.14); box-shadow: 0 2px 8px rgba(15,23,42,0.05); }
+  .info-label { font-size: 0.65rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-accent-2); margin-bottom: 6px; }
+  .info-line { border: none; border-bottom: 1.5px solid #cbd5e1; width: 100%; font-family: var(--font-body); font-size: 0.9rem; color: var(--color-text); background: transparent; outline: none; padding: 2px 0; }
+  .info-line:focus { border-bottom-color: #16a34a; }
+  .section-label { display: inline-flex; align-items: center; gap: 8px; padding: 5px 16px; border-radius: 999px; border: 1px solid rgba(148,163,184,0.4); background: rgba(255,255,255,0.9); font-size: 0.72rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-accent-2); margin-bottom: 10px; }
+  .section-title { font-family: var(--font-display); font-size: clamp(1.3rem, 2.5vw, 1.8rem); font-weight: 700; margin-bottom: 16px; color: var(--color-text); line-height: 1.2; }
+  .card { background: var(--color-surface); border-radius: 16px; padding: 18px 20px; box-shadow: 0 4px 18px rgba(15,23,42,0.07); border: 1px solid rgba(255,255,255,0.7); margin-bottom: 16px; }
+  .card.accent-blue { border-left: 4px solid var(--color-accent-1); }
+  .card.accent-green { border-left: 4px solid var(--color-accent-2); }
+  .card.accent-amber { border-left: 4px solid var(--color-accent-3); }
+  .card.accent-red { border-left: 4px solid var(--color-accent-red); }
+  .card.accent-purple { border-left: 4px solid var(--color-accent-purple); }
+  .card-label { font-size: 0.68rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 8px; }
+  .card-label.blue { color: var(--color-accent-1); }
+  .card-label.green { color: #15803d; }
+  .card-label.amber { color: #b45309; }
+  .card-label.red { color: #b91c1c; }
+  .card-label.purple { color: #6d28d9; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  @media (max-width: 680px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+  input.write-line { border: none; border-bottom: 1.5px solid #cbd5e1; width: 100%; margin-bottom: 10px; height: 28px; display: block; background: transparent; font-family: var(--font-body); font-size: 0.88rem; color: var(--color-text); outline: none; padding: 2px 4px; }
+  input.write-line:focus { border-bottom-color: #16a34a; }
+  input.write-line::placeholder { color: #bdc5d1; font-style: italic; }
+  textarea.write-area { border: 1.5px solid #cbd5e1; border-radius: 8px; width: 100%; min-height: 70px; padding: 8px; font-family: var(--font-body); font-size: 0.85rem; color: var(--color-text); resize: vertical; background: #f8fafc; outline: none; display: block; }
+  textarea.write-area:focus { outline: 2px solid rgba(22,163,74,0.3); }
+  textarea.write-area::placeholder { color: #bdc5d1; font-style: italic; }
+  textarea.write-area:focus { outline: 2px solid rgba(22,163,74,0.3); }
+  .tip-box { border-radius: 10px; padding: 10px 14px; font-size: 0.8rem; line-height: 1.5; margin-top: 10px; }
+  .tip-box.blue { background: rgba(37,99,235,0.07); color: #1e40af; }
+  .tip-box.green { background: rgba(22,163,74,0.07); color: #14532d; }
+  .tip-box.amber { background: rgba(245,158,11,0.07); color: #92400e; }
+  .tip-box.purple { background: rgba(124,58,237,0.07); color: #5b21b6; }
+  .divider { border: none; border-top: 2px dashed #dde6f0; margin: 28px 0; }
+  .check-list { list-style: none; padding: 0; }
+  .check-list li { display: flex; align-items: flex-start; gap: 8px; font-size: 0.85rem; color: var(--color-text-secondary); margin-bottom: 8px; line-height: 1.45; }
+  .check-list li .box { flex-shrink: 0; width: 17px; height: 17px; border: 2px solid #94a3b8; border-radius: 4px; margin-top: 1px; background: #fff; display: inline-block; }
+  .mb-1 { margin-bottom: 6px; }
+  .mb-2 { margin-bottom: 10px; }
+  .mb-3 { margin-bottom: 14px; }
+  .mt-2 { margin-top: 10px; }
+  .mt-3 { margin-top: 14px; }
+  .text-muted { color: var(--color-text-muted); font-size: 0.78rem; }
+  code { background: #e0f2ff; padding: 1px 6px; border-radius: 4px; font-family: var(--font-code); font-size: 0.82em; color: #1d4ed8; }
+  .grad-text { background: linear-gradient(135deg,#16a34a,#2563eb,#7c3aed); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  /* Scratch blocks */
+  .sb { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px 3px 8px; border-radius: 6px; font-family: var(--font-code); font-weight: 700; font-size: 0.78rem; cursor: default; user-select: none; vertical-align: middle; }
+  .sb-purple { background: #9c27b0; color: #fff; }
+  .sb-orange { background: #ff9800; color: #fff; }
+  .sb-blue { background: #2196f3; color: #fff; }
+  .sb-yellow { background: #ffc107; color: #333; }
+  .sb-teal { background: #009688; color: #fff; }
+  .sb-green { background: #4caf50; color: #fff; }
+  /* Level badges */
+  .level-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 14px; border-radius: 999px; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 8px; }
+  .level-a { background: linear-gradient(135deg,#2563eb,#60a5fa); color:#fff; }
+  .level-b { background: linear-gradient(135deg,#16a34a,#4ade80); color:#fff; }
+  .level-c { background: linear-gradient(135deg,#7c3aed,#f97066); color:#fff; }
+  .level-bonus { background: linear-gradient(135deg,#f59e0b,#f97066); color:#fff; }
+  /* Rubric */
+  table.rubric { width: 100%; border-collapse: collapse; font-size: 0.82rem; margin-top: 8px; }
+  table.rubric th { background: #1e293b; color: #e2e8f0; padding: 8px 10px; text-align: left; font-weight: 700; letter-spacing: 0.05em; }
+  table.rubric td { padding: 8px 10px; border-bottom: 1px solid #e2e8f0; vertical-align: top; color: var(--color-text-secondary); }
+  table.rubric tr:nth-child(even) td { background: rgba(241,245,249,0.6); }
+  table.rubric td:first-child { font-weight: 700; color: var(--color-text); }
+  table.rubric .pts { font-family: var(--font-code); font-size: 0.75rem; font-weight: 800; color: var(--color-accent-2); white-space: nowrap; }
+  .sheet-footer { margin-top: 40px; padding: 16px 20px; border-radius: 12px; background: rgba(22,163,74,0.05); border: 1px solid rgba(22,163,74,0.12); display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; font-size: 0.76rem; color: var(--color-text-muted); }
+  .sheet-footer strong { color: var(--color-text); }
+  /* Timer badge */
+  .timer-badge { display: inline-flex; align-items: center; gap: 6px; background: #fef3c7; border: 1.5px solid #fcd34d; border-radius: 999px; padding: 3px 12px; font-size: 0.72rem; font-weight: 800; color: #92400e; }
+  /* Drawing */
+  .draw-wrap { position:relative; margin-bottom:6px; }
+  .draw-toolbar { display:flex; align-items:center; gap:8px; margin-bottom:4px; flex-wrap:wrap; }
+  .draw-toolbar label { font-size:0.7rem; font-weight:700; color:#64748b; }
+  .draw-color { width:28px; height:28px; border:none; border-radius:6px; cursor:pointer; padding:0; background:transparent; }
+  .draw-size { width:70px; accent-color:#16a34a; cursor:pointer; }
+  .draw-clear { background:#fee2e2; color:#b91c1c; border:none; border-radius:6px; padding:3px 10px; font-size:0.72rem; font-weight:800; cursor:pointer; }
+  canvas.draw-canvas { display:block; width:100%; border-radius:8px; cursor:crosshair; touch-action:none; background:#f0fdf4; }
+</style>
+</head>
+<body>
 
+<!-- PRINT BAR -->
+<div class="print-bar no-print">
+  <div>
+    <div class="bar-title">🌙 Session 7 · Homework Sheet</div>
+    <div class="bar-sub">"Ship It!" Polish &amp; Reflect — 30 minutes · Ages 7–13</div>
+  </div>
+  <button class="btn-print" onclick="window.print()">🖨️ Print / Save as PDF</button>
+</div>
+
+<div class="page">
+
+<!-- ══════════ HEADER ══════════ -->
+<div class="sheet-header">
+  <div class="header-emoji">🌙✏️</div>
+  <div class="header-day">Session 7 Homework · Wednesday, July 8 · Due: Thursday, July 9</div>
+  <div class="header-title">Ship It! — Polish, Reflect &amp; Describe</div>
+  <div class="header-sub">~30 minutes · Polish your project, write 2 sentences, and explore one bonus</div>
+  <div class="header-pills">
+    <span class="header-pill">⏱ 30 min</span>
+    <span class="header-pill">🏠 At Home</span>
+    <span class="header-pill">3 Tiers</span>
+    <span class="header-pill">Ages 7–13</span>
+    <span class="header-pill">Scratch · Reflect · Extend</span>
+  </div>
+</div>
+
+<!-- ══════════ STUDENT INFO ══════════ -->
+<div class="student-info">
+  <div class="info-field">
+    <div class="info-label">👤 Your Name</div>
+    <input class="info-line" type="text" placeholder="First Last" />
+  </div>
+  <div class="info-field">
+    <div class="info-label">📅 Date Completed</div>
+    <input class="info-line" type="text" placeholder="July ___, 2026" />
+  </div>
+  <div class="info-field">
+    <div class="info-label">🏫 Section</div>
+    <input class="info-line" type="text" placeholder="Section 1 / 2 / 3" />
+  </div>
+</div>
+
+<!-- ══════════ HOMEWORK OVERVIEW ══════════ -->
+<div class="card accent-green mb-3">
+  <div class="card-label green">📋 Tonight's 3 Tasks — Pick Your Level</div>
+  <p class="mb-2" style="font-size:0.88rem;color:#374151;">Your homework has <strong>3 parts</strong>. Everyone does Part 1 and Part 2. Part 3 has three tiers — choose the one that fits your project. <strong>Total: ~30 minutes.</strong></p>
+  <div class="grid-3">
+    <div style="background:#f0fdf4;border-radius:10px;padding:12px;text-align:center;">
+      <div style="font-size:1.6rem;margin-bottom:4px;">🔧</div>
+      <div style="font-weight:800;font-size:0.82rem;color:#15803d;margin-bottom:3px;">Part 1</div>
+      <div style="font-size:0.75rem;color:#374151;">Polish your project in Scratch</div>
+      <div class="timer-badge" style="margin:6px auto 0;width:fit-content;">~10 min</div>
+    </div>
+    <div style="background:#eff6ff;border-radius:10px;padding:12px;text-align:center;">
+      <div style="font-size:1.6rem;margin-bottom:4px;">✍️</div>
+      <div style="font-weight:800;font-size:0.82rem;color:#1d4ed8;margin-bottom:3px;">Part 2</div>
+      <div style="font-size:0.75rem;color:#374151;">Write 2 sentences + reflect</div>
+      <div class="timer-badge" style="margin:6px auto 0;width:fit-content;">~10 min</div>
+    </div>
+    <div style="background:#faf5ff;border-radius:10px;padding:12px;text-align:center;">
+      <div style="font-size:1.6rem;margin-bottom:4px;">🚀</div>
+      <div style="font-weight:800;font-size:0.82rem;color:#6d28d9;margin-bottom:3px;">Part 3</div>
+      <div style="font-size:0.75rem;color:#374151;">Tiered extension (choose!)</div>
+      <div class="timer-badge" style="margin:6px auto 0;width:fit-content;">~10 min</div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ══════════ PART 1 · POLISH ══════════ -->
+<div class="section-label">🔧 Part 1 · Polish Your Project (~10 min)</div>
+<div class="section-title">Open Scratch — Make It Better!</div>
+
+<p style="font-size:0.88rem;color:#374151;margin-bottom:14px;">Open your project from today's class at <strong>scratch.mit.edu</strong>. Pick <strong>at least 2</strong> polish tasks from the list below and complete them. Check off what you did.</p>
+
+<div class="card accent-green mb-2">
+  <div class="card-label green">🎨 Polish Checklist — Pick 2 or more!</div>
+  <div class="grid-2">
+    <div>
+      <div class="check-list">
+        <li><span class="box"></span> <strong>Add a title screen</strong> — a sprite that says the game name for 2 seconds when the flag is clicked</li>
+        <li><span class="box"></span> <strong>Add a sound effect</strong> — use Sound blocks to play a sound when you score or collide</li>
+        <li><span class="box"></span> <strong>Improve the backdrop</strong> — pick a more colorful or fitting scene from the library</li>
+        <li><span class="box"></span> <strong>Make a sprite bigger or smaller</strong> — resize your player or enemy so it fits the scene better</li>
+        <li><span class="box"></span> <strong>Add edge bouncing</strong> — use Motion → "if on edge, bounce" so nothing flies off screen</li>
+      </div>
+    </div>
+    <div>
+      <div class="check-list">
+        <li><span class="box"></span> <strong>Change a costume</strong> — switch your sprite's look using the Costumes tab</li>
+        <li><span class="box"></span> <strong>Add a "Game Over" message</strong> — use a Looks → Say block when the game ends</li>
+        <li><span class="box"></span> <strong>Fix a bug you noticed in class</strong> — describe it below</li>
+        <li><span class="box"></span> <strong>Speed it up or slow it down</strong> — change the "move X steps" number so it feels right</li>
+        <li><span class="box"></span> <strong>Add instructions</strong> — a sprite that tells players what to do at the start</li>
+      </div>
+    </div>
+  </div>
+  <div class="grid-2 mt-2">
+    <div>
+      <p style="font-size:0.8rem;font-weight:700;color:#15803d;margin-bottom:4px;">What 2 (or more) polishes did you make?</p>
+      <input class="write-line" type="text" placeholder="1. I added..." />
+      <input class="write-line" type="text" placeholder="2. I also..." />
+    </div>
+    <div>
+      <p style="font-size:0.8rem;font-weight:700;color:#15803d;margin-bottom:4px;">Did you find and fix any bugs? What was broken?</p>
+      <input class="write-line" type="text" placeholder="I found a bug where..." />
+      <input class="write-line" type="text" placeholder="I fixed it by..." />
+    </div>
+  </div>
+</div>
+
+<div class="card accent-blue mb-3">
+  <div class="card-label blue">🔗 Save Your Project</div>
+  <p class="mb-2" style="font-size:0.85rem;color:#374151;">Make sure your project is saved! Write your project title or link below so you can find it tomorrow.</p>
+  <div class="grid-2">
+    <div>
+      <p style="font-size:0.8rem;font-weight:700;color:#1d4ed8;margin-bottom:4px;">My Scratch project title:</p>
+      <input class="write-line" type="text" placeholder="My game is called..." />
+    </div>
+    <div>
+      <p style="font-size:0.8rem;font-weight:700;color:#1d4ed8;margin-bottom:4px;">Scratch link (if shared online):</p>
+      <input class="write-line" type="text" placeholder="scratch.mit.edu/projects/..." />
+    </div>
+  </div>
+  <div class="tip-box blue">To share your project: click <strong>Share</strong> in the top right of Scratch. Ask a parent to help if needed. Sharing is optional — you can also just save it to your account.</div>
+</div>
+
+<hr class="divider">
+
+<!-- ══════════ PART 2 · WRITE + REFLECT ══════════ -->
+<div class="section-label">✍️ Part 2 · Write &amp; Reflect (~10 min)</div>
+<div class="section-title">Describe Your Project &amp; Think About AI</div>
+
+<div class="card accent-amber mb-2">
+  <div class="card-label amber">📝 The 2 Required Sentences (from syllabus homework)</div>
+  <p class="mb-2" style="font-size:0.85rem;color:#374151;">Your teacher asked you to write <strong>2 sentences</strong> about your project tonight. Write them carefully — these go in your portfolio!</p>
+  <div style="background:#fffbeb;border-radius:12px;padding:16px;border:2px solid #fde68a;margin-bottom:12px;">
+    <p style="font-size:0.78rem;font-weight:800;color:#92400e;margin-bottom:6px;">SENTENCE 1 — What does your project do?</p>
+    <p style="font-size:0.78rem;color:#374151;font-style:italic;margin-bottom:8px;">Describe what happens when someone clicks the green flag. Include what the player does and what the goal is.</p>
+    <textarea class="write-area" style="min-height:60px;" placeholder="My Scratch project is a game where the player... The goal is to..."></textarea>
+  </div>
+  <div style="background:#fffbeb;border-radius:12px;padding:16px;border:2px solid #fde68a;">
+    <p style="font-size:0.78rem;font-weight:800;color:#92400e;margin-bottom:6px;">SENTENCE 2 — One thing you would add if you had more time</p>
+    <p style="font-size:0.78rem;color:#374151;font-style:italic;margin-bottom:8px;">Be specific! Not just "make it better" — describe exactly what you'd add and why it would make it more fun.</p>
+    <textarea class="write-area" style="min-height:60px;" placeholder="If I had more time, I would add... because it would make the game more fun by..."></textarea>
+  </div>
+</div>
+
+<div class="card accent-purple mb-3">
+  <div class="card-label purple">🤖 AI Connection — Think Like an Engineer</div>
+  <p class="mb-2" style="font-size:0.85rem;color:#374151;">Today in class we asked: <em>"Could an AI have made your game? What would it need to know?"</em> Now that you've polished your project, think deeper.</p>
+  <div class="grid-2">
+    <div style="background:#faf5ff;border-radius:10px;padding:12px;">
+      <p style="font-size:0.78rem;font-weight:800;color:#6d28d9;margin-bottom:6px;">If AI watched 10,000 Scratch games, what patterns might it learn?</p>
+      <div style="margin-bottom:6px;">
+        <label style="font-size:0.8rem;display:flex;align-items:center;gap:6px;margin-bottom:4px;cursor:pointer;"><input type="checkbox" style="accent-color:#7c3aed;"> Sprites usually move when keys are pressed</label>
+        <label style="font-size:0.8rem;display:flex;align-items:center;gap:6px;margin-bottom:4px;cursor:pointer;"><input type="checkbox" style="accent-color:#7c3aed;"> Score goes up when sprites touch</label>
+        <label style="font-size:0.8rem;display:flex;align-items:center;gap:6px;margin-bottom:4px;cursor:pointer;"><input type="checkbox" style="accent-color:#7c3aed;"> The green flag always starts the game</label>
+        <label style="font-size:0.8rem;display:flex;align-items:center;gap:6px;cursor:pointer;"><input type="checkbox" style="accent-color:#7c3aed;"> Forever loops keep the game running</label>
+      </div>
+      <p style="font-size:0.75rem;font-weight:700;color:#6d28d9;margin-bottom:3px;">One pattern I think AI would definitely learn:</p>
+      <input class="write-line" type="text" placeholder="AI would learn that..." />
+    </div>
+    <div style="background:#faf5ff;border-radius:10px;padding:12px;">
+      <p style="font-size:0.78rem;font-weight:800;color:#6d28d9;margin-bottom:6px;">What does your game have that AI could NOT learn from just watching — it needs YOU to decide?</p>
+      <textarea class="write-area" style="min-height:80px;" placeholder="My game's theme is unique because... The AI can't know that I wanted it to feel like..."></textarea>
+      <p style="font-size:0.75rem;font-weight:700;color:#6d28d9;margin-top:8px;margin-bottom:3px;">This shows that creativity in games comes from:</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <label style="font-size:0.78rem;display:flex;align-items:center;gap:4px;cursor:pointer;"><input type="radio" name="creativity" style="accent-color:#7c3aed;"> The coder's imagination</label>
+        <label style="font-size:0.78rem;display:flex;align-items:center;gap:4px;cursor:pointer;"><input type="radio" name="creativity" style="accent-color:#7c3aed;"> The AI's training</label>
+        <label style="font-size:0.78rem;display:flex;align-items:center;gap:4px;cursor:pointer;"><input type="radio" name="creativity" style="accent-color:#7c3aed;"> Both together</label>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider page-break">
+
+<!-- ══════════ PART 3 · TIERED EXTENSION ══════════ -->
+<div class="section-label">🚀 Part 3 · Tiered Extension (~10 min)</div>
+<div class="section-title">Choose Your Level — Go Further!</div>
+
+<p style="font-size:0.88rem;color:#374151;margin-bottom:14px;">Find your tier. Do the task that matches where you are. You do <strong>only one</strong> tier — but fast finishers can try the next one up!</p>
+
+<!-- Tier A Extension -->
+<div class="card mb-2" style="border:2px solid #bfdbfe;background:#f8faff;">
+  <div style="margin-bottom:8px;"><span class="level-badge level-a">Tier A — Foundations · Grades 1–3</span></div>
+  <div class="card-label blue">🎨 Draw Your Game Design</div>
+  <p class="mb-2" style="font-size:0.85rem;color:#374151;">On paper OR using the drawing area below, draw a picture of your Scratch project. Label the parts: <strong>Player Sprite</strong>, <strong>Goal Sprite</strong> (what you catch/avoid), <strong>Backdrop</strong>, and where the <strong>Score</strong> shows up.</p>
+
+  <div class="draw-wrap" style="border:2px dashed #93c5fd;border-radius:10px;padding:8px;background:#f0f9ff;">
+    <div class="draw-toolbar">
+      <label>✏️ Draw:</label>
+      <input type="color" class="draw-color" value="#2563eb" title="Pen color" />
+      <label>Size:</label>
+      <input type="range" class="draw-size" min="1" max="12" value="3" />
+      <button class="draw-clear" type="button">🗑 Clear</button>
+    </div>
+    <canvas class="draw-canvas" height="160"></canvas>
+  </div>
+
+  <div class="grid-2 mt-2">
+    <div>
+      <p style="font-size:0.78rem;font-weight:700;color:#1d4ed8;margin-bottom:3px;">My player sprite is (draw or write):</p>
+      <input class="write-line" type="text" placeholder="My player sprite is a..." />
+      <p style="font-size:0.78rem;font-weight:700;color:#1d4ed8;margin-bottom:3px;margin-top:6px;">What happens when you win?</p>
+      <input class="write-line" type="text" placeholder="You win when..." />
+    </div>
+    <div>
+      <p style="font-size:0.78rem;font-weight:700;color:#1d4ed8;margin-bottom:3px;">What is the goal/challenge sprite?</p>
+      <input class="write-line" type="text" placeholder="You have to catch/avoid..." />
+      <p style="font-size:0.78rem;font-weight:700;color:#1d4ed8;margin-bottom:3px;margin-top:6px;">Show this drawing to a family member — what did they say?</p>
+      <input class="write-line" type="text" placeholder="They said..." />
+    </div>
+  </div>
+  <div class="tip-box blue">Family challenge: Show your Scratch project to someone at home and ask them to try playing it. Did they figure out how to play without you telling them? That's a great sign it's well-designed!</div>
+</div>
+
+<!-- Tier B Extension -->
+<div class="card mb-2" style="border:2px solid #bbf7d0;background:#f8fff9;">
+  <div style="margin-bottom:8px;"><span class="level-badge level-b">Tier B — Core · Grades 3–5</span></div>
+  <div class="card-label green">🗺️ Game Design Document (Mini Version)</div>
+  <p class="mb-2" style="font-size:0.85rem;color:#374151;">Real game designers write a <strong>Game Design Document (GDD)</strong> before and after building — it's a blueprint that describes how the game works. Write a mini-GDD for your project.</p>
+
+  <div class="grid-2 mb-2">
+    <div>
+      <div style="background:#f0fdf4;border-radius:10px;padding:12px;">
+        <p style="font-size:0.78rem;font-weight:800;color:#15803d;margin-bottom:6px;">🎮 Game Info</p>
+        <p style="font-size:0.75rem;font-weight:700;color:#374151;margin-bottom:2px;">Game Title:</p>
+        <input class="write-line" type="text" placeholder="..." />
+        <p style="font-size:0.75rem;font-weight:700;color:#374151;margin-bottom:2px;">Genre (circle one): Catch · Chase · Avoid · Click · Story</p>
+        <input class="write-line" type="text" placeholder="My game genre is..." />
+        <p style="font-size:0.75rem;font-weight:700;color:#374151;margin-bottom:2px;">Who is it for? (age, type of player):</p>
+        <input class="write-line" type="text" placeholder="This game is for..." />
+      </div>
+    </div>
+    <div>
+      <div style="background:#f0fdf4;border-radius:10px;padding:12px;">
+        <p style="font-size:0.78rem;font-weight:800;color:#15803d;margin-bottom:6px;">🏆 Mechanics</p>
+        <p style="font-size:0.75rem;font-weight:700;color:#374151;margin-bottom:2px;">How does the player control their sprite?</p>
+        <input class="write-line" type="text" placeholder="Player uses..." />
+        <p style="font-size:0.75rem;font-weight:700;color:#374151;margin-bottom:2px;">What increases the score?</p>
+        <input class="write-line" type="text" placeholder="Score goes up when..." />
+        <p style="font-size:0.75rem;font-weight:700;color:#374151;margin-bottom:2px;">How does the game end?</p>
+        <input class="write-line" type="text" placeholder="The game ends when..." />
+      </div>
+    </div>
+  </div>
+
+  <div style="background:#f0fdf4;border-radius:10px;padding:12px;margin-bottom:10px;">
+    <p style="font-size:0.78rem;font-weight:800;color:#15803d;margin-bottom:6px;">🐛 Debug Log — What bugs did you find and fix today or tonight?</p>
+    <table style="width:100%;font-size:0.78rem;border-collapse:collapse;">
+      <tr style="background:#dcfce7;"><td style="padding:5px 8px;font-weight:700;color:#15803d;width:35%;">Bug Description</td><td style="padding:5px 8px;font-weight:700;color:#15803d;width:35%;">What caused it?</td><td style="padding:5px 8px;font-weight:700;color:#15803d;">How did you fix it?</td></tr>
+      <tr style="border-bottom:1px solid #bbf7d0;"><td style="padding:5px 8px;"><input type="text" style="border:none;border-bottom:1px solid #d1fae5;width:100%;font-size:0.75rem;background:transparent;outline:none;" placeholder="Bug 1..." /></td><td style="padding:5px 8px;"><input type="text" style="border:none;border-bottom:1px solid #d1fae5;width:100%;font-size:0.75rem;background:transparent;outline:none;" placeholder="Caused by..." /></td><td style="padding:5px 8px;"><input type="text" style="border:none;border-bottom:1px solid #d1fae5;width:100%;font-size:0.75rem;background:transparent;outline:none;" placeholder="Fixed by..." /></td></tr>
+      <tr><td style="padding:5px 8px;"><input type="text" style="border:none;border-bottom:1px solid #d1fae5;width:100%;font-size:0.75rem;background:transparent;outline:none;" placeholder="Bug 2..." /></td><td style="padding:5px 8px;"><input type="text" style="border:none;border-bottom:1px solid #d1fae5;width:100%;font-size:0.75rem;background:transparent;outline:none;" placeholder="Caused by..." /></td><td style="padding:5px 8px;"><input type="text" style="border:none;border-bottom:1px solid #d1fae5;width:100%;font-size:0.75rem;background:transparent;outline:none;" placeholder="Fixed by..." /></td></tr>
+    </table>
+  </div>
+  <p style="font-size:0.8rem;font-weight:700;color:#15803d;margin-bottom:4px;">One feature you WANT to add next session and WHY:</p>
+  <textarea class="write-area" placeholder="In the next session, I want to add... because it would make the game better by..."></textarea>
+</div>
+
+<!-- Tier C Extension -->
+<div class="card mb-2" style="border:2px solid #e9d5ff;background:#fdf9ff;">
+  <div style="margin-bottom:8px;"><span class="level-badge level-c">Tier C — Accelerated · Grades 6–9</span></div>
+  <div class="card-label purple">🧠 Predict-the-Output + Python Bridge</div>
+  <p class="mb-2" style="font-size:0.85rem;color:#374151;">You're headed to Python next session! Practice reading code logic — this is the same thinking you use in Scratch, just written differently. Answer the questions WITHOUT running the code.</p>
+
+  <div class="card mb-2" style="border-left:3px solid #7c3aed;background:#faf5ff;">
+    <div class="card-label purple">🔍 Puzzle 1 — What Scratch Block Does This Match?</div>
+    <p class="mb-2" style="font-size:0.83rem;color:#374151;">Look at this Python-style logic. Which Scratch block does each line remind you of?</p>
+    <div style="background:#1e293b;color:#e2e8f0;border-radius:10px;padding:12px;font-family:var(--font-code);font-size:0.82rem;line-height:1.8;margin-bottom:10px;">
+      <span style="color:#93c5fd;">if</span> key_pressed == <span style="color:#86efac;">"right"</span>:&nbsp;&nbsp;&nbsp;<span style="color:#64748b;font-style:italic;"># Line A</span><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;x = x + 5&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#64748b;font-style:italic;"># Line B</span><br>
+      <span style="color:#93c5fd;">while</span> <span style="color:#fcd34d;">True</span>:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#64748b;font-style:italic;"># Line C</span><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;check_collision()&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#64748b;font-style:italic;"># Line D</span><br>
+      score = score + 1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#64748b;font-style:italic;"># Line E</span>
+    </div>
+    <div style="font-size:0.8rem;color:#374151;">
+      <p style="margin-bottom:4px;font-weight:700;color:#6d28d9;">Match each line to a Scratch block (write the block name):</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <div>Line A: <input type="text" style="border:none;border-bottom:1.5px solid #c4b5fd;width:160px;font-size:0.8rem;background:transparent;outline:none;" placeholder="Scratch block..." /></div>
+        <div>Line B: <input type="text" style="border:none;border-bottom:1.5px solid #c4b5fd;width:160px;font-size:0.8rem;background:transparent;outline:none;" placeholder="Scratch block..." /></div>
+        <div>Line C: <input type="text" style="border:none;border-bottom:1.5px solid #c4b5fd;width:160px;font-size:0.8rem;background:transparent;outline:none;" placeholder="Scratch block..." /></div>
+        <div>Line E: <input type="text" style="border:none;border-bottom:1.5px solid #c4b5fd;width:160px;font-size:0.8rem;background:transparent;outline:none;" placeholder="Scratch block..." /></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mb-2" style="border-left:3px solid #7c3aed;background:#faf5ff;">
+    <div class="card-label purple">🔍 Puzzle 2 — Trace the Score</div>
+    <p class="mb-2" style="font-size:0.83rem;color:#374151;">Trace through this pseudocode for a Scratch game. What is the value of <code>score</code> after this sequence runs?</p>
+    <div style="background:#1e293b;color:#e2e8f0;border-radius:10px;padding:12px;font-family:var(--font-code);font-size:0.82rem;line-height:1.8;margin-bottom:10px;">
+      score = 0<br>
+      score = score + 1&nbsp;&nbsp;<span style="color:#64748b;font-style:italic;"># player catches item 1</span><br>
+      score = score + 1&nbsp;&nbsp;<span style="color:#64748b;font-style:italic;"># player catches item 2</span><br>
+      <span style="color:#93c5fd;">if</span> score > 1:<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;score = score + 5&nbsp;<span style="color:#64748b;font-style:italic;"># bonus round!</span><br>
+      score = score - 2&nbsp;&nbsp;<span style="color:#64748b;font-style:italic;"># penalty hit</span>
+    </div>
+    <div class="grid-2">
+      <div>
+        <p style="font-size:0.8rem;font-weight:700;color:#6d28d9;margin-bottom:4px;">What is score after line 3 (second catch)?</p>
+        <p>Score = <input type="text" style="border:none;border-bottom:2px solid #c4b5fd;width:50px;font-size:0.9rem;font-family:var(--font-code);font-weight:700;text-align:center;background:transparent;outline:none;" placeholder="?" /></p>
+      </div>
+      <div>
+        <p style="font-size:0.8rem;font-weight:700;color:#6d28d9;margin-bottom:4px;">What is the FINAL score after all lines run?</p>
+        <p>Score = <input type="text" style="border:none;border-bottom:2px solid #7c3aed;width:50px;font-size:0.9rem;font-family:var(--font-code);font-weight:700;text-align:center;background:transparent;outline:none;" placeholder="?" /></p>
+      </div>
+    </div>
+    <p style="font-size:0.8rem;font-weight:700;color:#6d28d9;margin-top:8px;margin-bottom:4px;">Did the <code>if score &gt; 1</code> check run? How do you know?</p>
+    <input class="write-line" type="text" placeholder="Yes/No because..." />
+  </div>
+
+  <div style="background:#faf5ff;border-radius:10px;padding:12px;">
+    <p style="font-size:0.78rem;font-weight:800;color:#6d28d9;margin-bottom:6px;">🧩 Design Challenge: If you were to translate your Scratch game to Python, what would be the hardest part to convert? Why?</p>
+    <textarea class="write-area" style="min-height:60px;" placeholder="The hardest part to translate would be... because in Python there's no visual block for..."></textarea>
+  </div>
+</div>
+
+<!-- Bonus -->
+<div class="card mb-3" style="border:2px solid #fde68a;background:#fffbeb;">
+  <div style="margin-bottom:8px;"><span class="level-badge level-bonus">⭐ Bonus — All Tiers · Families Welcome!</span></div>
+  <div class="card-label amber">🏠 Show a Family Member &amp; Get Feedback</div>
+  <p class="mb-2" style="font-size:0.85rem;color:#374151;">Show your polished Scratch project to someone at home — a parent, sibling, or anyone! Ask them these questions and write their answers.</p>
+  <div class="grid-2">
+    <div style="background:#fffbeb;border-radius:10px;padding:12px;">
+      <p style="font-size:0.78rem;font-weight:800;color:#b45309;margin-bottom:6px;">Ask them to try playing it, then ask:</p>
+      <p style="font-size:0.78rem;font-weight:700;color:#374151;margin-bottom:3px;">"Did you understand how to play without me telling you?"</p>
+      <div style="display:flex;gap:10px;margin-bottom:8px;">
+        <label style="font-size:0.82rem;display:flex;align-items:center;gap:4px;cursor:pointer;"><input type="radio" name="family1" style="accent-color:#f59e0b;"> Yes</label>
+        <label style="font-size:0.82rem;display:flex;align-items:center;gap:4px;cursor:pointer;"><input type="radio" name="family1" style="accent-color:#f59e0b;"> Kind of</label>
+        <label style="font-size:0.82rem;display:flex;align-items:center;gap:4px;cursor:pointer;"><input type="radio" name="family1" style="accent-color:#f59e0b;"> No</label>
+      </div>
+      <p style="font-size:0.78rem;font-weight:700;color:#374151;margin-bottom:3px;">"What was your favorite part?"</p>
+      <input class="write-line" type="text" placeholder="They said..." />
+    </div>
+    <div style="background:#fffbeb;border-radius:10px;padding:12px;">
+      <p style="font-size:0.78rem;font-weight:800;color:#b45309;margin-bottom:6px;">Then ask:</p>
+      <p style="font-size:0.78rem;font-weight:700;color:#374151;margin-bottom:3px;">"What would make it more fun?"</p>
+      <input class="write-line" type="text" placeholder="They suggested..." />
+      <p style="font-size:0.78rem;font-weight:700;color:#374151;margin-bottom:3px;margin-top:6px;">Family member's name and their relationship to you:</p>
+      <input class="write-line" type="text" placeholder="Name: ... They are my..." />
+      <p style="font-size:0.78rem;font-weight:700;color:#374151;margin-bottom:3px;margin-top:6px;">Do you agree with their suggestion? Why or why not?</p>
+      <input class="write-line" type="text" placeholder="I agree/disagree because..." />
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ SUBMIT ══════════ -->
+<div class="card accent-green mb-3">
+  <div class="card-label green">📧 Submit Tomorrow</div>
+  <p style="font-size:0.85rem;color:#374151;margin-bottom:8px;">Bring this sheet to class on <strong>Thursday, July 9</strong>. If you shared your project online, be ready to show the link!</p>
+  <div class="grid-2">
+    <div>
+      <div class="check-list">
+        <li><span class="box"></span> Part 1: Project polished &amp; saved</li>
+        <li><span class="box"></span> Part 2: 2 required sentences written</li>
+        <li><span class="box"></span> AI Connection questions answered</li>
+        <li><span class="box"></span> Part 3: Tiered extension complete</li>
+      </div>
+    </div>
+    <div>
+      <p style="font-size:0.8rem;font-weight:700;color:#15803d;margin-bottom:4px;">📧 Email if submitting digitally:</p>
+      <p style="font-size:0.88rem;color:#374151;"><strong>hue.weng.88@gmail.com</strong></p>
+      <p style="font-size:0.75rem;color:#5b6b7e;margin-top:2px;">Subject: <em>Session 7 HW · [Your Name] · Tier [A/B/C]</em></p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ RUBRIC ══════════ -->
+<div class="section-label">📊 Scoring</div>
+<div class="section-title">Rubric &amp; Points</div>
+
+<div class="card mb-3">
+  <table class="rubric">
+    <thead><tr><th>Section</th><th>What to Look For</th><th>Points</th></tr></thead>
+    <tbody>
+      <tr><td>Part 1 — Polish</td><td>At least 2 polish tasks checked off; bug (if any) described and fixed; project link or title written</td><td class="pts">3 pts</td></tr>
+      <tr><td>Part 2 — 2 Required Sentences</td><td>Sentence 1 describes game clearly (player, goal, mechanics); Sentence 2 names a specific feature to add with reasoning</td><td class="pts">3 pts</td></tr>
+      <tr><td>Part 2 — AI Connection</td><td>At least 2 AI pattern checkboxes checked; "what AI can't know" response thoughtful and specific</td><td class="pts">2 pts</td></tr>
+      <tr><td>Part 3A — Tier A Design Drawing</td><td>Drawing shows player sprite, goal sprite, and backdrop; all parts labeled; family member question answered</td><td class="pts">3 pts</td></tr>
+      <tr><td>Part 3B — Tier B GDD</td><td>Game info section complete; at least 1 bug logged with cause and fix; next feature described with reasoning</td><td class="pts">4 pts</td></tr>
+      <tr><td>Part 3C — Tier C Puzzles</td><td>Puzzle 1: all 4 Scratch block matches correct; Puzzle 2: both score values correct + if-check explained; Design challenge answered</td><td class="pts">5 pts</td></tr>
+      <tr><td>⭐ Bonus — Family Playtest</td><td>Family member named; all 3 questions answered; student reflects on whether they agree with the suggestion</td><td class="pts">+2</td></tr>
+    </tbody>
+  </table>
+  <div style="display:flex;justify-content:flex-end;margin-top:10px;gap:24px;font-size:0.82rem;color:#374151;">
+    <span>Tier A total: <strong style="font-family:var(--font-code);color:#2563eb;">____ / 11</strong></span>
+    <span>Tier B total: <strong style="font-family:var(--font-code);color:#16a34a;">____ / 12</strong></span>
+    <span>Tier C total: <strong style="font-family:var(--font-code);color:#7c3aed;">____ / 13</strong></span>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="sheet-footer">
+  <div>
+    <strong>Session 7 Homework · "Ship It!" Polish &amp; Reflect</strong> · Mr. Hsiao "Hue" Weng · Summer 2026<br>
+    <span class="grad-text" style="font-weight:800;">Polish · Debug · Describe · AI Connection · Family Play</span>
+  </div>
+  <div style="text-align:right;">
+    Ages 7–13 · Grades 1–9 · ~30 minutes<br>
+    <span style="font-size:0.7rem;">🌙 You shipped it — now make it shine!</span>
+  </div>
+</div>
+
+</div><!-- end .page -->
+
+<script>
+(function() {
+  function initCanvas(canvas) {
+    var ctx = canvas.getContext('2d');
+    var drawing = false, lastX = 0, lastY = 0, color = '#2563eb', lineWidth = 3;
+    function getPos(e) { var r = canvas.getBoundingClientRect(); var src = e.touches ? e.touches[0] : e; return { x: src.clientX - r.left, y: src.clientY - r.top }; }
+    function startDraw(e) { drawing = true; var p = getPos(e); lastX = p.x; lastY = p.y; e.preventDefault(); }
+    function draw(e) { if (!drawing) return; var p = getPos(e); ctx.beginPath(); ctx.moveTo(lastX, lastY); ctx.lineTo(p.x, p.y); ctx.strokeStyle = color; ctx.lineWidth = lineWidth; ctx.lineCap = 'round'; ctx.stroke(); lastX = p.x; lastY = p.y; e.preventDefault(); }
+    function stopDraw() { drawing = false; }
+    canvas.addEventListener('mousedown', startDraw); canvas.addEventListener('mousemove', draw); canvas.addEventListener('mouseup', stopDraw); canvas.addEventListener('mouseleave', stopDraw);
+    canvas.addEventListener('touchstart', startDraw, {passive:false}); canvas.addEventListener('touchmove', draw, {passive:false}); canvas.addEventListener('touchend', stopDraw);
+    var btn = canvas.parentElement ? canvas.parentElement.querySelector('.draw-clear') : null;
+    if (btn) btn.addEventListener('click', function() { ctx.clearRect(0, 0, canvas.width, canvas.height); });
+    var colorPick = canvas.parentElement ? canvas.parentElement.querySelector('.draw-color') : null;
+    if (colorPick) colorPick.addEventListener('input', function(e) { color = e.target.value; });
+    var sizePick = canvas.parentElement ? canvas.parentElement.querySelector('.draw-size') : null;
+    if (sizePick) sizePick.addEventListener('input', function(e) { lineWidth = +e.target.value; });
+  }
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('canvas.draw-canvas').forEach(initCanvas);
+  });
+})();
+</script>
+</body>
+</html>
