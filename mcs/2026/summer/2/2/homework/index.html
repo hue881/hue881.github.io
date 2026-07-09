@@ -1,1 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Homework · Session 6 · Scratch: Variables &amp; Score-keeping</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --color-bg: #fffdf7;
+    --color-surface: rgba(255,255,255,0.98);
+    --color-text: #1f2a37;
+    --color-text-secondary: #374151;
+    --color-text-muted: #5b6b7e;
+    --color-accent-1: #0b63ce;
+    --color-accent-2: #10b981;
+    --color-accent-3: #f59e0b;
+    --color-accent-red: #ef4444;
+    --font-display: 'Fredoka', 'Trebuchet MS', sans-serif;
+    --font-body: 'Nunito', Arial, sans-serif;
+    --font-code: 'Fira Code', Consolas, monospace;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  @media print {
+    body { background: #fff !important; }
+    .no-print { display: none !important; }
+    .page-break { page-break-before: always; }
+    .card { box-shadow: none !important; border: 1.5px solid #d1d5db !important; }
+    .sheet-header { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .tier-box, .hw-timer, .level-badge, .tier-a, .tier-b, .tier-c, .section-label { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    input { border: 1px solid #94a3b8 !important; }
+    textarea { border: 1px solid #94a3b8 !important; }
+  }
+  body { font-family: var(--font-body); color: var(--color-text); background: var(--color-bg); min-height: 100vh; }
+  /* ── Print bar ── */
+  .print-bar { background: rgba(255,255,255,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(148,163,184,0.3); padding: 10px 24px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; gap: 12px; flex-wrap: wrap; }
+  .print-bar .bar-title { font-family: var(--font-display); font-size: 1.05rem; font-weight: 700; color: #f59e0b; }
+  .print-bar .bar-sub { font-size: 0.78rem; color: var(--color-text-muted); }
+  .btn-print { background: #f59e0b; color: #fff; border: none; padding: 8px 20px; border-radius: 999px; font-family: var(--font-body); font-size: 0.82rem; font-weight: 800; cursor: pointer; letter-spacing: 0.06em; transition: background 0.2s, transform 0.15s; }
+  .btn-print:hover { background: #d97706; transform: translateY(-1px); }
+  /* ── Page ── */
+  .page { max-width: 920px; margin: 0 auto; padding: 32px 24px 60px; }
+  /* ── Header ── */
+  .sheet-header { background: linear-gradient(135deg, #f59e0b 0%, #ef4444 50%, #7c3aed 100%); border-radius: 20px; padding: 28px 32px 24px; color: #fff; margin-bottom: 28px; position: relative; overflow: hidden; }
+  .sheet-header::before { content: ''; position: absolute; top: -60px; right: -60px; width: 200px; height: 200px; background: rgba(255,255,255,0.08); border-radius: 50%; }
+  .sheet-header::after  { content: ''; position: absolute; bottom: -40px; left: -40px; width: 140px; height: 140px; background: rgba(255,255,255,0.06); border-radius: 50%; }
+  .header-day   { font-size: 0.75rem; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; opacity: 0.85; margin-bottom: 4px; }
+  .header-title { font-family: var(--font-display); font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 700; line-height: 1.1; margin-bottom: 6px; }
+  .header-sub   { font-size: 0.88rem; opacity: 0.85; margin-bottom: 14px; }
+  .header-pills { display: flex; gap: 8px; flex-wrap: wrap; }
+  .header-pill  { background: rgba(255,255,255,0.22); border: 1px solid rgba(255,255,255,0.35); border-radius: 999px; padding: 4px 14px; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
+  /* ── Timer display ── */
+  .hw-timer { background: linear-gradient(135deg, #f59e0b, #ef4444); color: #fff; border-radius: 16px; padding: 16px 20px; margin-bottom: 22px; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .hw-timer .timer-title { font-family: var(--font-display); font-size: 1.2rem; font-weight: 700; }
+  .hw-timer .timer-sub   { font-size: 0.78rem; opacity: 0.88; margin-top: 2px; }
+  .time-badge { background: rgba(255,255,255,0.25); border: 1px solid rgba(255,255,255,0.4); border-radius: 10px; padding: 6px 16px; font-family: var(--font-display); font-size: 1rem; font-weight: 700; white-space: nowrap; }
+  /* ── Student info ── */
+  .student-info { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 28px; }
+  @media (max-width: 600px) { .student-info { grid-template-columns: 1fr; } }
+  .info-field   { background: var(--color-surface); border-radius: 12px; padding: 12px 14px; border: 1.5px solid rgba(245,158,11,0.2); box-shadow: 0 2px 8px rgba(15,23,42,0.05); }
+  .info-label   { font-size: 0.65rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: #b45309; margin-bottom: 6px; }
+  .info-line    { border: none; border-bottom: 1.5px solid #fcd34d; width: 100%; font-family: var(--font-body); font-size: 0.9rem; color: var(--color-text); background: transparent; outline: none; padding: 2px 0; }
+  .info-line:focus { border-bottom-color: #f59e0b; }
+  /* ── Section labels ── */
+  .section-label { display: inline-flex; align-items: center; gap: 8px; padding: 5px 16px; border-radius: 999px; border: 1px solid rgba(148,163,184,0.4); background: rgba(255,255,255,0.9); font-size: 0.72rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: #b45309; margin-bottom: 10px; }
+  .section-title { font-family: var(--font-display); font-size: clamp(1.3rem, 2.5vw, 1.8rem); font-weight: 700; margin-bottom: 16px; color: var(--color-text); line-height: 1.2; }
+  /* ── Cards ── */
+  .card { background: var(--color-surface); border-radius: 16px; padding: 18px 20px; box-shadow: 0 4px 18px rgba(15,23,42,0.07); border: 1px solid rgba(255,255,255,0.7); margin-bottom: 16px; }
+  .card.accent-blue   { border-left: 4px solid #0b63ce; }
+  .card.accent-green  { border-left: 4px solid #10b981; }
+  .card.accent-amber  { border-left: 4px solid #f59e0b; }
+  .card.accent-red    { border-left: 4px solid #ef4444; }
+  .card.accent-purple { border-left: 4px solid #7c3aed; }
+  .card-label { font-size: 0.68rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 8px; }
+  .card-label.blue   { color: #0b63ce; }
+  .card-label.green  { color: #047857; }
+  .card-label.amber  { color: #b45309; }
+  .card-label.red    { color: #b91c1c; }
+  .card-label.purple { color: #6d28d9; }
+  /* ── Grids ── */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  @media (max-width: 680px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+  /* ── Code blocks ── */
+  .code-block { background: #1e293b; color: #e2e8f0; border-radius: 12px; padding: 14px 18px; font-family: var(--font-code); font-size: clamp(0.68rem, 1.1vw, 0.83rem); line-height: 1.65; overflow-x: auto; border: 1px solid rgba(255,255,255,0.06); margin-bottom: 12px; white-space: pre; }
+  .kw  { color: #93c5fd; }
+  .nb  { color: #fcd34d; }
+  .st  { color: #86efac; }
+  .cm  { color: #64748b; font-style: italic; }
+  /* ── Write inputs ── */
+  .write-lines { margin: 8px 0; }
+  input.write-line { border: none; border-bottom: 1.5px solid #fcd34d; width: 100%; margin-bottom: 10px; height: 28px; display: block; background: transparent; font-family: var(--font-body); font-size: 0.88rem; color: var(--color-text); outline: none; padding: 2px 4px; }
+  input.write-line:focus { border-bottom-color: #f59e0b; }
+  input.write-line::placeholder { color: #bdc5d1; font-style: italic; }
+  textarea.write-area { border: 1.5px solid #fcd34d; border-radius: 8px; width: 100%; min-height: 70px; padding: 8px; font-family: var(--font-body); font-size: 0.85rem; color: var(--color-text); resize: vertical; background: #fffdf7; outline: none; display: block; }
+  textarea.write-area:focus { outline: 2px solid rgba(245,158,11,0.3); }
+  textarea.write-area::placeholder { color: #bdc5d1; font-style: italic; }
+  input.blank-input { display: inline-block; background: rgba(251,191,36,0.18); border: none; border-bottom: 2px solid #f59e0b; min-width: 60px; width: 60px; height: 1.1em; border-radius: 3px; vertical-align: middle; margin: 0 2px; font-family: var(--font-code); font-size: inherit; color: var(--color-text); text-align: center; outline: none; padding: 0 2px; }
+  input.blank-input:focus { background: rgba(251,191,36,0.32); }
+  input.blank-input.wide { min-width: 110px; width: 110px; }
+  input.blank-input.narrow { min-width: 36px; width: 36px; }
+  /* ── Check list ── */
+  .check-list { list-style: none; padding: 0; }
+  .check-list li { display: flex; align-items: flex-start; gap: 8px; font-size: 0.85rem; color: var(--color-text-secondary); margin-bottom: 8px; line-height: 1.45; }
+  .check-list li .box { flex-shrink: 0; width: 17px; height: 17px; border: 2px solid #94a3b8; border-radius: 4px; margin-top: 1px; background: #fff; display: inline-block; }
+  /* ── Tier badges ── */
+  .tier-a { background: #e6f7f0; color: #047857; border: 1px solid rgba(16,185,129,0.3); display: inline-flex; align-items: center; gap: 5px; padding: 3px 12px; border-radius: 999px; font-size: 0.7rem; font-weight: 800; letter-spacing: 0.07em; text-transform: uppercase; }
+  .tier-b { background: #eaf2fd; color: #0b63ce; border: 1px solid rgba(11,99,206,0.3); display: inline-flex; align-items: center; gap: 5px; padding: 3px 12px; border-radius: 999px; font-size: 0.7rem; font-weight: 800; letter-spacing: 0.07em; text-transform: uppercase; }
+  .tier-c { background: #fdf4e3; color: #b45309; border: 1px solid rgba(245,158,11,0.35); display: inline-flex; align-items: center; gap: 5px; padding: 3px 12px; border-radius: 999px; font-size: 0.7rem; font-weight: 800; letter-spacing: 0.07em; text-transform: uppercase; }
+  /* ── Scratch chips ── */
+  .sb { display: inline-flex; align-items: center; gap: 4px; border-radius: 7px; padding: 3px 10px; font-family: var(--font-code); font-size: 0.78rem; font-weight: 700; color: #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.14); white-space: nowrap; }
+  .sb-orange { background: #ff8c1a; }
+  .sb-yellow { background: #ffab19; }
+  .sb-purple { background: #9966ff; }
+  .sb-blue   { background: #4c97ff; }
+  .sb-green  { background: #40bf4a; }
+  /* ── Tip boxes ── */
+  .tip-box { border-radius: 10px; padding: 10px 14px; font-size: 0.8rem; line-height: 1.5; margin-top: 10px; }
+  .tip-box.blue   { background: rgba(11,99,206,0.07); color: #1e40af; }
+  .tip-box.green  { background: rgba(16,185,129,0.07); color: #065f46; }
+  .tip-box.amber  { background: rgba(245,158,11,0.07); color: #92400e; }
+  .tip-box.red    { background: rgba(239,68,68,0.07); color: #991b1b; }
+  .tip-box.purple { background: rgba(124,58,237,0.07); color: #5b21b6; }
+  /* ── Time tracker ── */
+  .time-track { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+  .time-chip { background: rgba(245,158,11,0.1); border: 1.5px solid rgba(245,158,11,0.3); border-radius: 999px; padding: 4px 14px; font-size: 0.72rem; font-weight: 800; color: #b45309; white-space: nowrap; }
+  /* ── Project planning box ── */
+  .plan-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+  @media (max-width: 640px) { .plan-grid { grid-template-columns: 1fr; } }
+  .plan-field { background: #fffbf0; border: 1.5px solid #fcd34d; border-radius: 10px; padding: 10px 14px; }
+  .plan-label { font-size: 0.65rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: #b45309; margin-bottom: 6px; }
+  /* ── Prediction fill-in ── */
+  .predict-row { display: flex; align-items: center; gap: 6px; font-family: var(--font-code); font-size: 0.84rem; color: #e2e8f0; background: #1e293b; border-radius: 8px; padding: 7px 12px; margin-bottom: 6px; flex-wrap: wrap; }
+  .predict-row span.kw  { color: #93c5fd; }
+  .predict-row span.st  { color: #86efac; }
+  .predict-row span.nb  { color: #fcd34d; }
+  .predict-row input.blank-input { background: rgba(252,211,77,0.25); border-bottom-color: #fcd34d; color: #fcd34d; }
+  /* ── Reflection stars ── */
+  .star-row { display: flex; align-items: center; gap: 4px; margin-bottom: 8px; }
+  .star-row input[type=radio] { accent-color: #f59e0b; }
+  .star-row label { font-size: 0.83rem; color: #374151; cursor: pointer; }
+  /* ── Divider ── */
+  .divider { border: none; border-top: 2px dashed #fde68a; margin: 28px 0; }
+  /* ── Gradient text ── */
+  .grad-text { background: linear-gradient(135deg, #f59e0b, #ef4444, #7c3aed); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  /* ── Footer ── */
+  .sheet-footer { margin-top: 40px; padding: 16px 20px; border-radius: 12px; background: rgba(245,158,11,0.04); border: 1px solid rgba(245,158,11,0.15); display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; font-size: 0.76rem; color: var(--color-text-muted); }
+  .sheet-footer strong { color: var(--color-text); }
+  /* ── Utilities ── */
+  .mb-2 { margin-bottom: 10px; }
+  .mb-3 { margin-bottom: 14px; }
+  .mt-2 { margin-top: 10px; }
+  .mt-3 { margin-top: 14px; }
+  code { background: #fef3c7; padding: 1px 5px; border-radius: 4px; font-family: var(--font-code); font-size: 0.82em; color: #92400e; }
+  .text-muted { color: var(--color-text-muted); font-size: 0.78rem; }
+  /* ── Rubric table ── */
+  table.rubric { width: 100%; border-collapse: collapse; font-size: 0.82rem; margin-top: 8px; }
+  table.rubric th { background: #1e293b; color: #e2e8f0; padding: 8px 10px; text-align: left; font-weight: 700; letter-spacing: 0.05em; }
+  table.rubric td { padding: 8px 10px; border-bottom: 1px solid #e2e8f0; vertical-align: top; color: var(--color-text-secondary); }
+  table.rubric tr:nth-child(even) td { background: rgba(241,245,249,0.6); }
+  table.rubric td:first-child { font-weight: 700; color: var(--color-text); }
+  table.rubric .pts { font-family: var(--font-code); font-size: 0.75rem; font-weight: 800; color: #b45309; white-space: nowrap; }
+  /* ── Tier chooser box ── */
+  .tier-box { border-radius: 14px; padding: 14px 16px; margin-bottom: 14px; }
+  .tier-box-a { background: #f0fdf4; border: 2px solid #86efac; }
+  .tier-box-b { background: #eff6ff; border: 2px solid #93c5fd; }
+  .tier-box-c { background: #fffbeb; border: 2px solid #fcd34d; }
+  /* ── Progress fill ── */
+  .fill-track { height: 8px; background: #fef3c7; border-radius: 999px; overflow: hidden; margin: 4px 0; }
+  .fill-bar   { height: 100%; background: linear-gradient(90deg, #f59e0b, #ef4444); border-radius: 999px; }
+</style>
+</head>
+<body>
 
+<!-- Print bar -->
+<div class="print-bar no-print">
+  <div>
+    <div class="bar-title">Session 6 · 🏠 Homework — Variables &amp; Score-keeping</div>
+    <div class="bar-sub">30-minute at-home task · Due next class · Session 7 · Wed Jul 8, 2026</div>
+  </div>
+  <button class="btn-print" onclick="window.print()">🖨 Print / Save PDF</button>
+</div>
+
+<div class="page">
+
+  <!-- ═══════════ HEADER ═══════════ -->
+  <div class="sheet-header">
+    <div class="header-day">Homework · Session 6 · Due Wed Jul 8, 2026 (next class)</div>
+    <div class="header-title">🏠 Variables &amp; Score-keeping Homework</div>
+    <div class="header-sub">30 minutes total — three tiers, three sections. Read the instructions, pick your tier, and track your time!</div>
+    <div class="header-pills">
+      <span class="header-pill">~30 min</span>
+      <span class="header-pill">All Tiers</span>
+      <span class="header-pill">Scratch</span>
+      <span class="header-pill">Predict &amp; Plan</span>
+      <span class="header-pill">Reflect</span>
+    </div>
+  </div>
+
+  <!-- Student info -->
+  <div class="student-info">
+    <div class="info-field"><div class="info-label">Your Name</div><input class="info-line" type="text" placeholder="First &amp; Last Name" /></div>
+    <div class="info-field"><div class="info-label">Section</div><input class="info-line" type="text" placeholder="Section 1 / 2 / 3" /></div>
+    <div class="info-field"><div class="info-label">Actual time spent</div><input class="info-line" type="text" placeholder="e.g. 28 minutes" /></div>
+  </div>
+
+  <!-- Time plan bar -->
+  <div class="hw-timer">
+    <div>
+      <div class="timer-title">⏱ 30-Minute Time Budget</div>
+      <div class="timer-sub">Start a timer! Three sections fit inside 30 minutes. Don't rush — think carefully and code carefully.</div>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <div class="time-badge">Section 1 · ~10 min</div>
+      <div class="time-badge">Section 2 · ~15 min</div>
+      <div class="time-badge">Section 3 · ~5 min</div>
+    </div>
+  </div>
+
+  <!-- Time tracker chips -->
+  <div class="time-track">
+    <span class="time-chip">🟡 0–5 min: Read + plan</span>
+    <span class="time-chip">🟠 5–10 min: Section 1 predict &amp; trace</span>
+    <span class="time-chip">🔴 10–25 min: Section 2 build in Scratch</span>
+    <span class="time-chip">🟣 25–30 min: Section 3 reflect &amp; connect</span>
+  </div>
+
+  <!-- ═══════════ SECTION 1 — PREDICT & TRACE ═══════════ -->
+  <div class="section-label">🧩 Section 1 of 3 · ~10 min</div>
+  <div class="section-title">Predict &amp; Trace — No Scratch Needed</div>
+
+  <!-- Part A -->
+  <div class="card accent-amber mb-2">
+    <div class="card-label amber">📝 Part A — Predict the Output (all tiers, 5 min)</div>
+    <p class="mb-2">Don't open Scratch — trace these block sequences in your head and write the final value of <code>score</code> after every line. Then check by running the blocks in Scratch.</p>
+    <div class="grid-2 mb-2">
+      <!-- Sequence 1 -->
+      <div>
+        <p style="font-size:0.8rem;font-weight:800;color:#b45309;margin-bottom:6px;">Sequence 1</p>
+        <div class="predict-row"><span class="kw">set</span> <span class="st">score</span> <span class="kw">to</span> <span class="nb">0</span></div>
+        <div class="predict-row"><span class="kw">change</span> <span class="st">score</span> <span class="kw">by</span> <span class="nb">5</span> → <input class="blank-input narrow" type="text" placeholder="?" /></div>
+        <div class="predict-row"><span class="kw">change</span> <span class="st">score</span> <span class="kw">by</span> <span class="nb">3</span> → <input class="blank-input narrow" type="text" placeholder="?" /></div>
+        <div class="predict-row"><span class="kw">change</span> <span class="st">score</span> <span class="kw">by</span> <span class="nb">-2</span> → <input class="blank-input narrow" type="text" placeholder="?" /></div>
+        <div class="predict-row"><span class="kw">set</span> <span class="st">score</span> <span class="kw">to</span> <span class="nb">0</span> → <input class="blank-input narrow" type="text" placeholder="?" /></div>
+      </div>
+      <!-- Sequence 2 -->
+      <div>
+        <p style="font-size:0.8rem;font-weight:800;color:#b45309;margin-bottom:6px;">Sequence 2 (trickier!)</p>
+        <div class="predict-row"><span class="kw">set</span> <span class="st">lives</span> <span class="kw">to</span> <span class="nb">3</span></div>
+        <div class="predict-row"><span class="kw">change</span> <span class="st">lives</span> <span class="kw">by</span> <span class="nb">-1</span> → <input class="blank-input narrow" type="text" placeholder="?" /></div>
+        <div class="predict-row"><span class="kw">change</span> <span class="st">lives</span> <span class="kw">by</span> <span class="nb">-1</span> → <input class="blank-input narrow" type="text" placeholder="?" /></div>
+        <div class="predict-row"><span class="kw">change</span> <span class="st">lives</span> <span class="kw">by</span> <span class="nb">1</span> → <input class="blank-input narrow" type="text" placeholder="?" /></div>
+        <div class="predict-row"><span class="kw">set</span> <span class="st">lives</span> <span class="kw">to</span> <span class="nb">3</span> → <input class="blank-input narrow" type="text" placeholder="?" /></div>
+      </div>
+    </div>
+    <div class="grid-2">
+      <div>
+        <p style="font-size:0.8rem;font-weight:700;color:#374151;margin-bottom:3px;">Sequence 1 — Did your prediction match Scratch? What surprised you?</p>
+        <input class="write-line" type="text" placeholder="Yes / No — What surprised me was..." />
+      </div>
+      <div>
+        <p style="font-size:0.8rem;font-weight:700;color:#374151;margin-bottom:3px;">Sequence 2 — Why does <code>change lives by -1</code> make lives go <em>down</em>?</p>
+        <input class="write-line" type="text" placeholder="It goes down because..." />
+      </div>
+    </div>
+  </div>
+
+  <!-- Part B — Tier A / B / C paths branch -->
+  <div class="card mb-3">
+    <div class="card-label amber">📊 Part B — Spot the Error (5 min · all tiers)</div>
+    <p class="mb-2">A student typed these two scripts. They say the score never goes above 1. Find the bug and explain the fix.</p>
+    <div class="grid-2 mb-2">
+      <div>
+        <p style="font-size:0.8rem;font-weight:700;color:#b91c1c;margin-bottom:4px;">The student's code:</p>
+        <div class="code-block"><span class="kw">when</span> <span class="nb">green flag</span> clicked
+<span class="kw">set</span> <span class="st">score</span> <span class="kw">to</span> <span class="nb">0</span>
+
+<span class="kw">when</span> sprite clicked
+<span class="kw">set</span> <span class="st">score</span> <span class="kw">to</span> <span class="nb">1</span>   <span class="cm">← 🐛</span></div>
+      </div>
+      <div>
+        <p style="font-size:0.8rem;font-weight:700;color:#b91c1c;margin-bottom:4px;">Your analysis:</p>
+        <p style="font-size:0.8rem;color:#374151;margin-bottom:4px;">Why does score never go above 1?</p>
+        <input class="write-line" type="text" placeholder="Because set replaces..." />
+        <p style="font-size:0.8rem;color:#374151;margin:8px 0 4px;">Write the correct block that should replace <code>set score to 1</code>:</p>
+        <div class="code-block" style="min-height:40px;">
+<input class="blank-input wide" type="text" placeholder="change or set?" /> <span class="st">score</span> <span class="kw">by or to</span> <input class="blank-input narrow" type="text" placeholder="?" /></div>
+        <p style="font-size:0.8rem;color:#374151;margin:8px 0 4px;">Now click the sprite 7 times — what should score be?</p>
+        <input class="write-line" type="text" placeholder="score = ..." />
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ═══════════ SECTION 2 — BUILD IN SCRATCH ═══════════ -->
+  <div class="section-label">🔨 Section 2 of 3 · ~15 min</div>
+  <div class="section-title">Build in Scratch — Choose Your Tier</div>
+
+  <!-- Tier chooser -->
+  <div class="card accent-blue mb-2">
+    <div class="card-label blue">🎯 Pick your tier — then read only your box</div>
+    <div class="grid-3">
+      <div style="text-align:center;padding:8px;">
+        <span class="tier-a" style="display:block;justify-content:center;margin-bottom:6px;">Tier A · Foundations</span>
+        <p style="font-size:0.75rem;color:#374151;">Add a working score or lives counter to your game, or build a new clicker from scratch.</p>
+      </div>
+      <div style="text-align:center;padding:8px;border-left:1px dashed #cbd5e1;border-right:1px dashed #cbd5e1;">
+        <span class="tier-b" style="display:block;justify-content:center;margin-bottom:6px;">Tier B · Core</span>
+        <p style="font-size:0.75rem;color:#374151;">Score <em>and</em> lives in your game. At least one working win/lose condition using both variables.</p>
+      </div>
+      <div style="text-align:center;padding:8px;">
+        <span class="tier-c" style="display:block;justify-content:center;margin-bottom:6px;">Tier C · Challenge</span>
+        <p style="font-size:0.75rem;color:#374151;">Score + lives + high score variable that saves your best run during play.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tier A box -->
+  <div class="tier-box tier-box-a mb-2">
+    <div style="margin-bottom:8px;"><span class="tier-a">🟢 Tier A — Foundations</span></div>
+    <p style="font-size:0.82rem;color:#374151;margin-bottom:10px;"><strong>Goal:</strong> Your game has a variable called <code>score</code> (or <code>lives</code>). It resets when the green flag is clicked and updates correctly when something happens.</p>
+    <div class="plan-grid">
+      <div class="plan-field">
+        <div class="plan-label">My game / project is about:</div>
+        <input class="write-line" type="text" placeholder="e.g. clicking falling stars, catching fish..." />
+      </div>
+      <div class="plan-field">
+        <div class="plan-label">Variable name I used:</div>
+        <input class="write-line" type="text" placeholder="score / lives / points..." />
+      </div>
+      <div class="plan-field">
+        <div class="plan-label">Starting value:</div>
+        <input class="write-line" type="text" placeholder="0 / 3 / 10..." />
+      </div>
+      <div class="plan-field">
+        <div class="plan-label">What makes it change?</div>
+        <input class="write-line" type="text" placeholder="clicking sprite / touching object..." />
+      </div>
+    </div>
+    <ul class="check-list">
+      <li><span class="box"></span> <code>set score to 0</code> block is under the green flag (resets at game start)</li>
+      <li><span class="box"></span> <code>change score by 1</code> fires when the game event happens</li>
+      <li><span class="box"></span> Score badge is visible on the stage during the game</li>
+      <li><span class="box"></span> I tested it — clicking 5 times gives score = 5 ✓</li>
+    </ul>
+    <div class="tip-box green mt-2">✅ <strong>Tier A done?</strong> Paste your Scratch project link: <input class="write-line" type="text" placeholder="https://scratch.mit.edu/projects/..." style="border-bottom-color:#10b981;" /></div>
+  </div>
+
+  <!-- Tier B box -->
+  <div class="tier-box tier-box-b mb-2">
+    <div style="margin-bottom:8px;"><span class="tier-b">🔵 Tier B — Core</span></div>
+    <p style="font-size:0.82rem;color:#374151;margin-bottom:10px;"><strong>Goal:</strong> Your game has <em>both</em> <code>score</code> and <code>lives</code>. Both reset correctly. At least one win or lose condition checks a variable value.</p>
+    <div class="plan-grid">
+      <div class="plan-field">
+        <div class="plan-label">score starts at:</div>
+        <input class="write-line" type="text" placeholder="0" />
+      </div>
+      <div class="plan-field">
+        <div class="plan-label">score goes up when:</div>
+        <input class="write-line" type="text" placeholder="..." />
+      </div>
+      <div class="plan-field">
+        <div class="plan-label">lives starts at:</div>
+        <input class="write-line" type="text" placeholder="3" />
+      </div>
+      <div class="plan-field">
+        <div class="plan-label">lives goes down when:</div>
+        <input class="write-line" type="text" placeholder="..." />
+      </div>
+    </div>
+    <p style="font-size:0.8rem;font-weight:700;color:#0b63ce;margin-bottom:6px;">Write your win/lose condition in Scratch block language:</p>
+    <div class="code-block" style="min-height:60px;"><span class="kw">if</span> <span class="st"><input class="blank-input" type="text" placeholder="score?" /></span> = <input class="blank-input narrow" type="text" placeholder="?" /> <span class="kw">then</span>
+  <span class="kw">say</span> <input class="blank-input wide" type="text" placeholder="You Win!" />
+<span class="cm">← and/or:</span>
+<span class="kw">if</span> <span class="st"><input class="blank-input" type="text" placeholder="lives?" /></span> = <input class="blank-input narrow" type="text" placeholder="0" /> <span class="kw">then</span>
+  <span class="kw">say</span> <input class="blank-input wide" type="text" placeholder="Game Over!" /></div>
+    <ul class="check-list mt-2">
+      <li><span class="box"></span> Both variables reset on green flag</li>
+      <li><span class="box"></span> Score goes up + lives goes down on the correct events</li>
+      <li><span class="box"></span> At least one win or lose message appears</li>
+      <li><span class="box"></span> Tested — I played all the way to win or game over</li>
+    </ul>
+    <div class="tip-box blue mt-2">✅ <strong>Tier B done?</strong> Paste your Scratch project link: <input class="write-line" type="text" placeholder="https://scratch.mit.edu/projects/..." style="border-bottom-color:#0b63ce;" /></div>
+  </div>
+
+  <!-- Tier C box -->
+  <div class="tier-box tier-box-c mb-3">
+    <div style="margin-bottom:8px;"><span class="tier-c">⭐ Tier C — Challenge</span></div>
+    <p style="font-size:0.82rem;color:#374151;margin-bottom:10px;"><strong>Goal:</strong> Score + lives + a <code>highScore</code> variable that updates only when the new score beats the current best. Optional: timer countdown or speed increase with score.</p>
+    <div class="grid-2 mb-2">
+      <div>
+        <p style="font-size:0.8rem;font-weight:700;color:#b45309;margin-bottom:6px;">Write the high-score logic:</p>
+        <div class="code-block" style="min-height:80px;"><span class="kw">when</span> <span class="nb">game ends</span>
+<span class="kw">if</span> <span class="st">score</span> &gt; <span class="st"><input class="blank-input" type="text" placeholder="highScore" /></span> <span class="kw">then</span>
+  <span class="kw">set</span> <input class="blank-input" type="text" placeholder="highScore" /> <span class="kw">to</span> <span class="st"><input class="blank-input" type="text" placeholder="score" /></span>
+  <span class="kw">say</span> <input class="blank-input wide" type="text" placeholder="New Record!" /></div>
+      </div>
+      <div>
+        <p style="font-size:0.8rem;font-weight:700;color:#b45309;margin-bottom:6px;">Answer these questions:</p>
+        <p style="font-size:0.78rem;color:#374151;margin-bottom:3px;">Why does <code>highScore</code> NOT reset to 0 at the green flag?</p>
+        <input class="write-line" type="text" placeholder="Because we want to keep..." />
+        <p style="font-size:0.78rem;color:#374151;margin:6px 0 3px;">How is your <code>highScore</code> variable similar to an AI model that saves (not resets) what it learned?</p>
+        <input class="write-line" type="text" placeholder="Both save ..." />
+        <p style="font-size:0.78rem;color:#374151;margin:6px 0 3px;">Bonus: if you added a timer or speed variable, explain how it works:</p>
+        <input class="write-line" type="text" placeholder="My timer / speed variable ..." />
+      </div>
+    </div>
+    <ul class="check-list">
+      <li><span class="box"></span> highScore updates only when score beats it</li>
+      <li><span class="box"></span> highScore does NOT reset on green flag</li>
+      <li><span class="box"></span> New high-score message appears in game</li>
+      <li><span class="box"></span> ⭐ Bonus: timer counts down OR speed increases as score grows</li>
+    </ul>
+    <div class="tip-box amber mt-2">✅ <strong>Tier C done?</strong> Paste your Scratch project link: <input class="write-line" type="text" placeholder="https://scratch.mit.edu/projects/..." style="border-bottom-color:#f59e0b;" /></div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ═══════════ SECTION 3 — REFLECT & CONNECT ═══════════ -->
+  <div class="section-label">🤔 Section 3 of 3 · ~5 min</div>
+  <div class="section-title">Reflect, Connect &amp; Look Ahead</div>
+
+  <div class="grid-2 mb-3">
+    <!-- Reflection -->
+    <div class="card accent-purple">
+      <div class="card-label purple">💭 Reflection (all tiers)</div>
+      <p style="font-size:0.8rem;font-weight:700;color:#374151;margin-bottom:4px;">What was the hardest part of today's work? (homework or class)</p>
+      <div class="write-lines"><input class="write-line" type="text" placeholder="The hardest part was..." style="border-bottom-color:#7c3aed;" /></div>
+      <p style="font-size:0.8rem;font-weight:700;color:#374151;margin:8px 0 4px;">What is one thing you did to try to fix it (instead of giving up)?</p>
+      <div class="write-lines"><input class="write-line" type="text" placeholder="I tried..." style="border-bottom-color:#7c3aed;" /></div>
+      <p style="font-size:0.8rem;font-weight:700;color:#374151;margin:8px 0 4px;">In your own words: what does a variable do?</p>
+      <div class="write-lines"><input class="write-line" type="text" placeholder="A variable ..." style="border-bottom-color:#7c3aed;" /></div>
+      <p style="font-size:0.8rem;font-weight:700;color:#374151;margin:8px 0 4px;">If your younger sibling asked "what's a variable?", what would you say?</p>
+      <textarea class="write-area" style="min-height:54px;border-color:#c4b5fd;" placeholder="I would say it's like a..."></textarea>
+    </div>
+
+    <!-- Connect & Look Ahead -->
+    <div class="card accent-green">
+      <div class="card-label green">🤖 AI Connection + Look Ahead</div>
+      <p style="font-size:0.8rem;color:#374151;margin-bottom:8px;">We learned that an AI model stores a <em>confidence score</em> as a variable. Circle the statement that is <strong>true</strong> about AI variables:</p>
+      <div style="display:flex;flex-direction:column;gap:7px;margin-bottom:10px;font-size:0.82rem;color:#374151;">
+        <label style="display:flex;align-items:flex-start;gap:7px;cursor:pointer;"><input type="radio" name="ai" style="accent-color:#10b981;margin-top:3px;"> AI variables are completely different from Scratch variables — they have nothing in common.</label>
+        <label style="display:flex;align-items:flex-start;gap:7px;cursor:pointer;"><input type="radio" name="ai" style="accent-color:#10b981;margin-top:3px;"> AI confidence is a number stored in a variable that the program reads and compares, just like score.</label>
+        <label style="display:flex;align-items:flex-start;gap:7px;cursor:pointer;"><input type="radio" name="ai" style="accent-color:#10b981;margin-top:3px;"> AI never stores numbers — it only stores words and pictures.</label>
+      </div>
+      <p style="font-size:0.8rem;font-weight:700;color:#047857;margin-bottom:4px;">One real-world place (besides games) where a variable stores a changing number:</p>
+      <input class="write-line" type="text" placeholder="e.g. weather app, fitness tracker, bank account..." style="border-bottom-color:#10b981;" />
+      <div class="tip-box green mt-2">🔭 <strong>Session 7 Preview:</strong> Wednesday is <em>Ship It Day!</em> Every student finishes and shares a tiny interactive project. Your variable work today is the last piece before you ship. What will your project do?</div>
+      <p style="font-size:0.8rem;font-weight:700;color:#374151;margin:10px 0 4px;">One sentence about what your Session 7 project will be:</p>
+      <input class="write-line" type="text" placeholder="My project will be a game / animation / story about..." style="border-bottom-color:#10b981;" />
+    </div>
+  </div>
+
+  <!-- ═══════════ RUBRIC ═══════════ -->
+  <div class="section-label">📊 Scoring</div>
+  <div class="section-title">Homework Rubric &amp; Points</div>
+  <div class="card mb-3">
+    <table class="rubric">
+      <thead><tr><th>Section</th><th>What to Look For</th><th>Max Points</th></tr></thead>
+      <tbody>
+        <tr><td>Section 1A — Trace</td><td>Both sequence tables filled correctly; Scratch cross-check confirmed; surprise note written</td><td class="pts">3 pts</td></tr>
+        <tr><td>Section 1B — Bug Spot</td><td>Bug correctly identified (set vs change); fix block written; final score calculated</td><td class="pts">3 pts</td></tr>
+        <tr><td>Section 2 — Build Tier A</td><td>Project plan filled; all 4 checklist items ✓; Scratch link pasted</td><td class="pts">5 pts</td></tr>
+        <tr><td>Section 2 — Build Tier B</td><td>All plan fields filled; win/lose blocks written; all 4 checklist items ✓; Scratch link</td><td class="pts">6 pts</td></tr>
+        <tr><td>Section 2 — Build Tier C</td><td>High-score if-block complete; all 3 questions answered; all checklist items; Scratch link</td><td class="pts">7 pts</td></tr>
+        <tr><td>Section 3 — Reflect</td><td>Hard part named; recovery strategy described; variable explained in student's own words</td><td class="pts">3 pts</td></tr>
+        <tr><td>Section 3 — AI Connect</td><td>Correct option circled with reasoning; real-world example given; Session 7 preview written</td><td class="pts">2 pts</td></tr>
+        <tr><td>Effort / Completion</td><td>All sections attempted; time tracked; project link included; reflection thoughtful</td><td class="pts">2 pts</td></tr>
+      </tbody>
+    </table>
+    <div style="display:flex;justify-content:flex-end;margin-top:10px;gap:24px;font-size:0.82rem;color:#374151;">
+      <span>Tier A total: <strong style="font-family:'Fira Code',monospace;color:#b45309;">____ / 13</strong></span>
+      <span>Tier B total: <strong style="font-family:'Fira Code',monospace;color:#b45309;">____ / 14</strong></span>
+      <span>Tier C total: <strong style="font-family:'Fira Code',monospace;color:#10b981;">____ / 15</strong></span>
+    </div>
+  </div>
+
+  <!-- Note from instructor -->
+  <div class="card accent-amber mb-3">
+    <div class="card-label amber">📌 A Note from the Teacher</div>
+    <div class="grid-2">
+      <div>
+        <p style="font-size:0.84rem;color:#374151;line-height:1.6;">Grades 1–3 (Tier A): You just made your game <em>remember something</em>. That's huge. A game without a score is just a toy — you just turned yours into a real game. 🎮</p>
+        <br>
+        <p style="font-size:0.84rem;color:#374151;line-height:1.6;">Grades 4–6 (Tier B): Score and lives together mean your game has real stakes now. A player can actually lose — and that makes winning feel real too.</p>
+        <br>
+        <p style="font-size:0.84rem;color:#374151;line-height:1.6;">Grades 7–9 (Tier C): Your high-score variable is doing something special — it <em>persists</em> across resets. That's the same idea behind saving AI model weights. You've just touched one of the most important ideas in machine learning.</p>
+      </div>
+      <div>
+        <p style="font-size:0.8rem;font-weight:700;color:#b45309;margin-bottom:8px;">Quick reminders:</p>
+        <ul style="font-size:0.82rem;color:#374151;padding-left:16px;line-height:1.8;">
+          <li>Don't use an AI chatbot to complete this — the point is to learn <em>by doing it yourself</em></li>
+          <li>If you're stuck, re-read the lesson slides or ask a family member to trace with you</li>
+          <li>All tiers are celebrated equally — finish what you can, try your best</li>
+          <li>Scratch is free and browser-based — scratch.mit.edu</li>
+        </ul>
+        <div class="tip-box amber mt-2">⭐ <strong>Family challenge:</strong> Show a family member your game and teach them what a variable does. If they say "Oh, I get it now!" — you've mastered it.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="sheet-footer">
+    <div>
+      <strong>Session 6 Homework · Variables &amp; Score-keeping</strong> · Mr. Hsiao "Hue" Weng · Summer 2026 AI Coding Program<br>
+      <span class="grad-text" style="font-weight:800;">Due Wednesday July 8 · Session 7: Ship It Day! 🚀</span>
+    </div>
+    <div style="text-align:right;">
+      Modern Chinese School · Ages 7–13<br>
+      <span style="font-size:0.7rem;">scratch.mit.edu · 30 minutes · all tiers</span>
+    </div>
+  </div>
+
+</div><!-- .page -->
+</body>
+</html>
