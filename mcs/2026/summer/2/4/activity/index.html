@@ -1,1 +1,825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Activity Sheet · Session 8 · The Bridge: Scratch → Python</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --color-bg: #f0f9ff;
+    --color-surface: rgba(255,255,255,0.97);
+    --color-text: #1f2a37;
+    --color-text-secondary: #374151;
+    --color-text-muted: #5b6b7e;
+    --color-accent-1: #0b63ce;
+    --color-accent-2: #10b981;
+    --color-accent-3: #f59e0b;
+    --color-accent-red: #ef4444;
+    --color-scratch: #4c97ff;
+    --font-display: 'Fredoka', 'Trebuchet MS', sans-serif;
+    --font-body: 'Nunito', Arial, sans-serif;
+    --font-code: 'Fira Code', Consolas, monospace;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  @media print {
+    body { background: #fff !important; }
+    .no-print { display: none !important; }
+    .page-break { page-break-before: always; }
+    .card { box-shadow: none !important; border: 1.5px solid #d1d5db !important; }
+    .code-block { border: 1.5px solid #cbd5e1 !important; }
+  }
+  body { font-family: var(--font-body); color: var(--color-text); background: var(--color-bg); min-height: 100vh; }
+  .print-bar {
+    background: rgba(255,255,255,0.92); backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(148,163,184,0.3);
+    padding: 10px 24px; display: flex; align-items: center;
+    justify-content: space-between; position: sticky; top: 0; z-index: 100; gap: 12px; flex-wrap: wrap;
+  }
+  .print-bar .bar-title { font-family: var(--font-display); font-size: 1.05rem; font-weight: 700; color: var(--color-accent-1); }
+  .print-bar .bar-sub { font-size: 0.78rem; color: var(--color-text-muted); }
+  .btn-print { background: var(--color-accent-1); color: #fff; border: none; padding: 8px 20px; border-radius: 999px; font-family: var(--font-body); font-size: 0.82rem; font-weight: 800; cursor: pointer; letter-spacing: 0.06em; transition: background 0.2s, transform 0.15s; }
+  .btn-print:hover { background: #0952b0; transform: translateY(-1px); }
+  .page { max-width: 920px; margin: 0 auto; padding: 32px 24px 60px; }
+  .sheet-header {
+    background: linear-gradient(135deg, #4c97ff 0%, #0b63ce 55%, #10b981 100%);
+    border-radius: 20px; padding: 28px 32px 24px; color: #fff; margin-bottom: 28px; position: relative; overflow: hidden;
+  }
+  .sheet-header::before { content: ''; position: absolute; top: -60px; right: -60px; width: 200px; height: 200px; background: rgba(255,255,255,0.08); border-radius: 50%; }
+  .sheet-header::after { content: ''; position: absolute; bottom: -40px; left: -40px; width: 140px; height: 140px; background: rgba(255,255,255,0.06); border-radius: 50%; }
+  .header-emoji { font-size: 2.8rem; margin-bottom: 6px; }
+  .header-day { font-size: 0.75rem; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; opacity: 0.85; margin-bottom: 4px; }
+  .header-title { font-family: var(--font-display); font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 700; line-height: 1.1; margin-bottom: 6px; }
+  .header-sub { font-size: 0.88rem; opacity: 0.85; margin-bottom: 14px; }
+  .header-pills { display: flex; gap: 8px; flex-wrap: wrap; }
+  .header-pill { background: rgba(255,255,255,0.22); border: 1px solid rgba(255,255,255,0.35); border-radius: 999px; padding: 4px 14px; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
+  .student-info { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 28px; }
+  @media (max-width: 600px) { .student-info { grid-template-columns: 1fr; } }
+  .info-field { background: var(--color-surface); border-radius: 12px; padding: 12px 14px; border: 1.5px solid rgba(11,99,206,0.15); box-shadow: 0 2px 8px rgba(15,23,42,0.05); }
+  .info-label { font-size: 0.65rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-accent-1); margin-bottom: 6px; }
+  .info-line { border: none; border-bottom: 1.5px solid #bfdbfe; width: 100%; font-family: var(--font-body); font-size: 0.9rem; color: var(--color-text); background: transparent; outline: none; padding: 2px 0; }
+  .info-line:focus { border-bottom-color: var(--color-accent-1); }
+  .rhythm-block {
+    display: flex; align-items: center; gap: 14px; padding: 12px 16px;
+    border-radius: 12px; margin-bottom: 8px; border: 1px solid transparent;
+  }
+  .rhythm-icon { font-size: 1.6rem; flex-shrink: 0; }
+  .rhythm-time { font-family: var(--font-code); font-size: 0.72rem; font-weight: 700; min-width: 42px; text-align: right; flex-shrink: 0; }
+  .rhythm-label { font-family: var(--font-display); font-size: 1rem; font-weight: 700; line-height: 1.1; }
+  .rhythm-sub { font-size: 0.76rem; color: var(--color-text-muted); }
+  .r-warmup   { background: #fffbeb; border-color: #fde68a; }   .r-warmup .rhythm-time   { color: #b45309; }
+  .r-mini     { background: #ede9fe; border-color: #c4b5fd; }   .r-mini .rhythm-time     { color: #5b21b6; }
+  .r-guided   { background: #d1fae5; border-color: #6ee7b7; }   .r-guided .rhythm-time   { color: #065f46; }
+  .r-break    { background: #fce7f3; border-color: #f9a8d4; }   .r-break .rhythm-time    { color: #9d174d; }
+  .r-open     { background: #dbeafe; border-color: #93c5fd; }   .r-open .rhythm-time     { color: #1e40af; }
+  .r-share    { background: #f0fdf4; border-color: #86efac; }   .r-share .rhythm-time    { color: #166534; }
+  .section-badge { display: inline-flex; align-items: center; gap: 8px; padding: 5px 16px; border-radius: 999px; border: 1px solid rgba(11,99,206,0.25); background: rgba(255,255,255,0.9); font-size: 0.72rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-accent-1); margin-bottom: 10px; }
+  .section-badge.green { color: #047857; border-color: rgba(16,185,129,0.3); }
+  .section-badge.amber { color: #b45309; border-color: rgba(245,158,11,0.3); }
+  .section-badge.purple { color: #6d28d9; border-color: rgba(124,58,237,0.3); }
+  .section-badge.red { color: #b91c1c; border-color: rgba(239,68,68,0.3); }
+  .section-badge.pink { color: #9d174d; border-color: rgba(244,114,182,0.3); }
+  .section-title { font-family: var(--font-display); font-size: clamp(1.3rem, 2.5vw, 1.8rem); font-weight: 700; margin-bottom: 16px; color: var(--color-text); line-height: 1.2; }
+  .card { background: var(--color-surface); border-radius: 16px; padding: 18px 20px; box-shadow: 0 4px 18px rgba(15,23,42,0.07); border: 1px solid rgba(255,255,255,0.7); margin-bottom: 16px; }
+  .card.accent-blue   { border-left: 4px solid var(--color-accent-1); }
+  .card.accent-green  { border-left: 4px solid var(--color-accent-2); }
+  .card.accent-amber  { border-left: 4px solid var(--color-accent-3); }
+  .card.accent-red    { border-left: 4px solid var(--color-accent-red); }
+  .card.accent-purple { border-left: 4px solid #7c3aed; }
+  .card.accent-scratch{ border-left: 4px solid #4c97ff; }
+  .card-label { font-size: 0.68rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 8px; }
+  .card-label.blue   { color: var(--color-accent-1); }
+  .card-label.green  { color: #047857; }
+  .card-label.amber  { color: #b45309; }
+  .card-label.red    { color: #b91c1c; }
+  .card-label.purple { color: #6d28d9; }
+  .card-label.scratch{ color: #2b5fc7; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  @media (max-width: 680px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+  .code-block { background: #1e293b; color: #e2e8f0; border-radius: 12px; padding: 14px 18px; font-family: var(--font-code); font-size: clamp(0.68rem, 1.1vw, 0.83rem); line-height: 1.7; overflow-x: auto; border: 1px solid rgba(255,255,255,0.06); margin-bottom: 12px; white-space: pre; }
+  .kw { color: #93c5fd; }
+  .nb { color: #fcd34d; }
+  .st { color: #86efac; }
+  .cm { color: #64748b; font-style: italic; }
+  .hl { color: #fcd34d; font-weight: 700; }
+  .bug { color: #f87171; font-weight: 700; }
+  .scratch-block { background: #4c97ff; color: #fff; border-radius: 6px; padding: 3px 10px; font-family: var(--font-body); font-size: 0.8rem; font-weight: 700; display: inline-block; margin: 2px; }
+  .scratch-block.motion { background: #4c97ff; }
+  .scratch-block.control { background: #ffab19; }
+  .scratch-block.looks { background: #9966ff; }
+  .write-lines { margin: 6px 0; }
+  input.write-line { border: none; border-bottom: 1.5px solid #bfdbfe; width: 100%; margin-bottom: 10px; height: 28px; display: block; background: transparent; font-family: var(--font-body); font-size: 0.88rem; color: var(--color-text); outline: none; padding: 2px 4px; }
+  input.write-line:focus { border-bottom-color: var(--color-accent-1); }
+  input.write-line::placeholder { color: #bdc5d1; font-style: italic; }
+  textarea.write-area { border: 1.5px solid #bfdbfe; border-radius: 8px; width: 100%; min-height: 70px; padding: 8px; font-family: var(--font-body); font-size: 0.85rem; color: var(--color-text); resize: vertical; background: #f0f9ff; outline: none; display: block; }
+  textarea.write-area:focus { outline: 2px solid rgba(11,99,206,0.25); }
+  textarea.write-area::placeholder { color: #bdc5d1; font-style: italic; }
+  input.blank-input { display: inline-block; background: rgba(251,191,36,0.15); border: none; border-bottom: 2px solid #f59e0b; min-width: 60px; width: 60px; height: 1.1em; border-radius: 3px; vertical-align: middle; margin: 0 2px; font-family: var(--font-code); font-size: inherit; color: #92400e; text-align: center; outline: none; padding: 0 2px; }
+  input.blank-input:focus { background: rgba(251,191,36,0.28); }
+  input.blank-input.wide  { min-width: 110px; width: 110px; }
+  input.blank-input.narrow{ min-width: 36px; width: 36px; }
+  input.blank-input.med   { min-width: 75px; width: 75px; }
+  input.code-inline { background: rgba(30,41,59,0.08); border: none; border-bottom: 2px solid #94a3b8; min-width: 80px; width: 80px; height: 1.1em; border-radius: 3px; vertical-align: middle; margin: 0 2px; font-family: var(--font-code); font-size: 0.82em; color: #1e293b; text-align: center; outline: none; padding: 0 2px; }
+  input.code-inline:focus { background: rgba(30,41,59,0.15); }
+  .tip-box { border-radius: 10px; padding: 10px 14px; font-size: 0.8rem; line-height: 1.5; margin-top: 10px; }
+  .tip-box.blue   { background: rgba(11,99,206,0.07);  color: #1e40af; }
+  .tip-box.green  { background: rgba(16,185,129,0.07); color: #065f46; }
+  .tip-box.amber  { background: rgba(245,158,11,0.07); color: #92400e; }
+  .tip-box.purple { background: rgba(124,58,237,0.07); color: #5b21b6; }
+  .tip-box.red    { background: rgba(239,68,68,0.07);  color: #991b1b; }
+  .tip-box.scratch{ background: rgba(76,151,255,0.07); color: #2b5fc7; }
+  .divider { border: none; border-top: 2px dashed #bfdbfe; margin: 28px 0; }
+  .check-list { list-style: none; padding: 0; }
+  .check-list li { display: flex; align-items: flex-start; gap: 8px; font-size: 0.85rem; color: var(--color-text-secondary); margin-bottom: 8px; line-height: 1.45; }
+  .check-list li .box { flex-shrink: 0; width: 17px; height: 17px; border: 2px solid #93c5fd; border-radius: 4px; margin-top: 1px; background: #fff; display: inline-block; }
+  .level-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 14px; border-radius: 999px; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 8px; }
+  .tier-a { background: linear-gradient(135deg,#4c97ff,#10b981); color:#fff; }
+  .tier-b { background: linear-gradient(135deg,#0b63ce,#7c3aed); color:#fff; }
+  .tier-c { background: linear-gradient(135deg,#7c3aed,#ef4444); color:#fff; }
+  .challenge-badge { display: inline-flex; align-items: center; gap: 6px; background: linear-gradient(135deg, #f59e0b, #ef4444); color: #fff; padding: 4px 14px; border-radius: 999px; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 8px; }
+  .ai-badge { display: inline-flex; align-items: center; gap: 6px; background: linear-gradient(135deg, #0b63ce, #7c3aed); color: #fff; padding: 5px 14px; border-radius: 999px; font-size: 0.75rem; font-weight: 800; letter-spacing: 0.06em; }
+  table.vocab-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; margin-top: 6px; }
+  table.vocab-table th { background: #1e293b; color: #e2e8f0; padding: 7px 10px; text-align: left; font-weight: 700; }
+  table.vocab-table td { padding: 8px 10px; border-bottom: 1px solid #e2e8f0; vertical-align: top; color: var(--color-text-secondary); }
+  table.vocab-table td:first-child { font-family: var(--font-code); font-weight: 700; color: var(--color-accent-1); font-size: 0.78rem; white-space: nowrap; }
+  table.vocab-table tr:nth-child(even) td { background: rgba(241,245,249,0.5); }
+  table.rubric { width: 100%; border-collapse: collapse; font-size: 0.82rem; margin-top: 8px; }
+  table.rubric th { background: #1e293b; color: #e2e8f0; padding: 8px 10px; text-align: left; font-weight: 700; }
+  table.rubric td { padding: 8px 10px; border-bottom: 1px solid #e2e8f0; vertical-align: top; color: var(--color-text-secondary); }
+  table.rubric tr:nth-child(even) td { background: rgba(241,245,249,0.5); }
+  table.rubric td:first-child { font-weight: 700; color: var(--color-text); }
+  table.rubric .pts { font-family: var(--font-code); font-size: 0.75rem; font-weight: 800; color: var(--color-accent-1); white-space: nowrap; }
+  .sheet-footer { margin-top: 40px; padding: 16px 20px; border-radius: 12px; background: rgba(11,99,206,0.04); border: 1px solid rgba(11,99,206,0.15); display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; font-size: 0.76rem; color: var(--color-text-muted); }
+  .sheet-footer strong { color: var(--color-text); }
+  p, li { font-size: 0.88rem; color: var(--color-text-secondary); line-height: 1.55; }
+  strong { color: var(--color-text); }
+  code { background: #dbeafe; padding: 1px 6px; border-radius: 4px; font-family: var(--font-code); font-size: 0.82em; color: #1e40af; }
+  .mb-1 { margin-bottom: 6px; }
+  .mb-2 { margin-bottom: 10px; }
+  .mb-3 { margin-bottom: 14px; }
+  .mt-2 { margin-top: 10px; }
+  .mt-3 { margin-top: 14px; }
+  .text-muted { color: var(--color-text-muted); font-size: 0.78rem; }
+  .grad-text { background: linear-gradient(135deg,#4c97ff,#0b63ce,#10b981); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  .dark-code-write { background:#1e293b; border-radius:10px; padding:12px 16px; width:100%; font-family:var(--font-code); font-size:clamp(0.7rem,1.1vw,0.84rem); line-height:1.7; border:1px solid rgba(255,255,255,0.06); resize:vertical; display:block; outline:none; color:#e2e8f0; box-sizing:border-box; }
+  .dark-code-write:focus { outline:2px solid rgba(11,99,206,0.4); }
+  .draw-box { border: 2px dashed #93c5fd; border-radius: 10px; min-height: 100px; background: #f8fafc; display: flex; align-items: center; justify-content: center; color: #bdc5d1; font-size: 0.78rem; font-style: italic; margin-top: 6px; padding: 8px; }
+  .predict-box { background: #fef9c3; border: 1.5px solid #fde047; border-radius: 8px; padding: 10px 14px; font-family: var(--font-code); font-size: 0.82rem; margin-top: 6px; }
+  .t-f-row { display: flex; align-items: flex-start; gap: 8px; padding: 6px 0; border-bottom: 1px solid #e2e8f0; font-size: 0.83rem; }
+  .t-f-row:last-child { border-bottom: none; }
+  .t-f-circles { display: flex; gap: 6px; flex-shrink: 0; margin-top: 2px; }
+  .t-f-circles span { width: 22px; height: 22px; border: 2px solid #93c5fd; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 800; color: #94a3b8; cursor: pointer; flex-shrink: 0; }
+  .exit-row { display: flex; gap: 8px; flex-wrap: wrap; margin: 8px 0; }
+  .exit-opt { border: 2px solid #bfdbfe; border-radius: 999px; padding: 6px 16px; font-size: 0.8rem; font-weight: 700; color: #374151; cursor: pointer; transition: all 0.2s; }
+  .exit-opt:hover { background: #dbeafe; border-color: #93c5fd; }
+  .exit-opt.active { background: #dbeafe; border-color: var(--color-accent-1); color: var(--color-accent-1); }
+  .step-num { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; background: var(--color-accent-1); color: #fff; border-radius: 50%; font-family: var(--font-code); font-size: 0.75rem; font-weight: 800; flex-shrink: 0; margin-right: 6px; }
+  .step-row { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 14px; }
+</style>
+</head>
+<body>
 
+<!-- PRINT BAR -->
+<div class="print-bar no-print">
+  <div>
+    <div class="bar-title">🐍🧩 Session 8 · In-Class Activity Sheet</div>
+    <div class="bar-sub">The Bridge: Scratch → Python · Thu Jul 9 · Daily Rhythm Format</div>
+  </div>
+  <button class="btn-print" onclick="window.print()">🖨️ Print / Save as PDF</button>
+</div>
+
+<div class="page">
+
+<!-- ══════════ HEADER ══════════ -->
+<div class="sheet-header">
+  <div class="header-emoji">🐍🧩</div>
+  <div class="header-day">Session 8 · Thursday July 9, 2026 · Phase 2 — The Bridge · In-Class Activity Sheet</div>
+  <div class="header-title">Same Logic, Two Languages<br><span style="opacity:0.85;font-size:0.75em;">Scratch → Python</span></div>
+  <div class="header-sub">Follow the Daily Rhythm — warm-up → mini-lesson → guided build → open build → share-out</div>
+  <div class="header-pills">
+    <span class="header-pill">🧩 Warm-Up · 10 min</span>
+    <span class="header-pill">🎓 Mini-Lesson · 20 min</span>
+    <span class="header-pill">🏗️ Guided Build · 20 min</span>
+    <span class="header-pill">🚀 Open Build · 30–40 min</span>
+    <span class="header-pill">✨ Share-Out · 10 min</span>
+  </div>
+</div>
+
+<!-- STUDENT INFO -->
+<div class="student-info">
+  <div class="info-field">
+    <div class="info-label">👤 Your Name</div>
+    <input class="info-line" type="text" placeholder="First Last" />
+  </div>
+  <div class="info-field">
+    <div class="info-label">📅 Today's Date</div>
+    <input class="info-line" type="text" placeholder="Thu Jul 9, 2026" />
+  </div>
+  <div class="info-field">
+    <div class="info-label">🏫 Section</div>
+    <input class="info-line" type="text" placeholder="10:30 / 1:00 / 3:00" />
+  </div>
+</div>
+
+<!-- DAILY RHYTHM OVERVIEW -->
+<div class="card mb-3" style="background:linear-gradient(135deg,rgba(11,99,206,0.04),rgba(16,185,129,0.04));border:1.5px solid rgba(11,99,206,0.1);">
+  <div class="card-label blue">📅 Today's Daily Rhythm</div>
+  <div class="grid-2" style="gap:8px;">
+    <div>
+      <div class="rhythm-block r-warmup"><span class="rhythm-icon">🧩</span><div><div class="rhythm-label">Warm-Up</div><div class="rhythm-sub">No screens · logic puzzles</div></div><span class="rhythm-time">10 min</span></div>
+      <div class="rhythm-block r-mini"><span class="rhythm-icon">🎓</span><div><div class="rhythm-label">Mini-Lesson</div><div class="rhythm-sub">print() · for loop · AI Moment</div></div><span class="rhythm-time">20 min</span></div>
+      <div class="rhythm-block r-guided"><span class="rhythm-icon">🏗️</span><div><div class="rhythm-label">Guided Build</div><div class="rhythm-sub">Everyone builds together</div></div><span class="rhythm-time">20 min</span></div>
+    </div>
+    <div>
+      <div class="rhythm-block r-break"><span class="rhythm-icon">⏸️</span><div><div class="rhythm-label">Brain Break</div><div class="rhythm-sub">Move! You are a for loop!</div></div><span class="rhythm-time">5 min</span></div>
+      <div class="rhythm-block r-open"><span class="rhythm-icon">🚀</span><div><div class="rhythm-label">Open Build</div><div class="rhythm-sub">Your tier task + challenge card</div></div><span class="rhythm-time">30–40 min</span></div>
+      <div class="rhythm-block r-share"><span class="rhythm-icon">✨</span><div><div class="rhythm-label">Share-Out</div><div class="rhythm-sub">Opt-in · show your neighbor</div></div><span class="rhythm-time">10 min</span></div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ══════════ PART 1 · WARM-UP ══════════ -->
+<div class="section-badge">🧩 Part 1 — Warm-Up · 10 min · No Screens!</div>
+<div class="section-title">Puzzle Time — Before Python, Think Like Python</div>
+
+<!-- PUZZLE 1 -->
+<div class="card accent-scratch mb-2">
+  <div class="card-label scratch">🧩 Puzzle 1 — Translate the Scratch Script to Python (no computer needed!)</div>
+  <div class="grid-2">
+    <div>
+      <p style="font-size:0.8rem;font-weight:700;color:#2b5fc7;margin-bottom:8px;">🟦 This Scratch script runs when the green flag is clicked:</p>
+      <div style="background:#f0f4ff;border-radius:10px;padding:12px;font-size:0.82rem;line-height:2.2;">
+        <span class="scratch-block motion">when 🟩 clicked</span><br>
+        <span class="scratch-block looks">say "Hello, World!" for 2 secs</span><br>
+        <span class="scratch-block control">repeat 3</span><br>
+        <span style="margin-left:20px;display:block;"><span class="scratch-block looks">say "I love coding!"</span></span>
+        <span class="scratch-block looks">say "Done!"</span>
+      </div>
+    </div>
+    <div>
+      <p style="font-size:0.8rem;font-weight:700;color:#2b5fc7;margin-bottom:8px;">🐍 Write the Python version — fill in the blanks:</p>
+      <div class="code-block"><span class="cm"># Python doesn't need "when clicked"</span>
+<span class="cm"># it just runs top to bottom!</span>
+<span class="kw">print</span>(<input class="blank-input wide" style="background:rgba(251,191,36,0.15);border-bottom-color:#f59e0b;" type="text" placeholder='"Hello..."' />)
+<span class="kw">for</span> i <span class="kw">in</span> <span class="nb">range</span>(<input class="blank-input narrow" type="text" placeholder="?" />):
+    <span class="kw">print</span>(<input class="blank-input wide" type="text" placeholder='"..."' />)
+<span class="kw">print</span>(<input class="blank-input wide" type="text" placeholder='"Done!"' />)</div>
+      <p class="text-muted">💡 The last line is <strong>not</strong> indented — it runs after the loop ends!</p>
+    </div>
+  </div>
+</div>
+
+<!-- PUZZLE 2 -->
+<div class="card accent-amber mb-3">
+  <div class="card-label amber">🔮 Puzzle 2 — Predict the Output (no running allowed yet!)</div>
+  <div class="grid-2">
+    <div>
+      <p style="font-size:0.8rem;font-weight:700;color:#b45309;margin-bottom:6px;">What does this Python code print? Think it through step by step:</p>
+      <div class="code-block"><span class="kw">print</span>(<span class="st">"Countdown:"</span>)
+<span class="kw">for</span> i <span class="kw">in</span> <span class="nb">range</span>(<span class="hl">3</span>):
+    <span class="kw">print</span>(i)
+<span class="kw">print</span>(<span class="st">"Blast off!"</span>)</div>
+      <p style="font-size:0.8rem;color:#92400e;margin-top:6px;">Remember: <code>range(3)</code> gives you <strong>0, 1, 2</strong> — not 1, 2, 3!</p>
+    </div>
+    <div>
+      <p style="font-size:0.8rem;font-weight:700;color:#b45309;margin-bottom:6px;">📝 Write the output here (one line per box):</p>
+      <div class="predict-box">
+        <input class="write-line" type="text" placeholder="Line 1:" style="border-bottom-color:#fde047;" />
+        <input class="write-line" type="text" placeholder="Line 2:" style="border-bottom-color:#fde047;" />
+        <input class="write-line" type="text" placeholder="Line 3:" style="border-bottom-color:#fde047;" />
+        <input class="write-line" type="text" placeholder="Line 4:" style="border-bottom-color:#fde047;" />
+        <input class="write-line" type="text" placeholder="Line 5:" style="border-bottom-color:#fde047;" />
+      </div>
+      <p style="font-size:0.78rem;margin-top:6px;">What is <code>i</code> on the <em>first</em> loop? <input class="blank-input narrow" type="text" placeholder="?" />
+      &nbsp; On the <em>last</em> loop? <input class="blank-input narrow" type="text" placeholder="?" /></p>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ══════════ PART 2 · MINI-LESSON ══════════ -->
+<div class="section-badge purple">🎓 Part 2 — Mini-Lesson · 20 min · Listen, Annotate & Discuss</div>
+<div class="section-title">The Bridge: Same Logic, New Spelling</div>
+
+<div class="card accent-blue mb-2">
+  <div class="card-label blue">🔑 Big Idea — Annotate as Your Teacher Explains</div>
+  <div class="grid-2 mb-2">
+    <div>
+      <p style="font-size:0.8rem;font-weight:700;margin-bottom:6px;">🟦 Scratch → 🐍 Python side by side</p>
+      <div class="code-block" style="font-size:0.76rem;"><span class="cm">-- SCRATCH --        -- PYTHON --</span>
+<span class="scratch-block looks" style="font-family:var(--font-body);font-size:0.72rem;padding:1px 6px;">say "Hello!"</span>   →   <span class="kw">print</span>(<span class="st">"Hello!"</span>)
+<span class="scratch-block control" style="font-family:var(--font-body);font-size:0.72rem;padding:1px 6px;">repeat 5</span>         →   <span class="kw">for</span> i <span class="kw">in</span> <span class="nb">range</span>(5):
+  <span class="scratch-block looks" style="font-family:var(--font-body);font-size:0.72rem;padding:1px 6px;">say "Hi!"</span>     →       <span class="kw">print</span>(<span class="st">"Hi!"</span>)
+&nbsp;
+Block snapping        →   Typing</div>
+    </div>
+    <div>
+      <p style="font-size:0.8rem;font-weight:700;margin-bottom:6px;">📝 Anatomy — label each part (teacher will explain):</p>
+      <div class="code-block"><span class="kw">for</span> <span class="hl">i</span> <span class="kw">in</span> <span class="nb">range</span>(<span class="hl">5</span>):
+    <span class="kw">print</span>(<span class="st">"Hello!"</span>)</div>
+      <div class="write-lines">
+        <input class="write-line" type="text" placeholder="① 'for i in' is called a: ..." />
+        <input class="write-line" type="text" placeholder="② The 4 spaces are called: ..." />
+        <input class="write-line" type="text" placeholder="③ range(5) controls: ..." />
+        <input class="write-line" type="text" placeholder="④ The print line is called: ..." />
+      </div>
+    </div>
+  </div>
+  <div class="tip-box blue">💡 <strong>Turn &amp; Talk:</strong> If you wrote a sandwich recipe in English, then Spanish — is it a <em>different</em> recipe? Or the same recipe in a new language? That's exactly what we're doing today.</div>
+</div>
+
+<!-- VOCAB -->
+<div class="card mb-2">
+  <div class="card-label blue">📚 Vocabulary — 5 Key Words (fill in during the lesson)</div>
+  <table class="vocab-table">
+    <thead><tr><th>Word</th><th>What it means</th><th>Scratch connection</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>print()</td>
+        <td><input class="write-line" style="border-bottom-color:#bfdbfe;margin-bottom:0;" type="text" placeholder="A function that shows text on screen..." /></td>
+        <td><input class="write-line" style="border-bottom-color:#bfdbfe;margin-bottom:0;" type="text" placeholder="Like Scratch's say block..." /></td>
+      </tr>
+      <tr>
+        <td>string</td>
+        <td><input class="write-line" style="border-bottom-color:#bfdbfe;margin-bottom:0;" type="text" placeholder="Text wrapped in quotes..." /></td>
+        <td><input class="write-line" style="border-bottom-color:#bfdbfe;margin-bottom:0;" type="text" placeholder="The words inside say..." /></td>
+      </tr>
+      <tr>
+        <td>for loop</td>
+        <td><input class="write-line" style="border-bottom-color:#bfdbfe;margin-bottom:0;" type="text" placeholder="Runs code a set number of times..." /></td>
+        <td><input class="write-line" style="border-bottom-color:#bfdbfe;margin-bottom:0;" type="text" placeholder="Like repeat block..." /></td>
+      </tr>
+      <tr>
+        <td>indentation</td>
+        <td><input class="write-line" style="border-bottom-color:#bfdbfe;margin-bottom:0;" type="text" placeholder="4 spaces that tell Python what's inside the loop..." /></td>
+        <td><input class="write-line" style="border-bottom-color:#bfdbfe;margin-bottom:0;" type="text" placeholder="The snap/slot in a Scratch block..." /></td>
+      </tr>
+      <tr>
+        <td>syntax</td>
+        <td><input class="write-line" style="border-bottom-color:#bfdbfe;margin-bottom:0;" type="text" placeholder="The spelling rules of the programming language..." /></td>
+        <td><input class="write-line" style="border-bottom-color:#bfdbfe;margin-bottom:0;" type="text" placeholder="Scratch has fewer syntax rules — blocks fit or don't..." /></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- AI MOMENT -->
+<div class="card mb-3" style="background:linear-gradient(135deg,rgba(11,99,206,0.06),rgba(124,58,237,0.06));border:1.5px solid rgba(11,99,206,0.2);">
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+    <span class="ai-badge">🤖 AI Moment — Session 8</span>
+  </div>
+  <div class="grid-2">
+    <div>
+      <p style="font-size:0.82rem;font-weight:700;color:#1e40af;margin-bottom:6px;">📝 Your print() follows rules you wrote:</p>
+      <div class="code-block" style="font-size:0.76rem;"><span class="kw">print</span>(<span class="st">"I like..."</span>)
+<span class="kw">print</span>(<span class="st">"learning..."</span>)
+<span class="kw">print</span>(<span class="st">"new things"</span>)</div>
+      <p style="font-size:0.8rem;color:#374151;margin-top:6px;">Your program follows <strong>rules you wrote</strong>. Same pattern every time!</p>
+    </div>
+    <div>
+      <p style="font-size:0.82rem;font-weight:700;color:#5b21b6;margin-bottom:6px;">🤖 An AI predicts the same pattern — at massive scale:</p>
+      <div style="background:rgba(124,58,237,0.06);border:1.5px solid #c4b5fd;border-radius:8px;padding:10px;font-size:0.8rem;line-height:1.6;">
+        You type: <em>"I like…"</em><br>
+        AI predicts: <em>"…learning new things"</em><br>
+        <span style="color:#64748b;font-size:0.75rem;">It has seen <strong>billions</strong> of patterns like yours!</span>
+      </div>
+    </div>
+  </div>
+  <div class="tip-box purple mt-2">
+    <strong>💡 Connection:</strong> Your <code>print()</code> statements <em>follow</em> rules you wrote. AI <em>learned</em> the rules from millions of examples. Same pattern idea — completely different scale!
+  </div>
+  <p style="font-size:0.82rem;font-weight:700;margin-top:10px;margin-bottom:4px;">❓ Discussion — answer in 1–2 sentences:</p>
+  <p style="font-size:0.8rem;color:#374151;margin-bottom:6px;">If an AI learned only from <em>your</em> writing samples, what patterns would it predict? Would it be a good AI or a bad AI for everyone?</p>
+  <textarea class="write-area" placeholder="I think the AI would predict... because I always write about..."></textarea>
+</div>
+
+<hr class="divider">
+
+<!-- ══════════ PART 3 · GUIDED BUILD ══════════ -->
+<div class="section-badge green">🏗️ Part 3 — Guided Build · 20 min · Everyone Together</div>
+<div class="section-title">Your First Python Program — Step by Step</div>
+
+<div class="card accent-green mb-2">
+  <div class="card-label green">🖥️ Open: playcode.io/python-playground — or write below if no computer</div>
+  <p class="mb-2">Follow each step. <strong>Don't skip ahead</strong> — the order matters! Your teacher will walk through every step with you.</p>
+
+  <div class="step-row">
+    <span class="step-num">1</span>
+    <div style="flex:1;">
+      <p style="font-size:0.82rem;font-weight:700;color:#047857;margin-bottom:4px;">Type 3 <code>print()</code> statements about yourself. Press ▶ Run.</p>
+      <textarea class="dark-code-write" style="min-height:88px;" spellcheck="false" placeholder="print(&quot;My name is ...&quot;)
+print(&quot;I am in grade ...&quot;)
+print(&quot;My favorite subject is ...&quot;)"></textarea>
+      <p class="text-muted mt-2">✅ Checklist: <strong>quotes</strong> around the text? <strong>Lowercase</strong> print? <strong>Parentheses</strong> around the quotes?</p>
+    </div>
+  </div>
+
+  <div class="step-row">
+    <span class="step-num">2</span>
+    <div style="flex:1;">
+      <p style="font-size:0.82rem;font-weight:700;color:#047857;margin-bottom:4px;">Add a comment. Type on the <em>next line</em> after your print statements:</p>
+      <div class="code-block" style="font-size:0.78rem;"><span class="cm"># now a loop — Python ignores everything after the #</span></div>
+      <p style="font-size:0.78rem;color:#374151;">Why do we use comments? <input class="write-line" type="text" style="margin-top:4px;margin-bottom:0;border-bottom-color:#6ee7b7;" placeholder="Comments are for..." /></p>
+    </div>
+  </div>
+
+  <div class="step-row">
+    <span class="step-num">3</span>
+    <div style="flex:1;">
+      <p style="font-size:0.82rem;font-weight:700;color:#047857;margin-bottom:4px;">Add the <code>for</code> loop header — <strong>don't forget the colon</strong> at the end!</p>
+      <div class="code-block" style="font-size:0.78rem;"><span class="kw">for</span> i <span class="kw">in</span> <span class="nb">range</span>(5):    <span class="cm"># &lt;— that colon is required!</span></div>
+      <p style="font-size:0.78rem;color:#374151;">What does the colon tell Python? <input class="write-line" type="text" style="margin-top:4px;margin-bottom:0;border-bottom-color:#6ee7b7;" placeholder="The colon tells Python..." /></p>
+    </div>
+  </div>
+
+  <div class="step-row">
+    <span class="step-num">4</span>
+    <div style="flex:1;">
+      <p style="font-size:0.82rem;font-weight:700;color:#047857;margin-bottom:4px;">Add the <em>indented</em> loop body. Count out loud: <strong>1 · 2 · 3 · 4 spaces</strong>, then type your print.</p>
+      <div class="code-block" style="font-size:0.78rem;"><span class="kw">for</span> i <span class="kw">in</span> <span class="nb">range</span>(5):
+    <span class="kw">print</span>(i)   <span class="cm"># ← 4 spaces before print!</span></div>
+    </div>
+  </div>
+
+  <div class="step-row">
+    <span class="step-num">5</span>
+    <div style="flex:1;">
+      <p style="font-size:0.82rem;font-weight:700;color:#047857;margin-bottom:4px;">Before pressing Run — <strong>Predict!</strong> What numbers will appear?</p>
+      <div class="grid-2" style="gap:10px;">
+        <div>
+          <p style="font-size:0.78rem;font-weight:700;color:#374151;margin-bottom:4px;">My prediction (5 numbers):</p>
+          <div class="predict-box">
+            <input class="write-line" type="text" placeholder="Loop 1: i = ___" style="border-bottom-color:#fde047;" />
+            <input class="write-line" type="text" placeholder="Loop 2: i = ___" style="border-bottom-color:#fde047;" />
+            <input class="write-line" type="text" placeholder="Loop 3: i = ___" style="border-bottom-color:#fde047;" />
+            <input class="write-line" type="text" placeholder="Loop 4: i = ___" style="border-bottom-color:#fde047;" />
+            <input class="write-line" type="text" placeholder="Loop 5: i = ___" style="border-bottom-color:#fde047;margin-bottom:0;" />
+          </div>
+        </div>
+        <div>
+          <p style="font-size:0.78rem;font-weight:700;color:#374151;margin-bottom:4px;">After running — was I right?</p>
+          <div style="display:flex;gap:8px;margin-top:4px;">
+            <label style="display:flex;align-items:center;gap:6px;font-size:0.83rem;cursor:pointer;"><input type="radio" name="predict1" style="accent-color:#10b981;"> ✅ Yes!</label>
+            <label style="display:flex;align-items:center;gap:6px;font-size:0.83rem;cursor:pointer;"><input type="radio" name="predict1" style="accent-color:#ef4444;"> ❌ Not quite</label>
+          </div>
+          <p style="font-size:0.78rem;font-weight:700;color:#374151;margin-top:10px;margin-bottom:4px;">What is <code>i</code> on the <em>3rd</em> loop?</p>
+          <input class="blank-input narrow" type="text" placeholder="?" />
+          <p style="font-size:0.78rem;color:#5b6b7e;margin-top:6px;">Why does it start at 0, not 1?</p>
+          <input class="write-line" type="text" placeholder="Python starts at 0 because..." />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="step-row">
+    <span class="step-num">6</span>
+    <div style="flex:1;">
+      <p style="font-size:0.82rem;font-weight:700;color:#047857;margin-bottom:4px;">🐛 Bug Hunt — if you see an error, write it here and fix it!</p>
+      <div class="grid-2" style="gap:10px;">
+        <div>
+          <p style="font-size:0.78rem;color:#374151;margin-bottom:4px;">Error message (if any):</p>
+          <input class="write-line" type="text" placeholder="e.g., IndentationError on line 6..." />
+          <p style="font-size:0.78rem;color:#374151;margin-bottom:4px;">What type of error?</p>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;font-size:0.78rem;">
+            <label style="display:flex;align-items:center;gap:4px;"><input type="checkbox" style="accent-color:#0b63ce;"> SyntaxError</label>
+            <label style="display:flex;align-items:center;gap:4px;"><input type="checkbox" style="accent-color:#0b63ce;"> IndentationError</label>
+            <label style="display:flex;align-items:center;gap:4px;"><input type="checkbox" style="accent-color:#0b63ce;"> NameError</label>
+            <label style="display:flex;align-items:center;gap:4px;"><input type="checkbox" style="accent-color:#0b63ce;"> No Error! ✅</label>
+          </div>
+        </div>
+        <div>
+          <p style="font-size:0.78rem;color:#374151;margin-bottom:4px;">How did you fix it?</p>
+          <input class="write-line" type="text" placeholder="I fixed it by..." />
+          <div class="tip-box red" style="margin-top:6px;font-size:0.76rem;">🐛 <strong>Errors are clues, not failures!</strong> The error message tells you the <em>line number</em> and type of mistake.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- BRAIN BREAK -->
+<div class="card" style="background:linear-gradient(135deg,#fce7f3,#ede9fe);border:1.5px solid #f9a8d4;margin-bottom:8px;">
+  <div style="text-align:center;padding:8px 0;">
+    <div style="font-size:2rem;margin-bottom:4px;">⏸️</div>
+    <div class="section-badge pink" style="display:inline-flex;margin-bottom:8px;">⏸️ Brain Break · 5 min</div>
+    <p style="font-size:0.85rem;color:#374151;"><strong>You are a <code>for</code> loop!</strong> Stand up. Every time your teacher says a number, sit down if it's NOT in <code>range(5)</code>.</p>
+    <p style="font-size:0.8rem;color:#6d28d9;margin-top:4px;font-style:italic;">Your brain is checking: <em>"am I still inside range?"</em> — just like Python does every loop iteration!</p>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ══════════ PART 4 · OPEN BUILD ══════════ -->
+<div class="section-badge blue">🚀 Part 4 — Open Build · 30–40 min · Your Tier Task</div>
+<div class="section-title">Build It Yourself — Choose Your Tier</div>
+
+<div class="card mb-2" style="border:2px dashed #93c5fd;background:rgba(11,99,206,0.02);">
+  <p style="font-size:0.8rem;color:#374151;text-align:center;margin-bottom:10px;">Pick your tier — or try the next one if you finish fast! <strong>Circle your tier:</strong></p>
+  <div class="grid-3">
+    <div style="text-align:center;padding:8px;background:rgba(76,151,255,0.07);border-radius:10px;border:1.5px solid rgba(76,151,255,0.2);">
+      <span class="level-badge tier-a">🟢 Tier A</span>
+      <p style="font-size:0.78rem;">Grades 1–3 · Buddy OK</p>
+      <p style="font-size:0.78rem;color:#047857;font-weight:700;">print() about an animal + loop</p>
+    </div>
+    <div style="text-align:center;padding:8px;background:rgba(11,99,206,0.07);border-radius:10px;border:1.5px solid rgba(11,99,206,0.2);">
+      <span class="level-badge tier-b">🔵 Tier B</span>
+      <p style="font-size:0.78rem;">Grades 3–5 · Solo</p>
+      <p style="font-size:0.78rem;color:#1e40af;font-weight:700;">"About Me" + counter loop + comments</p>
+    </div>
+    <div style="text-align:center;padding:8px;background:rgba(124,58,237,0.07);border-radius:10px;border:1.5px solid rgba(124,58,237,0.2);">
+      <span class="level-badge tier-c">🟣 Tier C</span>
+      <p style="font-size:0.78rem;">Grades 6–9</p>
+      <p style="font-size:0.78rem;color:#6d28d9;font-weight:700;">Even numbers loop + reflection</p>
+    </div>
+  </div>
+</div>
+
+<!-- TIER A -->
+<div class="card accent-scratch mb-2">
+  <div style="margin-bottom:8px;"><span class="level-badge tier-a">🟢 Tier A — Animal About Me · Buddy encouraged!</span></div>
+  <div class="grid-2">
+    <div>
+      <div class="card-label scratch">📝 Your Task</div>
+      <ul class="check-list mb-2">
+        <li><span class="box"></span>3 <code>print()</code> facts about your favorite animal</li>
+        <li><span class="box"></span>1 <code>for</code> loop using <code>range(3)</code> that prints the animal name</li>
+        <li><span class="box"></span>Program runs with <strong>no errors</strong></li>
+      </ul>
+      <p style="font-size:0.78rem;font-weight:700;color:#2b5fc7;margin-bottom:4px;">📝 Write or type your code here:</p>
+      <textarea class="dark-code-write" style="min-height:120px;" spellcheck="false" placeholder="print(&quot;My favorite animal is a ...&quot;)
+print(&quot;It lives in ...&quot;)
+print(&quot;It can ...&quot;)
+for i in range(3):
+    print(&quot;...&quot;)"></textarea>
+    </div>
+    <div>
+      <div class="card-label scratch">💡 Scratch → Python Memory Aid</div>
+      <div style="background:#f0f4ff;border-radius:10px;padding:10px;font-size:0.8rem;line-height:2.1;margin-bottom:8px;">
+        <span class="scratch-block looks">say "text"</span> → <code>print("text")</code><br>
+        <span class="scratch-block control">repeat 3</span> → <code>for i in range(3):</code><br>
+        (indented) → <code>&nbsp;&nbsp;&nbsp;&nbsp;print("text")</code>
+      </div>
+      <p style="font-size:0.8rem;font-weight:700;color:#374151;margin-bottom:4px;">📝 What did your loop print? (write it):</p>
+      <div class="write-lines">
+        <input class="write-line" type="text" placeholder="It printed: ___" />
+        <input class="write-line" type="text" placeholder="It ran ___ times" />
+      </div>
+      <div class="tip-box scratch">🤝 <strong>Buddy tip:</strong> One person types, one person reads the code out loud — then switch!</div>
+    </div>
+  </div>
+</div>
+
+<!-- TIER B -->
+<div class="card accent-blue mb-2">
+  <div style="margin-bottom:8px;"><span class="level-badge tier-b">🔵 Tier B — About Me Story + Comments</span></div>
+  <div class="grid-2">
+    <div>
+      <div class="card-label blue">📝 Your Task</div>
+      <ul class="check-list mb-2">
+        <li><span class="box"></span>4 <code>print()</code> facts about yourself</li>
+        <li><span class="box"></span><code>for</code> loop counting from 1 to 5 with <code>range(1, 6)</code></li>
+        <li><span class="box"></span>Inside the loop: <code>print(i, "Your name!")</code></li>
+        <li><span class="box"></span><code># comments</code> labeling each section</li>
+      </ul>
+      <p style="font-size:0.78rem;font-weight:700;color:#1e40af;margin-bottom:4px;">📝 Write or type your full program:</p>
+      <textarea class="dark-code-write" style="min-height:155px;" spellcheck="false" placeholder="# About Me program
+print(&quot;My name is ...&quot;)
+print(&quot;I am in grade ...&quot;)
+print(&quot;My favorite subject is ...&quot;)
+print(&quot;I love to ...&quot;)
+
+# My counting loop
+for i in range(1, 6):
+    print(i, &quot;...!&quot;)"></textarea>
+    </div>
+    <div>
+      <div class="card-label blue">🔍 Investigate</div>
+      <p style="font-size:0.8rem;font-weight:700;margin-bottom:4px;">What's the difference between <code>range(5)</code> and <code>range(1, 6)</code>?</p>
+      <div class="predict-box mb-2">
+        <input class="write-line" type="text" placeholder="range(5) gives: ..." style="border-bottom-color:#fde047;" />
+        <input class="write-line" type="text" placeholder="range(1,6) gives: ..." style="border-bottom-color:#fde047;margin-bottom:0;" />
+      </div>
+      <p style="font-size:0.8rem;font-weight:700;margin-bottom:4px;">What is <code>i</code> on loop 3?</p>
+      <input class="blank-input narrow" type="text" placeholder="?" />
+      <p style="font-size:0.8rem;font-weight:700;margin-top:10px;margin-bottom:4px;">What does a <code># comment</code> do?</p>
+      <input class="write-line" type="text" placeholder="Python ignores comments because..." />
+      <div class="tip-box blue mt-2">💡 <code>range(1, 6)</code> starts at 1 and stops <em>before</em> 6 — so you get 1, 2, 3, 4, 5. Python always stops before the second number!</div>
+    </div>
+  </div>
+</div>
+
+<!-- TIER C -->
+<div class="card accent-purple mb-2">
+  <div style="margin-bottom:8px;"><span class="level-badge tier-c">🟣 Tier C — Even Numbers + Deep Thinking</span></div>
+  <div class="grid-2">
+    <div>
+      <div class="card-label purple">📝 Your Task</div>
+      <ul class="check-list mb-2">
+        <li><span class="box"></span>Print even numbers 0–18 using <code>range(0, 20, 2)</code></li>
+        <li><span class="box"></span>Add a label: use <code>print(i, "is even")</code></li>
+        <li><span class="box"></span>Explain <code>range(start, stop, step)</code> in comments</li>
+        <li><span class="box"></span>Answer the investigation question below</li>
+      </ul>
+      <textarea class="dark-code-write" style="min-height:160px;" spellcheck="false" placeholder="# range(start, stop, step)
+# start = 0, stop = 20, step = 2
+# step means: count by 2s!
+
+for i in range(0, 20, 2):
+    print(i, &quot;is even&quot;)
+
+# What does range(1, 20, 2) give?
+# Try it and predict!"></textarea>
+    </div>
+    <div>
+      <div class="card-label purple">🔬 Investigate + Reflect</div>
+      <p style="font-size:0.8rem;font-weight:700;margin-bottom:4px;">Experiment: what does <code>range(0, 10, 3)</code> give?</p>
+      <div class="write-lines">
+        <input class="write-line" type="text" placeholder="I predict: ..." />
+        <input class="write-line" type="text" placeholder="Actually gives: ..." />
+      </div>
+      <p style="font-size:0.8rem;font-weight:700;margin-top:8px;margin-bottom:4px;">Connection: How is <code>range(start, stop, step)</code> like counting in real life?</p>
+      <input class="write-line" type="text" placeholder="It's like counting by ___ starting at ___ and stopping at ___" />
+      <p style="font-size:0.8rem;font-weight:700;margin-top:8px;margin-bottom:4px;">🧠 Reflection — In your own words:</p>
+      <p style="font-size:0.78rem;color:#374151;margin-bottom:4px;">What can Python do that Scratch can <em>not</em> do as easily?</p>
+      <textarea class="write-area" style="min-height:70px;background:#f5f3ff;border-color:#c4b5fd;" placeholder="Python can... but Scratch is harder to... because..."></textarea>
+      <div class="tip-box purple mt-2">⚡ <strong>Fast finisher?</strong> Look at the Challenge Card below!</div>
+    </div>
+  </div>
+</div>
+
+<!-- CHALLENGE CARD -->
+<div class="card mb-3" style="background:linear-gradient(135deg,rgba(245,158,11,0.07),rgba(239,68,68,0.07));border:1.5px solid rgba(245,158,11,0.3);">
+  <div style="margin-bottom:8px;"><span class="challenge-badge">⚡ Challenge Card — All Tiers — Fast Finishers!</span></div>
+  <div class="grid-2">
+    <div>
+      <p style="font-size:0.82rem;font-weight:700;color:#b45309;margin-bottom:6px;">Build a Countdown! Use <code>range(10, 0, -1)</code></p>
+      <div class="code-block" style="font-size:0.78rem;"><span class="cm"># Countdown from 10 to 1...</span>
+<span class="kw">for</span> i <span class="kw">in</span> <span class="nb">range</span>(<span class="hl">10, 0, -1</span>):
+    <span class="kw">print</span>(i)
+<span class="kw">print</span>(<span class="st">"Blast off! 🚀"</span>)
+<span class="cm"># ^ NOT indented — runs AFTER loop!</span></div>
+    </div>
+    <div>
+      <p style="font-size:0.82rem;font-weight:700;color:#b45309;margin-bottom:6px;">📝 Before running — predict:</p>
+      <div class="write-lines">
+        <input class="write-line" type="text" placeholder="First number printed: ..." />
+        <input class="write-line" type="text" placeholder="Last number printed: ..." />
+        <input class="write-line" type="text" placeholder="Total lines printed: ..." />
+      </div>
+      <p style="font-size:0.78rem;color:#374151;margin-top:6px;">What does the <code>-1</code> (step) tell Python to do?</p>
+      <input class="write-line" type="text" placeholder="The -1 means Python..." />
+      <p style="font-size:0.78rem;color:#374151;margin-top:4px;">Why is <code>print("Blast off! 🚀")</code> NOT indented?</p>
+      <input class="write-line" type="text" placeholder="It's not indented because..." />
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ══════════ PART 5 · SHARE OUT + BUG CORNER ══════════ -->
+<div class="section-badge green">✨ Part 5 — Share-Out · 10 min · Always Opt-In</div>
+<div class="section-title">Show Your Neighbor + Debug Corner</div>
+
+<div class="grid-2 mb-3">
+  <div class="card accent-green">
+    <div class="card-label green">🗣️ Pair Share — Default (Everyone Does This)</div>
+    <p class="mb-2">Turn to your neighbor. Show your program and say this sentence:</p>
+    <div style="background:#d1fae5;border-radius:8px;padding:10px;font-size:0.85rem;font-style:italic;color:#065f46;font-weight:700;margin-bottom:12px;">
+      "My loop runs ___ times and prints ___ each time."
+    </div>
+    <p style="font-size:0.8rem;font-weight:700;color:#374151;margin-bottom:8px;">Then ask your partner these 3 questions:</p>
+    <ol style="list-style:decimal;padding-left:18px;font-size:0.83rem;line-height:2.1;">
+      <li>What is <code>i</code> equal to the <em>very first time</em> your loop runs?</li>
+      <li>What's the <em>biggest difference</em> between Python and Scratch blocks?</li>
+      <li>If you got an error — what was the bug and how did you fix it? (Bugs count!)</li>
+    </ol>
+    <p style="font-size:0.78rem;font-weight:700;color:#374151;margin-top:10px;margin-bottom:4px;">Your partner's answer to Q1:</p>
+    <input class="write-line" type="text" placeholder="Partner said: i = ..." style="border-bottom-color:#6ee7b7;" />
+  </div>
+  <div class="card accent-red">
+    <div class="card-label red">🐛 Debug Corner — 3 Common Bugs to Know</div>
+    <p style="font-size:0.78rem;font-weight:700;color:#b91c1c;margin-bottom:8px;">Circle any bugs you saw in your code today:</p>
+    <div class="t-f-row">
+      <div class="t-f-circles"><span style="border-color:#f87171;color:#ef4444;">✓</span></div>
+      <div>
+        <strong>Bug 1 — Missing quotes</strong><br>
+        <span style="font-size:0.78rem;"><code>print(Hello)</code> → must be <code>print("Hello")</code></span>
+      </div>
+    </div>
+    <div class="t-f-row">
+      <div class="t-f-circles"><span style="border-color:#f87171;color:#ef4444;">✓</span></div>
+      <div>
+        <strong>Bug 2 — Missing indent</strong><br>
+        <span style="font-size:0.78rem;">Body of loop must have exactly 4 spaces before it</span>
+      </div>
+    </div>
+    <div class="t-f-row">
+      <div class="t-f-circles"><span style="border-color:#f87171;color:#ef4444;">✓</span></div>
+      <div>
+        <strong>Bug 3 — Missing colon</strong><br>
+        <span style="font-size:0.78rem;"><code>for i in range(5)</code> → needs <code>:</code> at end</span>
+      </div>
+    </div>
+    <div style="background:#fef2f2;border-radius:8px;padding:8px 10px;margin-top:10px;font-size:0.78rem;color:#991b1b;">
+      💡 <strong>Pro move:</strong> Python error messages give you the <em>line number</em> and the type of mistake. Read the message — it's trying to help!
+    </div>
+    <p style="font-size:0.78rem;font-weight:700;color:#374151;margin-top:10px;margin-bottom:4px;">Write one bug you personally found and fixed today:</p>
+    <input class="write-line" type="text" placeholder="I found: ___" style="border-bottom-color:#fca5a5;" />
+    <input class="write-line" type="text" placeholder="I fixed it by: ___" style="border-bottom-color:#fca5a5;margin-bottom:0;" />
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ══════════ EXIT TICKET + RUBRIC ══════════ -->
+<div class="section-badge amber">✍️ Exit Ticket + Rubric</div>
+<div class="section-title">Before You Leave — Quick Check + Scoring</div>
+
+<div class="grid-2 mb-3">
+  <div class="card accent-amber">
+    <div class="card-label amber">✍️ Exit Ticket — 3 Questions</div>
+    <p style="font-size:0.8rem;font-weight:700;margin-bottom:4px;">1. What does <code>print()</code> do? One sentence:</p>
+    <input class="write-line" type="text" placeholder="print() is like Scratch's say block — it..." />
+    <p style="font-size:0.8rem;font-weight:700;margin:8px 0 4px;">2. What does the indent (4 spaces) tell Python?</p>
+    <input class="write-line" type="text" placeholder="The indent tells Python..." />
+    <p style="font-size:0.8rem;font-weight:700;margin:8px 0 4px;">3. What is <em>one thing</em> about Python that's the same as Scratch?</p>
+    <input class="write-line" type="text" placeholder="Both Python and Scratch can..." />
+    <p style="font-size:0.8rem;font-weight:700;color:#6d28d9;margin:10px 0 4px;">How do you feel right now? (circle one)</p>
+    <div class="exit-row">
+      <span class="exit-opt">😎 Got it!</span>
+      <span class="exit-opt">🤔 Mostly…</span>
+      <span class="exit-opt">😅 Still fuzzy</span>
+      <span class="exit-opt">🙋 Need help!</span>
+    </div>
+    <p style="font-size:0.78rem;font-weight:700;color:#374151;margin-top:8px;margin-bottom:4px;">One thing I still want to learn:</p>
+    <input class="write-line" type="text" placeholder="..." />
+  </div>
+  <div class="card">
+    <div class="card-label blue">📊 Activity Rubric</div>
+    <table class="rubric">
+      <thead><tr><th>Section</th><th>What to Look For</th><th>Pts</th></tr></thead>
+      <tbody>
+        <tr><td>Warm-Up Puzzles</td><td>Both puzzles attempted; output predicted; blanks filled</td><td class="pts">3</td></tr>
+        <tr><td>Vocab + Annotate</td><td>All 5 vocab rows filled; anatomy labels completed</td><td class="pts">3</td></tr>
+        <tr><td>AI Moment</td><td>Discussion question answered in 1–2 sentences</td><td class="pts">1</td></tr>
+        <tr><td>Guided Build</td><td>Code written/typed; predictions made; error box filled</td><td class="pts">4</td></tr>
+        <tr><td>Tier Task</td><td>Tier task complete + running (or written attempt) + checklist items checked</td><td class="pts">5</td></tr>
+        <tr><td>Debug Corner</td><td>Bug(s) identified; fix described</td><td class="pts">1</td></tr>
+        <tr><td>Exit Ticket</td><td>All 3 questions answered; feeling circled</td><td class="pts">3</td></tr>
+        <tr><td>⚡ Challenge Card</td><td>Countdown built; prediction + question answered</td><td class="pts">+3</td></tr>
+      </tbody>
+    </table>
+    <div style="display:flex;justify-content:flex-end;margin-top:8px;gap:20px;font-size:0.82rem;">
+      <span>Required: <strong style="font-family:var(--font-code);color:#0b63ce;">____ / 20</strong></span>
+      <span>With bonus: <strong style="font-family:var(--font-code);color:#7c3aed;">____ / 23</strong></span>
+    </div>
+  </div>
+</div>
+
+<!-- HOMEWORK PREVIEW -->
+<div class="card" style="background:linear-gradient(135deg,rgba(16,185,129,0.05),rgba(11,99,206,0.05));border:1.5px solid rgba(16,185,129,0.2);">
+  <div class="card-label green">📝 Tonight's Homework (~30 min · Due Mon Jul 13)</div>
+  <div class="grid-2">
+    <div>
+      <p><strong>Task:</strong> Type a 4-line "About Me" Python program using <code>print()</code>. Run it. Fix any errors you see.</p>
+      <p style="margin-top:8px;"><strong>Where:</strong> playcode.io/python-playground — or write on the homework sheet</p>
+      <p style="margin-top:8px;"><strong>3 tiers:</strong> Tier A adds a simple loop · Tier B adds a counter + comments · Tier C adds a countdown + teach-back</p>
+    </div>
+    <div>
+      <p style="font-size:0.82rem;font-weight:700;color:#047857;margin-bottom:4px;">📅 Next session — Mon Jul 13:</p>
+      <p style="font-size:0.8rem;color:#374151;line-height:1.6;"><strong>Python Variables, <code>input()</code> &amp; a Mad Libs Generator!</strong><br>Your program will ask <em>you</em> a question and remember your answer. Get ready to build a funny story!</p>
+      <div class="tip-box green mt-2">💡 Think of a funny Mad Libs story topic over the weekend — animals? food? your school?</div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="sheet-footer">
+  <div>
+    <strong>Session 8 · Thu Jul 9 · In-Class Activity Sheet</strong> · Daily Rhythm Format · Mr. Hsiao "Hue" Weng · Summer 2026<br>
+    <span class="grad-text" style="font-weight:800;">print() · for loop · range() · indentation · comments · debugging · AI Moment</span>
+  </div>
+  <div style="text-align:right;">
+    Ages 7–13 · Grades 1–9 · 3 Tiers<br>
+    <span style="font-size:0.7rem;">Modern Chinese School · Summer 2026 AI &amp; Coding Program</span>
+  </div>
+</div>
+
+</div><!-- end .page -->
+
+<script>
+  document.querySelectorAll('.exit-opt').forEach(btn => {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.exit-opt').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>
