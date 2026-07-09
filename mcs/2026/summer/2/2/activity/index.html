@@ -1,1 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Activity Sheet · Session 6 · Scratch: Variables &amp; Score-keeping</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --color-bg: #f4fbff;
+    --color-surface: rgba(255,255,255,0.97);
+    --color-text: #1f2a37;
+    --color-text-secondary: #374151;
+    --color-text-muted: #5b6b7e;
+    --color-accent-1: #0b63ce;
+    --color-accent-2: #10b981;
+    --color-accent-3: #f59e0b;
+    --color-accent-red: #ef4444;
+    --font-display: 'Fredoka', 'Trebuchet MS', sans-serif;
+    --font-body: 'Nunito', Arial, sans-serif;
+    --font-code: 'Fira Code', Consolas, monospace;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  @media print {
+    body { background: #fff !important; }
+    .no-print { display: none !important; }
+    .card { box-shadow: none !important; border: 1.5px solid #d1d5db !important; }
+    .sheet-header, .level-badge, .tier-badge, .section-label, .tier-a, .tier-b, .tier-c, .challenge-badge { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+  body { font-family: var(--font-body); color: var(--color-text); background: var(--color-bg); min-height: 100vh; }
+  .print-bar { background: rgba(255,255,255,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(148,163,184,0.3); padding: 10px 24px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; gap: 12px; flex-wrap: wrap; }
+  .print-bar .bar-title { font-family: var(--font-display); font-size: 1.05rem; font-weight: 700; color: var(--color-accent-1); }
+  .print-bar .bar-sub { font-size: 0.78rem; color: var(--color-text-muted); }
+  .btn-print { background: var(--color-accent-1); color: #fff; border: none; padding: 8px 20px; border-radius: 999px; font-family: var(--font-body); font-size: 0.82rem; font-weight: 800; cursor: pointer; letter-spacing: 0.06em; transition: background 0.2s, transform 0.15s; }
+  .btn-print:hover { background: #0952b0; transform: translateY(-1px); }
+  .page { max-width: 920px; margin: 0 auto; padding: 32px 24px 60px; }
+  .sheet-header { background: linear-gradient(135deg, #0b63ce 0%, #10b981 60%, #f59e0b 100%); border-radius: 20px; padding: 28px 32px 24px; color: #fff; margin-bottom: 28px; position: relative; overflow: hidden; }
+  .sheet-header::before { content: ''; position: absolute; top: -60px; right: -60px; width: 200px; height: 200px; background: rgba(255,255,255,0.08); border-radius: 50%; }
+  .sheet-header::after  { content: ''; position: absolute; bottom: -40px; left: -40px; width: 140px; height: 140px; background: rgba(255,255,255,0.06); border-radius: 50%; }
+  .header-day   { font-size: 0.75rem; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; opacity: 0.85; margin-bottom: 4px; }
+  .header-title { font-family: var(--font-display); font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 700; line-height: 1.1; margin-bottom: 6px; }
+  .header-sub   { font-size: 0.88rem; opacity: 0.85; margin-bottom: 14px; }
+  .header-pills { display: flex; gap: 8px; flex-wrap: wrap; }
+  .header-pill  { background: rgba(255,255,255,0.22); border: 1px solid rgba(255,255,255,0.35); border-radius: 999px; padding: 4px 14px; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
+  .student-info { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 28px; }
+  @media (max-width: 600px) { .student-info { grid-template-columns: 1fr; } }
+  .info-field   { background: var(--color-surface); border-radius: 12px; padding: 12px 14px; border: 1.5px solid rgba(11,99,206,0.14); box-shadow: 0 2px 8px rgba(15,23,42,0.05); }
+  .info-label   { font-size: 0.65rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-accent-1); margin-bottom: 6px; }
+  .info-line    { border: none; border-bottom: 1.5px solid #cbd5e1; width: 100%; font-family: var(--font-body); font-size: 0.9rem; color: var(--color-text); background: transparent; outline: none; padding: 2px 0; }
+  .section-label { display: inline-flex; align-items: center; gap: 8px; padding: 5px 16px; border-radius: 999px; border: 1px solid rgba(148,163,184,0.4); background: rgba(255,255,255,0.9); font-size: 0.72rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-accent-1); margin-bottom: 10px; }
+  .section-title { font-family: var(--font-display); font-size: clamp(1.3rem, 2.5vw, 1.8rem); font-weight: 700; margin-bottom: 16px; color: var(--color-text); line-height: 1.2; }
+  .card { background: var(--color-surface); border-radius: 16px; padding: 18px 20px; box-shadow: 0 4px 18px rgba(15,23,42,0.07); border: 1px solid rgba(255,255,255,0.7); margin-bottom: 16px; }
+  .card.accent-blue   { border-left: 4px solid var(--color-accent-1); }
+  .card.accent-green  { border-left: 4px solid var(--color-accent-2); }
+  .card.accent-amber  { border-left: 4px solid var(--color-accent-3); }
+  .card.accent-red    { border-left: 4px solid var(--color-accent-red); }
+  .card.accent-purple { border-left: 4px solid #7c3aed; }
+  .card-label { font-size: 0.68rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 8px; }
+  .card-label.blue   { color: var(--color-accent-1); }
+  .card-label.green  { color: #047857; }
+  .card-label.amber  { color: #b45309; }
+  .card-label.red    { color: #b91c1c; }
+  .card-label.purple { color: #6d28d9; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  @media (max-width: 680px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+  .code-block { background: #1e293b; color: #e2e8f0; border-radius: 12px; padding: 14px 18px; font-family: var(--font-code); font-size: clamp(0.68rem, 1.1vw, 0.83rem); line-height: 1.65; overflow-x: auto; border: 1px solid rgba(255,255,255,0.06); margin-bottom: 12px; white-space: pre; }
+  .kw  { color: #93c5fd; }
+  .nb  { color: #fcd34d; }
+  .st  { color: #86efac; }
+  .cm  { color: #64748b; font-style: italic; }
+  input.write-line { border: none; border-bottom: 1.5px solid #cbd5e1; width: 100%; margin-bottom: 10px; height: 28px; display: block; background: transparent; font-family: var(--font-body); font-size: 0.88rem; color: var(--color-text); outline: none; padding: 2px 4px; }
+  input.write-line::placeholder { color: #bdc5d1; font-style: italic; }
+  textarea.write-area { border: 1.5px solid #cbd5e1; border-radius: 8px; width: 100%; min-height: 70px; padding: 8px; font-family: var(--font-body); font-size: 0.85rem; color: var(--color-text); resize: vertical; background: #f8fafc; outline: none; display: block; }
+  input.blank-input { display: inline-block; background: rgba(251,191,36,0.18); border: none; border-bottom: 2px solid #f59e0b; min-width: 60px; width: 60px; height: 1.1em; border-radius: 3px; vertical-align: middle; margin: 0 2px; font-family: var(--font-code); font-size: inherit; color: var(--color-text); text-align: center; outline: none; padding: 0 2px; }
+  input.blank-input.wide { min-width: 110px; width: 110px; }
+  input.blank-input.narrow { min-width: 36px; width: 36px; }
+  .check-list { list-style: none; padding: 0; }
+  .check-list li { display: flex; align-items: flex-start; gap: 8px; font-size: 0.85rem; color: var(--color-text-secondary); margin-bottom: 8px; line-height: 1.45; }
+  .check-list li .box { flex-shrink: 0; width: 17px; height: 17px; border: 2px solid #94a3b8; border-radius: 4px; margin-top: 1px; background: #fff; display: inline-block; }
+  .tier-a { background: #e6f7f0; color: #047857; border: 1px solid rgba(16,185,129,0.3); display: inline-flex; align-items: center; gap: 5px; padding: 3px 12px; border-radius: 999px; font-size: 0.7rem; font-weight: 800; letter-spacing: 0.07em; text-transform: uppercase; }
+  .tier-b { background: #eaf2fd; color: #0b63ce; border: 1px solid rgba(11,99,206,0.3); display: inline-flex; align-items: center; gap: 5px; padding: 3px 12px; border-radius: 999px; font-size: 0.7rem; font-weight: 800; letter-spacing: 0.07em; text-transform: uppercase; }
+  .tier-c { background: #fdf4e3; color: #b45309; border: 1px solid rgba(245,158,11,0.35); display: inline-flex; align-items: center; gap: 5px; padding: 3px 12px; border-radius: 999px; font-size: 0.7rem; font-weight: 800; letter-spacing: 0.07em; text-transform: uppercase; }
+  .challenge-badge { display: inline-flex; align-items: center; gap: 6px; background: linear-gradient(135deg, #f59e0b, #ef4444); color: #fff; padding: 4px 14px; border-radius: 999px; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 8px; }
+  .sb { display: inline-flex; align-items: center; gap: 4px; border-radius: 7px; padding: 3px 10px; font-family: var(--font-code); font-size: 0.78rem; font-weight: 700; color: #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.14); white-space: nowrap; }
+  .sb-orange { background: #ff8c1a; }
+  .sb-yellow { background: #ffab19; }
+  .sb-purple { background: #9966ff; }
+  .sb-blue   { background: #4c97ff; }
+  .tip-box { border-radius: 10px; padding: 10px 14px; font-size: 0.8rem; line-height: 1.5; margin-top: 10px; }
+  .tip-box.blue   { background: rgba(11,99,206,0.07); color: #1e40af; }
+  .tip-box.green  { background: rgba(16,185,129,0.07); color: #065f46; }
+  .tip-box.amber  { background: rgba(245,158,11,0.07); color: #92400e; }
+  .tip-box.red    { background: rgba(239,68,68,0.07); color: #991b1b; }
+  .tip-box.purple { background: rgba(124,58,237,0.07); color: #5b21b6; }
+  table.rubric { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+  table.rubric th { background: #1e293b; color: #e2e8f0; padding: 8px 10px; text-align: left; font-weight: 700; }
+  table.rubric td { padding: 8px 10px; border-bottom: 1px solid #e2e8f0; vertical-align: top; color: var(--color-text-secondary); }
+  table.rubric tr:nth-child(even) td { background: rgba(241,245,249,0.6); }
+  table.rubric td:first-child { font-weight: 700; color: var(--color-text); }
+  table.rubric .pts { font-family: var(--font-code); font-size: 0.75rem; font-weight: 800; color: var(--color-accent-1); white-space: nowrap; }
+  table.trace { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+  table.trace th { background: rgba(11,99,206,0.08); color: #0b63ce; padding: 7px 10px; font-weight: 800; text-align: left; border-bottom: 2px solid rgba(11,99,206,0.15); }
+  table.trace td { padding: 7px 10px; border-bottom: 1px solid #e8f0fb; vertical-align: middle; }
+  .var-box-draw { border: 2.5px dashed #0b63ce; border-radius: 14px; background: rgba(11,99,206,0.04); padding: 12px 16px; min-height: 80px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; }
+  .score-bar { height: 10px; border-radius: 999px; overflow: hidden; background: #e0f2ff; margin: 4px 0; }
+  .score-bar-fill { height: 100%; background: linear-gradient(90deg,#0b63ce,#10b981); border-radius: 999px; }
+  .divider { border: none; border-top: 2px dashed #dde6f0; margin: 28px 0; }
+  .sheet-footer { margin-top: 40px; padding: 16px 20px; border-radius: 12px; background: rgba(11,99,206,0.04); border: 1px solid rgba(11,99,206,0.12); display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; font-size: 0.76rem; color: var(--color-text-muted); }
+  .grad-text { background: linear-gradient(135deg,#0b63ce,#10b981,#f59e0b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .mb-2 { margin-bottom: 10px; }
+  .mb-3 { margin-bottom: 14px; }
+  .mt-2 { margin-top: 10px; }
+  code { background: #e0f2ff; padding: 1px 5px; border-radius: 4px; font-family: var(--font-code); font-size: 0.82em; color: #0b63ce; }
+</style>
+</head>
+<body>
+<div class="print-bar no-print">
+  <div>
+    <div class="bar-title">Session 6 · Activity Sheet — Variables &amp; Score-keeping</div>
+    <div class="bar-sub">Scratch Phase 1 · Tue Jul 7, 2026 · Mr. Hsiao "Hue" Weng · Modern Chinese School</div>
+  </div>
+  <button class="btn-print" onclick="window.print()">&#128424; Print / Save PDF</button>
+</div>
+<div class="page">
 
+  <!-- HEADER -->
+  <div class="sheet-header">
+    <div class="header-day">Session 6 · Phase 1: Scratch On-Ramp · Tuesday, July 7, 2026</div>
+    <div class="header-title">Variables &amp; Score-keeping &#127918;</div>
+    <div class="header-sub">Explore, trace, and build variable-powered games — step by step, from warm-up puzzles to your own working score counter.</div>
+    <div class="header-pills">
+      <span class="header-pill">Warm-Up</span>
+      <span class="header-pill">Vocab Check</span>
+      <span class="header-pill">Trace &amp; Debug</span>
+      <span class="header-pill">Tiered Build</span>
+      <span class="header-pill">AI Moment</span>
+      <span class="header-pill">Exit Ticket</span>
+    </div>
+  </div>
+
+  <!-- Student info -->
+  <div class="student-info">
+    <div class="info-field"><div class="info-label">Your Name</div><input class="info-line" type="text" placeholder="First &amp; Last Name"></div>
+    <div class="info-field"><div class="info-label">Section / Period</div><input class="info-line" type="text" placeholder="Section 1 / 2 / 3"></div>
+    <div class="info-field"><div class="info-label">Date</div><input class="info-line" type="text" placeholder="July 7, 2026"></div>
+  </div>
+
+  <!-- PART 1: WARM-UP -->
+  <div class="section-label">&#129513; Part 1 of 5</div>
+  <div class="section-title">Warm-Up: The Secret Keeper</div>
+
+  <div class="card accent-blue mb-2">
+    <div class="card-label blue">&#128230; Puzzle 1 — The Labeled Box</div>
+    <p class="mb-2">A special box has a name on the outside, holds <em>one</em> number, and can be opened and changed anytime. That is a <strong>variable</strong>.</p>
+    <div class="grid-2 mb-2">
+      <div>
+        <p style="font-size:0.83rem;color:#374151;margin-bottom:8px;">Draw a box and label it. Write a starting value inside.</p>
+        <div class="var-box-draw">
+          <p style="font-size:0.65rem;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:#5b6b7e;margin:0;">Name (label on the outside):</p>
+          <input class="write-line" type="text" placeholder="e.g. score" style="text-align:center;font-family:var(--font-code);font-size:1rem;font-weight:700;color:#0b63ce;width:80%;">
+          <p style="font-size:0.65rem;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:#5b6b7e;margin:4px 0 0;">Starting value (inside the box):</p>
+          <input class="write-line" type="text" placeholder="0" style="text-align:center;font-family:var(--font-code);font-size:1.2rem;font-weight:800;color:#10b981;width:50%;">
+        </div>
+      </div>
+      <div>
+        <p style="font-size:0.8rem;font-weight:700;color:#0b63ce;margin-bottom:4px;">A basketball scoreboard shows 14-9. A team scores. What changes? What stays the same?</p>
+        <input class="write-line" type="text" placeholder="What changes: ...">
+        <input class="write-line" type="text" placeholder="What stays the same: ...">
+        <p style="font-size:0.8rem;font-weight:700;color:#0b63ce;margin:8px 0 4px;">In Minecraft, XP goes from 24 to 25. Which block does that?</p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:6px;">
+          <label style="font-size:0.85rem;display:flex;align-items:center;gap:6px;cursor:pointer;"><input type="radio" name="xp" style="accent-color:#0b63ce;"> <span class="sb sb-orange">set xp to 25</span></label>
+          <label style="font-size:0.85rem;display:flex;align-items:center;gap:6px;cursor:pointer;"><input type="radio" name="xp" style="accent-color:#0b63ce;"> <span class="sb sb-orange">change xp by 1</span></label>
+        </div>
+        <div class="tip-box blue">&#128161; "Change by" <em>adds</em> to the current value. "Set to" <em>replaces</em> it.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card accent-amber mb-3">
+    <div class="card-label amber">&#128290; Puzzle 2 — Predict the Variable</div>
+    <p class="mb-2">Trace the value of <code>score</code> after each block:</p>
+    <div class="code-block"><span class="kw">set</span> <span class="st">score</span> <span class="kw">to</span> <span class="nb">0</span>         <span class="cm">  -&gt; score = ____</span>
+<span class="kw">change</span> <span class="st">score</span> <span class="kw">by</span> <span class="nb">1</span>       <span class="cm">  -&gt; score = ____</span>
+<span class="kw">change</span> <span class="st">score</span> <span class="kw">by</span> <span class="nb">1</span>       <span class="cm">  -&gt; score = ____</span>
+<span class="kw">change</span> <span class="st">score</span> <span class="kw">by</span> <span class="nb">1</span>       <span class="cm">  -&gt; score = ____</span>
+<span class="kw">set</span> <span class="st">score</span> <span class="kw">to</span> <span class="nb">0</span>         <span class="cm">  -&gt; score = ____ &lt;-- why reset?</span></div>
+    <p style="font-size:0.8rem;font-weight:700;color:#b45309;margin-bottom:4px;">Why is the last <code>set score to 0</code> bad here? When should you reset?</p>
+    <input class="write-line" type="text" placeholder="It is bad because...">
+    <input class="write-line" type="text" placeholder="You should reset when...">
+  </div>
+
+  <hr class="divider">
+
+  <!-- PART 2: VOCAB -->
+  <div class="section-label">&#128218; Part 2 of 5</div>
+  <div class="section-title">Vocabulary &amp; Concept Check</div>
+
+  <div class="grid-2 mb-3">
+    <div class="card">
+      <div class="card-label blue">&#128292; Match the Term</div>
+      <p class="mb-2">Write the correct letter next to each definition.</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
+        <span style="background:#e0f2ff;color:#0b63ce;border-radius:6px;padding:3px 10px;font-weight:700;font-size:0.78rem;">A. Variable</span>
+        <span style="background:#e0f2ff;color:#0b63ce;border-radius:6px;padding:3px 10px;font-weight:700;font-size:0.78rem;">B. Set to</span>
+        <span style="background:#e0f2ff;color:#0b63ce;border-radius:6px;padding:3px 10px;font-weight:700;font-size:0.78rem;">C. Change by</span>
+        <span style="background:#e0f2ff;color:#0b63ce;border-radius:6px;padding:3px 10px;font-weight:700;font-size:0.78rem;">D. Scope</span>
+        <span style="background:#e0f2ff;color:#0b63ce;border-radius:6px;padding:3px 10px;font-weight:700;font-size:0.78rem;">E. Confidence</span>
+        <span style="background:#e0f2ff;color:#0b63ce;border-radius:6px;padding:3px 10px;font-weight:700;font-size:0.78rem;">F. Lives</span>
+      </div>
+      <table style="width:100%;font-size:0.82rem;border-collapse:collapse;">
+        <tr><td style="padding:5px 0;border-bottom:1px solid #f1f5f9;color:#374151;width:85%;">A named container that stores one value a program can change</td><td><input type="text" style="width:32px;border:none;border-bottom:2px solid #0b63ce;text-align:center;font-weight:800;font-size:0.9rem;color:#0b63ce;background:transparent;outline:none;" placeholder="_"></td></tr>
+        <tr><td style="padding:5px 0;border-bottom:1px solid #f1f5f9;color:#374151;">Adds or subtracts from the current value without replacing it</td><td><input type="text" style="width:32px;border:none;border-bottom:2px solid #0b63ce;text-align:center;font-weight:800;font-size:0.9rem;color:#0b63ce;background:transparent;outline:none;" placeholder="_"></td></tr>
+        <tr><td style="padding:5px 0;border-bottom:1px solid #f1f5f9;color:#374151;">Replaces the entire current value with a new one</td><td><input type="text" style="width:32px;border:none;border-bottom:2px solid #0b63ce;text-align:center;font-weight:800;font-size:0.9rem;color:#0b63ce;background:transparent;outline:none;" placeholder="_"></td></tr>
+        <tr><td style="padding:5px 0;border-bottom:1px solid #f1f5f9;color:#374151;">Which sprites can see and use a variable</td><td><input type="text" style="width:32px;border:none;border-bottom:2px solid #0b63ce;text-align:center;font-weight:800;font-size:0.9rem;color:#0b63ce;background:transparent;outline:none;" placeholder="_"></td></tr>
+        <tr><td style="padding:5px 0;border-bottom:1px solid #f1f5f9;color:#374151;">An AI model's variable storing how sure it is (0-100%)</td><td><input type="text" style="width:32px;border:none;border-bottom:2px solid #0b63ce;text-align:center;font-weight:800;font-size:0.9rem;color:#0b63ce;background:transparent;outline:none;" placeholder="_"></td></tr>
+        <tr><td style="padding:5px 0;color:#374151;">A variable that starts at 3 and decreases when the player is hurt</td><td><input type="text" style="width:32px;border:none;border-bottom:2px solid #0b63ce;text-align:center;font-weight:800;font-size:0.9rem;color:#0b63ce;background:transparent;outline:none;" placeholder="_"></td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <div class="card-label amber">&#9999; True or False</div>
+      <table style="width:100%;font-size:0.82rem;border-collapse:collapse;">
+        <tr><td style="padding:6px 0;border-bottom:1px solid #f1f5f9;color:#374151;width:83%"><code>set score to 0</code> and <code>change score by 0</code> do the exact same thing.</td><td style="padding:6px 0;border-bottom:1px solid #f1f5f9;font-weight:800;color:#0b63ce;white-space:nowrap;">T &nbsp; F</td></tr>
+        <tr><td style="padding:6px 0;border-bottom:1px solid #f1f5f9;color:#374151;">A variable for one sprite is automatically visible to all sprites.</td><td style="padding:6px 0;border-bottom:1px solid #f1f5f9;font-weight:800;color:#0b63ce;white-space:nowrap;">T &nbsp; F</td></tr>
+        <tr><td style="padding:6px 0;border-bottom:1px solid #f1f5f9;color:#374151;">An AI confidence % is just a variable storing a number from 0 to 100.</td><td style="padding:6px 0;border-bottom:1px solid #f1f5f9;font-weight:800;color:#0b63ce;white-space:nowrap;">T &nbsp; F</td></tr>
+        <tr><td style="padding:6px 0;border-bottom:1px solid #f1f5f9;color:#374151;">You must add <code>set score to 0</code> under the green flag or score carries over.</td><td style="padding:6px 0;border-bottom:1px solid #f1f5f9;font-weight:800;color:#0b63ce;white-space:nowrap;">T &nbsp; F</td></tr>
+        <tr><td style="padding:6px 0;color:#374151;"><code>change lives by -1</code> makes lives go down by 1.</td><td style="padding:6px 0;font-weight:800;color:#0b63ce;white-space:nowrap;">T &nbsp; F</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- PART 3: TRACE & DEBUG -->
+  <div class="section-label">&#128027; Part 3 of 5</div>
+  <div class="section-title">Trace &amp; Bug Hunt</div>
+
+  <div class="card accent-blue mb-2">
+    <div class="card-label blue">&#128202; Trace the Score</div>
+    <p class="mb-2">A game runs these events in order. Fill in the value of <code>score</code> at each step.</p>
+    <div class="code-block"><span class="kw">when</span> <span class="nb">green flag</span> clicked -&gt; <span class="kw">set</span> <span class="st">score</span> <span class="kw">to</span> <span class="nb">0</span>
+<span class="kw">when</span> sprite clicked -&gt; <span class="kw">change</span> <span class="st">score</span> <span class="kw">by</span> <span class="nb">1</span>   <span class="cm">x3</span>
+<span class="kw">when</span> sprite clicked -&gt; <span class="kw">change</span> <span class="st">score</span> <span class="kw">by</span> <span class="nb">2</span>   <span class="cm">x1 (bonus!)</span>
+<span class="kw">when</span> green flag clicked -&gt; <span class="kw">set</span> <span class="st">score</span> <span class="kw">to</span> <span class="nb">0</span>   <span class="cm">restart</span></div>
+    <table class="trace mb-2">
+      <thead><tr><th>Event</th><th>Block</th><th>score after</th></tr></thead>
+      <tbody>
+        <tr><td>Green flag (start)</td><td><span class="sb sb-orange">set score to 0</span></td><td><input type="text" class="write-line" style="margin:0;width:60px;text-align:center;" placeholder="?"></td></tr>
+        <tr><td>Click 1</td><td><span class="sb sb-orange">change score by 1</span></td><td><input type="text" class="write-line" style="margin:0;width:60px;text-align:center;" placeholder="?"></td></tr>
+        <tr><td>Click 2</td><td><span class="sb sb-orange">change score by 1</span></td><td><input type="text" class="write-line" style="margin:0;width:60px;text-align:center;" placeholder="?"></td></tr>
+        <tr><td>Click 3</td><td><span class="sb sb-orange">change score by 1</span></td><td><input type="text" class="write-line" style="margin:0;width:60px;text-align:center;" placeholder="?"></td></tr>
+        <tr><td>Bonus click</td><td><span class="sb sb-orange">change score by 2</span></td><td><input type="text" class="write-line" style="margin:0;width:60px;text-align:center;" placeholder="?"></td></tr>
+        <tr><td>Green flag (restart)</td><td><span class="sb sb-orange">set score to 0</span></td><td><input type="text" class="write-line" style="margin:0;width:60px;text-align:center;" placeholder="?"></td></tr>
+      </tbody>
+    </table>
+    <input class="write-line" type="text" placeholder="Highest score reached before restart = ...">
+  </div>
+
+  <div class="card accent-red mb-3">
+    <div class="card-label red">&#128027; Bug Hunt — Three Broken Scripts</div>
+    <div class="grid-3">
+      <div style="background:#fef2f2;border-radius:12px;padding:14px 16px;border:1.5px solid rgba(239,68,68,0.2);">
+        <p style="font-size:0.72rem;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:#b91c1c;margin-bottom:8px;">&#128027; Bug 1</p>
+        <div class="code-block" style="font-size:0.72rem;margin-bottom:8px;"><span class="kw">when</span> <span class="nb">green flag</span> clicked
+<span class="cm">&lt;-- missing something!</span>
+<span class="kw">when</span> sprite clicked
+  <span class="kw">change</span> <span class="st">score</span> <span class="kw">by</span> <span class="nb">1</span></div>
+        <p style="font-size:0.77rem;font-weight:700;color:#b91c1c;margin-bottom:4px;">What is missing?</p>
+        <input class="write-line" type="text" placeholder="...">
+        <p style="font-size:0.77rem;font-weight:700;color:#b91c1c;margin:6px 0 4px;">What goes wrong?</p>
+        <input class="write-line" type="text" placeholder="...">
+        <p style="font-size:0.77rem;font-weight:700;color:#047857;margin:6px 0 4px;">Fix:</p>
+        <input class="write-line" type="text" placeholder="Add ...">
+      </div>
+      <div style="background:#fef2f2;border-radius:12px;padding:14px 16px;border:1.5px solid rgba(239,68,68,0.2);">
+        <p style="font-size:0.72rem;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:#b91c1c;margin-bottom:8px;">&#128027; Bug 2</p>
+        <div class="code-block" style="font-size:0.72rem;margin-bottom:8px;"><span class="kw">when</span> sprite clicked
+  <span class="kw">set</span> <span class="st">score</span> <span class="kw">to</span> <span class="nb">1</span>
+<span class="cm">&lt;-- stays at 1 forever</span></div>
+        <p style="font-size:0.77rem;font-weight:700;color:#b91c1c;margin-bottom:4px;">What is wrong?</p>
+        <input class="write-line" type="text" placeholder="...">
+        <p style="font-size:0.77rem;font-weight:700;color:#b91c1c;margin:6px 0 4px;">Clicked 5 times, score = ?</p>
+        <input class="write-line" type="text" placeholder="score = ...">
+        <p style="font-size:0.77rem;font-weight:700;color:#047857;margin:6px 0 4px;">Fix:</p>
+        <input class="write-line" type="text" placeholder="Change to ...">
+      </div>
+      <div style="background:#fef2f2;border-radius:12px;padding:14px 16px;border:1.5px solid rgba(239,68,68,0.2);">
+        <p style="font-size:0.72rem;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:#b91c1c;margin-bottom:8px;">&#128027; Bug 3</p>
+        <div class="code-block" style="font-size:0.72rem;margin-bottom:8px;"><span class="kw">forever</span>
+  <span class="kw">if</span> touching [enemy]
+    <span class="kw">change</span> <span class="st">lives</span> <span class="kw">by</span> <span class="nb">-1</span>
+  <span class="cm">&lt;-- no wait block!</span></div>
+        <p style="font-size:0.77rem;font-weight:700;color:#b91c1c;margin-bottom:4px;">What happens?</p>
+        <input class="write-line" type="text" placeholder="lives drops to 0 in ...">
+        <p style="font-size:0.77rem;font-weight:700;color:#b91c1c;margin:6px 0 4px;">Why so fast?</p>
+        <input class="write-line" type="text" placeholder="Because forever loop ...">
+        <p style="font-size:0.77rem;font-weight:700;color:#047857;margin:6px 0 4px;">Fix:</p>
+        <input class="write-line" type="text" placeholder="Add wait ... seconds">
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- PART 4: TIERED BUILD -->
+  <div class="section-label">&#128296; Part 4 of 5</div>
+  <div class="section-title">Tiered Build — Choose Your Level</div>
+
+  <div class="card accent-blue mb-2">
+    <div class="card-label blue">&#127919; Choose your entry point</div>
+    <div class="grid-3">
+      <div style="text-align:center;padding:10px 8px;">
+        <span class="tier-a" style="display:block;justify-content:center;margin-bottom:6px;">Tier A</span>
+        <p style="font-size:0.78rem;color:#374151;">Add a score variable. Clicker game. Reset + go up by 1.</p>
+      </div>
+      <div style="text-align:center;padding:10px 8px;border-left:1px dashed #cbd5e1;border-right:1px dashed #cbd5e1;">
+        <span class="tier-b" style="display:block;justify-content:center;margin-bottom:6px;">Tier B</span>
+        <p style="font-size:0.78rem;color:#374151;">Score AND lives. Win message when score hits target.</p>
+      </div>
+      <div style="text-align:center;padding:10px 8px;">
+        <span class="tier-c" style="display:block;justify-content:center;margin-bottom:6px;">Tier C</span>
+        <p style="font-size:0.78rem;color:#374151;">Score + lives + highScore. Timer countdown. Speed variable.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tier A -->
+  <div class="card mb-2">
+    <div style="margin-bottom:8px;"><span class="tier-a">&#128994; Tier A — Score Clicker</span></div>
+    <div class="grid-2 mb-2">
+      <div>
+        <p style="font-size:0.8rem;font-weight:700;color:#0b63ce;margin-bottom:6px;">Script 1 — Game Start</p>
+        <div class="code-block"><span class="kw">when</span> <span class="nb">green flag</span> clicked
+<span class="kw">set</span> <span class="st"><input class="blank-input wide" type="text" placeholder="variable?"></span> <span class="kw">to</span> <input class="blank-input narrow" type="text" placeholder="?"></div>
+      </div>
+      <div>
+        <p style="font-size:0.8rem;font-weight:700;color:#047857;margin-bottom:6px;">Script 2 — Score Point</p>
+        <div class="code-block"><span class="kw">when</span> <span class="nb">this sprite</span> clicked
+<span class="kw">change</span> <span class="st"><input class="blank-input wide" type="text" placeholder="variable?"></span> <span class="kw">by</span> <input class="blank-input narrow" type="text" placeholder="?"></div>
+      </div>
+    </div>
+    <input class="write-line" type="text" placeholder="Without the reset block, what happens when you restart?">
+    <input class="write-line" type="text" placeholder="I clicked ___ times to reach score = 5">
+    <ul class="check-list mt-2">
+      <li><span class="box"></span> Score starts at 0 on green flag</li>
+      <li><span class="box"></span> Score goes up by 1 every click</li>
+      <li><span class="box"></span> Badge visible on stage</li>
+    </ul>
+  </div>
+
+  <!-- Tier B -->
+  <div class="card mb-2">
+    <div style="margin-bottom:8px;"><span class="tier-b">&#128309; Tier B — Score + Lives System</span></div>
+    <div class="grid-2 mb-2">
+      <div>
+        <p style="font-size:0.8rem;font-weight:700;color:#0b63ce;margin-bottom:6px;">Reset both variables</p>
+        <div class="code-block"><span class="kw">when</span> <span class="nb">green flag</span> clicked
+<span class="kw">set</span> <span class="st">score</span> <span class="kw">to</span> <input class="blank-input narrow" type="text" placeholder="?">
+<span class="kw">set</span> <span class="st">lives</span> <span class="kw">to</span> <input class="blank-input narrow" type="text" placeholder="?"></div>
+      </div>
+      <div>
+        <p style="font-size:0.8rem;font-weight:700;color:#065f46;margin-bottom:6px;">Lives go down on collision</p>
+        <div class="code-block"><span class="kw">forever</span>
+  <span class="kw">if</span> touching [<input class="blank-input" type="text" placeholder="enemy?">]
+    <span class="kw">change</span> <span class="st">lives</span> <span class="kw">by</span> <input class="blank-input narrow" type="text" placeholder="?">
+    <span class="kw">wait</span> <input class="blank-input narrow" type="text" placeholder="?"> secs</div>
+      </div>
+    </div>
+    <p style="font-size:0.8rem;font-weight:700;color:#374151;margin-bottom:4px;">Write the You Win condition:</p>
+    <div class="code-block" style="min-height:50px;"><span class="kw">if</span> <span class="st">score</span> = <input class="blank-input narrow" type="text" placeholder="?"> <span class="kw">then</span>
+  <span class="kw">say</span> <input class="blank-input wide" type="text" placeholder="You Win!"></div>
+    <ul class="check-list mt-2">
+      <li><span class="box"></span> Both reset on green flag</li>
+      <li><span class="box"></span> Score goes up, lives goes down on events</li>
+      <li><span class="box"></span> Win/lose message appears</li>
+    </ul>
+  </div>
+
+  <!-- Tier C -->
+  <div class="card mb-3">
+    <div style="margin-bottom:8px;"><span class="challenge-badge">&#11088; Tier C — High Score + Timer + Speed</span></div>
+    <div class="grid-2 mb-2">
+      <div>
+        <p style="font-size:0.8rem;font-weight:700;color:#b45309;margin-bottom:6px;">High-Score logic:</p>
+        <div class="code-block" style="min-height:70px;"><span class="kw">if</span> <span class="st">score</span> &gt; <span class="st"><input class="blank-input" type="text" placeholder="highScore"></span> <span class="kw">then</span>
+  <span class="kw">set</span> <input class="blank-input" type="text" placeholder="highScore"> <span class="kw">to</span> <span class="st"><input class="blank-input" type="text" placeholder="score"></span>
+  <span class="kw">say</span> <input class="blank-input wide" type="text" placeholder="New High Score!"></div>
+        <input class="write-line" type="text" placeholder="Why should highScore NOT reset to 0?">
+      </div>
+      <div>
+        <p style="font-size:0.8rem;font-weight:700;color:#b45309;margin-bottom:6px;">Timer — count down from 30:</p>
+        <div class="code-block" style="min-height:70px;"><span class="kw">set</span> <span class="st">timer</span> <span class="kw">to</span> <input class="blank-input narrow" type="text" placeholder="?">
+<span class="kw">repeat</span> <input class="blank-input narrow" type="text" placeholder="?">
+  <span class="kw">wait</span> <input class="blank-input narrow" type="text" placeholder="?"> secs
+  <span class="kw">change</span> <span class="st">timer</span> <span class="kw">by</span> <input class="blank-input narrow" type="text" placeholder="?"></div>
+        <input class="write-line" type="text" placeholder="Speed variable: how would you make the sprite move faster as score grows?">
+      </div>
+    </div>
+    <ul class="check-list">
+      <li><span class="box"></span> highScore updates only when score beats it</li>
+      <li><span class="box"></span> Timer counts from 30 to 0 in real seconds</li>
+      <li><span class="box"></span> &#11088; Bonus: slider mode — right-click variable badge</li>
+    </ul>
+  </div>
+
+  <hr class="divider">
+
+  <!-- PART 5: AI MOMENT + EXIT -->
+  <div class="section-label">&#129302; Part 5 of 5</div>
+  <div class="section-title">AI Moment &amp; Exit Ticket</div>
+
+  <div class="card accent-purple mb-2">
+    <div class="card-label purple">&#129302; AI Moment — Variables = Memory</div>
+    <p class="mb-2">When an AI looks at a photo and says "87% cat, 13% dog" — those percentages are variables. Your <code>score</code> and the AI's confidence work exactly the same way.</p>
+    <div class="grid-2 mb-2">
+      <div>
+        <table style="width:100%;font-size:0.8rem;border-collapse:collapse;">
+          <tr style="background:rgba(124,58,237,0.07);"><th style="padding:6px 8px;text-align:left;font-weight:800;color:#6d28d9;">Scratch Game</th><th style="padding:6px 8px;text-align:left;font-weight:800;color:#6d28d9;">AI Model</th></tr>
+          <tr><td style="padding:6px 8px;border-bottom:1px solid #f1f5f9;">Variable: score</td><td style="padding:6px 8px;border-bottom:1px solid #f1f5f9;">Variable: cat_confidence</td></tr>
+          <tr style="background:rgba(241,245,249,0.6);"><td style="padding:6px 8px;border-bottom:1px solid #f1f5f9;">Starts at 0</td><td style="padding:6px 8px;border-bottom:1px solid #f1f5f9;">Starts at 0%</td></tr>
+          <tr><td style="padding:6px 8px;border-bottom:1px solid #f1f5f9;">Goes up when player scores</td><td style="padding:6px 8px;border-bottom:1px solid #f1f5f9;">Goes up when it sees cat features</td></tr>
+          <tr style="background:rgba(241,245,249,0.6);"><td style="padding:6px 8px;">if score &gt;= 10 --&gt; win</td><td style="padding:6px 8px;">if confidence &gt;= 80% --&gt; "cat!"</td></tr>
+        </table>
+      </div>
+      <div>
+        <p style="font-size:0.78rem;color:#374151;margin-bottom:6px;">cat_confidence = 87%</p>
+        <div class="score-bar"><div class="score-bar-fill" style="width:87%;"></div></div>
+        <p style="font-size:0.78rem;color:#374151;margin:6px 0 3px;">dog_confidence = 13%</p>
+        <div class="score-bar"><div class="score-bar-fill" style="width:13%;background:#ef4444;"></div></div>
+        <p style="font-size:0.8rem;font-weight:700;color:#6d28d9;margin:10px 0 4px;">Which Scratch block does the same thing as an AI picking the biggest confidence?</p>
+        <input class="write-line" type="text" placeholder="if ... > ... then ...">
+        <div class="tip-box purple mt-2">&#128269; Your score resets when you press green flag. An AI's learned weights are <em>saved</em>. Which is more like a high-score variable?</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Exit ticket -->
+  <div class="card mb-3">
+    <div class="grid-2">
+      <div>
+        <div class="card-label blue">&#129504; Exit Ticket</div>
+        <p style="font-size:0.8rem;font-weight:700;color:#374151;margin:8px 0 3px;">1. What is a variable and what are the three things you can do with one?</p>
+        <input class="write-line" type="text" placeholder="A variable is...">
+        <input class="write-line" type="text" placeholder="Three things: set, change, read...">
+        <p style="font-size:0.8rem;font-weight:700;color:#374151;margin:8px 0 3px;">2. Difference between set score to 0 and change score by 1?</p>
+        <input class="write-line" type="text" placeholder="Set to...">
+        <input class="write-line" type="text" placeholder="Change by...">
+        <p style="font-size:0.8rem;font-weight:700;color:#374151;margin:8px 0 3px;">3. One real-world place a variable stores a changing number:</p>
+        <input class="write-line" type="text" placeholder="Example: ...">
+      </div>
+      <div>
+        <div class="card-label green">&#127807; How did today go?</div>
+        <div style="display:flex;flex-direction:column;gap:7px;font-size:0.83rem;color:#374151;margin-top:8px;">
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;"><input type="radio" name="mood" style="accent-color:#0b63ce;"> &#128548; Got stuck but kept trying</label>
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;"><input type="radio" name="mood" style="accent-color:#0b63ce;"> &#128161; Figured out set vs. change myself</label>
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;"><input type="radio" name="mood" style="accent-color:#0b63ce;"> &#129309; Explained variables to a classmate</label>
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;"><input type="radio" name="mood" style="accent-color:#0b63ce;"> &#128640; Finished early and tackled Tier C!</label>
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;"><input type="radio" name="mood" style="accent-color:#0b63ce;"> &#129327; The AI confidence connection clicked!</label>
+        </div>
+        <p style="font-size:0.8rem;font-weight:700;color:#6d28d9;margin:12px 0 4px;">One thing I still want to figure out:</p>
+        <input class="write-line" type="text" placeholder="...">
+        <p style="font-size:0.8rem;font-weight:700;color:#047857;margin:8px 0 4px;">One thing I built today that worked:</p>
+        <input class="write-line" type="text" placeholder="...">
+      </div>
+    </div>
+  </div>
+
+  <!-- Rubric -->
+  <div class="section-label">&#128202; Scoring</div>
+  <div class="section-title">Activity Rubric</div>
+  <div class="card mb-3">
+    <table class="rubric">
+      <thead><tr><th>Section</th><th>What to Look For</th><th>Points</th></tr></thead>
+      <tbody>
+        <tr><td>Part 1 Warm-Up</td><td>Box drawn; radio choice; trace table filled; reset reasoning explained</td><td class="pts">4 pts</td></tr>
+        <tr><td>Part 2 Vocab / T-F</td><td>All 6 matching correct; all 5 T/F circled</td><td class="pts">4 pts</td></tr>
+        <tr><td>Part 3 Trace &amp; Bugs</td><td>Score trace correct; all 3 bugs named, trigger and fix written</td><td class="pts">5 pts</td></tr>
+        <tr><td>Part 4 Tier A Build</td><td>Blanks filled; checklist complete; reflection answered</td><td class="pts">5 pts</td></tr>
+        <tr><td>Part 4 Tier B Build</td><td>All blanks + win condition; checklist complete</td><td class="pts">6 pts</td></tr>
+        <tr><td>Part 4 Tier C Build</td><td>High-score / timer / speed logic; bonus slider tried</td><td class="pts">7 pts</td></tr>
+        <tr><td>Part 5 AI Moment</td><td>Table complete; confidence bar; if-block; key difference</td><td class="pts">3 pts</td></tr>
+        <tr><td>Exit Ticket + Growth</td><td>All 3 questions answered; growth check selected</td><td class="pts">2 pts</td></tr>
+      </tbody>
+    </table>
+    <div style="display:flex;justify-content:flex-end;margin-top:10px;gap:24px;font-size:0.82rem;color:#374151;">
+      <span>Tier A: <strong style="font-family:var(--font-code);color:#0b63ce;">____ / 18</strong></span>
+      <span>Tier B: <strong style="font-family:var(--font-code);color:#0b63ce;">____ / 19</strong></span>
+      <span>Tier C: <strong style="font-family:var(--font-code);color:#10b981;">____ / 20</strong></span>
+    </div>
+  </div>
+
+  <div class="sheet-footer">
+    <div>
+      <strong>Session 6 · Scratch: Variables &amp; Score-keeping</strong> · In-Class Activity · Mr. Hsiao "Hue" Weng · Summer 2026<br>
+      <span class="grad-text" style="font-weight:800;">Variables · Set to · Change by · Scope · Score · Lives · AI Confidence</span>
+    </div>
+    <div style="text-align:right;">Ages 7-13 · Grades 1-9 · Tue Jul 7<br><span style="font-size:0.7rem;">&#127918; Every game you love has a score variable under the hood!</span></div>
+  </div>
+</div>
+</body>
+</html>
