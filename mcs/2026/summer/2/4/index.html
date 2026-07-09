@@ -1,1 +1,1345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="slides-format" content="viewport">
+<title>Session 8 · The Bridge: Same Logic, Two Languages</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<style type="text/tailwindcss">
+@theme {
+  --color-bg:#f0f8ff; --color-bg-deep:#dceefb; --color-surface:rgba(255,255,255,0.96);
+  --color-text:#0f2747; --color-text-secondary:#1e3a5f; --color-text-muted:#4a6380;
+  --color-accent-1:#0b63ce; --color-accent-2:#10b981; --color-accent-3:#f59e0b;
+  --color-glass-bg:rgba(255,255,255,0.88); --color-glass-border:rgba(11,99,206,0.16);
+  --color-vignette:rgba(15,23,42,0.06);
+  --font-display:"Fredoka","Trebuchet MS",sans-serif;
+  --font-body:"Nunito",Arial,sans-serif;
+}
+</style>
+<style>
+:root{
+  --color-bg:#f0f8ff; --color-text:#0f2747;
+  --glow-color-rgb:11,99,206;
+  --a1:#0b63ce; --a2:#10b981; --a3:#f59e0b; --ar:#ef4444;
+}
+*,*::before,*::after{box-sizing:border-box;}
+html,body{background:var(--color-bg);margin:0;}
+body{font-family:"Nunito",Arial,sans-serif;color:var(--color-text);overflow:hidden;height:100vh;width:100vw;}
+.deck{width:100vw;height:100vh;position:relative;}
 
+/* === SLIDE CORE === */
+.slide{
+  position:absolute;top:0;left:0;width:100%;height:100%;
+  background:radial-gradient(circle at top left,rgba(56,189,248,0.14),transparent 40%),
+             radial-gradient(circle at bottom right,rgba(16,185,129,0.10),transparent 40%),
+             var(--color-bg);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  opacity:0;transform:scale(0.96);transition:opacity 0.55s ease,transform 0.55s ease;
+  pointer-events:none;overflow:hidden;
+}
+.slide.active{opacity:1;transform:scale(1);pointer-events:all;}
+.slide>.content{position:relative;z-index:2;width:100%;max-width:1060px;padding:clamp(1rem,3vw,2.8rem);}
+
+/* Interior slides */
+.slide.interior{
+  background:
+    radial-gradient(circle at 18% 12%,rgba(11,99,206,0.16),transparent 50%),
+    radial-gradient(circle at 82% 88%,rgba(16,185,129,0.14),transparent 50%),
+    linear-gradient(160deg,#aecbe8 0%,#b9d4ea 48%,#b3ddd0 100%);
+}
+.slide.interior::after{background:radial-gradient(ellipse at center,transparent 58%,rgba(15,23,42,0.12) 100%);}
+.slide.interior .card{background:#ffffff;border:1px solid rgba(15,23,42,0.06);box-shadow:0 14px 34px rgba(15,23,42,0.18),0 2px 6px rgba(15,23,42,0.08);border-radius:18px;}
+.slide.interior .accent-card-blue{background:#eaf2fd;border:1px solid rgba(11,99,206,0.22);}
+.slide.interior .accent-card-green{background:#e6f7f0;border:1px solid rgba(5,150,105,0.22);}
+.slide.interior .accent-card-amber{background:#fdf4e3;border:1px solid rgba(245,158,11,0.28);}
+.slide.interior .accent-card-red{background:#fdeceb;border:1px solid rgba(239,68,68,0.24);}
+.slide::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:radial-gradient(ellipse at center,transparent 55%,var(--color-vignette) 100%);}
+
+/* === NAV === */
+.nav-controls{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:12px;z-index:100;background:rgba(255,255,255,0.92);backdrop-filter:blur(12px);padding:8px 20px;border-radius:999px;border:1px solid rgba(148,163,184,0.4);box-shadow:0 8px 28px rgba(15,23,42,0.13);}
+.nav-btn{width:34px;height:34px;border:none;background:rgba(15,23,42,0.06);color:#0b63ce;border-radius:999px;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 0.2s,transform 0.15s;}
+.nav-btn:hover{background:rgba(15,23,42,0.12);transform:translateY(-1px);}
+.slide-dots{display:flex;gap:5px;flex-wrap:wrap;max-width:460px;}
+.dot{width:8px;height:8px;border-radius:50%;background:rgba(148,163,184,0.6);cursor:pointer;transition:background 0.25s,transform 0.25s;}
+.dot.active{background:#0b63ce;transform:scale(1.4);}
+.dot.warmup{background:rgba(245,158,11,0.6);}
+.dot.warmup.active{background:#f59e0b;}
+.dot.mini{background:rgba(11,99,206,0.45);}
+.dot.mini.active{background:#0b63ce;}
+.dot.build{background:rgba(16,185,129,0.55);}
+.dot.build.active{background:#10b981;}
+.dot.share{background:rgba(139,92,246,0.55);}
+.dot.share.active{background:#8b5cf6;}
+.slide-counter{font-size:0.78rem;color:#64748b;min-width:52px;text-align:center;font-weight:700;}
+
+/* === ANIMATIONS === */
+.reveal{opacity:0;transform:translateY(16px);}
+@keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-12px);}}
+@keyframes float-slow{0%{transform:translate(0,0) scale(1);}25%{transform:translate(50px,-40px) scale(1.1);}50%{transform:translate(-30px,35px) scale(0.92);}75%{transform:translate(45px,18px) scale(1.07);}100%{transform:translate(0,0) scale(1);}}
+@keyframes float-drift{0%{transform:translate(0,0) scale(1);}33%{transform:translate(-45px,-55px) scale(1.13);}66%{transform:translate(38px,28px) scale(0.9);}100%{transform:translate(0,0) scale(1);}}
+@keyframes pulse-glow{0%,100%{box-shadow:0 0 0 0 rgba(11,99,206,0.4);}50%{box-shadow:0 0 0 12px rgba(11,99,206,0);}}
+@keyframes bridge-slide{from{transform:translateX(-60px);opacity:0;}to{transform:translateX(0);opacity:1;}}
+@keyframes glow-pulse{0%,100%{text-shadow:0 0 20px rgba(11,99,206,0.5),0 0 40px rgba(11,99,206,0.2);}50%{text-shadow:0 0 30px rgba(11,99,206,0.8),0 0 60px rgba(11,99,206,0.3);}}
+
+.gradient-mesh{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none;}
+.blob{position:absolute;border-radius:50%;filter:blur(72px);animation:float-slow 12s ease-in-out infinite;}
+.blob:nth-child(2){animation:float-drift 16s ease-in-out infinite;}
+.blob:nth-child(3){animation:float-slow 20s ease-in-out infinite reverse;}
+.particle-canvas{position:absolute;inset:0;width:100%;height:100%;z-index:1;}
+
+/* === COMPONENTS === */
+.card{background:var(--color-surface);border-radius:16px;padding:14px 18px;box-shadow:0 8px 24px rgba(15,23,42,0.07);border:1px solid rgba(255,255,255,0.7);}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:4px 14px;border-radius:999px;border:1px solid rgba(148,163,184,0.5);background:rgba(255,255,255,0.9);font-size:0.76rem;font-weight:800;letter-spacing:0.07em;text-transform:uppercase;color:#0b63ce;}
+.pill.green{color:#047857;}
+.pill.amber{color:#b45309;}
+.pill.purple{color:#6d28d9;}
+.big-text{font-size:clamp(0.88rem,1.5vw,1.1rem);line-height:1.65;}
+.code-block{background:#0f172a;color:#e2e8f0;font-family:"Fira Code",Consolas,monospace;border-radius:12px;padding:14px 18px;font-size:clamp(0.8rem,1.25vw,0.97rem);line-height:1.7;overflow-x:auto;}
+.code-block .kw{color:#f59e0b;font-weight:600;}
+.code-block .fn{color:#38bdf8;font-weight:600;}
+.code-block .str{color:#a3e635;}
+.code-block .cmt{color:#64748b;font-style:italic;}
+.code-block .num{color:#f472b6;}
+.think-chip{display:inline-flex;align-items:center;gap:8px;padding:7px 13px;border-radius:999px;background:rgba(11,99,206,0.10);color:#1e40af;font-size:0.82rem;font-weight:700;}
+.question-chip{display:inline-flex;align-items:center;gap:8px;padding:7px 13px;border-radius:999px;background:rgba(245,158,11,0.10);color:#92400e;font-size:0.82rem;font-weight:700;}
+.vocab-tag{display:inline-flex;align-items:center;padding:4px 12px;border-radius:999px;background:rgba(11,99,206,0.08);font-size:0.84rem;font-weight:800;color:#0b63ce;}
+.grid-cards{display:grid;gap:14px;}
+@media(min-width:700px){.grid-2{grid-template-columns:repeat(2,minmax(0,1fr));}.grid-3{grid-template-columns:repeat(3,minmax(0,1fr));}}
+.grad-text{background:linear-gradient(135deg,#0b63ce 0%,#10b981 55%,#f59e0b 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+
+/* Media embed — thumbnail → click → embed */
+.media-embed{position:relative;padding-top:56.25%;border-radius:13px;overflow:hidden;background:#1e293b;cursor:pointer;}
+.media-embed img.thumb{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform 0.3s;}
+.media-embed:hover img.thumb{transform:scale(1.03);}
+.media-embed .play-btn{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:2;}
+.media-embed .play-btn div{width:56px;height:56px;background:rgba(255,0,0,0.90);border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 18px rgba(0,0,0,0.38);transition:transform 0.2s;}
+.media-embed:hover .play-btn div{transform:scale(1.12);}
+.media-embed .play-btn div::after{content:"";border-left:22px solid #fff;border-top:13px solid transparent;border-bottom:13px solid transparent;margin-left:4px;}
+.media-embed iframe{position:absolute;inset:0;width:100%;height:100%;border:0;border-radius:13px;z-index:3;}
+.video-source{font-size:0.72rem;color:#4a6380;margin-top:5px;font-weight:700;display:flex;align-items:center;gap:4px;}
+.video-source a{color:#0b63ce;text-decoration:none;}
+.video-source a:hover{text-decoration:underline;}
+
+/* Scratch block tags */
+.scratch-block{display:inline-flex;align-items:center;padding:2px 10px;border-radius:7px;font-family:"Fira Code",monospace;font-size:0.82em;font-weight:700;margin:0 2px;}
+.sb-orange{background:#f59e0b;color:#fff;}
+.sb-blue{background:#3b82f6;color:#fff;}
+.sb-purple{background:#8b5cf6;color:#fff;}
+.sb-green{background:#10b981;color:#fff;}
+.sb-teal{background:#0891b2;color:#fff;}
+
+/* Progress / timeline */
+.timeline-row{display:flex;align-items:flex-start;gap:14px;padding:8px 0;}
+.timeline-dot{min-width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem;box-shadow:0 3px 10px rgba(15,23,42,0.12);}
+.timeline-line{width:2px;height:14px;background:rgba(11,99,206,0.18);margin-left:17px;}
+
+/* Side-by-side comparison */
+.compare-table{display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%;}
+
+/* Challenge card */
+.challenge-card{background:linear-gradient(135deg,rgba(139,92,246,0.12),rgba(11,99,206,0.08));border:2px solid rgba(139,92,246,0.30);border-radius:16px;padding:14px 18px;}
+
+/* brain break */
+.break-card{background:linear-gradient(135deg,#fdf4e3,#fff7e6);border:2px solid rgba(245,158,11,0.30);border-radius:18px;padding:18px 22px;}
+
+/* tier badges */
+.tier-a{display:inline-flex;align-items:center;padding:3px 10px;border-radius:999px;background:#dcfce7;color:#14532d;font-size:0.72rem;font-weight:800;letter-spacing:0.05em;}
+.tier-b{display:inline-flex;align-items:center;padding:3px 10px;border-radius:999px;background:#dbeafe;color:#1e3a8a;font-size:0.72rem;font-weight:800;letter-spacing:0.05em;}
+.tier-c{display:inline-flex;align-items:center;padding:3px 10px;border-radius:999px;background:#ede9fe;color:#4c1d95;font-size:0.72rem;font-weight:800;letter-spacing:0.05em;}
+
+/* mouse spotlight */
+.mouse-spotlight{position:fixed;inset:0;z-index:99;pointer-events:none;}
+
+/* progress bar */
+.progress-track{height:6px;background:rgba(11,99,206,0.15);border-radius:999px;overflow:hidden;margin-top:6px;}
+.progress-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,#0b63ce,#10b981);transition:width 0.6s ease;}
+
+/* step numbers */
+.step-num{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:#0b63ce;color:#fff;font-size:0.8rem;font-weight:800;flex-shrink:0;}
+
+/* AI moment badge */
+.ai-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:999px;background:rgba(16,185,129,0.12);color:#047857;font-size:0.76rem;font-weight:800;border:1px solid rgba(16,185,129,0.25);}
+
+/* Bridge graphic */
+.bridge-side{display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 18px;border-radius:16px;}
+.bridge-arrow{display:flex;align-items:center;justify-content:center;width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#0b63ce,#10b981);color:#fff;font-size:1.4rem;flex-shrink:0;}
+
+/* vocab card */
+.vocab-card{background:#fff;border:1px solid rgba(11,99,206,0.15);border-radius:14px;padding:12px 15px;border-left:4px solid;}
+
+/* debug bug card */
+.bug-card{background:#fff;border:1px solid rgba(239,68,68,0.2);border-radius:14px;padding:12px 15px;border-left:4px solid #ef4444;}
+
+/* Deco shapes */
+@keyframes spin-slow{from{transform:rotate(0);}to{transform:rotate(360deg);}}
+.deco-shape{position:absolute;pointer-events:none;opacity:0.06;}
+.deco-ring{width:300px;height:300px;border:3px solid var(--a1);border-radius:50%;}
+.deco-ring-2{width:180px;height:180px;border:2px dashed var(--a2);border-radius:50%;animation:spin-slow 20s linear infinite;}
+</style>
+</head>
+<body>
+
+<div class="mouse-spotlight" id="spotlight"></div>
+
+<div class="deck">
+
+<!-- ╔══════════════════════════════════════════════════╗ -->
+<!-- ║  SLIDE 1 · TITLE                                ║ -->
+<!-- ╚══════════════════════════════════════════════════╝ -->
+<div class="slide" data-slide="1" data-type="title">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:520px;height:520px;top:-130px;right:-140px;background:#0b63ce;opacity:0.13;"></div>
+    <div class="blob" style="width:340px;height:340px;bottom:-100px;left:-80px;background:#10b981;opacity:0.11;"></div>
+    <div class="blob" style="width:220px;height:220px;top:40%;left:10%;background:#f59e0b;opacity:0.08;"></div>
+  </div>
+  <canvas class="particle-canvas" id="pc1"></canvas>
+  <div class="deco-shape deco-ring" style="top:60px;left:-100px;"></div>
+  <div class="deco-shape deco-ring-2" style="bottom:80px;right:60px;"></div>
+  <div class="content" style="text-align:center;">
+
+    <!-- Title card image row -->
+    <div style="display:flex;align-items:center;justify-content:center;gap:18px;margin-bottom:18px;" class="reveal">
+      <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/ae5413371033ecfc683f2963fcd3b8068fa04f27.jpg"
+           alt="Colorful Scratch code blocks"
+           style="height:76px;width:76px;object-fit:cover;border-radius:14px;box-shadow:0 6px 20px rgba(15,23,42,0.16);border:3px solid rgba(245,158,11,0.5);">
+      <div style="font-size:2.4rem;color:#0b63ce;font-weight:900;line-height:1;">→</div>
+      <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/89418fcbba2ebc6e7d9cf4282f18e5d2d7380120.jpg"
+           alt="Python Hello World code"
+           style="height:76px;width:76px;object-fit:cover;border-radius:14px;box-shadow:0 6px 20px rgba(15,23,42,0.16);border:3px solid rgba(11,99,206,0.5);">
+    </div>
+
+    <h1 class="font-display grad-text reveal"
+        style="font-size:clamp(2rem,5.5vw,3.6rem);font-weight:700;line-height:1.15;margin-bottom:10px;">
+      The Bridge
+    </h1>
+    <p class="font-display reveal"
+       style="font-size:clamp(1rem,2.3vw,1.6rem);font-weight:600;color:#1e3a5f;margin-bottom:6px;letter-spacing:0.01em;">
+      Same Logic, Two Languages
+    </p>
+    <p class="reveal" style="font-size:clamp(0.75rem,1.4vw,1rem);color:#4a6380;letter-spacing:0.12em;text-transform:uppercase;font-weight:800;margin-bottom:22px;">
+      Scratch → Python
+    </p>
+
+    <div style="display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;" class="reveal">
+      <span class="pill">Session 8</span>
+      <span class="pill amber">Thu · Jul 9</span>
+      <span class="pill green">Phase 2 · Bridge</span>
+    </div>
+
+    <div style="margin-top:18px;" class="reveal">
+      <a href="https://hue881.github.io/mcs/2026/summer" target="_blank" rel="noopener"
+         style="display:inline-flex;align-items:center;gap:5px;padding:4px 14px;border-radius:999px;border:1px solid rgba(11,99,206,0.35);background:rgba(255,255,255,0.9);font-size:0.75rem;font-weight:800;color:#0b63ce;text-decoration:none;">
+        🔗 Course Page
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- ╔══════════════════════════════════════════════════╗ -->
+<!-- ║  SLIDE 2 · TODAY'S PLAN (Agenda)                ║ -->
+<!-- ╚══════════════════════════════════════════════════╝ -->
+<div class="slide interior" data-slide="2" data-type="agenda">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:340px;height:340px;top:-70px;right:-60px;background:#0b63ce;opacity:0.09;"></div>
+    <div class="blob" style="width:220px;height:220px;bottom:-50px;left:-30px;background:#10b981;opacity:0.07;"></div>
+  </div>
+  <div class="content">
+    <p class="pill mb-3 reveal">📋 Today's Plan</p>
+    <h2 class="font-display reveal" style="font-weight:700;font-size:clamp(1.5rem,2.8vw,2.2rem);margin-bottom:1rem;color:#0f2747;">What are we doing today?</h2>
+    <div class="grid-cards reveal" style="gap:8px;">
+
+      <div class="timeline-row">
+        <div class="timeline-dot" style="background:#f59e0b;">🧩</div>
+        <div>
+          <strong style="color:#1f2a37;font-size:0.9rem;">10 min · Warm-Up — No Screens</strong>
+          <div class="big-text" style="color:#374151;">Unplugged recipe puzzle: what do Scratch scripts and cooking instructions have in common?</div>
+        </div>
+      </div>
+      <div class="timeline-line"></div>
+
+      <div class="timeline-row">
+        <div class="timeline-dot" style="background:#0b63ce;">🎓</div>
+        <div>
+          <strong style="color:#1f2a37;font-size:0.9rem;">15–20 min · Mini-Lesson + Videos</strong>
+          <div class="big-text" style="color:#374151;">Side-by-side: Scratch blocks ↔ Python text · <span style="color:#059669;font-weight:700;">AI Moment:</span> how print patterns relate to AI text prediction</div>
+        </div>
+      </div>
+      <div class="timeline-line"></div>
+
+      <div class="timeline-row">
+        <div class="timeline-dot" style="background:#10b981;">🏗️</div>
+        <div>
+          <strong style="color:#1f2a37;font-size:0.9rem;">20 min · Guided Build</strong>
+          <div class="big-text" style="color:#374151;">Type your first Python: a <code style="background:rgba(11,99,206,0.08);padding:1px 5px;border-radius:4px;font-size:0.85em;">print()</code> story and a <code style="background:rgba(11,99,206,0.08);padding:1px 5px;border-radius:4px;font-size:0.85em;">for</code> loop that counts — step by step together</div>
+        </div>
+      </div>
+      <div class="timeline-line"></div>
+
+      <div class="timeline-row">
+        <div class="timeline-dot" style="background:#ef4444;">🧠</div>
+        <div>
+          <strong style="color:#1f2a37;font-size:0.9rem;">5 min · Brain Break</strong>
+          <div class="big-text" style="color:#374151;">"Human Loop" — the class counts in a circle using loop logic, no computers needed!</div>
+        </div>
+      </div>
+      <div class="timeline-line"></div>
+
+      <div class="timeline-row">
+        <div class="timeline-dot" style="background:#8b5cf6;">🚀</div>
+        <div>
+          <strong style="color:#1f2a37;font-size:0.9rem;">30–40 min · Open Build + Challenge Cards</strong>
+          <div class="big-text" style="color:#374151;">Write a Python "about me" story. Three tiers — everyone codes at their level!</div>
+        </div>
+      </div>
+      <div class="timeline-line"></div>
+
+      <div class="timeline-row">
+        <div class="timeline-dot" style="background:#0b63ce;">🌟</div>
+        <div>
+          <strong style="color:#1f2a37;font-size:0.9rem;">10 min · Share-Out</strong>
+          <div class="big-text" style="color:#374151;">Show your neighbor or volunteer to share — always opt-in, always warm</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ╔══════════════════════════════════════════════════╗ -->
+<!-- ║  SLIDE 3 · WARM-UP                              ║ -->
+<!-- ╚══════════════════════════════════════════════════╝ -->
+<div class="slide interior" data-slide="3" data-type="warmup">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:380px;height:380px;top:-90px;right:-70px;background:#f59e0b;opacity:.10;"></div>
+    <div class="blob" style="width:260px;height:260px;bottom:-60px;left:-50px;background:#0b63ce;opacity:.08;"></div>
+  </div>
+  <div class="content">
+    <p class="pill amber mb-3 reveal">🧩 Warm-Up · No Screens · 10 min</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.4rem,2.5vw,2rem);font-weight:700;margin-bottom:0.8rem;color:#0f2747;">
+      A recipe is just a program — written for humans
+    </h2>
+
+    <div class="grid-cards grid-2 reveal" style="gap:12px;margin-bottom:12px;">
+      <div class="card accent-card-amber" style="padding:14px 16px;">
+        <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/831e2dcbd83728f276b983343b48d4c8a32a1685.jpg"
+             alt="Scratch cat sprite"
+             style="width:100%;height:88px;object-fit:contain;background:#fff8e1;border-radius:10px;margin-bottom:10px;padding:4px;">
+        <p class="question-chip" style="margin-bottom:8px;display:inline-flex;">❓ Think About It</p>
+        <p class="big-text" style="margin:0;color:#374151;">You already know how to give a computer instructions in Scratch. <strong>What makes Python different?</strong> Is it the <em>idea</em> — or just the way you write it?</p>
+      </div>
+      <div class="card accent-card-blue" style="padding:14px 16px;">
+        <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/90899ecd1c70fca76aa89bc9875f2f03d375b5cb.jpg"
+             alt="Kids coding at a computer together"
+             style="width:100%;height:88px;object-fit:cover;border-radius:10px;margin-bottom:10px;">
+        <p class="think-chip" style="margin-bottom:8px;display:inline-flex;">🧠 Turn &amp; Talk</p>
+        <p class="big-text" style="margin:0;color:#374151;">If you wrote a recipe for a sandwich in English, then translated it to Spanish — is it a <strong>different recipe</strong>, or the same recipe in a different language?</p>
+      </div>
+    </div>
+
+    <div class="card reveal" style="background:rgba(11,99,206,0.06);border:1px solid rgba(11,99,206,0.18);padding:12px 16px;">
+      <p style="margin:0;font-size:0.88rem;color:#1e3a5f;font-weight:700;">
+        💡 <strong>Big Idea:</strong> The <em>logic</em> in your Scratch project already lives inside your brain. Today we just learn to write it in a new language — Python.
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ╔══════════════════════════════════════════════════╗ -->
+<!-- ║  SLIDE 4 · WHAT IS THE BRIDGE?                  ║ -->
+<!-- ╚══════════════════════════════════════════════════╝ -->
+<div class="slide interior" data-slide="4" data-type="mini-lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:360px;height:360px;top:-80px;right:-60px;background:#0b63ce;opacity:.11;"></div>
+    <div class="blob" style="width:240px;height:240px;bottom:-50px;left:-40px;background:#10b981;opacity:.08;"></div>
+  </div>
+  <div class="content">
+    <p class="pill mb-2 reveal">🎓 Mini-Lesson — Part 1</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.4rem,2.4vw,1.9rem);font-weight:700;margin-bottom:0.7rem;color:#0f2747;">Scratch and Python: same brain, different voice</h2>
+
+    <div class="compare-table reveal" style="margin-bottom:12px;">
+      <!-- Scratch side -->
+      <div class="card" style="padding:14px 16px;border-top:4px solid #f59e0b;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+          <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/831e2dcbd83728f276b983343b48d4c8a32a1685.jpg"
+               alt="Scratch cat" style="width:32px;height:32px;object-fit:contain;border-radius:8px;background:#fff8e1;">
+          <strong style="color:#b45309;font-size:0.92rem;">Scratch</strong>
+          <span style="font-size:0.75rem;color:#6b7280;margin-left:auto;">Block-based</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div style="background:#fdf4e3;border-radius:10px;padding:9px 12px;">
+            <span class="scratch-block sb-purple">when green flag clicked</span>
+          </div>
+          <div style="background:#fdf4e3;border-radius:10px;padding:9px 12px;">
+            <span class="scratch-block sb-orange">say [Hello!]</span>
+          </div>
+          <div style="background:#fdf4e3;border-radius:10px;padding:9px 12px;">
+            <span class="scratch-block sb-orange">repeat [5]</span>
+            <span style="font-size:0.8rem;color:#78350f;margin-left:8px;">do something 5 times</span>
+          </div>
+        </div>
+      </div>
+      <!-- Python side -->
+      <div class="card" style="padding:14px 16px;border-top:4px solid #0b63ce;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+          <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/34e1e6849f9b91b440a97c19d12d9df58bfa0a15.jpg"
+               onerror="this.style.display='none'"
+               alt="Python logo" style="width:32px;height:32px;object-fit:contain;border-radius:8px;background:#eaf2fd;">
+          <strong style="color:#1e3a8a;font-size:0.92rem;">Python</strong>
+          <span style="font-size:0.75rem;color:#6b7280;margin-left:auto;">Text-based</span>
+        </div>
+        <div class="code-block" style="font-size:0.85rem;padding:10px 14px;">
+          <span class="cmt"># program starts here</span><br>
+          <span class="fn">print</span>(<span class="str">"Hello!"</span>)<br><br>
+          <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="num">5</span>):<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;<span class="fn">print</span>(<span class="str">"Hello!"</span>)
+        </div>
+      </div>
+    </div>
+
+    <div class="card reveal" style="background:rgba(16,185,129,0.06);border:1px solid rgba(16,185,129,0.22);padding:11px 15px;">
+      <p style="margin:0;font-size:0.86rem;color:#065f46;font-weight:700;">
+        🔑 <strong>Key idea:</strong> In Scratch you <em>snap blocks together</em>. In Python you <em>type the same idea as text</em>. The logic — "do this 5 times" — is identical. Only the spelling changes!
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ╔══════════════════════════════════════════════════╗ -->
+<!-- ║  SLIDE 5 · PRINT() — THE FIRST PYTHON COMMAND  ║ -->
+<!-- ╚══════════════════════════════════════════════════╝ -->
+<div class="slide interior" data-slide="5" data-type="mini-lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:360px;height:360px;top:-80px;left:-60px;background:#10b981;opacity:.10;"></div>
+    <div class="blob" style="width:240px;height:240px;bottom:-50px;right:-40px;background:#0b63ce;opacity:.08;"></div>
+  </div>
+  <div class="content">
+    <p class="pill mb-2 reveal">🎓 Mini-Lesson — Part 2</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.4rem,2.4vw,2rem);font-weight:700;margin-bottom:0.7rem;color:#0f2747;">
+      <code style="background:rgba(11,99,206,0.10);padding:2px 12px;border-radius:8px;font-family:'Fira Code',monospace;color:#0b63ce;">print()</code> — your first Python word
+    </h2>
+
+    <div class="grid-cards grid-2 reveal" style="gap:12px;margin-bottom:12px;">
+      <div class="card" style="padding:14px 16px;">
+        <p style="font-weight:800;color:#0b63ce;margin:0 0 8px;font-size:0.9rem;">How it works</p>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div style="background:#eaf2fd;border-radius:10px;padding:10px 14px;">
+            <p style="margin:0 0 6px;font-size:0.8rem;color:#4a6380;font-weight:700;">You type:</p>
+            <div class="code-block" style="padding:8px 12px;font-size:0.88rem;"><span class="fn">print</span>(<span class="str">"Good morning!"</span>)</div>
+          </div>
+          <div style="background:#e6f7f0;border-radius:10px;padding:10px 14px;">
+            <p style="margin:0 0 6px;font-size:0.8rem;color:#4a6380;font-weight:700;">Computer shows:</p>
+            <div style="background:#0f172a;color:#a3e635;font-family:'Fira Code',monospace;font-size:0.9rem;padding:8px 12px;border-radius:8px;">Good morning!</div>
+          </div>
+        </div>
+        <div class="question-chip" style="margin-top:10px;display:inline-flex;">❓ What do you think happens if you type <code style="font-size:0.9em;">print()</code> with nothing inside the parentheses?</div>
+      </div>
+
+      <div class="card" style="padding:14px 16px;">
+        <p style="font-weight:800;color:#0b63ce;margin:0 0 8px;font-size:0.9rem;">Anatomy of a print statement</p>
+        <div class="code-block" style="font-size:0.85rem;padding:10px 14px;margin-bottom:10px;">
+          <span class="fn">print</span>(<span class="str">"Hello, World!"</span>)
+        </div>
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <div style="display:flex;gap:8px;align-items:flex-start;">
+            <div style="min-width:14px;height:14px;background:#38bdf8;border-radius:3px;margin-top:3px;"></div>
+            <p style="margin:0;font-size:0.84rem;color:#1e3a5f;"><strong style="color:#38bdf8;">print</strong> — the function name (a built-in command)</p>
+          </div>
+          <div style="display:flex;gap:8px;align-items:flex-start;">
+            <div style="min-width:14px;height:14px;background:#f59e0b;border-radius:3px;margin-top:3px;"></div>
+            <p style="margin:0;font-size:0.84rem;color:#1e3a5f;"><strong style="color:#f59e0b;">( )</strong> — parentheses: always needed to call a function</p>
+          </div>
+          <div style="display:flex;gap:8px;align-items:flex-start;">
+            <div style="min-width:14px;height:14px;background:#a3e635;border-radius:3px;margin-top:3px;"></div>
+            <p style="margin:0;font-size:0.84rem;color:#1e3a5f;"><strong style="color:#a3e635;">"Hello, World!"</strong> — a string: text wrapped in quotes</p>
+          </div>
+        </div>
+        <div class="think-chip" style="margin-top:10px;display:inline-flex;">🧠 In Scratch you use a <span class="scratch-block sb-orange" style="margin:0 4px;">say</span> block. In Python you call <code style="font-size:0.9em;">print()</code>. Same job, different outfit!</div>
+      </div>
+    </div>
+
+    <div class="card reveal" style="background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.25);padding:10px 14px;">
+      <p style="margin:0;font-size:0.84rem;color:#78350f;font-weight:700;">
+        🐛 <strong>Common mistake:</strong> Forgetting the quotes around your text. <code style="background:#fff3cd;padding:1px 5px;border-radius:4px;">print(Hello)</code> will error — Python thinks "Hello" is a variable name! Always use <code style="background:#fff3cd;padding:1px 5px;border-radius:4px;">print("Hello")</code>.
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ╔══════════════════════════════════════════════════╗ -->
+<!-- ║  SLIDE 6 · THE FOR LOOP                         ║ -->
+<!-- ╚══════════════════════════════════════════════════╝ -->
+<div class="slide interior" data-slide="6" data-type="mini-lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:360px;height:360px;top:-80px;right:-60px;background:#10b981;opacity:.11;"></div>
+    <div class="blob" style="width:240px;height:240px;bottom:-50px;left:-40px;background:#0b63ce;opacity:.08;"></div>
+  </div>
+  <div class="content">
+    <p class="pill mb-2 reveal">🎓 Mini-Lesson — Part 3</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.4rem,2.4vw,2rem);font-weight:700;margin-bottom:0.7rem;color:#0f2747;">
+      The <code style="background:rgba(11,99,206,0.10);padding:2px 12px;border-radius:8px;font-family:'Fira Code',monospace;color:#0b63ce;">for</code> loop: Scratch's "repeat" block, in text
+    </h2>
+
+    <div class="compare-table reveal" style="margin-bottom:12px;">
+      <div class="card" style="padding:14px 16px;border-top:4px solid #f59e0b;">
+        <p style="font-weight:800;color:#b45309;margin:0 0 8px;font-size:0.9rem;">In Scratch</p>
+        <div style="background:#fdf4e3;border-radius:10px;padding:12px 14px;margin-bottom:8px;">
+          <span class="scratch-block sb-orange">repeat 5</span>
+          <div style="margin-left:20px;margin-top:6px;">
+            <span class="scratch-block sb-teal">say [Hello!]</span>
+          </div>
+        </div>
+        <p style="font-size:0.82rem;color:#78350f;margin:0;">The indented block runs 5 times</p>
+      </div>
+      <div class="card" style="padding:14px 16px;border-top:4px solid #0b63ce;">
+        <p style="font-weight:800;color:#1e3a8a;margin:0 0 8px;font-size:0.9rem;">In Python</p>
+        <div class="code-block" style="font-size:0.88rem;padding:10px 14px;margin-bottom:8px;">
+          <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="num">5</span>):<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;<span class="fn">print</span>(<span class="str">"Hello!"</span>)
+        </div>
+        <p style="font-size:0.82rem;color:#1e3a5f;margin:0;">The indented line runs 5 times — same idea!</p>
+      </div>
+    </div>
+
+    <div class="grid-cards grid-2 reveal" style="gap:10px;">
+      <div class="card" style="padding:12px 15px;">
+        <p style="font-weight:800;color:#0b63ce;margin:0 0 6px;font-size:0.88rem;">The Anatomy</p>
+        <div style="display:flex;flex-direction:column;gap:5px;">
+          <div style="display:flex;gap:8px;align-items:flex-start;">
+            <div style="min-width:14px;height:14px;background:#f59e0b;border-radius:3px;margin-top:3px;"></div>
+            <p style="margin:0;font-size:0.82rem;color:#1e3a5f;"><strong style="color:#f59e0b;">for … in</strong> — Python's loop keyword</p>
+          </div>
+          <div style="display:flex;gap:8px;align-items:flex-start;">
+            <div style="min-width:14px;height:14px;background:#38bdf8;border-radius:3px;margin-top:3px;"></div>
+            <p style="margin:0;font-size:0.82rem;color:#1e3a5f;"><strong style="color:#38bdf8;">i</strong> — a counter variable that changes each time</p>
+          </div>
+          <div style="display:flex;gap:8px;align-items:flex-start;">
+            <div style="min-width:14px;height:14px;background:#a3e635;border-radius:3px;margin-top:3px;"></div>
+            <p style="margin:0;font-size:0.82rem;color:#1e3a5f;"><strong style="color:#a3e635;">range(5)</strong> — "give me numbers 0,1,2,3,4" (5 total)</p>
+          </div>
+          <div style="display:flex;gap:8px;align-items:flex-start;">
+            <div style="min-width:14px;height:14px;background:#ef4444;border-radius:3px;margin-top:3px;"></div>
+            <p style="margin:0;font-size:0.82rem;color:#1e3a5f;"><strong style="color:#ef4444;">: + indent</strong> — the colon + 4-space indent is Python's way of saying "here's what goes inside"</p>
+          </div>
+        </div>
+      </div>
+      <div class="card" style="padding:12px 15px;">
+        <p class="question-chip" style="margin:0 0 8px;display:inline-flex;">❓ What do you think this prints?</p>
+        <div class="code-block" style="font-size:0.87rem;padding:10px 13px;margin-bottom:8px;">
+          <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="num">3</span>):<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;<span class="fn">print</span>(<span class="str">"Coding is fun!"</span>)
+        </div>
+        <p style="font-size:0.8rem;color:#4a6380;margin:0;">Talk to your neighbor — predict it before you run it!</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ╔══════════════════════════════════════════════════╗ -->
+<!-- ║  SLIDE 7 · VIDEO 1 (From Scratch to Python)     ║ -->
+<!-- ╚══════════════════════════════════════════════════╝ -->
+<div class="slide interior" data-slide="7" data-type="video">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:340px;height:340px;top:-70px;right:-60px;background:#0b63ce;opacity:.09;"></div>
+    <div class="blob" style="width:200px;height:200px;bottom:-40px;left:-30px;background:#10b981;opacity:.07;"></div>
+  </div>
+  <div class="content">
+    <p class="pill mb-2 reveal">▶ Video 1 · Mini-Lesson Boost</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.3rem,2.3vw,1.8rem);font-weight:700;margin-bottom:0.8rem;color:#0f2747;">
+      From Scratch → Python: See It Side by Side
+    </h2>
+
+    <div class="grid-cards grid-2 reveal" style="gap:14px;">
+      <div>
+        <!-- VIDEO 1: From Scratch to Python Ep 1 by Byte Brewmaster -->
+        <div class="media-embed" id="vid1"
+             data-videoid="K-VTTsm02CQ"
+             onclick="playVideo('vid1','K-VTTsm02CQ')" title="Play: From Scratch to Python – Step by Step">
+          <img class="thumb" src="https://img.youtube.com/vi/K-VTTsm02CQ/hqdefault.jpg"
+               alt="From Scratch to Python video thumbnail — coding for kids">
+          <div class="play-btn"><div></div></div>
+        </div>
+        <div class="video-source">
+          <span>▶</span>
+          <a href="https://www.youtube.com/watch?v=K-VTTsm02CQ" target="_blank" rel="noopener">
+            From Scratch to Python – Learn Programming Step-by-Step! (Ep. 1)
+          </a>
+          · Byte Brewmaster · ~4 min
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div class="card accent-card-blue" style="padding:12px 15px;">
+          <p style="font-weight:800;color:#1e3a8a;margin:0 0 7px;font-size:0.88rem;">While watching, think about:</p>
+          <ul style="margin:0;padding-left:18px;font-size:0.86rem;color:#374151;line-height:1.7;">
+            <li>What <strong>Scratch concept</strong> maps to <code style="background:#dbeafe;padding:1px 5px;border-radius:4px;font-size:0.9em;">print()</code>?</li>
+            <li>Where does the <strong>same logic appear</strong> in both languages?</li>
+            <li>What does Python need that Scratch blocks don't?</li>
+          </ul>
+        </div>
+        <div class="card accent-card-green" style="padding:12px 15px;">
+          <p class="think-chip" style="margin:0 0 6px;display:inline-flex;">🧠 After the video</p>
+          <p style="font-size:0.85rem;color:#374151;margin:0;">Turn to a neighbor and name <strong>one thing</strong> that was the same and <strong>one thing</strong> that was different between Scratch and Python — no peeking at the screen!</p>
+        </div>
+        <div class="card" style="padding:10px 14px;background:rgba(139,92,246,0.07);border:1px solid rgba(139,92,246,0.2);">
+          <p style="margin:0;font-size:0.8rem;color:#4c1d95;font-weight:700;">
+            📌 <strong>Duration:</strong> ~4 min &nbsp;|&nbsp; <strong>Level:</strong> Absolute Beginner &nbsp;|&nbsp; <strong>Tool:</strong> Scratch + Python
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ╔══════════════════════════════════════════════════╗ -->
+<!-- ║  SLIDE 8 · AI MOMENT                            ║ -->
+<!-- ╚══════════════════════════════════════════════════╝ -->
+<div class="slide interior" data-slide="8" data-type="ai">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:380px;height:380px;top:-100px;right:-70px;background:#10b981;opacity:.10;"></div>
+    <div class="blob" style="width:260px;height:260px;bottom:-70px;left:-50px;background:#0b63ce;opacity:.08;"></div>
+  </div>
+  <div class="content">
+    <p class="ai-badge mb-3 reveal">🤖 AI Moment — Session 8</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.4rem,2.5vw,2rem);font-weight:700;margin-bottom:0.8rem;color:#0f2747;">
+      "AI reads and writes text too"
+    </h2>
+
+    <div class="grid-cards grid-2 reveal" style="gap:12px;margin-bottom:12px;">
+      <div class="card" style="padding:14px 16px;">
+        <p style="font-weight:800;color:#047857;margin:0 0 8px;font-size:0.9rem;">What you just learned</p>
+        <div class="code-block" style="font-size:0.85rem;padding:10px 14px;margin-bottom:8px;">
+          <span class="fn">print</span>(<span class="str">"I like cats."</span>)<br>
+          <span class="fn">print</span>(<span class="str">"I like dogs."</span>)<br>
+          <span class="fn">print</span>(<span class="str">"I like birds."</span>)
+        </div>
+        <p style="font-size:0.83rem;color:#374151;margin:0;">Your program prints text in <strong>order, one line at a time</strong>, following the pattern you gave it.</p>
+      </div>
+      <div class="card" style="padding:14px 16px;">
+        <p style="font-weight:800;color:#047857;margin:0 0 8px;font-size:0.9rem;">What AI does</p>
+        <div style="background:#e6f7f0;border-radius:10px;padding:12px 14px;margin-bottom:8px;">
+          <p style="font-size:0.84rem;color:#065f46;margin:0 0 6px;font-weight:700;">AI text prediction in action:</p>
+          <p style="font-size:0.9rem;color:#374151;margin:0 0 4px;">You type: <em>"I like…"</em></p>
+          <p style="font-size:0.9rem;color:#047857;margin:0;font-weight:700;">AI predicts: <em>"…learning new things"</em></p>
+        </div>
+        <p style="font-size:0.83rem;color:#374151;margin:0;">A language AI (like autocomplete or ChatGPT) has seen <strong>billions of print-like patterns</strong> and predicts what word comes next — just like your loop follows a pattern!</p>
+      </div>
+    </div>
+
+    <div class="card reveal" style="background:rgba(16,185,129,0.06);border:1px solid rgba(16,185,129,0.22);padding:11px 15px;">
+      <p style="margin:0;font-size:0.86rem;color:#065f46;font-weight:700;">
+        💡 <strong>Connection:</strong> Your <code style="background:#d1fae5;padding:1px 5px;border-radius:4px;">print()</code> statements <em>follow</em> rules you wrote. AI <em>learns</em> the rules from millions of examples. Same pattern idea — very different scale!
+      </p>
+    </div>
+
+    <div class="card reveal" style="padding:10px 14px;margin-top:8px;">
+      <p class="question-chip" style="margin:0 0 5px;display:inline-flex;">❓ Discussion</p>
+      <p style="font-size:0.85rem;color:#374151;margin:0;">If an AI learned only from <em>your</em> writing samples, what kinds of patterns do you think it would predict? Would that be good or bad?</p>
+    </div>
+  </div>
+</div>
+
+<!-- ╔══════════════════════════════════════════════════╗ -->
+<!-- ║  SLIDE 9 · VIDEO 2 (Python for loops for kids)  ║ -->
+<!-- ╚══════════════════════════════════════════════════╝ -->
+<div class="slide interior" data-slide="9" data-type="video">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:340px;height:340px;top:-70px;right:-60px;background:#0b63ce;opacity:.09;"></div>
+    <div class="blob" style="width:200px;height:200px;bottom:-40px;left:-30px;background:#f59e0b;opacity:.07;"></div>
+  </div>
+  <div class="content">
+    <p class="pill mb-2 reveal">▶ Video 2 · See It in Action</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.3rem,2.3vw,1.8rem);font-weight:700;margin-bottom:0.8rem;color:#0f2747;">
+      Python <code style="font-family:'Fira Code',monospace;color:#0b63ce;background:rgba(11,99,206,0.08);padding:2px 10px;border-radius:6px;">for</code> Loop: Coding for Kids
+    </h2>
+
+    <div class="grid-cards grid-2 reveal" style="gap:14px;">
+      <div>
+        <!-- VIDEO 2: Python Basics For Loops Coding for Kids -->
+        <div class="media-embed" id="vid2"
+             data-videoid="QGAyLlWGxWM"
+             onclick="playVideo('vid2','QGAyLlWGxWM')" title="Play: Python for Loops — Coding for Kids">
+          <img class="thumb" src="https://img.youtube.com/vi/QGAyLlWGxWM/hqdefault.jpg"
+               alt="Python for loops video thumbnail — coding for kids">
+          <div class="play-btn"><div></div></div>
+        </div>
+        <div class="video-source">
+          <span>▶</span>
+          <a href="https://www.youtube.com/watch?v=QGAyLlWGxWM" target="_blank" rel="noopener">
+            Python Basics: For Loops — Coding for Kids
+          </a>
+          · ~3 min · Beginner-friendly
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div class="card accent-card-blue" style="padding:12px 15px;">
+          <p style="font-weight:800;color:#1e3a8a;margin:0 0 7px;font-size:0.88rem;">While watching, notice:</p>
+          <ul style="margin:0;padding-left:18px;font-size:0.86rem;color:#374151;line-height:1.7;">
+            <li>How does <code style="background:#dbeafe;padding:1px 5px;border-radius:4px;font-size:0.9em;">range()</code> control how many times the loop runs?</li>
+            <li>What happens when you change the number inside <code style="background:#dbeafe;padding:1px 5px;border-radius:4px;font-size:0.9em;">range()</code>?</li>
+            <li>What does the <strong>indent (spaces)</strong> tell Python?</li>
+          </ul>
+        </div>
+        <div class="card accent-card-amber" style="padding:12px 15px;">
+          <p class="question-chip" style="margin:0 0 6px;display:inline-flex;">❓ Before you press play</p>
+          <p style="font-size:0.85rem;color:#374151;margin:0;">How many times will this loop run?</p>
+          <div class="code-block" style="font-size:0.84rem;padding:8px 12px;margin-top:6px;">
+            <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="num">4</span>):<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="fn">print</span>(<span class="str">"Go!"</span>)
+          </div>
+        </div>
+        <div class="card" style="padding:10px 14px;background:rgba(139,92,246,0.07);border:1px solid rgba(139,92,246,0.2);">
+          <p style="margin:0;font-size:0.8rem;color:#4c1d95;font-weight:700;">
+            📌 <strong>Duration:</strong> ~3 min &nbsp;|&nbsp; <strong>Made by:</strong> Kids coding channel &nbsp;|&nbsp; <strong>Level:</strong> Beginner
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ╔══════════════════════════════════════════════════╗ -->
+<!-- ║  SLIDE 10 · GUIDED BUILD INTRO                  ║ -->
+<!-- ╚══════════════════════════════════════════════════╝ -->
+<div class="slide interior" data-slide="10" data-type="build">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:360px;height:360px;top:-80px;right:-60px;background:#10b981;opacity:.11;"></div>
+    <div class="blob" style="width:240px;height:240px;bottom:-50px;left:-40px;background:#0b63ce;opacity:.08;"></div>
+  </div>
+  <div class="content">
+    <p class="pill green mb-2 reveal">🏗️ Guided Build · 20 min</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.4rem,2.5vw,2rem);font-weight:700;margin-bottom:0.7rem;color:#0f2747;">
+      Type your first Python program — together, step by step
+    </h2>
+
+    <div class="grid-cards grid-2 reveal" style="gap:12px;margin-bottom:10px;">
+      <div class="card" style="padding:14px 16px;">
+        <p style="font-weight:800;color:#047857;margin:0 0 8px;font-size:0.9rem;">What we're building</p>
+        <div class="code-block" style="font-size:0.85rem;padding:10px 14px;">
+          <span class="cmt"># My Python story</span><br>
+          <span class="fn">print</span>(<span class="str">"My name is Alex."</span>)<br>
+          <span class="fn">print</span>(<span class="str">"I am 10 years old."</span>)<br>
+          <span class="fn">print</span>(<span class="str">"I love coding!"</span>)<br><br>
+          <span class="cmt"># A counting loop</span><br>
+          <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="num">5</span>):<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;<span class="fn">print</span>(i, <span class="str">"Hello!"</span>)
+        </div>
+      </div>
+      <div class="card" style="padding:14px 16px;">
+        <p style="font-weight:800;color:#047857;margin:0 0 8px;font-size:0.9rem;">Open your Python playground</p>
+        <div style="background:#e6f7f0;border-radius:10px;padding:10px 14px;margin-bottom:8px;">
+          <p style="margin:0;font-size:0.85rem;font-weight:700;color:#065f46;">Go to: <a href="https://playcode.io/python-playground" target="_blank" style="color:#0b63ce;">playcode.io/python-playground</a></p>
+        </div>
+        <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/104a78cc33c06fd019780e90af678adc0bdcdc0d.jpg"
+             alt="Child's hands typing on keyboard"
+             style="width:100%;height:80px;object-fit:cover;border-radius:10px;margin-bottom:8px;">
+        <div class="think-chip" style="display:inline-flex;">🧠 What do you think <code style="font-size:0.9em;">i</code> will be on the 3rd loop?</div>
+      </div>
+    </div>
+
+    <div class="card reveal" style="background:rgba(16,185,129,0.06);border:1px solid rgba(16,185,129,0.22);padding:10px 14px;">
+      <p style="margin:0;font-size:0.84rem;color:#065f46;font-weight:700;">
+        🐛 <strong>If you get an error — great!</strong> Errors mean you're really coding. Read the message carefully — it tells you exactly what to fix.
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ╔══════════════════════════════════════════════════╗ -->
+<!-- ║  SLIDE 11 · GUIDED BUILD STEPS                  ║ -->
+<!-- ╚══════════════════════════════════════════════════╝ -->
+<div class="slide interior" data-slide="11" data-type="build">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:360px;height:360px;top:-80px;left:-60px;background:#10b981;opacity:.10;"></div>
+    <div class="blob" style="width:240px;height:240px;bottom:-50px;right:-40px;background:#0b63ce;opacity:.08;"></div>
+  </div>
+  <div class="content">
+    <p class="pill green mb-2 reveal">🏗️ Guided Build — Step by Step</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.3rem,2.2vw,1.8rem);font-weight:700;margin-bottom:0.7rem;color:#0f2747;">Follow along — pause after each step!</h2>
+
+    <div class="grid-cards reveal" style="gap:8px;">
+      <div class="card" style="padding:11px 15px;display:flex;gap:12px;align-items:flex-start;">
+        <span class="step-num">1</span>
+        <div>
+          <strong style="font-size:0.9rem;color:#0f2747;">Open the playground</strong>
+          <p style="margin:3px 0 0;font-size:0.84rem;color:#374151;">Go to <a href="https://playcode.io/python-playground" target="_blank" style="color:#0b63ce;font-weight:700;">playcode.io/python-playground</a>. You should see a blank Python file on the left and output on the right.</p>
+        </div>
+      </div>
+      <div class="card" style="padding:11px 15px;display:flex;gap:12px;align-items:flex-start;">
+        <span class="step-num">2</span>
+        <div>
+          <strong style="font-size:0.9rem;color:#0f2747;">Type your print story</strong>
+          <p style="margin:3px 0 0;font-size:0.84rem;color:#374151;">Type 3 <code style="background:#eaf2fd;padding:1px 5px;border-radius:4px;">print()</code> statements about yourself. Use <strong>quotes</strong> around the text. Press Run (▶) and watch the output!</p>
+        </div>
+      </div>
+      <div class="card" style="padding:11px 15px;display:flex;gap:12px;align-items:flex-start;">
+        <span class="step-num">3</span>
+        <div>
+          <strong style="font-size:0.9rem;color:#0f2747;">Add a blank line, then a comment</strong>
+          <p style="margin:3px 0 0;font-size:0.84rem;color:#374151;">Type <code style="background:#eaf2fd;padding:1px 5px;border-radius:4px;"># now a loop</code> on its own line. Comments start with <code style="background:#eaf2fd;padding:1px 5px;border-radius:4px;">#</code> — Python ignores them. They're notes for <em>you</em>!</p>
+        </div>
+      </div>
+      <div class="card" style="padding:11px 15px;display:flex;gap:12px;align-items:flex-start;">
+        <span class="step-num">4</span>
+        <div>
+          <strong style="font-size:0.9rem;color:#0f2747;">Type the for loop</strong>
+          <div class="code-block" style="font-size:0.83rem;padding:8px 12px;margin-top:5px;display:inline-block;">
+            <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="num">5</span>):<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="fn">print</span>(<span class="str">"Loop number:"</span>, i)
+          </div>
+          <p style="margin:3px 0 0;font-size:0.82rem;color:#374151;">⚠️ Indent with <strong>4 spaces</strong>! The indent is what tells Python "this belongs inside the loop."</p>
+        </div>
+      </div>
+      <div class="card" style="padding:11px 15px;display:flex;gap:12px;align-items:flex-start;">
+        <span class="step-num">5</span>
+        <div>
+          <strong style="font-size:0.9rem;color:#0f2747;">Run it &amp; predict first!</strong>
+          <p style="margin:3px 0 0;font-size:0.84rem;color:#374151;">Before pressing Run — how many lines of output do you expect? Predict, then check. What is <code style="background:#eaf2fd;padding:1px 5px;border-radius:4px;">i</code> on the first loop? The last?</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ╔══════════════════════════════════════════════════╗ -->
+<!-- ║  SLIDE 12 · BRAIN BREAK                         ║ -->
+<!-- ╚══════════════════════════════════════════════════╝ -->
+<div class="slide interior" data-slide="12" data-type="break">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:380px;height:380px;top:-90px;right:-70px;background:#f59e0b;opacity:.11;"></div>
+    <div class="blob" style="width:260px;height:260px;bottom:-60px;left:-50px;background:#10b981;opacity:.08;"></div>
+  </div>
+  <div class="content" style="text-align:center;">
+    <p class="pill amber mb-3 reveal">⏸️ Brain Break · 5 min</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.6rem,3vw,2.4rem);font-weight:700;margin-bottom:0.6rem;color:#0f2747;">
+      Human Loop — stand up!
+    </h2>
+
+    <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/90899ecd1c70fca76aa89bc9875f2f03d375b5cb.jpg"
+         alt="Kids laughing and engaged in activity"
+         class="reveal"
+         style="width:180px;height:140px;object-fit:cover;border-radius:16px;margin:0 auto 16px;display:block;box-shadow:0 8px 24px rgba(15,23,42,0.14);">
+
+    <div class="break-card reveal" style="max-width:560px;margin:0 auto 14px;text-align:left;">
+      <p style="font-weight:800;color:#78350f;margin:0 0 10px;font-size:0.95rem;text-align:center;">The Rules:</p>
+      <ol style="margin:0;padding-left:20px;font-size:0.9rem;color:#374151;line-height:1.9;">
+        <li>Everyone stands in a circle</li>
+        <li>The teacher says: <strong>"for i in range(7):"</strong></li>
+        <li>Each person in order says their number: <em>"0!"</em>, <em>"1!"</em>, <em>"2!"</em>…</li>
+        <li>When the loop finishes, everyone claps — the loop is done!</li>
+        <li>Next round: change range to 4. What changes? Who sits down early?</li>
+      </ol>
+    </div>
+
+    <div class="card reveal" style="background:rgba(11,99,206,0.06);border:1px solid rgba(11,99,206,0.18);padding:10px 15px;max-width:560px;margin:0 auto;">
+      <p style="margin:0;font-size:0.84rem;color:#1e3a5f;font-weight:700;">
+        💡 You just became a <code style="background:#dbeafe;padding:1px 5px;border-radius:4px;">for</code> loop! Your brain is checking: <em>am I still inside range?</em> — just like Python.
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ╔══════════════════════════════════════════════════╗ -->
+<!-- ║  SLIDE 13 · OPEN BUILD                          ║ -->
+<!-- ╚══════════════════════════════════════════════════╝ -->
+<div class="slide interior" data-slide="13" data-type="build">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:360px;height:360px;top:-80px;right:-60px;background:#8b5cf6;opacity:.09;"></div>
+    <div class="blob" style="width:240px;height:240px;bottom:-50px;left:-40px;background:#10b981;opacity:.08;"></div>
+  </div>
+  <div class="content">
+    <p class="pill purple mb-2 reveal">🚀 Open Build · 30–40 min</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.4rem,2.5vw,2rem);font-weight:700;margin-bottom:0.7rem;color:#0f2747;">
+      Your turn — pick your path
+    </h2>
+
+    <div class="grid-cards grid-3 reveal" style="gap:12px;margin-bottom:12px;">
+      <!-- Tier A -->
+      <div class="card accent-card-green" style="padding:14px 16px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+          <span class="tier-a">TIER A · Grades 1–3</span>
+        </div>
+        <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/26a490d8085eba4e50c7a4d68f48caad6b9b2dc7.jpg"
+             onerror="this.style.display='none'"
+             alt="Young kids coding"
+             style="width:100%;height:55px;object-fit:cover;border-radius:8px;margin-bottom:8px;">
+        <p style="font-weight:800;color:#14532d;margin:0 0 6px;font-size:0.88rem;">Pair up! Build together</p>
+        <ul style="margin:0;padding-left:16px;font-size:0.82rem;color:#374151;line-height:1.7;">
+          <li>With a partner, type 3 <code style="background:#dcfce7;padding:1px 4px;border-radius:4px;">print()</code> statements about your favorite animal</li>
+          <li>Try a <code style="background:#dcfce7;padding:1px 4px;border-radius:4px;">for</code> loop with <code style="background:#dcfce7;padding:1px 4px;border-radius:4px;">range(3)</code></li>
+          <li>Run it — celebrate every output line!</li>
+        </ul>
+      </div>
+
+      <!-- Tier B -->
+      <div class="card accent-card-blue" style="padding:14px 16px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+          <span class="tier-b">TIER B · Grades 3–5</span>
+        </div>
+        <p style="font-weight:800;color:#1e3a8a;margin:0 0 6px;font-size:0.88rem;">Build your "About Me" story</p>
+        <ul style="margin:0;padding-left:16px;font-size:0.82rem;color:#374151;line-height:1.7;">
+          <li>Write 4+ <code style="background:#dbeafe;padding:1px 4px;border-radius:4px;">print()</code> facts about yourself</li>
+          <li>Add a <code style="background:#dbeafe;padding:1px 4px;border-radius:4px;">for</code> loop that counts from 1 to 5</li>
+          <li>Use <code style="background:#dbeafe;padding:1px 4px;border-radius:4px;"># comments</code> to label each section</li>
+          <li>Fix any errors you get!</li>
+        </ul>
+      </div>
+
+      <!-- Tier C -->
+      <div class="card" style="padding:14px 16px;background:rgba(139,92,246,0.07);border:1px solid rgba(139,92,246,0.22);">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+          <span class="tier-c">TIER C · Grades 6–9</span>
+        </div>
+        <p style="font-weight:800;color:#4c1d95;margin:0 0 6px;font-size:0.88rem;">Loop with a calculation</p>
+        <ul style="margin:0;padding-left:16px;font-size:0.82rem;color:#374151;line-height:1.7;">
+          <li>Build the "About Me" story (Tier B)</li>
+          <li>Add a loop that prints the <strong>multiplication table</strong> for any number</li>
+          <li>Stretch: make the loop count by 2s using <code style="background:#ede9fe;padding:1px 4px;border-radius:4px;">range(0,20,2)</code></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Challenge card -->
+    <div class="challenge-card reveal" style="padding:12px 16px;">
+      <p style="font-weight:800;color:#4c1d95;margin:0 0 6px;font-size:0.88rem;">⚡ Challenge Card — All Tiers</p>
+      <p style="margin:0;font-size:0.84rem;color:#374151;">Build a "countdown" — use <code style="background:#ede9fe;padding:1px 5px;border-radius:4px;">range(10, 0, -1)</code> to count <em>backwards</em> from 10 to 1, then <code style="background:#ede9fe;padding:1px 5px;border-radius:4px;">print("Blast off!")</code> after the loop. Hint: that last line is <em>not</em> indented!</p>
+    </div>
+  </div>
+</div>
+
+<!-- ╔══════════════════════════════════════════════════╗ -->
+<!-- ║  SLIDE 14 · DEBUG CORNER                        ║ -->
+<!-- ╚══════════════════════════════════════════════════╝ -->
+<div class="slide interior" data-slide="14" data-type="debug">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:340px;height:340px;top:-70px;right:-60px;background:#ef4444;opacity:.08;"></div>
+    <div class="blob" style="width:220px;height:220px;bottom:-40px;left:-30px;background:#0b63ce;opacity:.07;"></div>
+  </div>
+  <div class="content">
+    <p class="pill" style="border-color:rgba(239,68,68,0.3);color:#b91c1c;margin-bottom:10px;" class="reveal">🐛 Debug Corner · Common Bugs</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.3rem,2.3vw,1.8rem);font-weight:700;margin-bottom:0.8rem;color:#0f2747;">Bugs are how you know you're really coding</h2>
+
+    <div class="grid-cards grid-2 reveal" style="gap:10px;">
+      <div class="bug-card">
+        <p style="font-weight:800;color:#b91c1c;margin:0 0 5px;font-size:0.88rem;">Bug 1 — Missing quotes</p>
+        <div class="code-block" style="font-size:0.82rem;padding:7px 11px;margin-bottom:6px;border-left:3px solid #ef4444;">
+          <span class="cmt"># Wrong:</span><br>
+          <span class="fn">print</span>(Hello World)<br><br>
+          <span class="cmt"># Right:</span><br>
+          <span class="fn">print</span>(<span class="str">"Hello World"</span>)
+        </div>
+        <p style="font-size:0.8rem;color:#374151;margin:0;">Text must always be wrapped in <strong>"double quotes"</strong></p>
+      </div>
+
+      <div class="bug-card">
+        <p style="font-weight:800;color:#b91c1c;margin:0 0 5px;font-size:0.88rem;">Bug 2 — Missing indent in loop</p>
+        <div class="code-block" style="font-size:0.82rem;padding:7px 11px;margin-bottom:6px;border-left:3px solid #ef4444;">
+          <span class="cmt"># Wrong — no indent:</span><br>
+          <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="num">3</span>):<br>
+          <span class="fn">print</span>(<span class="str">"Hi"</span>)<br><br>
+          <span class="cmt"># Right — 4 spaces:</span><br>
+          <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="num">3</span>):<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;<span class="fn">print</span>(<span class="str">"Hi"</span>)
+        </div>
+        <p style="font-size:0.8rem;color:#374151;margin:0;">Python needs <strong>exactly 4 spaces</strong> (or one Tab) to know what's inside the loop</p>
+      </div>
+
+      <div class="bug-card">
+        <p style="font-weight:800;color:#b91c1c;margin:0 0 5px;font-size:0.88rem;">Bug 3 — Forgetting the colon</p>
+        <div class="code-block" style="font-size:0.82rem;padding:7px 11px;margin-bottom:6px;border-left:3px solid #ef4444;">
+          <span class="cmt"># Wrong — no colon:</span><br>
+          <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="num">3</span>)<br><br>
+          <span class="cmt"># Right — colon required:</span><br>
+          <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="num">3</span>):
+        </div>
+        <p style="font-size:0.8rem;color:#374151;margin:0;">The <code style="background:#fee2e2;padding:1px 4px;border-radius:4px;">:</code> at the end of <code>for</code> tells Python: <em>"here comes the loop body"</em></p>
+      </div>
+
+      <div class="bug-card" style="border-left-color:#f59e0b;">
+        <p style="font-weight:800;color:#b45309;margin:0 0 5px;font-size:0.88rem;">Pro Move — Read the error message!</p>
+        <div style="background:#fdf4e3;border-radius:8px;padding:8px 11px;margin-bottom:6px;font-family:'Fira Code',monospace;font-size:0.78rem;color:#78350f;">
+          SyntaxError: invalid syntax (line 2)
+        </div>
+        <p style="font-size:0.8rem;color:#374151;margin:0;">Python error messages tell you the <strong>line number</strong> and the <strong>type</strong> of mistake. They're helpful clues, not mean messages!</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ╔══════════════════════════════════════════════════╗ -->
+<!-- ║  SLIDE 15 · VOCABULARY                          ║ -->
+<!-- ╚══════════════════════════════════════════════════╝ -->
+<div class="slide interior" data-slide="15" data-type="vocab">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:340px;height:340px;top:-70px;right:-60px;background:#0b63ce;opacity:.09;"></div>
+    <div class="blob" style="width:220px;height:220px;bottom:-40px;left:-30px;background:#10b981;opacity:.07;"></div>
+  </div>
+  <div class="content">
+    <p class="pill mb-2 reveal">📚 Vocabulary · 5 Key Words</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.3rem,2.3vw,1.8rem);font-weight:700;margin-bottom:0.8rem;color:#0f2747;">Words you used today</h2>
+
+    <div class="grid-cards grid-2 reveal" style="gap:10px;">
+      <div class="vocab-card" style="border-left-color:#0b63ce;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:5px;">
+          <span class="vocab-tag">function</span>
+        </div>
+        <p style="font-size:0.85rem;color:#374151;margin:0;">A named command that does a specific job. <code style="background:#dbeafe;padding:1px 5px;border-radius:4px;">print()</code> is a built-in function. You call it by writing its name followed by parentheses.</p>
+      </div>
+
+      <div class="vocab-card" style="border-left-color:#10b981;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:5px;">
+          <span class="vocab-tag" style="background:rgba(16,185,129,0.08);color:#047857;">string</span>
+        </div>
+        <p style="font-size:0.85rem;color:#374151;margin:0;">Text data in Python — always wrapped in quotes. <code style="background:#d1fae5;padding:1px 5px;border-radius:4px;">"Hello!"</code> is a string. Numbers without quotes are numbers; with quotes they become strings.</p>
+      </div>
+
+      <div class="vocab-card" style="border-left-color:#f59e0b;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:5px;">
+          <span class="vocab-tag" style="background:rgba(245,158,11,0.08);color:#b45309;">loop</span>
+        </div>
+        <p style="font-size:0.85rem;color:#374151;margin:0;">A block of code that repeats. A <code style="background:#fef3c7;padding:1px 5px;border-radius:4px;">for</code> loop runs a set number of times. Scratch's <span class="scratch-block sb-orange" style="font-size:0.8em;">repeat</span> is the same idea.</p>
+      </div>
+
+      <div class="vocab-card" style="border-left-color:#8b5cf6;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:5px;">
+          <span class="vocab-tag" style="background:rgba(139,92,246,0.08);color:#6d28d9;">indentation</span>
+        </div>
+        <p style="font-size:0.85rem;color:#374151;margin:0;">The spaces at the start of a line that tell Python what belongs inside a loop or function. In Scratch, the block snapping does this automatically — in Python, <em>you</em> add the spaces.</p>
+      </div>
+
+      <div class="vocab-card" style="border-left-color:#ef4444;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:5px;">
+          <span class="vocab-tag" style="background:rgba(239,68,68,0.08);color:#b91c1c;">syntax</span>
+        </div>
+        <p style="font-size:0.85rem;color:#374151;margin:0;">The spelling rules of a programming language. Python's syntax requires quotes around strings, colons after <code style="background:#fee2e2;padding:1px 5px;border-radius:4px;">for</code>, and indented loop bodies. Syntax errors = typos Python noticed.</p>
+      </div>
+
+      <div class="vocab-card" style="border-left-color:#0891b2;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:5px;">
+          <span class="vocab-tag" style="background:rgba(8,145,178,0.08);color:#0e7490;">comment</span>
+        </div>
+        <p style="font-size:0.85rem;color:#374151;margin:0;">A note in your code that Python ignores (starts with <code style="background:#cffafe;padding:1px 5px;border-radius:4px;">#</code>). Comments help humans understand the code — great for explaining what each section does!</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ╔══════════════════════════════════════════════════╗ -->
+<!-- ║  SLIDE 16 · SHARE-OUT                           ║ -->
+<!-- ╚══════════════════════════════════════════════════╝ -->
+<div class="slide interior" data-slide="16" data-type="share">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:360px;height:360px;top:-80px;right:-60px;background:#8b5cf6;opacity:.09;"></div>
+    <div class="blob" style="width:240px;height:240px;bottom:-50px;left:-40px;background:#10b981;opacity:.08;"></div>
+  </div>
+  <div class="content">
+    <p class="pill purple mb-2 reveal">✨ Share-Out · 10 min · Always Opt-In</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.4rem,2.5vw,2rem);font-weight:700;margin-bottom:0.8rem;color:#0f2747;">Show what you built!</h2>
+
+    <div class="grid-cards grid-2 reveal" style="gap:12px;margin-bottom:12px;">
+      <div class="card" style="padding:16px 18px;">
+        <p style="font-weight:800;color:#6d28d9;margin:0 0 8px;font-size:0.92rem;">Pair Share (default)</p>
+        <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/25ad9a07b0683f116a0766533a2220230b70a954.jpg"
+             alt="Kids working together on a laptop"
+             style="width:100%;height:70px;object-fit:cover;border-radius:10px;margin-bottom:8px;">
+        <p style="font-size:0.85rem;color:#374151;margin:0 0 8px;">Turn to your neighbor. Show your program and explain:</p>
+        <p style="font-size:0.87rem;font-weight:700;color:#4c1d95;background:rgba(139,92,246,0.08);padding:8px 12px;border-radius:8px;margin:0;">"My loop runs ___ times and prints ___ each time."</p>
+      </div>
+
+      <div class="card" style="padding:16px 18px;">
+        <p style="font-weight:800;color:#6d28d9;margin:0 0 8px;font-size:0.92rem;">3 Questions to Ask Your Partner</p>
+        <div style="display:flex;flex-direction:column;gap:7px;">
+          <div style="display:flex;gap:8px;align-items:flex-start;">
+            <div class="step-num" style="background:#8b5cf6;min-width:26px;height:26px;font-size:0.75rem;">1</div>
+            <p style="margin:0;font-size:0.84rem;color:#374151;">What is <code style="background:#ede9fe;padding:1px 5px;border-radius:4px;">i</code> equal to when your loop runs for the <em>very first time</em>?</p>
+          </div>
+          <div style="display:flex;gap:8px;align-items:flex-start;">
+            <div class="step-num" style="background:#8b5cf6;min-width:26px;height:26px;font-size:0.75rem;">2</div>
+            <p style="margin:0;font-size:0.84rem;color:#374151;">What is the <em>biggest</em> difference you noticed between writing Python vs clicking Scratch blocks?</p>
+          </div>
+          <div style="display:flex;gap:8px;align-items:flex-start;">
+            <div class="step-num" style="background:#8b5cf6;min-width:26px;height:26px;font-size:0.75rem;">3</div>
+            <p style="margin:0;font-size:0.84rem;color:#374151;">If you got an error — what was the bug and how did you fix it? Bugs count!</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card reveal" style="background:rgba(139,92,246,0.06);border:1px solid rgba(139,92,246,0.2);padding:11px 15px;">
+      <p style="margin:0;font-size:0.84rem;color:#4c1d95;font-weight:700;">
+        🌟 Volunteer to show the class? Raise your hand — totally optional! Point to your <code style="background:#ede9fe;padding:1px 5px;border-radius:4px;">for</code> loop and describe what it does in one sentence.
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ╔══════════════════════════════════════════════════╗ -->
+<!-- ║  SLIDE 17 · HOMEWORK                            ║ -->
+<!-- ╚══════════════════════════════════════════════════╝ -->
+<div class="slide interior" data-slide="17" data-type="homework">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:360px;height:360px;top:-80px;right:-60px;background:#0b63ce;opacity:.10;"></div>
+    <div class="blob" style="width:240px;height:240px;bottom:-50px;left:-40px;background:#10b981;opacity:.08;"></div>
+  </div>
+  <div class="content">
+    <p class="pill mb-2 reveal">📝 Homework · 30 min</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.4rem,2.5vw,2rem);font-weight:700;margin-bottom:0.8rem;color:#0f2747;">Tonight's task</h2>
+
+    <div class="grid-cards grid-2 reveal" style="gap:12px;margin-bottom:12px;">
+      <div class="card" style="padding:16px 18px;border-top:4px solid #0b63ce;">
+        <p style="font-weight:800;color:#0b63ce;margin:0 0 8px;font-size:0.92rem;">The Task</p>
+        <p style="font-size:0.87rem;color:#374151;margin:0 0 10px;">Type a <strong>4-line "About Me" Python program</strong> using only <code style="background:#eaf2fd;padding:1px 5px;border-radius:4px;">print()</code>. Run it and fix any errors you see (intro to debugging).</p>
+        <div class="code-block" style="font-size:0.84rem;padding:10px 14px;">
+          <span class="cmt"># about_me.py</span><br>
+          <span class="fn">print</span>(<span class="str">"My name is ___."</span>)<br>
+          <span class="fn">print</span>(<span class="str">"I am ___ years old."</span>)<br>
+          <span class="fn">print</span>(<span class="str">"My favorite food is ___."</span>)<br>
+          <span class="fn">print</span>(<span class="str">"I like coding because ___."</span>)
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div class="card accent-card-green" style="padding:14px 16px;">
+          <p style="font-weight:800;color:#047857;margin:0 0 6px;font-size:0.88rem;">All Tiers: Required</p>
+          <ul style="margin:0;padding-left:16px;font-size:0.84rem;color:#374151;line-height:1.75;">
+            <li>Fill in all 4 <code style="background:#d1fae5;padding:1px 4px;border-radius:4px;">print()</code> lines with your real info</li>
+            <li>Run it and fix any errors (screenshot the output!)</li>
+            <li>Write 1 sentence: <em>what does an error message tell you?</em></li>
+          </ul>
+        </div>
+        <div class="challenge-card" style="padding:12px 15px;">
+          <p style="font-weight:800;color:#4c1d95;margin:0 0 5px;font-size:0.85rem;">⚡ Bonus (Tier B/C)</p>
+          <p style="margin:0;font-size:0.82rem;color:#374151;">Add a <code style="background:#ede9fe;padding:1px 5px;border-radius:4px;">for</code> loop that prints your name 5 times. Then make it count <em>and</em> say your name: <code style="background:#ede9fe;padding:1px 5px;border-radius:4px;">print(i, "Alex!")</code></p>
+        </div>
+        <div class="card" style="padding:11px 14px;background:rgba(11,99,206,0.05);border:1px solid rgba(11,99,206,0.15);">
+          <p style="margin:0;font-size:0.82rem;color:#1e3a5f;font-weight:700;">
+            📅 <strong>Next session (Mon Jul 13):</strong> Python variables, <code style="background:#dbeafe;padding:1px 5px;border-radius:4px;">input()</code>, and a <strong>Mad Libs generator</strong> — your conditionals meet their best friend: memory!
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ╔══════════════════════════════════════════════════╗ -->
+<!-- ║  SLIDE 18 · WRAP-UP / CLOSING                   ║ -->
+<!-- ╚══════════════════════════════════════════════════╝ -->
+<div class="slide" data-slide="18" data-type="closing">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:520px;height:520px;top:-130px;right:-140px;background:#10b981;opacity:0.13;"></div>
+    <div class="blob" style="width:340px;height:340px;bottom:-100px;left:-80px;background:#0b63ce;opacity:0.11;"></div>
+    <div class="blob" style="width:200px;height:200px;top:45%;left:8%;background:#f59e0b;opacity:0.08;"></div>
+  </div>
+  <canvas class="particle-canvas" id="pc18"></canvas>
+  <div class="content" style="text-align:center;">
+
+    <div style="display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:16px;" class="reveal">
+      <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/ae5413371033ecfc683f2963fcd3b8068fa04f27.jpg"
+           alt="Scratch blocks"
+           style="height:68px;width:68px;object-fit:cover;border-radius:12px;opacity:0.7;">
+      <div style="font-size:2rem;color:#10b981;font-weight:900;">⟶</div>
+      <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/89418fcbba2ebc6e7d9cf4282f22e5d2d7380120.jpg"
+           onerror="this.style.display='none'"
+           alt="Python code"
+           style="height:68px;width:68px;object-fit:cover;border-radius:12px;">
+    </div>
+
+    <h2 class="font-display grad-text reveal"
+        style="font-size:clamp(1.8rem,4.5vw,3rem);font-weight:700;line-height:1.2;margin-bottom:10px;">
+      You crossed the bridge!
+    </h2>
+
+    <p class="reveal" style="font-size:clamp(0.88rem,1.6vw,1.1rem);color:#1e3a5f;margin-bottom:18px;max-width:560px;margin-left:auto;margin-right:auto;line-height:1.7;">
+      The <strong>logic</strong> you learned in Scratch didn't change — you just learned to write it in a new language. Every program you build from here uses these exact same ideas.
+    </p>
+
+    <div class="grid-cards reveal" style="grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;max-width:640px;margin:0 auto 18px;">
+      <div class="card" style="padding:12px 10px;text-align:center;">
+        <div style="font-size:1.6rem;margin-bottom:6px;">🧩</div>
+        <p style="font-weight:800;font-size:0.82rem;color:#0b63ce;margin:0;">Scratch logic</p>
+        <p style="font-size:0.76rem;color:#4a6380;margin:3px 0 0;">loops, sequences, events</p>
+      </div>
+      <div class="card" style="padding:12px 10px;text-align:center;background:linear-gradient(135deg,rgba(11,99,206,0.06),rgba(16,185,129,0.06));">
+        <div style="font-size:1.6rem;margin-bottom:6px;">🌉</div>
+        <p style="font-weight:800;font-size:0.82rem;color:#047857;margin:0;">The Bridge</p>
+        <p style="font-size:0.76rem;color:#4a6380;margin:3px 0 0;">same idea, new syntax</p>
+      </div>
+      <div class="card" style="padding:12px 10px;text-align:center;">
+        <div style="font-size:1.6rem;margin-bottom:6px;">🐍</div>
+        <p style="font-weight:800;font-size:0.82rem;color:#0b63ce;margin:0;">Python</p>
+        <p style="font-size:0.76rem;color:#4a6380;margin:3px 0 0;"><code style="font-size:0.9em;">print()</code>, <code style="font-size:0.9em;">for</code> loop</p>
+      </div>
+    </div>
+
+    <div style="display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;" class="reveal">
+      <span class="pill">Session 8 Complete</span>
+      <span class="pill green">Next: Variables &amp; input()</span>
+      <a href="https://hue881.github.io/mcs/2026/summer" target="_blank" rel="noopener"
+         style="display:inline-flex;align-items:center;gap:5px;padding:4px 14px;border-radius:999px;border:1px solid rgba(11,99,206,0.35);background:rgba(255,255,255,0.9);font-size:0.75rem;font-weight:800;color:#0b63ce;text-decoration:none;">
+        🔗 Course Page
+      </a>
+    </div>
+  </div>
+</div>
+
+</div><!-- end .deck -->
+
+<!-- ╔══════════════════════════════════════════════════╗ -->
+<!-- ║  NAV CONTROLS                                   ║ -->
+<!-- ╚══════════════════════════════════════════════════╝ -->
+<div class="nav-controls">
+  <button class="nav-btn" onclick="changeSlide(-1)">&#8249;</button>
+  <div class="slide-dots" id="dots"></div>
+  <button class="nav-btn" onclick="changeSlide(1)">&#8250;</button>
+  <span class="slide-counter" id="counter">1 / 18</span>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════
+   DECK NAVIGATION
+   ═══════════════════════════════════════════════════════ */
+let current = 1;
+const slides = document.querySelectorAll('.slide');
+const total = slides.length;
+const dotsContainer = document.getElementById('dots');
+const counter = document.getElementById('counter');
+
+// dot type by slide data-type
+const dotTypeMap = {
+  'title':'', 'agenda':'', 'warmup':'warmup', 'mini-lesson':'mini',
+  'video':'mini', 'ai':'mini', 'build':'build', 'break':'warmup',
+  'debug':'build', 'vocab':'', 'share':'share', 'homework':'', 'closing':''
+};
+slides.forEach((s,i) => {
+  const dot = document.createElement('div');
+  const t = dotTypeMap[s.dataset.type] || '';
+  dot.className = 'dot' + (t ? ' '+t : '') + (i===0 ? ' active' : '');
+  dot.onclick = () => goToSlide(i+1);
+  dotsContainer.appendChild(dot);
+});
+
+function goToSlide(n) {
+  const prev = document.querySelector('.slide.active');
+  const next = document.querySelector(`.slide[data-slide="${n}"]`);
+  if(prev) prev.classList.remove('active');
+  if(next){ next.classList.add('active'); animateSlide(next); }
+  current = n; updateNav();
+}
+function changeSlide(dir) {
+  let next = current + dir;
+  if(next < 1) next = total;
+  if(next > total) next = 1;
+  goToSlide(next);
+}
+function updateNav() {
+  document.querySelectorAll('.dot').forEach((d,i) => d.classList.toggle('active', i+1===current));
+  counter.textContent = current + ' / ' + total;
+}
+document.addEventListener('keydown', e => {
+  if(e.key==='ArrowRight'||e.key===' '){ e.preventDefault(); changeSlide(1); }
+  if(e.key==='ArrowLeft'){ e.preventDefault(); changeSlide(-1); }
+});
+let touchStartX = 0;
+document.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; });
+document.addEventListener('touchend', e => {
+  const diff = touchStartX - e.changedTouches[0].clientX;
+  if(Math.abs(diff)>50) changeSlide(diff>0?1:-1);
+});
+
+/* === Reveal animations === */
+function animateSlide(slide) {
+  slide.querySelectorAll('.reveal').forEach((el,i) => {
+    el.style.transition = 'none';
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(16px)';
+    el.offsetHeight;
+    const delay = i * 0.07;
+    el.style.transition = `opacity 0.35s ease ${delay}s, transform 0.35s ease ${delay}s`;
+    el.style.opacity = '1';
+    el.style.transform = 'translateY(0)';
+  });
+  // bar fills
+  slide.querySelectorAll('.progress-fill:not(.filled)').forEach(b => {
+    b.classList.add('filled');
+    const w = b.dataset.width || '0';
+    b.style.width = '0%';
+    b.offsetHeight;
+    b.style.width = w + '%';
+  });
+}
+
+/* === Video embed on click === */
+function playVideo(id, videoId) {
+  const container = document.getElementById(id);
+  const iframe = document.createElement('iframe');
+  iframe.src = 'https://www.youtube.com/embed/' + videoId + '?autoplay=1&rel=0';
+  iframe.allow = 'autoplay; encrypted-media; fullscreen';
+  iframe.allowFullscreen = true;
+  container.innerHTML = '';
+  container.appendChild(iframe);
+  container.onclick = null;
+  container.style.cursor = 'default';
+}
+
+/* === Mouse Spotlight === */
+document.addEventListener('mousemove', e => {
+  const s = document.getElementById('spotlight');
+  if(s) s.style.background = `radial-gradient(600px circle at ${e.clientX}px ${e.clientY}px, rgba(11,99,206,0.055), transparent 40%)`;
+});
+
+/* === Parallax deco-shapes === */
+(function(){
+  let mx = window.innerWidth/2, my = window.innerHeight/2;
+  const cx = window.innerWidth/2, cy = window.innerHeight/2;
+  document.addEventListener('mousemove', e => { mx=e.clientX; my=e.clientY; });
+  (function tick(){
+    const ox=(mx-cx)/cx, oy=(my-cy)/cy;
+    document.querySelectorAll('.deco-shape').forEach(s => {
+      const sp = parseFloat(s.dataset.speed)||0.03;
+      s.style.transform = `translate(${ox*sp*100}px,${oy*sp*100}px)`;
+    });
+    requestAnimationFrame(tick);
+  })();
+})();
+
+/* === Particle Canvas === */
+function initParticles(canvas, opts) {
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  canvas.width = canvas.offsetWidth||window.innerWidth;
+  canvas.height = canvas.offsetHeight||window.innerHeight;
+  const count = opts.count || 40;
+  let mx=-9999, my=-9999;
+  const particles = Array.from({length:count}, () => ({
+    x: Math.random()*canvas.width, y: Math.random()*canvas.height,
+    vx:(Math.random()-0.5)*0.3, vy:(Math.random()-0.5)*0.3,
+    size:Math.random()*2+0.8, alpha:Math.random()*0.25+0.08
+  }));
+  canvas.addEventListener('mousemove', e => {
+    const r = canvas.getBoundingClientRect();
+    mx=e.clientX-r.left; my=e.clientY-r.top;
+  });
+  canvas.addEventListener('mouseleave', () => { mx=-9999; my=-9999; });
+  (function animate(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    particles.forEach(p => {
+      const dx=p.x-mx, dy=p.y-my, dist=Math.sqrt(dx*dx+dy*dy);
+      if(dist<120){ const f=(120-dist)/120*2; p.vx+=(dx/dist)*f*0.1; p.vy+=(dy/dist)*f*0.1; }
+      p.vx*=0.98; p.vy*=0.98; p.x+=p.vx; p.y+=p.vy;
+      if(p.x<0)p.x=canvas.width; if(p.x>canvas.width)p.x=0;
+      if(p.y<0)p.y=canvas.height; if(p.y>canvas.height)p.y=0;
+      ctx.beginPath(); ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
+      ctx.fillStyle=`rgba(11,99,206,${p.alpha})`; ctx.fill();
+    });
+    requestAnimationFrame(animate);
+  })();
+}
+initParticles(document.getElementById('pc1'), {count:50});
+initParticles(document.getElementById('pc18'), {count:50});
+
+/* Animate first slide on load */
+try{ animateSlide(document.querySelector('.slide.active')); }catch(e){}
+</script>
+</body>
+</html>
