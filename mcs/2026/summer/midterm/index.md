@@ -60,7 +60,7 @@ The digital exam uses a **15-question adaptive format**:
 - **Ability meter** — a live θ (theta) score from –3 to +3 tracks student level
 - **Scaled score** — converted to 200–800 range (SAT-style); speed on correct answers gives a small bonus
 
-> 💡 **Teacher note:** The adaptive engine starts at difficulty 3 (middle), raises by ~0.28×difficulty step on correct, lowers by ~0.28×difficulty step on wrong. After 15 items, it assigns a **Tier** (A, B, or C) that routes Part 2.
+- 💡 **Teacher note:** The adaptive engine starts at difficulty 3 (middle), raises by ~0.28×difficulty step on correct, lowers by ~0.28×difficulty step on wrong. After 15 items, it assigns a **Tier** (A, B, or C) that routes Part 2.
 
 ### Part 2 — Mini-Build (tier-appropriate, 80 min)
 
