@@ -3,6 +3,8 @@
 ### Summer 2026 AI & Coding Program · Modern Chinese School
 **Python, Scratch & Artificial Intelligence | Ages 7–13 (Grades 1–9)**
 
+Please visit [M-R Activity](https://hue881.github.io/mcs/2026/summer/midterm/activity) for the activity worksheet for the midterm.
+
 ## 📌 At-a-Glance
 
 | Item | Detail |
