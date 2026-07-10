@@ -3,9 +3,11 @@
 ![Level](https://img.shields.io/badge/level-beginner%20to%20advanced-brightgreen)
 ![Updated](https://img.shields.io/badge/updated-Summer%202026-lightyellow)
 
-[Instructor](https://hue881.github.io/mcs/2026/hue)  
-[Syllabus](https://hue881.github.io/mcs/2026/summer/syllabus)    
 [Dropbox Transfer](https://www.dropbox.com/request/6ef6fxmcmxaslq2o2gr3)
+
+[Instructor](https://hue881.github.io/mcs/2026/hue)  
+[Syllabus](https://hue881.github.io/mcs/2026/summer/syllabus)
+[Rules and Regulations](https://hue881.github.io/mcs/2026/rules) 
 
 | Week-Day | Lesson | Activity | Homework |Class | Notes |
 |:-----:|:----------|:---------------:|:-------|:-------|:----------|
@@ -18,7 +20,6 @@
 | **2-3** | ["Ship It!" Build Day](https://hue881.github.io/mcs/2026/summer/2/3) | [2-3 Activity](https://hue881.github.io/mcs/2026/summer/2/3/activity) | [2-3 Homework](https://hue881.github.io/mcs/2026/summer/2/3/homework) | -- ||
 | **2-4** | [The Bridge](https://hue881.github.io/mcs/2026/summer/2/4) | [2-4 Activity](https://hue881.github.io/mcs/2026/summer/2/4/activity) | [2-4 Homework](https://hue881.github.io/mcs/2026/summer/2/4/homework) | -- ||
 
-[Rules and Regulations](https://hue881.github.io/mcs/2026/rules) 
 
 
 
