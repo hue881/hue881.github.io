@@ -52,7 +52,7 @@ This is the **knowledge and vocabulary** portion. It is designed to be low-stres
 
 #### ✍️ Question Types in Part 1 (CAT — Computer Adaptive Test)
 
-The digital exam (`index.html`) uses a **15-question adaptive format**:
+The digital exam uses a **15-question adaptive format**:
 
 - **Multiple choice (10 questions)** — pick the best answer from 4 options
 - **Matching (5 questions)** — match terms to their definitions (e.g., "loop → code that repeats")
@@ -163,11 +163,6 @@ Key AI vocabulary tested:
 | **Learned AI (LLM)** | Learned patterns from millions of examples by itself |
 
 
-
-
-## ⏱️ Digital Exam Structure (`index.html`)
-
-The `index.html` file is a fully functional, browser-based adaptive exam. Here's how it works technically:
 
 ### Part 1 CAT Engine
 
