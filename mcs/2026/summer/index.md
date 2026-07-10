@@ -19,7 +19,7 @@
 | **2-2** | [Scratch: Variables + Score-keeping](https://hue881.github.io/mcs/2026/summer/2/2) | [2-2 Activity](https://hue881.github.io/mcs/2026/summer/2/2/activity) | [2-2 Homework](https://hue881.github.io/mcs/2026/summer/2/2/homework) | -- ||
 | **2-3** | ["Ship It!" Build Day](https://hue881.github.io/mcs/2026/summer/2/3) | [2-3 Activity](https://hue881.github.io/mcs/2026/summer/2/3/activity) | [2-3 Homework](https://hue881.github.io/mcs/2026/summer/2/3/homework) | -- ||
 | **2-4** | [The Bridge](https://hue881.github.io/mcs/2026/summer/2/4) | [2-4 Activity](https://hue881.github.io/mcs/2026/summer/2/4/activity) | [2-4 Homework](https://hue881.github.io/mcs/2026/summer/2/4/homework) | -- ||
-| **M-T** | [Midterm Review](https://hue881.github.io/mcs/2026/summer/midterm) | [M-T Activity](https://hue881.github.io/mcs/2026/summer/midterm/activity) |-- | -- ||
+| **M-R** | [Midterm Review](https://hue881.github.io/mcs/2026/summer/midterm) | [M-R Activity](https://hue881.github.io/mcs/2026/summer/midterm/activity) |-- | -- ||
 
 
 
