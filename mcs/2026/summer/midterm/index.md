@@ -3,8 +3,6 @@
 ### Summer 2026 AI & Coding Program · Modern Chinese School
 **Python, Scratch & Artificial Intelligence | Ages 7–13 (Grades 1–9)**
 
----
-
 ## 📌 At-a-Glance
 
 | Item | Detail |
@@ -18,8 +16,6 @@
 | **Tools needed** | Scratch *or* Python (student's choice) |
 | **Graded on** | Effort & growth — **not** perfection |
 
----
-
 ## 🏗️ Where We Are in the Course
 
 Session 11 sits at the exact midpoint of the **26-session arc**. Students have completed:
@@ -29,8 +25,6 @@ Session 11 sits at the exact midpoint of the **26-session arc**. Students have c
 - **Phase 2 start** (Sessions 8–10): Python bridge — `print`, `for` loops, `input()`, variables, `turtle` graphics
 
 The midterm is the **checkpoint** before diving deeper into Python conditionals, functions, lists, and eventually building a rule-based AI chatbot.
-
----
 
 ## 🧠 What the Midterm Covers (Every Concept So Far)
 
@@ -65,8 +59,6 @@ The digital exam (`index.html`) uses a **15-question adaptive format**:
 
 > 💡 **Teacher note:** The adaptive engine starts at difficulty 3 (middle), raises by ~0.28×difficulty step on correct, lowers by ~0.28×difficulty step on wrong. After 15 items, it assigns a **Tier** (A, B, or C) that routes Part 2.
 
----
-
 ### Part 2 — Mini-Build (tier-appropriate, 80 min)
 
 This is the **application** portion. Students build something real, matched to their skill level.
@@ -78,8 +70,6 @@ This is the **application** portion. Students build something real, matched to t
 | **A — Foundational** | θ < –0.45 | Grades 1–3, first-time coders | Shorter, more visual; Scratch is welcome |
 | **B — Intermediate** | –0.45 ≤ θ ≤ 0.45 | Grades 3–5, some Scratch | Balanced ScratchPython concept check + mini-build |
 | **C — Advanced** | θ > 0.45 | Grades 6–9, Python-curious | Python **required** mini-build with deeper explanations |
-
----
 
 ## 📋 Part 2 Tasks by Tier (Full Detail)
 
@@ -100,8 +90,6 @@ This is the **application** portion. Students build something real, matched to t
 - [ ] Uses a loop or if decision
 - [ ] Includes one test and one possible bug fix
 
----
-
 ### 🟨 Tier B — Intermediate Path
 *"Balanced concept check plus a guided mini-build in Scratch or Python."*
 
@@ -118,8 +106,6 @@ This is the **application** portion. Students build something real, matched to t
 - [ ] Uses a variable like score/name/lives
 - [ ] Uses a loop or if decision
 - [ ] Includes one test and one possible bug fix
-
----
 
 ### 🟥 Tier C — Advanced Path
 *"Python-required mini-build with clear explanations. Keep it friendly and focused."*
@@ -142,8 +128,6 @@ This is the **application** portion. Students build something real, matched to t
 - [ ] Uses a `for` loop
 - [ ] Comments or notes explain what the code does
 - [ ] Includes one test case or predicted output
-
----
 
 ## 🤖 AI Integration Thread (Session 11)
 
@@ -225,7 +209,6 @@ Final Part 2 Score = (Project Checklist % × 0.70) + (MC Quiz % × 0.30)
 | **Language support** | Bilingual (English + Chinese) handouts provided |
 | **Sensitive to criticism** | Corrections are **always private and encouraging** |
 
----
 
 ## 📐 Grading Weight in the Course
 
@@ -298,8 +281,6 @@ when green flag clicked
       change score by 1
 ```
 
----
-
 ## 📝 Vocabulary Master List (All 10 Domains)
 
 | Term | Definition | Domain |
@@ -330,8 +311,6 @@ when green flag clicked
 | **Bias** | When unfair/limited data makes an AI unfair or wrong | AI Concepts |
 | **Rule-based AI** | Follows rules written by a human coder | AI Concepts |
 
----
-
 ## 🏅 Success Metrics for Session 11
 
 Every student is considered successful if they can:
@@ -341,3 +320,6 @@ Every student is considered successful if they can:
 - [ ] Complete **at least one working part** of the mini-build (Scratch or Python)
 - [ ] Give **one example of AI being wrong** — showing responsible-AI awareness
 - [ ] (Tier C) Write a working Python `for` loop and explain what it does
+
+
+
