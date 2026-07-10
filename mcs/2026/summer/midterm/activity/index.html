@@ -1,1 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Midterm Review Sheet &middot; Mon Jul 13</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f4fbff;--sur:rgba(255,255,255,.97);--tx:#1f2a37;--tx2:#374151;--txm:#5b6b7e;--a1:#2563eb;--a2:#16a34a;--a3:#f59e0b;--ar:#ef4444;--ap:#7c3aed;--fd:'Fredoka','Trebuchet MS',sans-serif;--fb:'Nunito',Arial,sans-serif;--fc:'Fira Code',Consolas,monospace}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+@media print{body{background:#fff!important}.no-print{display:none!important}.pb{page-break-before:always}.card{box-shadow:none!important;border:1.5px solid #d1d5db!important}.avoid{break-inside:avoid;page-break-inside:avoid}}
+body{font-family:var(--fb);color:var(--tx);background:var(--bg);min-height:100vh}
+.pbar{background:rgba(255,255,255,.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(148,163,184,.3);padding:10px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;gap:12px;flex-wrap:wrap}
+.pbar-title{font-family:var(--fd);font-size:1.05rem;font-weight:700;color:var(--a1)}
+.pbar-sub{font-size:.78rem;color:var(--txm)}
+.btn-p{background:var(--a1);color:#fff;border:none;padding:8px 20px;border-radius:999px;font-family:var(--fb);font-size:.82rem;font-weight:800;cursor:pointer;letter-spacing:.06em;transition:.2s}
+.btn-p:hover{background:#1d4ed8;transform:translateY(-1px)}
+.page{max-width:920px;margin:0 auto;padding:32px 24px 60px}
+.shdr{background:linear-gradient(135deg,#2563eb 0%,#16a34a 60%,#f97066 100%);border-radius:20px;padding:28px 32px 24px;color:#fff;margin-bottom:28px;position:relative;overflow:hidden}
+.shdr::before{content:'';position:absolute;top:-60px;right:-60px;width:200px;height:200px;background:rgba(255,255,255,.08);border-radius:50%}
+.shdr::after{content:'';position:absolute;bottom:-40px;left:-40px;width:140px;height:140px;background:rgba(255,255,255,.06);border-radius:50%}
+.hday{font-size:.75rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;opacity:.85;margin-bottom:4px}
+.htitle{font-family:var(--fd);font-size:clamp(1.6rem,4vw,2.4rem);font-weight:700;line-height:1.1;margin-bottom:6px}
+.hsub{font-size:.88rem;opacity:.9;margin-bottom:14px;max-width:640px}
+.hpills{display:flex;gap:8px;flex-wrap:wrap}
+.hpill{background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:4px 14px;font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+.sinfo{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:28px}
+@media(max-width:600px){.sinfo{grid-template-columns:1fr}}
+.ifield{background:var(--sur);border-radius:12px;padding:12px 14px;border:1.5px solid rgba(37,99,235,.14);box-shadow:0 2px 8px rgba(15,23,42,.05)}
+.ilabel{font-size:.65rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--a1);margin-bottom:6px}
+.iline{border:none;border-bottom:1.5px solid #cbd5e1;width:100%;font-family:var(--fb);font-size:.9rem;color:var(--tx);background:transparent;outline:none;padding:2px 0}
+.iline:focus{border-bottom-color:#2563eb}
+.slabel{display:inline-flex;align-items:center;gap:8px;padding:5px 16px;border-radius:999px;border:1px solid rgba(148,163,184,.4);background:rgba(255,255,255,.9);font-size:.72rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--a1);margin-bottom:10px}
+.stitle{font-family:var(--fd);font-size:clamp(1.3rem,2.5vw,1.8rem);font-weight:700;margin-bottom:16px;color:var(--tx);line-height:1.2}
+.intro{font-size:.9rem;color:var(--tx2);line-height:1.55;margin-bottom:16px}
+.card{background:var(--sur);border-radius:16px;padding:18px 20px;box-shadow:0 4px 18px rgba(15,23,42,.07);border:1px solid rgba(255,255,255,.7);margin-bottom:16px}
+.card.ab{border-left:4px solid var(--a1)}.card.ag{border-left:4px solid var(--a2)}.card.aa{border-left:4px solid var(--a3)}.card.ar{border-left:4px solid var(--ar)}.card.ap{border-left:4px solid var(--ap)}
+.clabel{font-size:.68rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;margin-bottom:8px}
+.cl-b{color:var(--a1)}.cl-g{color:#15803d}.cl-a{color:#b45309}.cl-r{color:#b91c1c}.cl-p{color:#6d28d9}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media(max-width:680px){.g2,.g3{grid-template-columns:1fr}}
+.wl{border:none;border-bottom:1.5px solid #cbd5e1;width:100%;margin-bottom:10px;height:28px;display:block;background:transparent;font-family:var(--fb);font-size:.88rem;color:var(--tx);outline:none;padding:2px 4px}
+.wl:focus{border-bottom-color:#2563eb}
+.wl::placeholder{color:#bdc5d1;font-style:italic}
+.wa{border:1.5px solid #cbd5e1;border-radius:8px;width:100%;min-height:70px;padding:8px;font-family:var(--fb);font-size:.85rem;color:var(--tx);resize:vertical;background:#f8fafc;outline:none;display:block}
+.wa:focus{outline:2px solid rgba(37,99,235,.3)}
+.wa::placeholder{color:#bdc5d1;font-style:italic}
+.tip{border-radius:10px;padding:10px 14px;font-size:.8rem;line-height:1.5;margin-top:10px}
+.tip.b{background:rgba(37,99,235,.07);color:#1e40af}.tip.g{background:rgba(22,163,74,.07);color:#14532d}.tip.a{background:rgba(245,158,11,.07);color:#92400e}.tip.p{background:rgba(124,58,237,.07);color:#5b21b6}
+.div{border:none;border-top:2px dashed #dde6f0;margin:28px 0}
+.chk{list-style:none;padding:0}
+.chk li{display:flex;align-items:flex-start;gap:8px;font-size:.85rem;color:var(--tx2);margin-bottom:8px;line-height:1.45}
+.chk li .bx{flex-shrink:0;width:17px;height:17px;border:2px solid #94a3b8;border-radius:4px;margin-top:1px;background:#fff;display:inline-block}
+.sb{display:inline-flex;align-items:center;gap:4px;padding:3px 10px 3px 8px;border-radius:6px;font-family:var(--fc);font-weight:700;font-size:.78rem;cursor:default;user-select:none;vertical-align:middle}
+.sbp{background:#9c27b0;color:#fff}.sbo{background:#ff9800;color:#fff}.sbb{background:#2196f3;color:#fff}.sby{background:#ffc107;color:#333}.sbt{background:#009688;color:#fff}.sbg{background:#4caf50;color:#fff}
+.lvl{display:inline-flex;align-items:center;gap:6px;padding:4px 14px;border-radius:999px;font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px}
+.la{background:linear-gradient(135deg,#2563eb,#60a5fa);color:#fff}
+.lb{background:linear-gradient(135deg,#16a34a,#4ade80);color:#fff}
+.lc{background:linear-gradient(135deg,#7c3aed,#f97066);color:#fff}
+.lx{background:linear-gradient(135deg,#f59e0b,#f97066);color:#fff}
+table.rub{width:100%;border-collapse:collapse;font-size:.82rem;margin-top:8px}
+table.rub th{background:#1e293b;color:#e2e8f0;padding:8px 10px;text-align:left;font-weight:700;letter-spacing:.05em}
+table.rub td{padding:8px 10px;border-bottom:1px solid #e2e8f0;vertical-align:top;color:var(--tx2)}
+table.rub tr:nth-child(even) td{background:rgba(241,245,249,.6)}
+table.rub td:first-child{font-weight:700;color:var(--tx)}
+table.rub .pts{font-family:var(--fc);font-size:.75rem;font-weight:800;color:var(--a1);white-space:nowrap}
+.sfooter{margin-top:40px;padding:16px 20px;border-radius:12px;background:rgba(37,99,235,.05);border:1px solid rgba(37,99,235,.12);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:.76rem;color:var(--txm)}
+.sfooter strong{color:var(--tx)}
+.gtext{background:linear-gradient(135deg,#2563eb,#16a34a,#f97066);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.mb1{margin-bottom:6px}.mb2{margin-bottom:10px}.mb3{margin-bottom:14px}.mt2{margin-top:10px}.mt3{margin-top:14px}
+.tmuted{color:var(--txm);font-size:.78rem}
+code{background:#e0f2ff;padding:1px 6px;border-radius:4px;font-family:var(--fc);font-size:.82em;color:#1d4ed8}
+pre.code{background:#0f172a;color:#e2e8f0;border-radius:10px;padding:12px 14px;font-family:var(--fc);font-size:.82rem;line-height:1.55;overflow-x:auto;margin:6px 0}
+pre.code .kw{color:#f472b6}pre.code .fn{color:#7dd3fc}pre.code .num{color:#fbbf24}pre.code .str{color:#86efac}pre.code .cm{color:#64748b}
+.rbar{display:flex;border-radius:12px;overflow:hidden;margin-bottom:20px;border:2px solid rgba(37,99,235,.15)}
+.rb{flex:1;padding:8px 4px;text-align:center;font-size:.62rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase;line-height:1.3}
+.rw{background:#eff6ff;color:#1d4ed8;border-right:1px solid rgba(37,99,235,.15)}
+.rm{background:#f0fdf4;color:#15803d;border-right:1px solid rgba(22,163,74,.15)}
+.rg{background:#fefce8;color:#a16207;border-right:1px solid rgba(245,158,11,.15)}
+.rk{background:#fdf4ff;color:#7e22ce;border-right:1px solid rgba(124,58,237,.15)}
+.ro{background:#fff1f2;color:#be123c;border-right:1px solid rgba(249,112,102,.15)}
+.rs{background:#ecfdf5;color:#065f46}
+.match-grid{display:grid;grid-template-columns:1fr;gap:8px}
+.match-row{position:relative;display:grid;grid-template-columns:minmax(120px,1fr) 44px minmax(150px,1.4fr);gap:8px;align-items:center;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:8px 10px;transition:.15s}
+.match-row.correct{background:#ecfdf5;border-color:#16a34a}
+.match-row.wrong{background:#fff1f2;border-color:#ef4444}
+.match-row.correct .match-line{border-bottom-color:#16a34a;color:#16a34a}
+.match-row.wrong .match-line{border-bottom-color:#ef4444;color:#ef4444}
+.match-mark{position:absolute;top:50%;right:8px;transform:translateY(-50%);font-weight:800;font-size:.9rem;opacity:0;background:#fff;border-radius:999px;width:20px;height:20px;display:grid;place-items:center;box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.match-row.correct .match-def,.match-row.wrong .match-def{padding-right:22px}
+.match-row.correct .match-mark{opacity:1;color:#16a34a}
+.match-row.wrong .match-mark{opacity:1;color:#ef4444}
+@media print{.match-row.correct{background:#ecfdf5!important;border-color:#16a34a!important}.match-row.wrong{background:#fff1f2!important;border-color:#ef4444!important}}
+@media(max-width:600px){.match-row{grid-template-columns:1fr 36px 1fr}}
+.match-term{font-weight:800;color:var(--tx);font-size:.86rem}
+.match-line{border:none;border-bottom:1.5px solid #cbd5e1;text-align:center;font-family:var(--fc);font-weight:700;color:var(--a1);background:transparent;outline:none;font-size:.9rem}
+.match-def{font-size:.82rem;color:var(--tx2)}
+.mc-opt{display:flex;align-items:center;gap:8px;font-size:.85rem;color:var(--tx2);margin-bottom:6px;line-height:1.4;cursor:pointer;padding:5px 8px;border-radius:9px;border:1.5px solid transparent;transition:.15s;user-select:none}
+.mc-opt:hover{background:#eff6ff;border-color:#bfdbfe}
+.mc-opt.selected{background:#eff6ff;border-color:#2563eb;font-weight:700;color:var(--tx)}
+.mc-let{flex-shrink:0;width:22px;height:22px;border:2px solid #94a3b8;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:.72rem;color:#64748b;transition:.15s}
+.mc-opt:hover .mc-let{border-color:#60a5fa;color:#2563eb}
+.mc-opt.selected .mc-let{background:#2563eb;border-color:#2563eb;color:#fff}
+.mc-opt.correct{background:#ecfdf5;border-color:#16a34a;font-weight:700;color:#065f46}
+.mc-opt.correct .mc-let{background:#16a34a;border-color:#16a34a;color:#fff}
+.mc-opt.wrong{background:#fff1f2;border-color:#ef4444;font-weight:700;color:#9f1239}
+.mc-opt.wrong .mc-let{background:#ef4444;border-color:#ef4444;color:#fff}
+.mc-mark{margin-left:auto;font-weight:800;font-size:.9rem;opacity:0}
+.mc-opt.correct .mc-mark{opacity:1;color:#16a34a}
+.mc-opt.wrong .mc-mark{opacity:1;color:#ef4444}
+.mc-feedback{font-size:.8rem;font-weight:800;margin-top:6px;padding:6px 10px;border-radius:8px;display:none}
+.mc-feedback.show{display:block}
+.mc-feedback.ok{background:#ecfdf5;color:#065f46}
+.mc-feedback.no{background:#fff1f2;color:#9f1239}
+@media print{.mc-opt{cursor:default;border:1px solid #e2e8f0!important}.mc-opt.selected{background:#eef4ff!important;border-color:#2563eb!important}.mc-opt.correct{background:#ecfdf5!important;border-color:#16a34a!important}.mc-opt.wrong{background:#fff1f2!important;border-color:#ef4444!important}}
+.dom-num{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,#2563eb,#16a34a);color:#fff;font-family:var(--fd);font-weight:700;font-size:1rem;margin-right:8px;vertical-align:middle}
+.q-head{font-size:.86rem;font-weight:800;color:var(--tx);margin:12px 0 6px}
+.sess-tag{display:inline-block;font-size:.62rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#64748b;background:#eef2f7;border-radius:6px;padding:2px 8px;margin-left:6px;vertical-align:middle}
+</style>
+</head>
+<body>
+<div class="pbar no-print">
+  <div><div class="pbar-title">&#129514; Midterm Review Sheet</div><div class="pbar-sub">Mon, July 13 &mdash; Differentiated &middot; Ages 7&ndash;13 &middot; Covers Sessions 1&ndash;8</div></div>
+  <button class="btn-p" onclick="window.print()">Print / Save as PDF</button>
+</div>
+<div class="page">
 
+<div class="shdr">
+  <div style="font-size:2.8rem;margin-bottom:6px;">&#129514;&#128187;</div>
+  <div class="hday">Monday, July 13 &middot; Week 3 &middot; Summer 2026 AI &amp; Coding Program</div>
+  <div class="htitle">Midterm Review &mdash; Everything We&rsquo;ve Learned</div>
+  <div class="hsub">A friendly, low-stress warm-up for Wednesday&rsquo;s midterm. Practice every idea the test asks about &mdash; algorithms, Scratch, Python, and AI. Effort and growth count, not perfection!</div>
+  <div class="hpills">
+    <span class="hpill">&#129504; Algorithms</span><span class="hpill">&#127264; Scratch</span><span class="hpill">&#128013; Python</span><span class="hpill">&#129302; AI Ideas</span><span class="hpill">3 Tiers</span>
+  </div>
+</div>
+
+<div class="sinfo">
+  <div class="ifield"><div class="ilabel">&#128100; Your Name</div><input class="iline" type="text" placeholder="First Last" /></div>
+  <div class="ifield"><div class="ilabel">&#128197; Date</div><input class="iline" type="text" value="July 13, 2026" /></div>
+  <div class="ifield"><div class="ilabel">&#127979; Section / Period</div><input class="iline" type="text" placeholder="Section 1 / 2 / 3" /></div>
+</div>
+
+<!-- HOW THE MIDTERM WORKS -->
+<div class="slabel">&#127919; How Tomorrow&rsquo;s Midterm Works</div>
+<div class="stitle">Two Parts &mdash; No Surprises</div>
+<div class="card ap mb3 avoid">
+  <div class="clabel cl-p">&#128220; The Plan</div>
+  <div class="g2 mb2">
+    <div style="background:#faf5ff;border-radius:12px;padding:14px;">
+      <div style="font-weight:800;color:#6d28d9;margin-bottom:4px;">Part 1 &middot; Concept Check</div>
+      <p style="font-size:.82rem;color:#374151;line-height:1.5;">Short questions: <strong>match the word</strong> to its meaning, <strong>predict the output</strong>, and pick the best answer. Covers Scratch, Python, algorithms, debugging, safety, and AI &mdash; from <em>all</em> our lessons.</p>
+    </div>
+    <div style="background:#f0fdf4;border-radius:12px;padding:14px;">
+      <div style="font-weight:800;color:#15803d;margin-bottom:4px;">Part 2 &middot; Mini-Build</div>
+      <p style="font-size:.82rem;color:#374151;line-height:1.5;">A small guided build in <strong>Scratch OR Python</strong> (your choice). Show a start, one loop or decision, and one variable &mdash; then explain what it does.</p>
+    </div>
+  </div>
+  <div class="tip p">&#129302; One section always asks you to <strong>explain what AI is</strong> and give <strong>one example of AI being wrong</strong>. This review has a whole section to practice exactly that!</div>
+</div>
+
+<!-- STUDY MAP -->
+<div class="slabel">&#128506; Study Map</div>
+<div class="stitle">The 10 Things the Test Checks</div>
+<div class="rbar" style="flex-wrap:wrap;">
+  <div class="rb rw">&#129504;<br>Algorithms<br><span style="opacity:.7;">S1&ndash;2</span></div>
+  <div class="rb ro">&#128272;<br>Safety &amp; AI<br><span style="opacity:.7;">S1&ndash;2</span></div>
+  <div class="rb rk">&#127937;<br>Scratch Events<br><span style="opacity:.7;">S3</span></div>
+  <div class="rb rg">&#128260;<br>Loops<br><span style="opacity:.7;">S4</span></div>
+  <div class="rb rm">&#10067;<br>Conditionals<br><span style="opacity:.7;">S5</span></div>
+</div>
+<div class="rbar" style="flex-wrap:wrap;">
+  <div class="rb rw">&#128230;<br>Variables<br><span style="opacity:.7;">S6</span></div>
+  <div class="rb ro">&#128640;<br>Projects<br><span style="opacity:.7;">S7</span></div>
+  <div class="rb rk">&#128013;<br>Python<br><span style="opacity:.7;">S8</span></div>
+  <div class="rb rg">&#129302;<br>AI Concepts<br><span style="opacity:.7;">All</span></div>
+  <div class="rb rm">&#127895;<br>Mixed &amp; Debug<br><span style="opacity:.7;">All</span></div>
+</div>
+
+<hr class="div">
+
+<!-- ============ SECTION 1: VOCAB MATCH ============ -->
+<div class="slabel">&#129513; Warm-Up &middot; Part A</div>
+<div class="stitle">Big-Word Match &mdash; The 10 Vocabulary Terms</div>
+<p class="intro">The midterm asks you to <strong>match the term to its meaning</strong>. Write the correct letter (A&ndash;J) on each line. Every one of these words shows up on the test.</p>
+<div class="card ab mb3 avoid">
+  <div class="clabel cl-b">&#9999;&#65039; Match each term to its meaning</div>
+  <div class="match-grid">
+    <div class="match-row" data-correct="C"><span class="match-term">1. Algorithm</span><input class="match-line" type="text" placeholder="?" maxlength="1" /><span class="match-def">A. Something that starts code, like a click or key press</span></div>
+    <div class="match-row" data-correct="F"><span class="match-term">2. Sequence</span><input class="match-line" type="text" placeholder="?" maxlength="1" /><span class="match-def">B. A mistake or problem in the code</span></div>
+    <div class="match-row" data-correct="E"><span class="match-term">3. Loop</span><input class="match-line" type="text" placeholder="?" maxlength="1" /><span class="match-def">C. A step-by-step plan to solve a problem or do a task</span></div>
+    <div class="match-row" data-correct="H"><span class="match-term">4. Conditional</span><input class="match-line" type="text" placeholder="?" maxlength="1" /><span class="match-def">D. A named box that stores a value that can change</span></div>
+    <div class="match-row" data-correct="D"><span class="match-term">5. Variable</span><input class="match-line" type="text" placeholder="?" maxlength="1" /><span class="match-def">E. Code that repeats instructions</span></div>
+    <div class="match-row" data-correct="A"><span class="match-term">6. Event</span><input class="match-line" type="text" placeholder="?" maxlength="1" /><span class="match-def">F. The order that instructions run</span></div>
+    <div class="match-row" data-correct="B"><span class="match-term">7. Bug</span><input class="match-line" type="text" placeholder="?" maxlength="1" /><span class="match-def">G. Finding and fixing mistakes</span></div>
+    <div class="match-row" data-correct="G"><span class="match-term">8. Debugging</span><input class="match-line" type="text" placeholder="?" maxlength="1" /><span class="match-def">H. An if-decision: chooses based on true/false</span></div>
+    <div class="match-row" data-correct="J"><span class="match-term">9. Sprite</span><input class="match-line" type="text" placeholder="?" maxlength="1" /><span class="match-def">I. Examples an AI learns from</span></div>
+    <div class="match-row" data-correct="I"><span class="match-term">10. Training data</span><input class="match-line" type="text" placeholder="?" maxlength="1" /><span class="match-def">J. A Scratch character or object you program</span></div>
+  </div>
+  <div class="tip b">Study trick: cover the right column and say each meaning out loud. Then cover the left column and name the word. <em>Answer key is on the last page.</em></div>
+</div>
+
+<hr class="div">
+
+<!-- ============ SECTION 2: DOMAIN-BY-DOMAIN QUICK CHECKS ============ -->
+<div class="slabel">&#128218; Warm-Up &middot; Part B</div>
+<div class="stitle">Quick Checks &mdash; 20 Questions</div>
+<p class="intro">Click the best answer for each question &mdash; your choice highlights in blue. These 20 mirror the multiple-choice style of the real test and cover every topic twice. Try it first &mdash; the answer key is at the end.</p>
+
+<!-- 1 Algorithms -->
+<div class="card ab mb2 avoid">
+  <div class="q-head"><span class="dom-num">1</span>Algorithms <span class="sess-tag">Session 1&ndash;2</span></div>
+  <p style="font-size:.86rem;color:#374151;margin-bottom:6px;">A computer follows instructions best when they are&hellip;</p>
+  <div class="mc-opt"><span class="mc-let">A</span> clear and step-by-step</div>
+  <div class="mc-opt"><span class="mc-let">B</span> secret and surprising</div>
+  <div class="mc-opt"><span class="mc-let">C</span> mostly guessed</div>
+  <div class="mc-opt"><span class="mc-let">D</span> as short as possible, even if steps are missing</div>
+  <div class="tip b">Remember the <strong>sandwich robot</strong>: if you skip a step, the robot does the wrong thing. Computers do exactly what you tell them &mdash; no guessing.</div>
+</div>
+
+<!-- 2 Safety & AI -->
+<div class="card ar mb2 avoid">
+  <div class="q-head"><span class="dom-num">2</span>Safety &amp; Responsible AI <span class="sess-tag">Session 1&ndash;2</span></div>
+  <p style="font-size:.86rem;color:#374151;margin-bottom:6px;">If an AI gives you a strange or wrong answer, you should&hellip;</p>
+  <div class="mc-opt"><span class="mc-let">A</span> believe it no matter what</div>
+  <div class="mc-opt"><span class="mc-let">B</span> check it yourself &mdash; AI can be wrong</div>
+  <div class="mc-opt"><span class="mc-let">C</span> share your password to fix it</div>
+  <div class="mc-opt"><span class="mc-let">D</span> turn off the computer</div>
+  <div class="tip a">&#128272; Two golden rules: <strong>AI can be wrong &mdash; always check</strong>, and <strong>never share private info</strong> (name, address, passwords).</div>
+</div>
+
+<!-- 3 Scratch Events -->
+<div class="card ap mb2 avoid">
+  <div class="q-head"><span class="dom-num">3</span>Scratch Events <span class="sess-tag">Session 3</span></div>
+  <p style="font-size:.86rem;color:#374151;margin-bottom:6px;">In Scratch, the <span class="sb sbp">when &#127937; clicked</span> block usually&hellip;</p>
+  <div class="mc-opt"><span class="mc-let">A</span> starts a project</div>
+  <div class="mc-opt"><span class="mc-let">B</span> stops all sound</div>
+  <div class="mc-opt"><span class="mc-let">C</span> deletes a sprite</div>
+  <div class="mc-opt"><span class="mc-let">D</span> changes color</div>
+  <div class="tip p">An <strong>event</strong> is what <em>starts</em> code &mdash; a green-flag click or a key press. A <strong>sprite</strong> is the character you program.</div>
+</div>
+
+<!-- 4 Loops -->
+<div class="card aa mb2 avoid">
+  <div class="q-head"><span class="dom-num">4</span>Loops <span class="sess-tag">Session 4</span></div>
+  <p style="font-size:.86rem;color:#374151;margin-bottom:6px;">A loop is used to&hellip;</p>
+  <div class="mc-opt"><span class="mc-let">A</span> repeat instructions</div>
+  <div class="mc-opt"><span class="mc-let">B</span> delete code</div>
+  <div class="mc-opt"><span class="mc-let">C</span> rename a sprite</div>
+  <div class="mc-opt"><span class="mc-let">D</span> turn off the computer</div>
+  <div class="tip a">&#128260; A loop saves you from copying blocks over and over. <span class="sb sbo">repeat 4</span> draws a square; <span class="sb sbo">forever</span> never stops.</div>
+</div>
+
+<!-- 5 Conditionals -->
+<div class="card ag mb2 avoid">
+  <div class="q-head"><span class="dom-num">5</span>Conditionals <span class="sess-tag">Session 5</span></div>
+  <p style="font-size:.86rem;color:#374151;margin-bottom:6px;">An <span class="sb sby">if</span> block lets a program&hellip;</p>
+  <div class="mc-opt"><span class="mc-let">A</span> make a decision</div>
+  <div class="mc-opt"><span class="mc-let">B</span> repeat forever</div>
+  <div class="mc-opt"><span class="mc-let">C</span> print a picture</div>
+  <div class="mc-opt"><span class="mc-let">D</span> save a file</div>
+  <div class="tip g">&#10067; A conditional chooses <strong>based on true/false</strong>. &ldquo;If touching edge, then bounce.&rdquo; This is the seed of an AI <strong>classifier</strong> (is it a cat?).</div>
+</div>
+
+<!-- 6 Variables -->
+<div class="card ap mb2 avoid">
+  <div class="q-head"><span class="dom-num">6</span>Variables <span class="sess-tag">Session 6</span></div>
+  <p style="font-size:.86rem;color:#374151;margin-bottom:6px;">A variable is like&hellip;</p>
+  <div class="mc-opt"><span class="mc-let">A</span> a labeled box that stores a value</div>
+  <div class="mc-opt"><span class="mc-let">B</span> a permanent number that never changes</div>
+  <div class="mc-opt"><span class="mc-let">C</span> a drawing tool</div>
+  <div class="mc-opt"><span class="mc-let">D</span> a sound effect</div>
+  <div class="tip p">&#128230; Variables hold <strong>score</strong>, <strong>lives</strong>, or a <strong>name</strong> &mdash; a value that can change. AI keeps a variable too: its <strong>confidence</strong> score.</div>
+</div>
+
+<!-- 7 Projects -->
+<div class="card ar mb2 avoid">
+  <div class="q-head"><span class="dom-num">7</span>Projects &amp; Debugging <span class="sess-tag">Session 7</span></div>
+  <p style="font-size:.86rem;color:#374151;margin-bottom:6px;">A project is &ldquo;shippable&rdquo; when&hellip;</p>
+  <div class="mc-opt"><span class="mc-let">A</span> it is perfect with zero mistakes</div>
+  <div class="mc-opt"><span class="mc-let">B</span> it starts, responds to the player, and ends or loops</div>
+  <div class="mc-opt"><span class="mc-let">C</span> it uses the most blocks possible</div>
+  <div class="mc-opt"><span class="mc-let">D</span> only the teacher can run it</div>
+  <div class="tip r">&#128640; The 3 shippable rules: <strong>It STARTS</strong> &middot; <strong>It RESPONDS</strong> &middot; <strong>It ENDS or LOOPS</strong>. A <strong>bug</strong> is a normal, fixable problem.</div>
+</div>
+
+<!-- 8 Python -->
+<div class="card ab mb2 avoid">
+  <div class="q-head"><span class="dom-num">8</span>Python <span class="sess-tag">Session 8</span></div>
+  <p style="font-size:.86rem;color:#374151;margin-bottom:6px;">In Python, <code>print("Hello")</code> will&hellip;</p>
+  <div class="mc-opt"><span class="mc-let">A</span> show the word <strong>Hello</strong> on the screen</div>
+  <div class="mc-opt"><span class="mc-let">B</span> print a picture of hello</div>
+  <div class="mc-opt"><span class="mc-let">C</span> do nothing</div>
+  <div class="mc-opt"><span class="mc-let">D</span> ask a question</div>
+  <div class="tip b">&#128013; Scratch and Python are the <strong>same brain, different voice</strong>. Scratch <span class="sb sbg">say [Hello]</span> = Python <code>print("Hello")</code>. Don&rsquo;t forget the quotes and parentheses!</div>
+</div>
+
+<!-- 9 AI Concepts -->
+<div class="card ap mb2 avoid">
+  <div class="q-head"><span class="dom-num">9</span>AI Concepts <span class="sess-tag">All Sessions</span></div>
+  <p style="font-size:.86rem;color:#374151;margin-bottom:6px;">Training data is&hellip;</p>
+  <div class="mc-opt"><span class="mc-let">A</span> examples an AI learns from</div>
+  <div class="mc-opt"><span class="mc-let">B</span> a password</div>
+  <div class="mc-opt"><span class="mc-let">C</span> a kind of loop</div>
+  <div class="mc-opt"><span class="mc-let">D</span> a robot arm</div>
+  <div class="tip p">&#129302; The AI recipe: <strong>training data &rarr; model &rarr; prediction</strong>. More and better examples = better guesses. Few examples = more mistakes.</div>
+</div>
+
+<!-- 10 Mixed -->
+<div class="card ag mb3 avoid">
+  <div class="q-head"><span class="dom-num">10</span>Mixed Skills <span class="sess-tag">All Sessions</span></div>
+  <p style="font-size:.86rem;color:#374151;margin-bottom:6px;">Which list is in the right order from <em>concrete</em> to <em>text</em> coding?</p>
+  <div class="mc-opt"><span class="mc-let">A</span> Python first, then Scratch, then algorithms</div>
+  <div class="mc-opt"><span class="mc-let">B</span> Algorithm idea &rarr; Scratch blocks &rarr; Python text</div>
+  <div class="mc-opt"><span class="mc-let">C</span> Only Scratch, never Python</div>
+  <div class="mc-opt"><span class="mc-let">D</span> Loops before we learn what an algorithm is</div>
+  <div class="tip g">&#127895; We built up: plan the steps (algorithm) &rarr; snap the blocks (Scratch) &rarr; type the same logic (Python). Same ideas, three ways.</div>
+</div>
+
+<!-- 11 Algorithms -->
+<div class="card ab mb2 avoid">
+  <div class="q-head"><span class="dom-num">11</span>Algorithms <span class="sess-tag">Session 1&ndash;2</span></div>
+  <p style="font-size:.86rem;color:#374151;margin-bottom:6px;">You want a robot to open a door. Which instruction is most useful?</p>
+  <div class="mc-opt"><span class="mc-let">A</span> &ldquo;Do the door thing&rdquo;</div>
+  <div class="mc-opt"><span class="mc-let">B</span> Reach to the handle, turn it, then pull the door open</div>
+  <div class="mc-opt"><span class="mc-let">C</span> &ldquo;Be smart&rdquo;</div>
+  <div class="mc-opt"><span class="mc-let">D</span> &ldquo;Open it somehow&rdquo;</div>
+  <div class="tip b">&#129504; The more <strong>specific and step-by-step</strong> your instructions, the better a computer or robot can follow them.</div>
+</div>
+
+<!-- 12 Safety & AI -->
+<div class="card ar mb2 avoid">
+  <div class="q-head"><span class="dom-num">12</span>Safety &amp; Responsible AI <span class="sess-tag">Session 1&ndash;2</span></div>
+  <p style="font-size:.86rem;color:#374151;margin-bottom:6px;">A good digital citizen&hellip;</p>
+  <div class="mc-opt"><span class="mc-let">A</span> shares their home address with any app that asks</div>
+  <div class="mc-opt"><span class="mc-let">B</span> keeps private info private and asks a grown-up when unsure</div>
+  <div class="mc-opt"><span class="mc-let">C</span> believes everything a chatbot says</div>
+  <div class="mc-opt"><span class="mc-let">D</span> uses other people&rsquo;s passwords</div>
+  <div class="tip a">&#128272; Keep your name, address, and passwords private. When something feels wrong online, <strong>ask a trusted grown-up</strong>.</div>
+</div>
+
+<!-- 13 Scratch Events -->
+<div class="card ap mb2 avoid">
+  <div class="q-head"><span class="dom-num">13</span>Scratch Events <span class="sess-tag">Session 3</span></div>
+  <p style="font-size:.86rem;color:#374151;margin-bottom:6px;">A <strong>sprite</strong> in Scratch is&hellip;</p>
+  <div class="mc-opt"><span class="mc-let">A</span> a character or object you program</div>
+  <div class="mc-opt"><span class="mc-let">B</span> a type of loop</div>
+  <div class="mc-opt"><span class="mc-let">C</span> the same as the green flag</div>
+  <div class="mc-opt"><span class="mc-let">D</span> a way to save your project</div>
+  <div class="tip p">&#127917; Sprites are the actors on your stage. <strong>Events</strong> (like a key press) tell them when to act.</div>
+</div>
+
+<!-- 14 Loops -->
+<div class="card aa mb2 avoid">
+  <div class="q-head"><span class="dom-num">14</span>Loops <span class="sess-tag">Session 4</span></div>
+  <p style="font-size:.86rem;color:#374151;margin-bottom:6px;">To draw a square with a turtle or sprite, the best loop is&hellip;</p>
+  <div class="mc-opt"><span class="mc-let">A</span> <span class="sb sbo" style="font-size:.68rem;">repeat 4</span> (turn + move each time)</div>
+  <div class="mc-opt"><span class="mc-let">B</span> <span class="sb sbo" style="font-size:.68rem;">repeat 100</span></div>
+  <div class="mc-opt"><span class="mc-let">C</span> no loop at all</div>
+  <div class="mc-opt"><span class="mc-let">D</span> a forever loop that never ends</div>
+  <div class="tip a">&#128260; A square has 4 equal sides, so <span class="sb sbo" style="font-size:.68rem;">repeat 4</span> is perfect. Loops mean you don&rsquo;t repeat yourself!</div>
+</div>
+
+<!-- 15 Conditionals -->
+<div class="card ag mb2 avoid">
+  <div class="q-head"><span class="dom-num">15</span>Conditionals <span class="sess-tag">Session 5</span></div>
+  <p style="font-size:.86rem;color:#374151;margin-bottom:6px;">What is the difference between <code>if</code> and <code>if-else</code>?</p>
+  <div class="mc-opt"><span class="mc-let">A</span> <code>if-else</code> gives a second path when the answer is false</div>
+  <div class="mc-opt"><span class="mc-let">B</span> they are exactly the same</div>
+  <div class="mc-opt"><span class="mc-let">C</span> <code>if</code> repeats forever</div>
+  <div class="mc-opt"><span class="mc-let">D</span> <code>if-else</code> is only for Python</div>
+  <div class="tip g">&#10067; <code>if</code> = do something when true. <code>if-else</code> = do one thing when true, <strong>another thing when false</strong>.</div>
+</div>
+
+<!-- 16 Variables -->
+<div class="card ap mb2 avoid">
+  <div class="q-head"><span class="dom-num">16</span>Variables <span class="sess-tag">Session 6</span></div>
+  <p style="font-size:.86rem;color:#374151;margin-bottom:6px;">When an AI makes a guess, the &ldquo;confidence&rdquo; number it keeps is most like a&hellip;</p>
+  <div class="mc-opt"><span class="mc-let">A</span> variable (a value that changes)</div>
+  <div class="mc-opt"><span class="mc-let">B</span> loop</div>
+  <div class="mc-opt"><span class="mc-let">C</span> sprite</div>
+  <div class="mc-opt"><span class="mc-let">D</span> green flag</div>
+  <div class="tip p">&#128230; A variable stores something that can change &mdash; a game <strong>score</strong>, or an AI&rsquo;s <strong>confidence</strong> (&ldquo;I&rsquo;m 80% sure it&rsquo;s a cat&rdquo;).</div>
+</div>
+
+<!-- 17 Projects -->
+<div class="card ar mb2 avoid">
+  <div class="q-head"><span class="dom-num">17</span>Projects &amp; Debugging <span class="sess-tag">Session 7</span></div>
+  <p style="font-size:.86rem;color:#374151;margin-bottom:6px;">Your Scratch game does nothing when you click the green flag. The most likely fix is&hellip;</p>
+  <div class="mc-opt"><span class="mc-let">A</span> connect your code to a <span class="sb sbp" style="font-size:.66rem;">when &#127937; clicked</span> block</div>
+  <div class="mc-opt"><span class="mc-let">B</span> delete the whole project</div>
+  <div class="mc-opt"><span class="mc-let">C</span> add more sprites</div>
+  <div class="mc-opt"><span class="mc-let">D</span> change the backdrop</div>
+  <div class="tip r">&#128640; No start event = code never runs. The green flag is your project&rsquo;s &ldquo;on&rdquo; switch. Finding this is <strong>debugging</strong>!</div>
+</div>
+
+<!-- 18 Python -->
+<div class="card ab mb2 avoid">
+  <div class="q-head"><span class="dom-num">18</span>Python <span class="sess-tag">Session 8</span></div>
+  <p style="font-size:.86rem;color:#374151;margin-bottom:6px;">What does <code>for i in range(3):</code> do?</p>
+  <div class="mc-opt"><span class="mc-let">A</span> repeats the indented code 3 times</div>
+  <div class="mc-opt"><span class="mc-let">B</span> prints the number 3</div>
+  <div class="mc-opt"><span class="mc-let">C</span> asks the user 3 questions</div>
+  <div class="mc-opt"><span class="mc-let">D</span> makes a variable called range</div>
+  <div class="tip b">&#128013; <code>for</code> is Python&rsquo;s loop. <code>range(3)</code> counts 0, 1, 2 &mdash; that&rsquo;s <strong>3 times</strong>. Same idea as Scratch <span class="sb sbo" style="font-size:.66rem;">repeat 3</span>.</div>
+</div>
+
+<!-- 19 AI Concepts -->
+<div class="card ap mb2 avoid">
+  <div class="q-head"><span class="dom-num">19</span>AI Concepts <span class="sess-tag">All Sessions</span></div>
+  <p style="font-size:.86rem;color:#374151;margin-bottom:6px;">Why might an AI trained on only 3 pictures make more mistakes?</p>
+  <div class="mc-opt"><span class="mc-let">A</span> it hasn&rsquo;t seen enough examples to spot the pattern</div>
+  <div class="mc-opt"><span class="mc-let">B</span> 3 is an unlucky number</div>
+  <div class="mc-opt"><span class="mc-let">C</span> more pictures always make it worse</div>
+  <div class="mc-opt"><span class="mc-let">D</span> AI never makes mistakes</div>
+  <div class="tip p">&#129302; More and clearer <strong>training data</strong> = better predictions. Too few examples &rarr; the model guesses wrong more often.</div>
+</div>
+
+<!-- 20 Mixed -->
+<div class="card ag mb3 avoid">
+  <div class="q-head"><span class="dom-num">20</span>Mixed Skills <span class="sess-tag">All Sessions</span></div>
+  <p style="font-size:.86rem;color:#374151;margin-bottom:6px;">A chatbot works by following this pattern:</p>
+  <div class="mc-opt"><span class="mc-let">A</span> input &rarr; process &rarr; output</div>
+  <div class="mc-opt"><span class="mc-let">B</span> output &rarr; input &rarr; delete</div>
+  <div class="mc-opt"><span class="mc-let">C</span> it just guesses with no rules</div>
+  <div class="mc-opt"><span class="mc-let">D</span> it only works in Scratch</div>
+  <div class="tip g">&#128172; A chatbot takes your words (<strong>input</strong>), decides what to do (<strong>process</strong>), and replies (<strong>output</strong>) &mdash; just like <code>input()</code> then <code>print()</code>.</div>
+</div>
+
+<hr class="div pb">
+
+<!-- ============ SECTION 3: PREDICT THE OUTPUT ============ -->
+<div class="slabel">&#128269; Warm-Up &middot; Part C</div>
+<div class="stitle">Predict the Output &mdash; Be the Computer</div>
+<p class="intro">&ldquo;Predict the output&rdquo; is on every version of the midterm. Read the code slowly, run it in your head, and write exactly what appears. There are three, from easiest to hardest &mdash; try the ones that match your tier and stretch up if you can!</p>
+
+<div class="g2">
+  <!-- Predict 1 - Scratch (Tier A) -->
+  <div class="card mb2 avoid" style="border:2px solid #bfdbfe;background:#f8faff;">
+    <div style="margin-bottom:8px;"><span class="lvl la">Tier A &middot; Scratch</span></div>
+    <p style="font-size:.84rem;color:#374151;margin-bottom:6px;">A sprite runs this script:</p>
+    <div style="background:#fff7ed;border:1.5px solid #fed7aa;border-radius:10px;padding:10px;font-size:.82rem;">
+      <span class="sb sbp" style="font-size:.68rem;">when &#127937; clicked</span><br>
+      <span style="padding-left:8px;">&rarr; <span class="sb sbo" style="font-size:.68rem;">repeat 3</span></span><br>
+      <span style="padding-left:22px;">&rarr; <span class="sb sbg" style="font-size:.68rem;">say [Hi!]</span></span>
+    </div>
+    <p style="font-size:.82rem;font-weight:700;color:#1d4ed8;margin:8px 0 4px;">What does the sprite say?</p>
+    <input class="wl" type="text" placeholder="It says..." />
+  </div>
+
+  <!-- Predict 2 - Python (Tier B) -->
+  <div class="card mb2 avoid" style="border:2px solid #bbf7d0;background:#f8fff9;">
+    <div style="margin-bottom:8px;"><span class="lvl lb">Tier B &middot; Python</span></div>
+    <p style="font-size:.84rem;color:#374151;margin-bottom:6px;">What does this Python code print?</p>
+<pre class="code"><span class="kw">score</span> = <span class="num">2</span>
+<span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="num">3</span>):
+    score = score + <span class="num">1</span>
+<span class="fn">print</span>(score)</pre>
+    <p style="font-size:.82rem;font-weight:700;color:#15803d;margin:8px 0 4px;">The output is:</p>
+    <input class="wl" type="text" placeholder="It prints..." />
+    <div class="tip g">Hint: start at 2, add 1 three times.</div>
+  </div>
+</div>
+
+<!-- Predict 3 - Python (Tier C) -->
+<div class="card mb3 avoid" style="border:2px solid #e9d5ff;background:#fdf9ff;">
+  <div style="margin-bottom:8px;"><span class="lvl lc">Tier C &middot; Python</span></div>
+  <div class="g2">
+    <div>
+      <p style="font-size:.84rem;color:#374151;margin-bottom:6px;">What does this Python code print?</p>
+<pre class="code"><span class="kw">count</span> = <span class="num">0</span>
+<span class="kw">for</span> animal <span class="kw">in</span> [<span class="str">'cat'</span>,<span class="str">'dog'</span>,<span class="str">'cat'</span>]:
+    <span class="kw">if</span> animal == <span class="str">'cat'</span>:
+        count = count + <span class="num">1</span>
+<span class="fn">print</span>(count)</pre>
+    </div>
+    <div>
+      <p style="font-size:.82rem;font-weight:700;color:#6d28d9;margin:2px 0 4px;">The output is:</p>
+      <input class="wl" type="text" placeholder="It prints..." />
+      <p style="font-size:.8rem;font-weight:700;color:#6d28d9;margin:8px 0 2px;">Explain WHY in one sentence:</p>
+      <textarea class="wa" placeholder="It prints that number because..."></textarea>
+    </div>
+  </div>
+  <div class="tip p">This mixes a <strong>list</strong> (a tiny dataset), a <strong>loop</strong>, a <strong>conditional</strong>, and a <strong>variable</strong> &mdash; four midterm ideas at once. Count only the cats!</div>
+</div>
+
+<hr class="div pb">
+
+<!-- ============ SECTION 4: AI + RESPONSIBLE AI ============ -->
+<div class="slabel">&#129302; Warm-Up &middot; Part D</div>
+<div class="stitle">Explain AI &amp; the &ldquo;Is AI Ever Wrong?&rdquo; Check</div>
+<p class="intro">The midterm always includes one AI section: <strong>explain what AI is</strong> and give <strong>one example of AI being wrong</strong>. Practice it here so it feels easy tomorrow.</p>
+
+<div class="card ap mb2 avoid">
+  <div class="clabel cl-p">&#129504; Explain the AI recipe in your own words</div>
+  <div style="display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;background:#faf5ff;border-radius:12px;padding:12px;margin-bottom:10px;">
+    <span style="background:#1d4ed8;color:#fff;font-weight:800;font-size:.8rem;border-radius:10px;padding:8px 14px;">training data</span>
+    <span style="color:#7c3aed;font-weight:900;font-size:1.2rem;">&rarr;</span>
+    <span style="background:linear-gradient(135deg,#60a5fa,#34d399);color:#fff;font-weight:800;font-size:.8rem;border-radius:999px;padding:8px 18px;">model</span>
+    <span style="color:#7c3aed;font-weight:900;font-size:1.2rem;">&rarr;</span>
+    <span style="background:#f59e0b;color:#fff;font-weight:800;font-size:.8rem;border-radius:10px;padding:8px 14px;">prediction</span>
+  </div>
+  <p style="font-size:.82rem;font-weight:700;color:#6d28d9;margin-bottom:4px;">1. What is AI? (Try: &ldquo;AI is a computer that learns from&hellip;&rdquo;)</p>
+  <textarea class="wa mb2" placeholder="AI is..."></textarea>
+  <p style="font-size:.82rem;font-weight:700;color:#6d28d9;margin-bottom:4px;">2. What is training data? Use an example like cats vs. dogs.</p>
+  <textarea class="wa" placeholder="Training data is the examples we show the AI, like..."></textarea>
+</div>
+
+<div class="card ar mb3 avoid">
+  <div class="clabel cl-r">&#9888;&#65039; Is AI Ever Wrong? &mdash; Responsible-AI Check</div>
+  <div class="g2 mb2">
+    <div style="background:#fff1f2;border-radius:10px;padding:12px;">
+      <p style="font-size:.82rem;color:#374151;margin-bottom:6px;"><strong>Story:</strong> An image AI was trained only on <em>sunny-day</em> playground pictures. On a <em>rainy day</em> it guesses wrong.</p>
+      <p style="font-size:.8rem;font-weight:700;color:#be123c;margin-bottom:2px;">Why did it fail?</p>
+      <input class="wl" type="text" placeholder="Because it never saw..." />
+      <p style="font-size:.8rem;font-weight:700;color:#be123c;margin:6px 0 2px;">One fix:</p>
+      <input class="wl" type="text" placeholder="Show it more examples of..." />
+    </div>
+    <div class="mc-question" data-answer="0" style="background:#f0fdf4;border-radius:10px;padding:12px;">
+      <p style="font-size:.82rem;color:#374151;margin-bottom:6px;">An AI says a <strong>turtle is a pizza</strong>. What is the best response?</p>
+      <div class="mc-opt"><span class="mc-let">A</span> Check it &mdash; explain that AI can be wrong</div>
+      <div class="mc-opt"><span class="mc-let">B</span> Believe it forever</div>
+      <div class="mc-opt"><span class="mc-let">C</span> Delete all my code</div>
+      <div class="mc-opt"><span class="mc-let">D</span> Share private information</div>
+      <div class="mc-feedback"></div>
+    </div>
+  </div>
+  <p style="font-size:.82rem;font-weight:700;color:#374151;margin-bottom:4px;">Give your OWN example of an AI being wrong or unfair, and one thing a human should do before trusting it:</p>
+  <textarea class="wa" placeholder="An AI could be wrong when... A human should..."></textarea>
+  <div class="tip r">&#128161; Key idea: an AI is only as good as its <strong>training data</strong>. Few or one-sided examples &rarr; unfair or wrong predictions. Always keep a human in the loop.</div>
+</div>
+
+<hr class="div pb">
+
+<!-- ============ SECTION 5: TIERED MINI-BUILD PRACTICE ============ -->
+<div class="slabel">&#128736; Warm-Up &middot; Part E</div>
+<div class="stitle">Mini-Build Practice &mdash; Find Your Tier</div>
+<p class="intro">Part 2 of the midterm is a mini-build. Practice the one that matches your tier, then stretch up if you finish early. On the real test you may plan in Scratch <em>or</em> Python (Tier C: Python required).</p>
+
+<!-- Tier A -->
+<div class="card mb2 avoid" style="border:2px solid #bfdbfe;background:#f8faff;">
+  <div style="margin-bottom:8px;"><span class="lvl la">Tier A &mdash; Foundations &middot; Grades 1&ndash;3</span></div>
+  <div class="clabel cl-b">&#127374; Plan a tiny Scratch (or Python) project</div>
+  <p style="font-size:.85rem;color:#374151;margin-bottom:8px;">Your project needs: a <strong>start</strong>, one <strong>loop or decision</strong>, and one <strong>variable or message</strong>.</p>
+  <div class="g2">
+    <div>
+      <p style="font-size:.8rem;font-weight:700;color:#1d4ed8;margin-bottom:4px;">My project will be about:</p>
+      <input class="wl" type="text" placeholder="e.g. a cat that says hi..." />
+      <p style="font-size:.8rem;font-weight:700;color:#1d4ed8;margin-bottom:4px;">It starts when:</p>
+      <input class="wl" type="text" placeholder="e.g. the green flag is clicked" />
+    </div>
+    <div>
+      <p style="font-size:.78rem;font-weight:800;color:#1d4ed8;margin-bottom:6px;">Check off your plan:</p>
+      <div class="chk">
+        <li><span class="bx"></span> My project has a clear start</li>
+        <li><span class="bx"></span> It uses at least one loop or if-decision</li>
+        <li><span class="bx"></span> I can explain what it does</li>
+        <li><span class="bx"></span> I tested or planned one fix (bug)</li>
+      </div>
+    </div>
+  </div>
+  <div class="tip b">Buddy tip: say your plan out loud to a partner first. If they understand it, you&rsquo;re ready to build!</div>
+</div>
+
+<!-- Tier B -->
+<div class="card mb2 avoid" style="border:2px solid #bbf7d0;background:#f8fff9;">
+  <div style="margin-bottom:8px;"><span class="lvl lb">Tier B &mdash; Core &middot; Grades 3&ndash;5</span></div>
+  <div class="clabel cl-g">&#9989; Build/plan a game or tool with a variable + loop or conditional</div>
+  <p style="font-size:.85rem;color:#374151;margin-bottom:8px;">Choose Scratch (clicker/catch game) or Python (mini story or counter). Here is a Python <strong>counter</strong> starter to study and adapt:</p>
+<pre class="code"><span class="cm"># count to 5 with a loop + variable</span>
+<span class="kw">count</span> = <span class="num">0</span>
+<span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="num">5</span>):
+    count = count + <span class="num">1</span>
+    <span class="fn">print</span>(count)</pre>
+  <div class="g2 mt2">
+    <div>
+      <p style="font-size:.8rem;font-weight:700;color:#15803d;margin-bottom:4px;">My variable is called:</p>
+      <input class="wl" type="text" placeholder="e.g. score, lives, name" />
+      <p style="font-size:.8rem;font-weight:700;color:#15803d;margin-bottom:4px;">My loop or if-decision does:</p>
+      <input class="wl" type="text" placeholder="e.g. repeat 5 times / if touching..." />
+    </div>
+    <div>
+      <p style="font-size:.78rem;font-weight:800;color:#15803d;margin-bottom:6px;">Check off your plan:</p>
+      <div class="chk">
+        <li><span class="bx"></span> Uses sequence in the correct order</li>
+        <li><span class="bx"></span> Uses a variable like score / name / lives</li>
+        <li><span class="bx"></span> Uses a loop OR an if-decision</li>
+        <li><span class="bx"></span> Includes one test and one possible bug fix</li>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Tier C -->
+<div class="card mb3 avoid" style="border:2px solid #e9d5ff;background:#fdf9ff;">
+  <div style="margin-bottom:8px;"><span class="lvl lc">Tier C &mdash; Accelerated &middot; Grades 6&ndash;9</span></div>
+  <div class="clabel cl-p">&#128995; Python-required: use <code>print()</code>, a variable, and a <code>for</code> loop</div>
+  <p style="font-size:.85rem;color:#374151;margin-bottom:8px;">Plan a small Python program (Mad Lib / print story, or a turtle/counting mini-art). Study this pattern, then write your own below:</p>
+<pre class="code"><span class="cm"># greet 3 times with a variable</span>
+<span class="kw">name</span> = <span class="str">"Alex"</span>
+<span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="num">3</span>):
+    <span class="fn">print</span>(<span class="str">"Hello,"</span>, name)</pre>
+  <div class="g2 mt2">
+    <div>
+      <p style="font-size:.8rem;font-weight:700;color:#6d28d9;margin-bottom:4px;">Write or plan your Python here:</p>
+      <textarea class="wa" placeholder="name = ...&#10;for i in range(...):&#10;    print(...)"></textarea>
+    </div>
+    <div>
+      <p style="font-size:.78rem;font-weight:800;color:#6d28d9;margin-bottom:6px;">Check off your plan:</p>
+      <div class="chk">
+        <li><span class="bx"></span> Includes <code>print()</code> output</li>
+        <li><span class="bx"></span> Uses a variable</li>
+        <li><span class="bx"></span> Uses a <code>for</code> loop</li>
+        <li><span class="bx"></span> Comments/notes explain what the code does</li>
+        <li><span class="bx"></span> Includes one test case or predicted output</li>
+      </div>
+    </div>
+  </div>
+  <div class="tip p">Stretch: add <code>input()</code> to ask the user a question, or use <code>turtle</code> if you know it. Explain where the AI/data/decision idea could fit.</div>
+</div>
+
+<hr class="div pb">
+
+<!-- ============ SECTION 6: BUG HUNT ============ -->
+<div class="slabel">&#128029; Debugging Warm-Up</div>
+<div class="stitle">Bug Hunters &mdash; Find the Fix</div>
+<p class="intro">Bugs are normal and expected. The test may show broken code &mdash; spot the fix. Match each bug to its quick fix by writing the letter.</p>
+<div class="card ar mb3 avoid">
+  <table style="width:100%;font-size:.8rem;border-collapse:collapse;">
+    <tr style="background:#fee2e2;"><td style="padding:6px 8px;font-weight:700;color:#b91c1c;border-radius:6px 0 0 0;">Bug (what you see)</td><td style="padding:6px 8px;font-weight:700;color:#374151;width:44px;">Fix?</td><td style="padding:6px 8px;font-weight:700;color:#374151;border-radius:0 6px 0 0;">Quick fixes</td></tr>
+    <tr style="border-bottom:1px solid #fecaca;"><td style="padding:6px 8px;">Scratch: nothing happens when I click the flag</td><td style="padding:6px 8px;"><input class="match-line" type="text" placeholder="?" maxlength="1" style="width:32px;"/></td><td style="padding:6px 8px;"><strong>A.</strong> Snap the code onto a <span class="sb sbp" style="font-size:.66rem;">when &#127937; clicked</span> block</td></tr>
+    <tr style="border-bottom:1px solid #fecaca;"><td style="padding:6px 8px;">Sprite ignores keys after the first check</td><td style="padding:6px 8px;"><input class="match-line" type="text" placeholder="?" maxlength="1" style="width:32px;"/></td><td style="padding:6px 8px;"><strong>B.</strong> Put the <code>if</code> INSIDE a <span class="sb sbo" style="font-size:.66rem;">forever</span> loop</td></tr>
+    <tr style="border-bottom:1px solid #fecaca;"><td style="padding:6px 8px;">Score keeps last game&rsquo;s value</td><td style="padding:6px 8px;"><input class="match-line" type="text" placeholder="?" maxlength="1" style="width:32px;"/></td><td style="padding:6px 8px;"><strong>C.</strong> <span class="sb sbt" style="font-size:.66rem;">set Score to 0</span> right after the flag event</td></tr>
+    <tr><td style="padding:6px 8px;">Python: <code>print(Hello)</code> gives an error</td><td style="padding:6px 8px;"><input class="match-line" type="text" placeholder="?" maxlength="1" style="width:32px;"/></td><td style="padding:6px 8px;"><strong>D.</strong> Put quotes around text: <code>print("Hello")</code></td></tr>
+  </table>
+  <div class="tip r">&#128029; A <strong>bug</strong> is just a problem to find and fix &mdash; <strong>debugging</strong> is finding and fixing it. Every coder does this all day!</div>
+</div>
+
+<hr class="div">
+
+<!-- ============ SELF-RATING / REFLECTION ============ -->
+<div class="slabel">&#128172; Reflection</div>
+<div class="stitle">Confidence Check &mdash; Where Am I Strong?</div>
+<div class="card mb3 avoid">
+  <p style="font-size:.84rem;color:#374151;margin-bottom:10px;">For each topic, color in how sure you feel. This tells you what to review one more time tonight.</p>
+  <div class="g2">
+    <div>
+      <div class="chk" style="font-size:.86rem;">
+        <li><span class="bx"></span> I can explain an <strong>algorithm</strong></li>
+        <li><span class="bx"></span> I know the <strong>safety</strong> &amp; responsible-AI rules</li>
+        <li><span class="bx"></span> I understand Scratch <strong>events</strong> &amp; sprites</li>
+        <li><span class="bx"></span> I can use a <strong>loop</strong></li>
+        <li><span class="bx"></span> I can use an <strong>if</strong> (conditional)</li>
+      </div>
+    </div>
+    <div>
+      <div class="chk" style="font-size:.86rem;">
+        <li><span class="bx"></span> I can use a <strong>variable</strong> (score/lives)</li>
+        <li><span class="bx"></span> I can write basic <strong>Python</strong> (<code>print</code>, <code>for</code>)</li>
+        <li><span class="bx"></span> I can explain <strong>training data</strong></li>
+        <li><span class="bx"></span> I can give an example of <strong>AI being wrong</strong></li>
+        <li><span class="bx"></span> I can <strong>debug</strong> a small problem</li>
+      </div>
+    </div>
+  </div>
+  <div class="g2 mt2">
+    <div><p style="font-size:.8rem;font-weight:700;color:#374151;margin-bottom:4px;">The ONE topic I&rsquo;ll review tonight:</p><input class="wl" type="text" placeholder="Tonight I'll practice..." /></div>
+    <div><p style="font-size:.8rem;font-weight:700;color:#374151;margin-bottom:4px;">One thing I already feel proud of:</p><input class="wl" type="text" placeholder="I'm proud that I can..." /></div>
+  </div>
+</div>
+
+<!-- ============ RUBRIC ============ -->
+<div class="slabel">&#128202; Scoring</div>
+<div class="stitle">Review Rubric &amp; Points</div>
+<div class="card mb3 avoid">
+  <table class="rub">
+    <thead><tr><th>Section</th><th>What to Look For</th><th>Points</th></tr></thead>
+    <tbody>
+      <tr><td>Part A &mdash; Vocabulary Match</td><td>All 10 terms matched to the correct meaning</td><td class="pts">5 pts</td></tr>
+      <tr><td>Part B &mdash; Quick Checks</td><td>All 20 questions attempted; best answer selected</td><td class="pts">5 pts</td></tr>
+      <tr><td>Part C &mdash; Predict the Output</td><td>Tier A &amp; B done; Tier C attempted with a &ldquo;why&rdquo;</td><td class="pts">3 pts</td></tr>
+      <tr><td>Part D &mdash; Explain AI + Responsible AI</td><td>What is AI + training data explained; one &ldquo;AI wrong&rdquo; example given</td><td class="pts">4 pts</td></tr>
+      <tr><td>Part E &mdash; Tiered Mini-Build Plan</td><td>Tier plan complete with start, loop/if, and variable; checklist filled</td><td class="pts">4 pts</td></tr>
+      <tr><td>Bug Hunt &mdash; Debugging</td><td>All 4 bugs matched to the correct fix</td><td class="pts">2 pts</td></tr>
+      <tr><td>Reflection &mdash; Confidence Check</td><td>Self-rating completed; review topic named</td><td class="pts">2 pts</td></tr>
+      <tr><td>&#11088; Stretch (Tier C)</td><td>Wrote working Python with <code>print</code>, variable &amp; <code>for</code> loop, plus a comment</td><td class="pts">+2</td></tr>
+    </tbody>
+  </table>
+  <div style="display:flex;justify-content:flex-end;margin-top:10px;gap:24px;font-size:.82rem;color:#374151;">
+    <span>Total: <strong style="font-family:var(--fc);color:#2563eb;">____ / 25</strong></span>
+    <span>with Stretch: <strong style="font-family:var(--fc);color:#7c3aed;">____ / 27</strong></span>
+  </div>
+  <div class="tip g mt2">Graded on <strong>effort and growth, not perfection</strong>. Attempting every section &mdash; even the hard ones &mdash; is what earns the most.</div>
+</div>
+
+<!-- ============ ANSWER KEY ============ -->
+<div class="slabel">&#128273; For Study</div>
+<div class="stitle">Answer Key &mdash; Check After You Try!</div>
+<div class="card ag mb3 avoid" style="background:#f0fdf4;">
+  <div class="clabel cl-g">&#9989; Don&rsquo;t peek until you&rsquo;ve tried each section</div>
+  <div class="g2">
+    <div style="font-size:.82rem;color:#374151;line-height:1.7;">
+      <strong>Part A &mdash; Vocab Match:</strong><br>
+      1&rarr;C &middot; 2&rarr;F &middot; 3&rarr;E &middot; 4&rarr;H &middot; 5&rarr;D &middot; 6&rarr;A &middot; 7&rarr;B &middot; 8&rarr;G &middot; 9&rarr;J &middot; 10&rarr;I
+      <br><br>
+      <strong>Part B &mdash; Quick Checks:</strong><br>
+      1&rarr;A &middot; 2&rarr;B &middot; 3&rarr;A &middot; 4&rarr;A &middot; 5&rarr;A<br>
+      6&rarr;A &middot; 7&rarr;B &middot; 8&rarr;A &middot; 9&rarr;A &middot; 10&rarr;B<br>
+      11&rarr;B &middot; 12&rarr;B &middot; 13&rarr;A &middot; 14&rarr;A &middot; 15&rarr;A<br>
+      16&rarr;A &middot; 17&rarr;A &middot; 18&rarr;A &middot; 19&rarr;A &middot; 20&rarr;A
+    </div>
+    <div style="font-size:.82rem;color:#374151;line-height:1.7;">
+      <strong>Part C &mdash; Predict the Output:</strong><br>
+      Tier A: <code>Hi! Hi! Hi!</code> (says Hi! three times)<br>
+      Tier B: <code>5</code> (2 + 1 + 1 + 1)<br>
+      Tier C: <code>2</code> (two &lsquo;cat&rsquo; items in the list)
+      <br><br>
+      <strong>Part D:</strong> turtle/pizza question &rarr; <strong>A</strong> (check it; AI can be wrong).<br><br>
+      <strong>Bug Hunt:</strong> Row 1&rarr;A &middot; Row 2&rarr;B &middot; Row 3&rarr;C &middot; Row 4&rarr;D
+    </div>
+  </div>
+</div>
+
+<div class="sfooter">
+  <div><strong>Midterm Review Sheet</strong> &middot; Differentiated Study Guide &middot; Mr. Hsiao &ldquo;Hue&rdquo; Weng &middot; Summer 2026<br>
+  <span class="gtext" style="font-weight:800;">Algorithms &middot; Events &middot; Loops &middot; Conditionals &middot; Variables &middot; Python &middot; Training Data &middot; Responsible AI</span></div>
+  <div style="text-align:right;">Ages 7&ndash;13 &middot; Grades 1&ndash;9<br><span style="font-size:.7rem;">&#129514; You&rsquo;ve got this &mdash; effort and growth count!</span></div>
+</div>
+
+</div>
+<script>
+(function(){
+  // Correct answer for each numbered Part B question (1-20). 0=A,1=B,2=C,3=D.
+  var ANSWERS = {1:0,2:1,3:0,4:0,5:0,6:0,7:1,8:0,9:0,10:1,11:1,12:1,13:0,14:0,15:0,16:0,17:0,18:0,19:0,20:0};
+
+  // Build the list of self-checking question blocks.
+  var questions = [];
+  // Numbered Part B questions: each lives in a .card that has a .dom-num.
+  document.querySelectorAll('.card').forEach(function(card){
+    var num = card.querySelector('.dom-num');
+    if(num && card.querySelector('.mc-opt') && ANSWERS.hasOwnProperty(+num.textContent.trim())){
+      card.dataset.answer = ANSWERS[+num.textContent.trim()];
+      questions.push(card);
+    }
+  });
+  // Any other tagged question (e.g. Part D responsible-AI check).
+  document.querySelectorAll('.mc-question[data-answer]').forEach(function(q){ questions.push(q); });
+
+  questions.forEach(function(group){
+    var answer = parseInt(group.dataset.answer, 10);
+    var opts = Array.prototype.slice.call(group.querySelectorAll('.mc-opt'));
+    var feedback = group.querySelector('.mc-feedback');
+    // If no feedback element exists yet, insert one right after the options.
+    if(!feedback){
+      feedback = document.createElement('div');
+      feedback.className = 'mc-feedback';
+      var last = opts[opts.length - 1];
+      last.parentNode.insertBefore(feedback, last.nextSibling);
+    }
+    // Add a check/cross marker slot to each option.
+    opts.forEach(function(o){
+      if(!o.querySelector('.mc-mark')){
+        var m = document.createElement('span');
+        m.className = 'mc-mark';
+        o.appendChild(m);
+      }
+      o.setAttribute('role','button');
+      o.setAttribute('tabindex','0');
+    });
+
+    function grade(clicked){
+      var idx = opts.indexOf(clicked);
+      opts.forEach(function(o){
+        o.classList.remove('selected','correct','wrong');
+        var mk = o.querySelector('.mc-mark'); if(mk) mk.textContent = '';
+      });
+      if(idx === answer){
+        clicked.classList.add('correct');
+        clicked.querySelector('.mc-mark').textContent = '\u2713';
+        feedback.textContent = '\u2705 Correct! Nice work.';
+        feedback.className = 'mc-feedback show ok';
+      } else {
+        clicked.classList.add('wrong');
+        clicked.querySelector('.mc-mark').textContent = '\u2717';
+        // Reveal the right answer.
+        opts[answer].classList.add('correct');
+        opts[answer].querySelector('.mc-mark').textContent = '\u2713';
+        feedback.textContent = '\u2717 Not quite \u2014 the correct answer is ' + 'ABCD'[answer] + '. Try to see why!';
+        feedback.className = 'mc-feedback show no';
+      }
+    }
+    opts.forEach(function(o){
+      o.addEventListener('click', function(){ grade(o); });
+      o.addEventListener('keydown', function(e){
+        if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); grade(o); }
+      });
+    });
+  });
+
+  // Self-check the vocabulary "match each term to its meaning" rows.
+  document.querySelectorAll('.match-row[data-correct]').forEach(function(row){
+    var correct = row.dataset.correct.trim().toUpperCase();
+    var input = row.querySelector('.match-line');
+    if(!input) return;
+    var mark = document.createElement('span');
+    mark.className = 'match-mark';
+    row.appendChild(mark);
+    function check(){
+      var val = (input.value || '').trim().toUpperCase();
+      row.classList.remove('correct','wrong');
+      mark.textContent = '';
+      if(val === ''){ return; }
+      if(val === correct){
+        row.classList.add('correct');
+        mark.textContent = '\u2713';
+      } else {
+        row.classList.add('wrong');
+        mark.textContent = '\u2717';
+      }
+    }
+    input.addEventListener('input', check);
+    input.addEventListener('blur', check);
+  });
+})();
+</script>
+</body>
+</html>
