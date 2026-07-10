@@ -16,6 +16,7 @@
 | **Tools needed** | Scratch *or* Python (student's choice) |
 | **Graded on** | Effort & growth — **not** perfection |
 
+
 ## 🏗️ Where We Are in the Course
 
 Session 11 sits at the exact midpoint of the **26-session arc**. Students have completed:
@@ -32,6 +33,7 @@ The midterm is the **checkpoint** before diving deeper into Python conditionals,
 
 This is the **knowledge and vocabulary** portion. It is designed to be low-stress with visual matching, predict-the-output puzzles, and open-ended AI explanations.
 
+
 #### 📚 Domain Breakdown (10 Domains, 98+ questions in bank)
 
 | Domain | Sessions | Key Concepts Tested |
@@ -46,6 +48,7 @@ This is the **knowledge and vocabulary** portion. It is designed to be low-stres
 | **Python** | S8 | `print()`, `for` loop, `range()`, text code vs. Scratch blocks |
 | **AI Concepts** | All | Training data, model, prediction, confidence, bias, rule-based vs. LLM |
 | **Mixed Skills** | All | Cross-domain combinations — events + loops + variables in one question |
+
 
 #### ✍️ Question Types in Part 1 (CAT — Computer Adaptive Test)
 
@@ -63,6 +66,7 @@ The digital exam (`index.html`) uses a **15-question adaptive format**:
 
 This is the **application** portion. Students build something real, matched to their skill level.
 
+
 #### 🔑 Tier Routing (determined by Part 1 score)
 
 | Tier | Part 1 Score | Who | Part 2 Focus |
@@ -72,6 +76,7 @@ This is the **application** portion. Students build something real, matched to t
 | **C — Advanced** | θ > 0.45 | Grades 6–9, Python-curious | Python **required** mini-build with deeper explanations |
 
 ## 📋 Part 2 Tasks by Tier (Full Detail)
+
 
 ### 🟦 Tier A — Foundational Path
 *"Shorter, more visual, and Scratch-friendly. Try your best — effort and growth count."*
@@ -90,6 +95,7 @@ This is the **application** portion. Students build something real, matched to t
 - [ ] Uses a loop or if decision
 - [ ] Includes one test and one possible bug fix
 
+
 ### 🟨 Tier B — Intermediate Path
 *"Balanced concept check plus a guided mini-build in Scratch or Python."*
 
@@ -106,6 +112,7 @@ This is the **application** portion. Students build something real, matched to t
 - [ ] Uses a variable like score/name/lives
 - [ ] Uses a loop or if decision
 - [ ] Includes one test and one possible bug fix
+
 
 ### 🟥 Tier C — Advanced Path
 *"Python-required mini-build with clear explanations. Keep it friendly and focused."*
@@ -128,6 +135,7 @@ This is the **application** portion. Students build something real, matched to t
 - [ ] Uses a `for` loop
 - [ ] Comments or notes explain what the code does
 - [ ] Includes one test case or predicted output
+
 
 ## 🤖 AI Integration Thread (Session 11)
 
@@ -154,7 +162,8 @@ Key AI vocabulary tested:
 | **Rule-based AI** | Follows rules a human wrote (like our `if/else` chatbot) |
 | **Learned AI (LLM)** | Learned patterns from millions of examples by itself |
 
----
+
+
 
 ## ⏱️ Digital Exam Structure (`index.html`)
 
@@ -196,7 +205,7 @@ After 15 items → Compute Tier (A/B/C) & Scaled Score (200–800)
 Final Part 2 Score = (Project Checklist % × 0.70) + (MC Quiz % × 0.30)
 ```
 
----
+
 
 ## 🎯 Differentiation at a Glance
 
@@ -222,7 +231,7 @@ Final Part 2 Score = (Project Checklist % × 0.70) + (MC Quiz % × 0.30)
 
 > 💡 Students with test anxiety may demonstrate learning **through their project alone** — the midterm is designed to be a **confidence builder**, not a filter.
 
----
+
 
 ## 💡 Key Code Snippets Students Should Know
 
@@ -281,6 +290,7 @@ when green flag clicked
       change score by 1
 ```
 
+
 ## 📝 Vocabulary Master List (All 10 Domains)
 
 | Term | Definition | Domain |
@@ -310,6 +320,7 @@ when green flag clicked
 | **Confidence** | A score showing how sure the AI is about its guess | AI Concepts |
 | **Bias** | When unfair/limited data makes an AI unfair or wrong | AI Concepts |
 | **Rule-based AI** | Follows rules written by a human coder | AI Concepts |
+
 
 ## 🏅 Success Metrics for Session 11
 
