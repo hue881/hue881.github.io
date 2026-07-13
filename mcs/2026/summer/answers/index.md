@@ -4,6 +4,7 @@
 ![Level](https://img.shields.io/badge/level-beginner%20to%20advanced-brightgreen)
 ![Updated](https://img.shields.io/badge/updated-Summer%202026-lightyellow)
 
+[A.I. Coding Program 2026 Summer: Python, Scratch](https://hue881.github.io/mcs/2026/summer)  
 
 | Week-Day | Lesson | Activity | Homework | Class | Notes |
 |:-----:|:----------|:---------------:|:-------|:-------|:----------|
