@@ -1,1 +1,1067 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="slides-format" content="viewport">
+  <title>Session 9 · Python: Variables, Input &amp; Output</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <style type="text/tailwindcss">
+    @theme {
+      --color-bg: #f0f8ff;
+      --color-bg-deep: #dceefb;
+      --color-surface: rgba(255,255,255,0.96);
+      --color-text: #0f2747;
+      --color-text-secondary: #1e3a5f;
+      --color-text-muted: #4a6380;
+      --color-accent-1: #0b63ce;
+      --color-accent-2: #10b981;
+      --color-accent-3: #f59e0b;
+      --color-glass-bg: rgba(255,255,255,0.88);
+      --color-glass-border: rgba(11,99,206,0.16);
+      --color-vignette: rgba(15,23,42,0.06);
+      --font-display: 'Fredoka', 'Trebuchet MS', sans-serif;
+      --font-body: 'Nunito', 'Arial', sans-serif;
+    }
+  </style>
+  <style>
+    :root {
+      --color-bg: #f0f8ff;
+      --color-text: #0f2747;
+      --glow-color-rgb: 11,99,206;
+      --a1: #0b63ce;
+      --a2: #10b981;
+      --a3: #f59e0b;
+      --aref: #4444;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { background: var(--color-bg); margin: 0; }
+    body { font-family: 'Nunito', Arial, sans-serif; color: var(--color-text); overflow: hidden; height: 100vh; width: 100vw; }
+    .deck { width: 100vw; height: 100vh; position: relative; }
 
+    /* SLIDE CORE */
+    .slide {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      background: radial-gradient(circle at top left, rgba(56,189,248,0.14), transparent 40%),
+                  radial-gradient(circle at bottom right, rgba(16,185,129,0.10), transparent 40%),
+                  var(--color-bg);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      opacity: 0; transform: scale(0.96); transition: opacity 0.55s ease, transform 0.55s ease;
+      pointer-events: none; overflow: hidden;
+    }
+    .slide.active { opacity: 1; transform: scale(1); pointer-events: all; }
+    .slide > .content { position: relative; z-index: 2; width: 100%; max-width: 1060px; padding: clamp(1rem,3vw,2.8rem); }
+
+    /* Interior slides */
+    .slide.interior {
+      background:
+        radial-gradient(circle at 18% 12%, rgba(11,99,206,0.16), transparent 50%),
+        radial-gradient(circle at 82% 88%, rgba(16,185,129,0.14), transparent 50%),
+        linear-gradient(160deg, #aecbe8 0%, #b9d4ea 48%, #b3ddd0 100%);
+    }
+    .slide.interior::after {
+      content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+      background: radial-gradient(ellipse at center, transparent 58%, rgba(15,23,42,0.12) 100%);
+    }
+    .slide.interior .card {
+      background: #ffffff; border: 1px solid rgba(15,23,42,0.06);
+      box-shadow: 0 14px 34px rgba(15,23,42,0.18), 0 2px 6px rgba(15,23,42,0.08);
+      border-radius: 18px;
+    }
+    .slide.interior .accent-card-blue { background: #eaf2fd; border: 1px solid rgba(11,99,206,0.22); }
+    .slide.interior .accent-card-green { background: #e6f7f0; border: 1px solid rgba(5,150,105,0.22); }
+    .slide.interior .accent-card-amber { background: #fdf4e3; border: 1px solid rgba(245,158,11,0.28); }
+    .slide.interior .accent-card-red { background: #fdeceb; border: 1px solid rgba(239,68,68,0.24); }
+
+    /* Vignette */
+    .slide::after {
+      content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+      background: radial-gradient(ellipse at center, transparent 55%, var(--color-vignette) 100%);
+    }
+
+    /* NAV */
+    .nav-controls {
+      position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+      display: flex; align-items: center; gap: 12px; z-index: 100;
+      background: rgba(255,255,255,0.92); backdrop-filter: blur(12px);
+      padding: 8px 20px; border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.4);
+      box-shadow: 0 8px 28px rgba(15,23,42,0.13);
+    }
+    .nav-btn {
+      width: 34px; height: 34px; border: none; background: rgba(15,23,42,0.06);
+      color: #0b63ce; border-radius: 999px; font-size: 1.1rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .nav-btn:hover { background: rgba(15,23,42,0.12); transform: translateY(-1px); }
+    .slide-dots { display: flex; gap: 5px; flex-wrap: wrap; max-width: 400px; }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(148,163,184,0.6); cursor: pointer; transition: background 0.25s, transform 0.25s; }
+    .dot.active { background: #0b63ce; transform: scale(1.4); }
+    .dot.warmup { background: rgba(245,158,11,0.6); }
+    .dot.warmup.active { background: #f59e0b; }
+    .dot.mini { background: rgba(11,99,206,0.45); }
+    .dot.mini.active { background: #0b63ce; }
+    .dot.build { background: rgba(16,185,129,0.55); }
+    .dot.build.active { background: #10b981; }
+    .dot.share { background: rgba(139,92,246,0.55); }
+    .dot.share.active { background: #8b5cf6; }
+    .slide-counter { font-size: 0.78rem; color: #64748b; min-width: 52px; text-align: center; font-weight: 700; }
+
+    /* ANIMATIONS */
+    .reveal { opacity: 0; transform: translateY(16px); }
+    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+    @keyframes float-slow {
+      0% { transform: translate(0,0) scale(1); }
+      25% { transform: translate(50px,-40px) scale(1.15); }
+      50% { transform: translate(-30px,35px) scale(0.9); }
+      75% { transform: translate(45px,18px) scale(1.07); }
+      100% { transform: translate(0,0) scale(1); }
+    }
+    @keyframes float-drift {
+      0% { transform: translate(0,0) scale(1); }
+      33% { transform: translate(-45px,-55px) scale(1.13); }
+      66% { transform: translate(38px,28px) scale(0.9); }
+      100% { transform: translate(0,0) scale(1); }
+    }
+    @keyframes pulse-glow {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(11,99,206,0.45); }
+      50% { box-shadow: 0 0 0 12px rgba(11,99,206,0); }
+    }
+    .gradient-mesh { position: absolute; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+    .blob { position: absolute; border-radius: 50%; filter: blur(72px); animation: float-slow 12s ease-in-out infinite; }
+    .blob:nth-child(2) { animation: float-drift 16s ease-in-out infinite; }
+    .blob:nth-child(3) { animation: float-slow 20s ease-in-out infinite reverse; }
+    .particle-canvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; }
+
+    /* COMPONENTS */
+    .card { background: var(--color-surface); border-radius: 16px; padding: 14px 18px; box-shadow: 0 8px 24px rgba(15,23,42,0.07); border: 1px solid rgba(255,255,255,0.7); }
+    .pill { display: inline-flex; align-items: center; gap: 6px; padding: 4px 14px; border-radius: 999px; border: 1px solid rgba(148,163,184,0.5); background: rgba(255,255,255,0.9); font-size: 0.76rem; font-weight: 800; letter-spacing: 0.07em; text-transform: uppercase; color: #0b63ce; }
+    .pill.green { color: #047857; }
+    .pill.amber { color: #b45309; }
+    .pill.purple { color: #6d28d9; }
+    .big-text { font-size: clamp(0.95rem,1.6vw,1.2rem); line-height: 1.65; }
+    .code-block { background: #0f172a; color: #e2e8f0; font-family: 'Fira Code', Consolas, monospace; border-radius: 12px; padding: 14px 18px; font-size: clamp(0.82rem,1.3vw,1rem); line-height: 1.8; overflow-x: auto; white-space: pre; tab-size: 4; }
+    .code-block .kw { color: #f59e0b; font-weight: 600; }
+    .code-block .str { color: #a3e635; }
+    .code-block .cmt { color: #64748b; font-style: italic; }
+    .code-block .num { color: #38bdf8; }
+    .code-block .fn { color: #60a5fa; }
+    .code-block .var { color: #f0abfc; }
+    .think-chip { display: inline-flex; align-items: center; gap: 8px; padding: 7px 13px; border-radius: 999px; background: rgba(11,99,206,0.10); color: #1e40af; font-size: 0.82rem; font-weight: 700; }
+    .question-chip { display: inline-flex; align-items: center; gap: 8px; padding: 7px 13px; border-radius: 999px; background: rgba(245,158,11,0.10); color: #92400e; font-size: 0.82rem; font-weight: 700; }
+    .vocab-tag { display: inline-flex; align-items: center; padding: 4px 12px; border-radius: 999px; background: rgba(11,99,206,0.08); font-size: 0.84rem; font-weight: 800; color: #0b63ce; }
+    .grid-cards { display: grid; gap: 14px; }
+    @media (min-width: 700px) {
+      .grid-2 { grid-template-columns: repeat(2, minmax(0,1fr)); }
+      .grid-3 { grid-template-columns: repeat(3, minmax(0,1fr)); }
+    }
+    .grad-text { background: linear-gradient(135deg, #0b63ce 0%, #10b981 55%, #f59e0b 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+
+    /* Media embed */
+    .media-embed { position: relative; padding-top: 56.25%; border-radius: 13px; overflow: hidden; background: #1e293b; cursor: pointer; }
+    .media-embed img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+    .media-embed .play-btn { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+    .media-embed .play-btn div { width: 56px; height: 56px; background: rgba(255,0,0,0.90); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 18px rgba(0,0,0,0.38); transition: transform 0.2s; }
+    .media-embed:hover .play-btn div { transform: scale(1.1); }
+    .media-embed iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; border-radius: 13px; }
+
+    /* Challenge card */
+    .challenge-card { background: linear-gradient(135deg, rgba(139,92,246,0.12), rgba(11,99,206,0.08)); border: 2px solid rgba(139,92,246,0.30); border-radius: 16px; padding: 14px 18px; }
+    /* Brain break */
+    .break-card { background: linear-gradient(135deg, #fdf4e3, #fff7e6); border: 2px dashed rgba(245,158,11,0.40); border-radius: 18px; padding: 18px 22px; }
+    /* Tier badges */
+    .tier-a { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 999px; background: #dcfce7; color: #14532d; font-size: 0.72rem; font-weight: 800; }
+    .tier-b { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 999px; background: #dbeafe; color: #1e3a8a; font-size: 0.72rem; font-weight: 800; }
+    .tier-c { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 999px; background: #ede9fe; color: #4c1d95; font-size: 0.72rem; font-weight: 800; }
+    /* Mouse spotlight */
+    .mouse-spotlight { position: fixed; inset: 0; z-index: 99; pointer-events: none; }
+    /* Step numbers */
+    .step-num { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; background: linear-gradient(135deg, #0b63ce, #10b981); color: #fff; font-weight: 800; font-size: 0.82rem; flex-shrink: 0; }
+    /* AI badge */
+    .ai-badge { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 999px; background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.25); color: #065f46; font-size: 0.76rem; font-weight: 800; }
+    /* Timeline */
+    .timeline-row { display: flex; align-items: flex-start; gap: 12px; padding: 6px 0; }
+    .timeline-dot { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; flex-shrink: 0; box-shadow: 0 3px 10px rgba(0,0,0,0.12); }
+    .timeline-line { width: 2px; height: 14px; background: linear-gradient(180deg, rgba(11,99,206,0.3), rgba(16,185,129,0.2)); margin-left: 15px; }
+    /* Progress bar */
+    .progress-track { height: 6px; background: rgba(11,99,206,0.15); border-radius: 999px; overflow: hidden; margin-top: 6px; }
+    .progress-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, #0b63ce, #10b981); }
+    /* var box */
+    .var-box { border: 3px solid; border-radius: 14px; padding: 10px 14px; text-align: center; font-weight: 800; }
+    /* IO arrow */
+    .io-arrow { font-size: 2rem; color: #0b63ce; line-height: 1; }
+  </style>
+</head>
+<body>
+<div class="mouse-spotlight" id="spotlight"></div>
+<div class="deck">
+
+  <!-- ═══════════════════════════════════════ SLIDE 1: TITLE ═══════════════════════════════════════ -->
+  <div class="slide active" data-slide="1" data-type="title">
+    <div class="gradient-mesh">
+      <div class="blob" style="width:480px;height:480px;top:-100px;right:-80px;background:#0b63ce;opacity:.13"></div>
+      <div class="blob" style="width:320px;height:320px;bottom:-80px;left:-60px;background:#10b981;opacity:.11"></div>
+      <div class="blob" style="width:200px;height:200px;top:38%;left:12%;background:#f59e0b;opacity:.09"></div>
+    </div>
+    <canvas class="particle-canvas"></canvas>
+    <div class="content" style="text-align:center">
+      <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/6536dd567873a445d9576532299cbcd063c06f99.jpg"
+           alt="Friendly Python snake cartoon"
+           style="height:clamp(80px,12vh,110px);object-fit:contain;border-radius:50%;margin:0 auto 0.8rem;animation:float 3s ease-in-out infinite;box-shadow:0 12px 36px rgba(11,99,206,0.20);"
+           class="reveal">
+      <p class="pill reveal" style="margin:0 auto 0.7rem;display:inline-flex">Session 9 &nbsp;·&nbsp; Mon JUL 14 &nbsp;·&nbsp; Week 3</p>
+      <h1 class="font-display grad-text reveal" style="font-size:clamp(2.2rem,5.5vw,4rem);font-weight:700;line-height:1.1;margin-bottom:0.5rem">Python: Variables, Input &amp; Output</h1>
+      <h2 class="font-display reveal" style="font-size:clamp(1.1rem,2.4vw,1.9rem);font-weight:600;color:#1e3a5f;margin-bottom:0.8rem">Your program just learned to <em>talk</em> — and <em>listen</em></h2>
+      <div class="reveal" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+        <span class="pill">Modern Chinese School</span>
+        <span class="pill green">Ages 7–13</span>
+        <span class="pill amber">Summer 2026</span>
+        <span class="pill" style="color:#7c3aed">Phase 2 · Bridge to Python</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════ SLIDE 2: TODAY'S PLAN ═══════════════════════════════════════ -->
+  <div class="slide interior" data-slide="2" data-type="lesson">
+    <div class="gradient-mesh">
+      <div class="blob" style="width:340px;height:340px;top:-70px;right:-60px;background:#0b63ce;opacity:.09"></div>
+      <div class="blob" style="width:220px;height:220px;bottom:-50px;left:-30px;background:#10b981;opacity:.07"></div>
+    </div>
+    <div class="content">
+      <p class="pill mb-3 reveal">Today's Plan</p>
+      <h2 class="font-display reveal" style="font-weight:700;margin-bottom:1rem;color:#0f2747;font-size:clamp(1.4rem,2.6vw,2rem)">What are we doing today?</h2>
+      <div class="grid-cards reveal" style="gap:9px">
+        <div class="timeline-row">
+          <div class="timeline-dot" style="background:#f59e0b;color:#fff;font-size:0.8rem">10m</div>
+          <div><strong style="color:#1f2a37;font-size:0.88rem">Warm-Up — No Screens</strong><div class="big-text" style="color:#374151">Unplugged puzzle: what's in my variable? Your brain already stores variables!</div></div>
+        </div>
+        <div class="timeline-line"></div>
+        <div class="timeline-row">
+          <div class="timeline-dot" style="background:#0b63ce;color:#fff;font-size:0.8rem">20m</div>
+          <div><strong style="color:#1f2a37;font-size:0.88rem">Mini-Lesson + Videos</strong><div class="big-text" style="color:#374151">Meet <code style="background:#e8f0fe;padding:1px 6px;border-radius:4px">print()</code>, <code style="background:#e8f0fe;padding:1px 6px;border-radius:4px">input()</code>, and variables. See the chatbot preview. <span style="color:#059669;font-weight:700">🤖 AI Moment</span></div></div>
+        </div>
+        <div class="timeline-line"></div>
+        <div class="timeline-row">
+          <div class="timeline-dot" style="background:#10b981;color:#fff;font-size:0.8rem">20m</div>
+          <div><strong style="color:#1f2a37;font-size:0.88rem">Guided Build — Mad Libs Generator</strong><div class="big-text" style="color:#374151">Build it together step by step — ask words, print a silly story. Guaranteed win!</div></div>
+        </div>
+        <div class="timeline-line"></div>
+        <div class="timeline-row">
+          <div class="timeline-dot" style="background:#ef4444;color:#fff;font-size:0.8rem">5m</div>
+          <div><strong style="color:#1f2a37;font-size:0.88rem">Brain Break</strong><div class="big-text" style="color:#374151">"Human Variable" game — stand up, swap seats, and assign values to yourselves!</div></div>
+        </div>
+        <div class="timeline-line"></div>
+        <div class="timeline-row">
+          <div class="timeline-dot" style="background:#8b5cf6;color:#fff;font-size:0.8rem">35m</div>
+          <div><strong style="color:#1f2a37;font-size:0.88rem">Open Build + Challenge Cards</strong><div class="big-text" style="color:#374151">Extend your Mad Libs — three tiers, every student has a path!</div></div>
+        </div>
+        <div class="timeline-line"></div>
+        <div class="timeline-row">
+          <div class="timeline-dot" style="background:#0b63ce;color:#fff;font-size:0.8rem">10m</div>
+          <div><strong style="color:#1f2a37;font-size:0.88rem">Share-Out</strong><div class="big-text" style="color:#374151">Show your neighbor — always opt-in, always warm</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════ SLIDE 3: WARM-UP ═══════════════════════════════════════ -->
+  <div class="slide interior" data-slide="3" data-type="warmup">
+    <div class="gradient-mesh">
+      <div class="blob" style="width:360px;height:360px;top:-80px;right:-60px;background:#f59e0b;opacity:.10"></div>
+      <div class="blob" style="width:240px;height:240px;bottom:-50px;left:-40px;background:#0b63ce;opacity:.08"></div>
+    </div>
+    <div class="content">
+      <p class="pill amber mb-3 reveal">Warm-Up · No Screens · 10 min</p>
+      <h2 class="font-display reveal" style="font-size:clamp(1.4rem,2.6vw,2rem);font-weight:700;margin-bottom:0.9rem;color:#0f2747">Your brain already uses variables every day</h2>
+      <div class="grid-cards grid-2 reveal" style="gap:12px;margin-bottom:12px">
+        <div class="card accent-card-amber" style="padding:14px 16px">
+          <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/b423303e1c00cab99df16613671779c6a8c5d0c1.jpg"
+               alt="Labeled storage bins — like variables"
+               style="width:100%;height:100px;object-fit:cover;border-radius:10px;margin-bottom:10px">
+          <p class="question-chip" style="margin-bottom:8px;display:inline-flex">Think About It</p>
+          <p class="big-text" style="margin:0;color:#374151">Imagine a shelf of labeled boxes. The label is the <strong>variable name</strong>. The stuff inside is the <strong>value</strong>. What's in your "favorite food" box right now?</p>
+        </div>
+        <div class="card accent-card-blue" style="padding:14px 16px">
+          <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/06393401963da5a77526008dfe3d644bcced6d20.jpg"
+               alt="Kids working on laptops in class"
+               style="width:100%;height:100px;object-fit:cover;border-radius:10px;margin-bottom:10px">
+          <p class="think-chip" style="margin-bottom:8px;display:inline-flex">Turn &amp; Talk</p>
+          <p class="big-text" style="margin:0;color:#374151">Name <strong>3 things your brain "stores"</strong> for later — like your locker combo, a friend's birthday, or the score of a game. Are those values fixed or can they change?</p>
+        </div>
+      </div>
+      <div class="card reveal" style="background:rgba(11,99,206,0.06);border:1px solid rgba(11,99,206,0.18);padding:12px 16px">
+        <p style="margin:0;font-size:0.88rem;color:#1e3a5f;font-weight:700"><strong>Big Idea:</strong> A variable is a <em>named box in your computer's memory</em>. The name stays the same. The value inside can change. Today you'll give Python its own memory!</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════ SLIDE 4: WHAT IS A VARIABLE? ═══════════════════════════════════════ -->
+  <div class="slide interior" data-slide="4" data-type="mini-lesson">
+    <div class="gradient-mesh">
+      <div class="blob" style="width:340px;height:340px;top:-70px;right:-60px;background:#0b63ce;opacity:.10"></div>
+      <div class="blob" style="width:220px;height:220px;bottom:-40px;left:-30px;background:#10b981;opacity:.08"></div>
+    </div>
+    <div class="content">
+      <p class="pill mb-3 reveal">Mini-Lesson · Part 1</p>
+      <h2 class="font-display reveal" style="font-size:clamp(1.4rem,2.4vw,1.9rem);font-weight:700;margin-bottom:0.9rem;color:#0f2747">What is a Variable?</h2>
+      <div class="grid-cards grid-2 reveal" style="gap:14px;margin-bottom:12px">
+        <!-- LEFT: real life analogy -->
+        <div class="card" style="padding:16px 18px">
+          <p style="font-weight:800;color:#0b63ce;margin:0 0 10px;font-size:0.92rem">The Labeled-Box Idea</p>
+          <div style="display:flex;flex-direction:column;gap:9px">
+            <div class="var-box" style="border-color:#0b63ce;background:#eaf2fd">
+              <div style="font-size:0.72rem;color:#0b63ce;font-weight:700;text-transform:uppercase;letter-spacing:.08em">Variable Name</div>
+              <div style="font-size:1.3rem;margin:2px 0">name</div>
+              <div style="font-size:0.72rem;color:#374151">= <strong>"Mia"</strong></div>
+            </div>
+            <div class="var-box" style="border-color:#10b981;background:#e6f7f0">
+              <div style="font-size:0.72rem;color:#10b981;font-weight:700;text-transform:uppercase;letter-spacing:.08em">Variable Name</div>
+              <div style="font-size:1.3rem;margin:2px 0">score</div>
+              <div style="font-size:0.72rem;color:#374151">= <strong>42</strong></div>
+            </div>
+            <div class="var-box" style="border-color:#f59e0b;background:#fdf4e3">
+              <div style="font-size:0.72rem;color:#f59e0b;font-weight:700;text-transform:uppercase;letter-spacing:.08em">Variable Name</div>
+              <div style="font-size:1.3rem;margin:2px 0">level</div>
+              <div style="font-size:0.72rem;color:#374151">= <strong>3</strong></div>
+            </div>
+          </div>
+        </div>
+        <!-- RIGHT: Python code -->
+        <div class="card" style="padding:16px 18px">
+          <p style="font-weight:800;color:#0b63ce;margin:0 0 10px;font-size:0.92rem">In Python — what you type</p>
+          <div class="code-block" style="font-size:clamp(0.8rem,1.2vw,0.95rem)">
+<span class="cmt"># create a variable</span>
+<span class="var">name</span> = <span class="str">"Mia"</span>
+<span class="var">score</span> = <span class="num">42</span>
+<span class="var">level</span> = <span class="num">3</span>
+
+<span class="cmt"># use it later</span>
+<span class="fn">print</span>(<span class="var">name</span>)   <span class="cmt"># Mia</span>
+<span class="fn">print</span>(<span class="var">score</span>)  <span class="cmt"># 42</span>
+</div>
+          <div style="margin-top:10px;background:rgba(11,99,206,0.06);border:1px solid rgba(11,99,206,0.18);border-radius:10px;padding:9px 12px">
+            <p style="margin:0;font-size:0.82rem;color:#1e3a5f"><strong>Key rules:</strong> no spaces in the name · use <code>=</code> to assign · names are case-sensitive (<code>Name</code> ≠ <code>name</code>)</p>
+          </div>
+        </div>
+      </div>
+      <div class="card reveal accent-card-green" style="padding:10px 16px">
+        <p style="margin:0;font-size:0.86rem;color:#065f46;font-weight:700">A variable is like a sticky-note on a box: the label (name) doesn't change, but you can swap out what's inside the box anytime!</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════ SLIDE 5: print() and input() ═══════════════════════════════════════ -->
+  <div class="slide interior" data-slide="5" data-type="mini-lesson">
+    <div class="gradient-mesh">
+      <div class="blob" style="width:320px;height:320px;top:-60px;right:-50px;background:#10b981;opacity:.10"></div>
+      <div class="blob" style="width:220px;height:220px;bottom:-40px;left:-30px;background:#0b63ce;opacity:.08"></div>
+    </div>
+    <div class="content">
+      <p class="pill green mb-3 reveal">Mini-Lesson · Part 2</p>
+      <h2 class="font-display reveal" style="font-size:clamp(1.4rem,2.4vw,1.9rem);font-weight:700;margin-bottom:0.9rem;color:#0f2747">Talking to the World: <code style="background:#e8f0fe;padding:2px 8px;border-radius:6px">print()</code> &amp; <code style="background:#e8f0fe;padding:2px 8px;border-radius:6px">input()</code></h2>
+      <!-- INPUT → PROCESS → OUTPUT diagram -->
+      <div class="card reveal" style="padding:14px 18px;margin-bottom:12px">
+        <div style="display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap">
+          <div style="background:#dbeafe;border:2px solid #3b82f6;border-radius:12px;padding:10px 18px;text-align:center;min-width:120px">
+            <div style="font-size:1.4rem">⌨️</div>
+            <div style="font-weight:800;color:#1e3a8a;font-size:0.88rem">INPUT</div>
+            <div style="font-size:0.76rem;color:#374151">User types</div>
+            <code style="font-size:0.72rem;background:#bfdbfe;padding:1px 6px;border-radius:4px">input()</code>
+          </div>
+          <div class="io-arrow">→</div>
+          <div style="background:#f1f5f9;border:2px solid #94a3b8;border-radius:12px;padding:10px 18px;text-align:center;min-width:120px">
+            <div style="font-size:1.4rem">⚙️</div>
+            <div style="font-weight:800;color:#334155;font-size:0.88rem">PROCESS</div>
+            <div style="font-size:0.76rem;color:#374151">Python thinks</div>
+            <code style="font-size:0.72rem;background:#e2e8f0;padding:1px 6px;border-radius:4px">variable = ...</code>
+          </div>
+          <div class="io-arrow">→</div>
+          <div style="background:#dcfce7;border:2px solid #22c55e;border-radius:12px;padding:10px 18px;text-align:center;min-width:120px">
+            <div style="font-size:1.4rem">🖥️</div>
+            <div style="font-weight:800;color:#14532d;font-size:0.88rem">OUTPUT</div>
+            <div style="font-size:0.76rem;color:#374151">Screen shows</div>
+            <code style="font-size:0.72rem;background:#bbf7d0;padding:1px 6px;border-radius:4px">print()</code>
+          </div>
+        </div>
+      </div>
+      <div class="grid-cards grid-2 reveal" style="gap:12px">
+        <div class="card" style="padding:14px 16px">
+          <p style="font-weight:800;color:#0b63ce;margin:0 0 8px;font-size:0.9rem">print() — speak to the screen</p>
+          <div class="code-block" style="font-size:clamp(0.78rem,1.1vw,0.9rem)">
+<span class="fn">print</span>(<span class="str">"Hello!"</span>)
+<span class="var">name</span> = <span class="str">"Alex"</span>
+<span class="fn">print</span>(<span class="str">"Hi, "</span> + <span class="var">name</span>)
+<span class="fn">print</span>(<span class="str">f"Hi, </span><span class="kw">{</span><span class="var">name</span><span class="kw">}</span><span class="str">!"</span>)
+</div>
+        </div>
+        <div class="card" style="padding:14px 16px">
+          <p style="font-weight:800;color:#10b981;margin:0 0 8px;font-size:0.9rem">input() — listen to the user</p>
+          <div class="code-block" style="font-size:clamp(0.78rem,1.1vw,0.9rem)">
+<span class="var">name</span> = <span class="fn">input</span>(<span class="str">"What's your name? "</span>)
+<span class="fn">print</span>(<span class="str">"Nice to meet you, "</span> + <span class="var">name</span>)
+
+<span class="cmt"># input() always returns a string</span>
+<span class="var">age</span> = <span class="fn">int</span>(<span class="fn">input</span>(<span class="str">"Your age? "</span>))
+</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════ SLIDE 6: f-strings & formatting ═══════════════════════════════════════ -->
+  <div class="slide interior" data-slide="6" data-type="mini-lesson">
+    <div class="gradient-mesh">
+      <div class="blob" style="width:320px;height:320px;top:-60px;left:-50px;background:#0b63ce;opacity:.09"></div>
+      <div class="blob" style="width:240px;height:240px;bottom:-50px;right:-40px;background:#f59e0b;opacity:.08"></div>
+    </div>
+    <div class="content">
+      <p class="pill mb-3 reveal">Mini-Lesson · Part 3</p>
+      <h2 class="font-display reveal" style="font-size:clamp(1.4rem,2.4vw,1.9rem);font-weight:700;margin-bottom:0.9rem;color:#0f2747">String Formatting — Making Sentences with Variables</h2>
+      <div class="grid-cards grid-3 reveal" style="gap:12px;margin-bottom:12px">
+        <div class="card" style="padding:14px 16px;text-align:center">
+          <div style="width:44px;height:44px;background:linear-gradient(135deg,#ef4444,#dc2626);border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 8px;font-size:1.2rem">1</div>
+          <p style="font-weight:800;color:#0f2747;margin:0 0 5px;font-size:0.88rem">Concatenation <br><small style="font-weight:400;color:#64748b">glue with +</small></p>
+          <div class="code-block" style="font-size:0.75rem;text-align:left">
+<span class="fn">print</span>(<span class="str">"Hi, "</span> + <span class="var">name</span>)
+</div>
+          <p style="font-size:0.76rem;color:#ef4444;margin:6px 0 0">Watch out: can't + a string + a number directly!</p>
+        </div>
+        <div class="card" style="padding:14px 16px;text-align:center;border-top:3px solid #0b63ce">
+          <div style="width:44px;height:44px;background:linear-gradient(135deg,#0b63ce,#2563eb);border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 8px;font-size:1.2rem;color:#fff;font-weight:800">2</div>
+          <p style="font-weight:800;color:#0f2747;margin:0 0 5px;font-size:0.88rem">Commas in print <br><small style="font-weight:400;color:#64748b">easiest way</small></p>
+          <div class="code-block" style="font-size:0.75rem;text-align:left">
+<span class="fn">print</span>(<span class="str">"Hi,"</span>, <span class="var">name</span>)
+<span class="fn">print</span>(<span class="str">"Age:"</span>, <span class="var">age</span>)
+</div>
+          <p style="font-size:0.76rem;color:#059669;margin:6px 0 0">Works with any type — no error!</p>
+        </div>
+        <div class="card" style="padding:14px 16px;text-align:center;border-top:3px solid #10b981">
+          <div style="width:44px;height:44px;background:linear-gradient(135deg,#10b981,#059669);border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 8px;font-size:1.2rem;color:#fff;font-weight:800">3</div>
+          <p style="font-weight:800;color:#0f2747;margin:0 0 5px;font-size:0.88rem">f-strings ✨ <br><small style="font-weight:400;color:#64748b">superpower move</small></p>
+          <div class="code-block" style="font-size:0.75rem;text-align:left">
+<span class="fn">print</span>(<span class="str">f"Hi, <span class="kw">{name}</span>!"</span>)
+<span class="fn">print</span>(<span class="str">f"Age: <span class="kw">{age}</span>"</span>)
+</div>
+          <p style="font-size:0.76rem;color:#059669;margin:6px 0 0">Put any variable between { } !</p>
+        </div>
+      </div>
+      <div class="card reveal accent-card-blue" style="padding:10px 16px">
+        <p style="margin:0;font-size:0.85rem;color:#1e3a5f;font-weight:700">The letter <strong>f</strong> before the quote tells Python: <em>"look for { } and fill them in with real values."</em> f-strings are the most readable way to format output — use them as your default!</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════ SLIDE 7: VIDEO 1 ═══════════════════════════════════════ -->
+  <div class="slide interior" data-slide="7" data-type="mini-lesson">
+    <div class="gradient-mesh">
+      <div class="blob" style="width:340px;height:340px;top:-70px;right:-50px;background:#0b63ce;opacity:.10"></div>
+      <div class="blob" style="width:220px;height:220px;bottom:-50px;left:-40px;background:#10b981;opacity:.07"></div>
+    </div>
+    <div class="content">
+      <p class="pill mb-3 reveal">Video 1 · Mini-Lesson Boost</p>
+      <h2 class="font-display reveal" style="font-size:clamp(1.4rem,2.4vw,1.9rem);font-weight:700;margin-bottom:0.8rem;color:#0f2747">Python Variables — Intro for Kids</h2>
+      <div class="grid-cards grid-2 reveal" style="gap:14px;align-items:start">
+        <div>
+          <!-- VIDEO EMBED: hc0SJUzj8Bc — Python Variables Intro to Python for Kids -->
+          <div class="media-embed" id="player-hc0SJUzj8Bc" onclick="playVideo('hc0SJUzj8Bc')" title="Click to play video">
+            <img src="https://img.youtube.com/vi/hc0SJUzj8Bc/hqdefault.jpg" alt="Python Variables - Intro to Python for Kids tutorial thumbnail">
+            <div class="play-btn">
+              <div>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>
+              </div>
+            </div>
+          </div>
+          <p style="font-size:0.78rem;color:#64748b;margin:6px 0 0;text-align:center">
+            <a href="https://www.youtube.com/watch?v=hc0SJUzj8Bc" target="_blank" rel="noopener" style="color:#0b63ce;text-decoration:underline">YouTube · Python Variables – Intro for Kids</a>
+          </p>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div class="card accent-card-blue" style="padding:12px 15px">
+            <p style="font-weight:800;color:#0b63ce;margin:0 0 6px;font-size:0.85rem">While watching, think about:</p>
+            <ul style="margin:0;padding-left:18px;font-size:0.85rem;color:#374151;line-height:1.65">
+              <li>What does a variable "hold"?</li>
+              <li>Can a variable's value change after you set it?</li>
+              <li>How is a Python variable different from a math variable like <em>x</em>?</li>
+            </ul>
+          </div>
+          <div class="card" style="padding:12px 15px;background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.22)">
+            <p style="margin:0;font-size:0.84rem;color:#065f46;font-weight:700">After watching: share one variable name you'd use in your own program — and what value you'd store in it.</p>
+          </div>
+          <div class="card accent-card-amber" style="padding:10px 14px">
+            <p style="margin:0;font-size:0.82rem;color:#78350f"><strong>Duration:</strong> ~4 min &nbsp;·&nbsp; <strong>Level:</strong> Beginner &nbsp;·&nbsp; <strong>Tool:</strong> Python (kids-focused)</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════ SLIDE 8: AI MOMENT ═══════════════════════════════════════ -->
+  <div class="slide interior" data-slide="8" data-type="mini-lesson">
+    <div class="gradient-mesh">
+      <div class="blob" style="width:360px;height:360px;top:-80px;left:-60px;background:#10b981;opacity:.12"></div>
+      <div class="blob" style="width:240px;height:240px;bottom:-60px;right:-40px;background:#0b63ce;opacity:.09"></div>
+    </div>
+    <div class="content">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:0.6rem">
+        <span class="ai-badge reveal">🤖 AI Moment</span>
+        <p class="pill green reveal">Phase 2 · Sessions 8–14</p>
+      </div>
+      <h2 class="font-display reveal" style="font-size:clamp(1.4rem,2.5vw,2rem);font-weight:700;margin-bottom:0.9rem;color:#0f2747">A chatbot is just input → process → output.</h2>
+      <div class="grid-cards grid-2 reveal" style="gap:12px;margin-bottom:12px">
+        <div>
+          <div class="card" style="padding:14px 16px">
+            <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/6b408e6027d5921b2020d5fb39ef6527a046a6da.jpg"
+                 alt="Chatbot on a computer screen"
+                 style="width:100%;height:90px;object-fit:cover;border-radius:10px;margin-bottom:10px">
+            <p style="font-weight:800;color:#0b63ce;margin:0 0 8px;font-size:0.87rem">Today's Mad Libs preview</p>
+            <div class="code-block" style="font-size:0.75rem">
+<span class="var">word</span> = <span class="fn">input</span>(<span class="str">"Enter a noun: "</span>)
+<span class="var">action</span> = <span class="fn">input</span>(<span class="str">"Enter a verb: "</span>)
+<span class="fn">print</span>(<span class="str">f"The </span><span class="kw">{word}</span><span class="str"> decided to </span><span class="kw">{action}</span><span class="str">!"</span>)
+</div>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div class="card accent-card-green" style="padding:13px 15px">
+            <p style="font-weight:800;color:#065f46;margin:0 0 5px;font-size:0.87rem">A real chatbot does the same thing!</p>
+            <p style="font-size:0.84rem;color:#374151;margin:0"><strong>Input:</strong> you type a message<br><strong>Process:</strong> the AI decides what to say<br><strong>Output:</strong> the chatbot replies</p>
+          </div>
+          <div class="card accent-card-amber" style="padding:13px 15px">
+            <p style="font-weight:800;color:#78350f;margin:0 0 5px;font-size:0.87rem">But here's the twist:</p>
+            <p style="font-size:0.84rem;color:#374151;margin:0">Our Mad Libs fills in a template with your words. A real chatbot like ChatGPT <strong>predicts</strong> the next word using billions of examples. Same structure — wildly different power!</p>
+          </div>
+          <div class="card" style="padding:10px 14px;background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.20)">
+            <p style="margin:0;font-size:0.82rem;color:#065f46;font-weight:700">Session 16 we'll build a real chatbot in Python. Today's lesson is the foundation!</p>
+          </div>
+        </div>
+      </div>
+      <div class="card reveal" style="padding:10px 15px;background:rgba(11,99,206,0.06);border:1px solid rgba(11,99,206,0.18)">
+        <p style="margin:0;font-size:0.84rem;color:#1e3a5f"><strong>Question to keep in mind:</strong> What information would a chatbot need to <em>store in a variable</em> while talking to you? (Hint: think about your name, your question, its last reply…)</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════ SLIDE 9: VIDEO 2 ═══════════════════════════════════════ -->
+  <div class="slide interior" data-slide="9" data-type="mini-lesson">
+    <div class="gradient-mesh">
+      <div class="blob" style="width:340px;height:340px;top:-70px;right:-50px;background:#0b63ce;opacity:.10"></div>
+      <div class="blob" style="width:220px;height:220px;bottom:-50px;left:-40px;background:#10b981;opacity:.07"></div>
+    </div>
+    <div class="content">
+      <p class="pill mb-3 reveal">Video 2 · See It in Action</p>
+      <h2 class="font-display reveal" style="font-size:clamp(1.4rem,2.4vw,1.9rem);font-weight:700;margin-bottom:0.8rem;color:#0f2747">Learn Python: print, variables, input &amp; floats</h2>
+      <div class="grid-cards grid-2 reveal" style="gap:14px;align-items:start">
+        <div>
+          <!-- VIDEO EMBED: Mf1Uj6XrNkA — Learn Python for Beginners (Print, Variables, Input & Floats) -->
+          <div class="media-embed" id="player-Mf1Uj6XrNkA" onclick="playVideo('Mf1Uj6XrNkA')" title="Click to play video">
+            <img src="https://img.youtube.com/vi/Mf1Uj6XrNkA/hqdefault.jpg" alt="Learn Python for Beginners - Print, Variables, Input and Floats tutorial thumbnail">
+            <div class="play-btn">
+              <div>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>
+              </div>
+            </div>
+          </div>
+          <p style="font-size:0.78rem;color:#64748b;margin:6px 0 0;text-align:center">
+            <a href="https://www.youtube.com/watch?v=Mf1Uj6XrNkA" target="_blank" rel="noopener" style="color:#0b63ce;text-decoration:underline">YouTube · Learn Python for Beginners – Full Starter Lesson</a>
+          </p>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div class="card accent-card-blue" style="padding:12px 15px">
+            <p style="font-weight:800;color:#0b63ce;margin:0 0 6px;font-size:0.85rem">This video covers:</p>
+            <div style="display:flex;flex-direction:column;gap:4px">
+              <div style="display:flex;align-items:center;gap:8px;font-size:0.83rem;color:#374151"><span class="step-num" style="width:22px;height:22px;font-size:0.72rem">1</span><code style="background:#e8f0fe;padding:1px 5px;border-radius:3px">print()</code> — make the computer talk</div>
+              <div style="display:flex;align-items:center;gap:8px;font-size:0.83rem;color:#374151"><span class="step-num" style="width:22px;height:22px;font-size:0.72rem">2</span><code style="background:#e8f0fe;padding:1px 5px;border-radius:3px">variables</code> — labeled storage boxes</div>
+              <div style="display:flex;align-items:center;gap:8px;font-size:0.83rem;color:#374151"><span class="step-num" style="width:22px;height:22px;font-size:0.72rem">3</span><code style="background:#e8f0fe;padding:1px 5px;border-radius:3px">input()</code> — ask the user a question</div>
+              <div style="display:flex;align-items:center;gap:8px;font-size:0.83rem;color:#374151"><span class="step-num" style="width:22px;height:22px;font-size:0.72rem">4</span><code style="background:#e8f0fe;padding:1px 5px;border-radius:3px">float</code> — numbers with decimals</div>
+            </div>
+          </div>
+          <div class="card" style="padding:12px 15px;background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.22)">
+            <p style="margin:0;font-size:0.84rem;color:#065f46;font-weight:700">Mini-project at the end: asks your name, age, and favorite game — then prints fun messages. That's almost our Mad Libs build!</p>
+          </div>
+          <div class="card accent-card-amber" style="padding:10px 14px">
+            <p style="margin:0;font-size:0.82rem;color:#78350f"><strong>Duration:</strong> ~4–5 min &nbsp;·&nbsp; <strong>Level:</strong> Absolute beginner &nbsp;·&nbsp; <strong>Tool:</strong> Trinket (browser Python)</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════ SLIDE 10: GUIDED BUILD ═══════════════════════════════════════ -->
+  <div class="slide interior" data-slide="10" data-type="build">
+    <div class="gradient-mesh">
+      <div class="blob" style="width:360px;height:360px;top:-80px;right:-60px;background:#10b981;opacity:.12"></div>
+      <div class="blob" style="width:240px;height:240px;bottom:-50px;left:-40px;background:#0b63ce;opacity:.09"></div>
+    </div>
+    <div class="content">
+      <p class="pill green mb-3 reveal">Guided Build · Step by Step · 20 min</p>
+      <h2 class="font-display reveal" style="font-size:clamp(1.4rem,2.4vw,1.9rem);font-weight:700;margin-bottom:0.9rem;color:#0f2747">Build a Mad Libs Generator!</h2>
+      <div class="grid-cards grid-2 reveal" style="gap:12px">
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div class="card" style="padding:12px 15px;display:flex;gap:10px;align-items:flex-start">
+            <span class="step-num">1</span>
+            <div><p style="font-weight:800;color:#0f2747;margin:0 0 3px;font-size:0.86rem">Open Python Playground</p><p style="font-size:0.82rem;color:#374151;margin:0">Go to <a href="https://playcode.io/python-playground" target="_blank" style="color:#0b63ce">playcode.io/python-playground</a> — a free, browser-based Python editor. No install needed!</p></div>
+          </div>
+          <div class="card" style="padding:12px 15px;display:flex;gap:10px;align-items:flex-start">
+            <span class="step-num">2</span>
+            <div><p style="font-weight:800;color:#0f2747;margin:0 0 3px;font-size:0.86rem">Ask for the first word</p>
+            <div class="code-block" style="font-size:0.78rem">
+<span class="var">animal</span> = <span class="fn">input</span>(<span class="str">"Name an animal: "</span>)
+</div></div>
+          </div>
+          <div class="card" style="padding:12px 15px;display:flex;gap:10px;align-items:flex-start">
+            <span class="step-num">3</span>
+            <div><p style="font-weight:800;color:#0f2747;margin:0 0 3px;font-size:0.86rem">Ask for more words</p>
+            <div class="code-block" style="font-size:0.78rem">
+<span class="var">verb</span> = <span class="fn">input</span>(<span class="str">"A verb (-ing): "</span>)
+<span class="var">place</span> = <span class="fn">input</span>(<span class="str">"A place: "</span>)
+</div></div>
+          </div>
+          <div class="card" style="padding:12px 15px;display:flex;gap:10px;align-items:flex-start">
+            <span class="step-num">4</span>
+            <div><p style="font-weight:800;color:#0f2747;margin:0 0 3px;font-size:0.86rem">Print the silly story!</p>
+            <div class="code-block" style="font-size:0.78rem">
+<span class="fn">print</span>(<span class="str">f"One day a </span><span class="kw">{animal}</span><span class="str"> was"</span>)
+<span class="fn">print</span>(<span class="str">f"</span><span class="kw">{verb}</span><span class="str"> in </span><span class="kw">{place}</span><span class="str">."</span>)
+</div></div>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div class="card" style="padding:12px 15px;display:flex;gap:10px;align-items:flex-start">
+            <span class="step-num">5</span>
+            <div><p style="font-weight:800;color:#0f2747;margin:0 0 3px;font-size:0.86rem">Run it! Press ▶</p><p style="font-size:0.82rem;color:#374151;margin:0">Type any answers at the prompts. What story did Python tell? Run it again with different words!</p></div>
+          </div>
+          <div class="card" style="padding:12px 15px;display:flex;gap:10px;align-items:flex-start">
+            <span class="step-num" style="background:linear-gradient(135deg,#10b981,#0b63ce)">6</span>
+            <div><p style="font-weight:800;color:#047857;margin:0 0 3px;font-size:0.86rem">Upgrade: add your name!</p>
+            <div class="code-block" style="font-size:0.78rem">
+<span class="var">hero</span> = <span class="fn">input</span>(<span class="str">"Hero's name: "</span>)
+<span class="fn">print</span>(<span class="str">f"</span><span class="kw">{hero}</span><span class="str"> saved the day!"</span>)
+</div></div>
+          </div>
+          <div class="card accent-card-blue" style="padding:10px 14px">
+            <p style="margin:0;font-size:0.82rem;color:#1e3a5f"><strong>Try:</strong> What happens if you put a number in an input that expects a word? What does Python do?</p>
+          </div>
+          <img 
+               src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/59eb9480e0b585dc856ca8f5dee4f755a20f8c7c.jpg"
+               alt="Mad Libs game sheet — the inspiration for our build"
+               style="width:100%;height:80px;object-fit:cover;border-radius:10px">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════ SLIDE 11: BRAIN BREAK ═══════════════════════════════════════ -->
+  <div class="slide interior" data-slide="11" data-type="break">
+    <div class="gradient-mesh">
+      <div class="blob" style="width:380px;height:380px;top:-90px;right:-70px;background:#f59e0b;opacity:.12"></div>
+      <div class="blob" style="width:260px;height:260px;bottom:-60px;left:-50px;background:#10b981;opacity:.10"></div>
+    </div>
+    <div class="content" style="text-align:center">
+      <p class="pill amber mb-3 reveal" style="margin:0 auto 0.8rem;display:inline-flex">Movement Break · 5 min</p>
+      <h2 class="font-display reveal" style="font-size:clamp(1.6rem,3vw,2.4rem);font-weight:700;margin-bottom:0.5rem;color:#0f2747">Stand Up &amp; Become a Variable!</h2>
+      <div class="break-card reveal" style="max-width:680px;margin:0 auto 14px">
+        <p style="font-size:1rem;font-weight:800;color:#78350f;margin:0 0 12px">Play "Human Variable" — let's assign some values!</p>
+        <div style="display:flex;flex-direction:column;gap:8px;text-align:left">
+          <div style="background:rgba(255,255,255,0.7);border-radius:10px;padding:8px 14px;font-size:0.9rem;color:#374151">
+            🟡 <strong>Round 1 — String:</strong> Stand up and say your name out loud → <code style="background:#fef3c7;padding:1px 5px;border-radius:4px">name = "___"</code>
+          </div>
+          <div style="background:rgba(255,255,255,0.7);border-radius:10px;padding:8px 14px;font-size:0.9rem;color:#374151">
+            🔵 <strong>Round 2 — Integer:</strong> Hold up as many fingers as siblings you have → <code style="background:#dbeafe;padding:1px 5px;border-radius:4px">siblings = ___</code>
+          </div>
+          <div style="background:rgba(255,255,255,0.7);border-radius:10px;padding:8px 14px;font-size:0.9rem;color:#374151">
+            🟢 <strong>Round 3 — Reassign:</strong> Swap seats with someone → you just changed the value of <code style="background:#dcfce7;padding:1px 5px;border-radius:4px">my_seat</code>!
+          </div>
+          <div style="background:rgba(255,255,255,0.7);border-radius:10px;padding:8px 14px;font-size:0.9rem;color:#374151">
+            🔴 <strong>Bonus:</strong> Teacher calls "print(name)" → everyone shouts their name at once!
+          </div>
+        </div>
+      </div>
+      <div class="card reveal" style="max-width:500px;margin:0 auto;padding:12px 16px;background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.20)">
+        <p style="margin:0;font-size:0.88rem;color:#065f46;font-weight:700">You just <em>became</em> variables! Every one of you holds a name, a value, and can be reassigned.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════ SLIDE 12: OPEN BUILD + CHALLENGE CARDS ═══════════════════════════════════════ -->
+  <div class="slide interior" data-slide="12" data-type="build">
+    <div class="gradient-mesh">
+      <div class="blob" style="width:360px;height:360px;top:-80px;right:-60px;background:#10b981;opacity:.11"></div>
+      <div class="blob" style="width:250px;height:250px;bottom:-60px;left:-40px;background:#0b63ce;opacity:.08"></div>
+    </div>
+    <div class="content">
+      <p class="pill green mb-3 reveal">Open Build · 30–40 min</p>
+      <h2 class="font-display reveal" style="font-size:clamp(1.4rem,2.4vw,1.9rem);font-weight:700;margin-bottom:0.9rem;color:#0f2747">Extend your Mad Libs — make it <em>yours!</em></h2>
+      <div class="grid-cards grid-3 reveal" style="gap:12px;margin-bottom:12px">
+        <div class="card" style="padding:14px 16px;border-top:3px solid #22c55e">
+          <span class="tier-a">TIER A · Foundations</span>
+          <p style="font-weight:800;color:#0f2747;margin:8px 0 6px;font-size:0.87rem">Grades 1–3</p>
+          <p style="font-size:0.82rem;color:#374151;margin:0">Add <strong>2 more input() lines</strong> to the guided build — collect a color and an adjective, then print a 3-sentence story. Use commas in print() — no f-strings needed yet.</p>
+          <div class="progress-track" style="margin-top:10px"><div class="progress-fill" style="width:33%"></div></div>
+        </div>
+        <div class="card" style="padding:14px 16px;border-top:3px solid #3b82f6">
+          <span class="tier-b">TIER B · Core</span>
+          <p style="font-weight:800;color:#0f2747;margin:8px 0 6px;font-size:0.87rem">Grades 3–5</p>
+          <p style="font-size:0.82rem;color:#374151;margin:0">Build a Mad Libs with <strong>at least 4 inputs</strong> and use f-strings throughout. Make the story at least 3 sentences and give your program a title printed at the top.</p>
+          <div class="progress-track" style="margin-top:10px"><div class="progress-fill" style="width:66%"></div></div>
+        </div>
+        <div class="card" style="padding:14px 16px;border-top:3px solid #8b5cf6">
+          <span class="tier-c">TIER C · Accelerated</span>
+          <p style="font-weight:800;color:#0f2747;margin:8px 0 6px;font-size:0.87rem">Grades 6–9</p>
+          <p style="font-size:0.82rem;color:#374151;margin:0">Add a <strong>number input</strong>: ask for a number, convert it with <code>int()</code>, then do math on it in the story (e.g., "The dragon ate {apples * 3} apples!"). Bonus: use <code>upper()</code> on a string.</p>
+          <div class="progress-track" style="margin-top:10px"><div class="progress-fill" style="width:100%"></div></div>
+        </div>
+      </div>
+      <div class="challenge-card reveal" style="display:flex;gap:12px;align-items:flex-start">
+        <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/3fbd5e607411770313845aa71422a57bd9b8d302.jpg"
+             alt="Kids coding together"
+             style="width:60px;height:60px;border-radius:10px;object-fit:cover;flex-shrink:0">
+        <div>
+          <p style="font-weight:800;color:#4c1d95;margin:0 0 4px;font-size:0.88rem">Challenge Card · All Tiers</p>
+          <p style="font-size:0.84rem;color:#374151;margin:0">Build a <strong>"Get to Know You" program</strong>: ask the user 5 questions about themselves (name, age, hobby, favorite food, superpower), then print a custom <em>profile card</em> using all the answers. Can you make it look nice with <code>print("="*30)</code>?</p>
+        </div>
+      </div>
+      <div class="card reveal" style="margin-top:10px;padding:10px 15px;background:rgba(11,99,206,0.06);border:1px solid rgba(11,99,206,0.18)">
+        <p style="margin:0;font-size:0.84rem;color:#1e3a5f"><strong>Fast finisher?</strong> Help a neighbor understand f-strings — show them the difference between using <code>+</code> and using <code>f"{ }"</code>. Teaching is learning!</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════ SLIDE 13: VOCABULARY ═══════════════════════════════════════ -->
+  <div class="slide interior" data-slide="13" data-type="lesson">
+    <div class="gradient-mesh">
+      <div class="blob" style="width:340px;height:340px;top:-70px;right:-50px;background:#0b63ce;opacity:.10"></div>
+      <div class="blob" style="width:230px;height:230px;bottom:-50px;left:-40px;background:#f59e0b;opacity:.08"></div>
+    </div>
+    <div class="content">
+      <p class="pill mb-3 reveal">Vocabulary · 6 Key Words</p>
+      <h2 class="font-display reveal" style="font-size:clamp(1.4rem,2.4vw,1.9rem);font-weight:700;margin-bottom:0.9rem;color:#0f2747">Words every Python coder knows</h2>
+      <div class="grid-cards grid-2 reveal" style="gap:10px">
+        <div class="card" style="display:flex;gap:10px;align-items:flex-start;padding:11px 14px">
+          <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/dde30d76357a69dd45b6d9549ea9c5444400990d.jpg"
+               alt="Labeled storage bins"
+               style="width:44px;height:44px;object-fit:cover;border-radius:8px;flex-shrink:0">
+          <div><span class="vocab-tag" style="margin-bottom:5px;display:inline-flex">Variable</span><p style="font-size:0.83rem;color:#374151;margin:4px 0 0">A named container in memory. It stores a value that your program can use and change.</p></div>
+        </div>
+        <div class="card" style="display:flex;gap:10px;align-items:flex-start;padding:11px 14px">
+          <div style="width:44px;height:44px;background:linear-gradient(135deg,#10b981,#059669);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;color:#fff;font-weight:800">S</div>
+          <div><span class="vocab-tag" style="margin-bottom:5px;display:inline-flex">String</span><p style="font-size:0.83rem;color:#374151;margin:4px 0 0">Text data — always inside quotes. <code>"Hello"</code>, <code>"42"</code>, and <code>"🐍"</code> are all strings.</p></div>
+        </div>
+        <div class="card" style="display:flex;gap:10px;align-items:flex-start;padding:11px 14px">
+          <div style="width:44px;height:44px;background:linear-gradient(135deg,#3b82f6,#2563eb);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;color:#fff;font-weight:800">#</div>
+          <div><span class="vocab-tag" style="margin-bottom:5px;display:inline-flex">Integer</span><p style="font-size:0.83rem;color:#374151;margin:4px 0 0">A whole number with no quotes. <code>score = 42</code> — integers can be added, subtracted, multiplied!</p></div>
+        </div>
+        <div class="card" style="display:flex;gap:10px;align-items:flex-start;padding:11px 14px">
+          <div style="width:44px;height:44px;background:linear-gradient(135deg,#f59e0b,#d97706);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;color:#fff;font-weight:800">f"</div>
+          <div><span class="vocab-tag" style="margin-bottom:5px;display:inline-flex">f-string</span><p style="font-size:0.83rem;color:#374151;margin:4px 0 0">A formatted string. Start with <code>f"..."</code> and put variable names inside <code>{ }</code> — Python fills them in automatically!</p></div>
+        </div>
+        <div class="card" style="display:flex;gap:10px;align-items:flex-start;padding:11px 14px">
+          <div style="width:44px;height:44px;background:linear-gradient(135deg,#8b5cf6,#6d28d9);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;color:#fff;font-weight:800">⌨</div>
+          <div><span class="vocab-tag" style="margin-bottom:5px;display:inline-flex">input()</span><p style="font-size:0.83rem;color:#374151;margin:4px 0 0">A built-in function that pauses the program and waits for the user to type something. It <strong>always returns a string!</strong></p></div>
+        </div>
+        <div class="card" style="display:flex;gap:10px;align-items:flex-start;padding:11px 14px">
+          <div style="width:44px;height:44px;background:linear-gradient(135deg,#0b63ce,#1d4ed8);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;color:#fff;font-weight:800">▶</div>
+          <div><span class="vocab-tag" style="margin-bottom:5px;display:inline-flex">print()</span><p style="font-size:0.83rem;color:#374151;margin:4px 0 0">A built-in function that displays text to the screen — your program's way of talking back to you!</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════ SLIDE 14: DEBUG CORNER ═══════════════════════════════════════ -->
+  <div class="slide interior" data-slide="14" data-type="lesson">
+    <div class="gradient-mesh">
+      <div class="blob" style="width:340px;height:340px;top:-70px;right:-50px;background:#ef4444;opacity:.09"></div>
+      <div class="blob" style="width:220px;height:220px;bottom:-40px;left:-30px;background:#0b63ce;opacity:.08"></div>
+    </div>
+    <div class="content">
+      <p class="pill" style="color:#b91c1c;border-color:rgba(239,68,68,0.3);margin-bottom:0.8rem;display:inline-flex" class="reveal">🐛 Debug Corner · Common Bugs</p>
+      <h2 class="font-display reveal" style="font-size:clamp(1.4rem,2.4vw,1.9rem);font-weight:700;margin-bottom:0.9rem;color:#0f2747">Bugs you'll meet — and how to fix them</h2>
+      <div class="grid-cards grid-2 reveal" style="gap:12px">
+        <div class="card accent-card-red" style="padding:14px 16px">
+          <p style="font-weight:800;color:#b91c1c;margin:0 0 6px;font-size:0.88rem">Bug 1: Forgot the quotes in a string</p>
+          <div class="code-block" style="font-size:0.78rem">
+<span class="cmt"># ❌ WRONG</span>
+<span class="var">name</span> = <span style="color:#ef4444">Mia</span>
+<span class="cmt"># NameError!</span>
+
+<span class="cmt"># ✅ FIXED</span>
+<span class="var">name</span> = <span class="str">"Mia"</span>
+</div>
+          <p style="font-size:0.78rem;color:#7f1d1d;margin:6px 0 0">Without quotes, Python thinks <code>Mia</code> is a variable name, not text!</p>
+        </div>
+        <div class="card accent-card-red" style="padding:14px 16px">
+          <p style="font-weight:800;color:#b91c1c;margin:0 0 6px;font-size:0.88rem">Bug 2: Can't add a string + a number</p>
+          <div class="code-block" style="font-size:0.78rem">
+<span class="cmt"># ❌ WRONG</span>
+<span class="fn">print</span>(<span class="str">"Age: "</span> + <span class="num">12</span>)  <span class="cmt"># TypeError!</span>
+
+<span class="cmt"># ✅ FIXED</span>
+<span class="fn">print</span>(<span class="str">"Age: "</span>, <span class="num">12</span>)
+<span class="fn">print</span>(<span class="str">f"Age: <span class="kw">{age}</span>"</span>)
+</div>
+          <p style="font-size:0.78rem;color:#7f1d1d;margin:6px 0 0">Use a comma or f-string to mix text and numbers!</p>
+        </div>
+        <div class="card accent-card-amber" style="padding:14px 16px">
+          <p style="font-weight:800;color:#78350f;margin:0 0 6px;font-size:0.88rem">Bug 3: input() gives you a string, not a number</p>
+          <div class="code-block" style="font-size:0.78rem">
+<span class="var">age</span> = <span class="fn">input</span>(<span class="str">"Your age? "</span>)
+<span class="fn">print</span>(<span class="var">age</span> + <span class="num">1</span>)  <span class="cmt"># TypeError!</span>
+
+<span class="cmt"># ✅ FIXED</span>
+<span class="var">age</span> = <span class="fn">int</span>(<span class="fn">input</span>(<span class="str">"Your age? "</span>))
+</div>
+          <p style="font-size:0.78rem;color:#78350f;margin:6px 0 0">Wrap with <code>int()</code> to convert text → whole number</p>
+        </div>
+        <div class="card accent-card-amber" style="padding:14px 16px">
+          <p style="font-weight:800;color:#78350f;margin:0 0 6px;font-size:0.88rem">Bug 4: Variable used before it's created</p>
+          <div class="code-block" style="font-size:0.78rem">
+<span class="cmt"># ❌ WRONG</span>
+<span class="fn">print</span>(<span class="var">score</span>)  <span class="cmt"># NameError!</span>
+<span class="var">score</span> = <span class="num">0</span>
+
+<span class="cmt"># ✅ FIXED — define first, use later</span>
+<span class="var">score</span> = <span class="num">0</span>
+<span class="fn">print</span>(<span class="var">score</span>)
+</div>
+          <p style="font-size:0.78rem;color:#78350f;margin:6px 0 0">Python runs top to bottom — define before you use!</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════ SLIDE 15: SHARE-OUT ═══════════════════════════════════════ -->
+  <div class="slide interior" data-slide="15" data-type="share">
+    <div class="gradient-mesh">
+      <div class="blob" style="width:360px;height:360px;top:-80px;right:-60px;background:#8b5cf6;opacity:.11"></div>
+      <div class="blob" style="width:260px;height:260px;bottom:-60px;left:-50px;background:#0b63ce;opacity:.09"></div>
+    </div>
+    <div class="content">
+      <p class="pill purple mb-3 reveal">Share-Out · 10 min · Opt-In</p>
+      <h2 class="font-display reveal" style="font-size:clamp(1.5rem,2.8vw,2.2rem);font-weight:700;margin-bottom:0.9rem;color:#0f2747">Show what your program can do!</h2>
+      <div class="grid-cards grid-2 reveal" style="gap:14px;margin-bottom:12px">
+        <div class="card" style="padding:16px 18px">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+            <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/3fbd5e607411770313845aa71422a57bd9b8d302.jpg"
+                 alt="Kids sharing work on laptops"
+                 style="width:52px;height:52px;object-fit:cover;border-radius:8px;flex-shrink:0">
+            <p style="font-weight:800;color:#0b63ce;margin:0;font-size:0.92rem">Pair Share (Default)</p>
+          </div>
+          <p style="font-size:0.85rem;color:#374151;margin:0 0 10px">Turn to your neighbor. Run your Mad Libs and let them type the words. Then swap!</p>
+          <p style="font-size:0.82rem;color:#374151;font-weight:700;margin:0 0 6px">3 questions to ask your partner:</p>
+          <ul style="margin:0;padding-left:18px;font-size:0.82rem;color:#374151;line-height:1.65">
+            <li>What variable names did you choose and why?</li>
+            <li>Did you use f-strings or commas? Which feels easier?</li>
+            <li>What's one thing you'd add to your Mad Libs?</li>
+          </ul>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <div class="card" style="padding:14px 16px">
+            <p style="font-weight:800;color:#0b63ce;margin:0 0 8px;font-size:0.9rem">Volunteer to show the class?</p>
+            <p style="font-size:0.84rem;color:#374151;margin:0">Raise your hand — totally optional! Run your program for everyone. Point out one variable and explain what it stores.</p>
+          </div>
+          <div class="card accent-card-green" style="padding:14px 16px">
+            <p style="font-weight:800;color:#065f46;margin:0 0 6px;font-size:0.88rem">Bugs count too!</p>
+            <p style="font-size:0.82rem;color:#374151;margin:0">If something went wrong — share it! "I got a TypeError when I tried to add my age as a number." That's <em>real coding</em>. The best programmers debug the most.</p>
+          </div>
+        </div>
+      </div>
+      <div class="card reveal" style="padding:11px 16px;background:rgba(139,92,246,0.08);border:1px solid rgba(139,92,246,0.22)">
+        <p style="margin:0;font-size:0.86rem;color:#4c1d95;font-weight:700">Remember: You just taught Python to listen to you AND talk back. That's the foundation for everything we build from here — including our chatbot in Session 16!</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════ SLIDE 16: HOMEWORK ═══════════════════════════════════════ -->
+  <div class="slide interior" data-slide="16" data-type="share">
+    <div class="gradient-mesh">
+      <div class="blob" style="width:360px;height:360px;top:-80px;right:-70px;background:#0b63ce;opacity:.11"></div>
+      <div class="blob" style="width:250px;height:250px;bottom:-60px;left:-50px;background:#f59e0b;opacity:.10"></div>
+    </div>
+    <div class="content">
+      <p class="pill amber mb-3 reveal">Homework · 30 min tonight</p>
+      <h2 class="font-display reveal" style="font-size:clamp(1.5rem,2.8vw,2.1rem);font-weight:700;margin-bottom:0.9rem;color:#0f2747">Finish your Mad Libs &amp; level up!</h2>
+      <div class="grid-cards grid-2 reveal" style="gap:14px;margin-bottom:12px">
+        <div class="card" style="padding:16px 18px">
+          <p style="font-weight:800;color:#0b63ce;margin:0 0 10px;font-size:0.92rem">The Task (All Tiers)</p>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <div style="display:flex;align-items:flex-start;gap:8px;font-size:0.85rem;color:#374151">
+              <span class="step-num" style="flex-shrink:0;width:22px;height:22px;font-size:0.72rem">1</span>
+              Finish a Mad Libs with at least <strong>4 inputs</strong>. Save your file!
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:8px;font-size:0.85rem;color:#374151">
+              <span class="step-num" style="flex-shrink:0;width:22px;height:22px;font-size:0.72rem">2</span>
+              Make it about a topic <strong>you love</strong> — sports, animals, video games, space…
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:8px;font-size:0.85rem;color:#374151">
+              <span class="step-num" style="flex-shrink:0;width:22px;height:22px;font-size:0.72rem">3</span>
+              Use <strong>f-strings</strong> for at least 2 of your output lines
+            </div>
+          </div>
+          <div class="challenge-card" style="margin-top:12px;padding:10px 14px">
+            <p style="font-weight:800;color:#4c1d95;margin:0 0 4px;font-size:0.84rem">Bonus (Tier C)</p>
+            <p style="font-size:0.82rem;color:#374151;margin:0">Add a number input, convert it with <code>int()</code>, do math on it, and show the result in the story. e.g. "The dragon had {n*2} wings!"</p>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <div class="card accent-card-green" style="padding:14px 16px">
+            <p style="font-weight:800;color:#065f46;margin:0 0 6px;font-size:0.88rem">Next session (Tue Jul 14):</p>
+            <p style="font-size:0.84rem;color:#374151;margin:0">Python <code>turtle</code> graphics + loops — we'll draw shapes and spirals, and review everything for the <strong>midterm on Wed Jul 15</strong>. Your Mad Libs variables will help you understand loops!</p>
+          </div>
+          <div class="card accent-card-blue" style="padding:14px 16px">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+              <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/6536dd567873a445d9576532299cbcd063c06f99.jpg"
+                   alt="Python snake mascot"
+                   style="width:40px;height:40px;border-radius:50%;object-fit:cover;flex-shrink:0">
+              <p style="font-weight:800;color:#1e3a8a;margin:0;font-size:0.88rem">Keep it going at home</p>
+            </div>
+            <p style="font-size:0.82rem;color:#374151;margin:0">Show someone at home what your Mad Libs does. Ask them to type in the words — their reactions are your first user test!</p>
+          </div>
+        </div>
+      </div>
+      <div class="card reveal" style="padding:11px 16px;background:rgba(11,99,206,0.06);border:1px solid rgba(11,99,206,0.18)">
+        <p style="margin:0;font-size:0.84rem;color:#1e3a5f;font-weight:700">Today you taught Python to <em>remember things</em> with variables, <em>ask questions</em> with input(), and <em>speak</em> with print(). That is the engine behind every app, chatbot, and AI system in the world.</p>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end .deck -->
+
+<!-- NAVIGATION -->
+<div class="nav-controls">
+  <button class="nav-btn" onclick="changeSlide(-1)">&#8249;</button>
+  <div class="slide-dots" id="dots"></div>
+  <button class="nav-btn" onclick="changeSlide(1)">&#8250;</button>
+  <span class="slide-counter" id="counter">1 / 16</span>
+</div>
+
+<script>
+/* ═══════════════════════════════ DECK NAVIGATION ═══════════════════════════════ */
+let current = 1;
+const slides = document.querySelectorAll('.slide');
+const total = slides.length;
+const dotsContainer = document.getElementById('dots');
+const counter = document.getElementById('counter');
+
+const slideTypes = ['title','lesson','warmup','mini','mini','mini','mini','mini','mini','build','break','build','lesson','lesson','share','share'];
+const typeColors = { title:'', lesson:'mini', warmup:'warmup', mini:'mini', build:'build', share:'share', break:'warmup' };
+
+for (let i = 1; i <= total; i++) {
+  const slide = document.querySelector(`.slide[data-slide="${i}"]`);
+  const type = slide ? (slide.dataset.type || '') : '';
+  const dot = document.createElement('div');
+  let cls = 'dot';
+  if (type === 'warmup' || type === 'break') cls += ' warmup';
+  else if (type === 'mini-lesson') cls += ' mini';
+  else if (type === 'build') cls += ' build';
+  else if (type === 'share') cls += ' share';
+  if (i === 1) cls += ' active';
+  dot.className = cls;
+  dot.onclick = () => goToSlide(i);
+  dotsContainer.appendChild(dot);
+}
+
+function goToSlide(n) {
+  const prev = document.querySelector('.slide.active');
+  const next = document.querySelector(`.slide[data-slide="${n}"]`);
+  if (prev) prev.classList.remove('active');
+  if (next) { next.classList.add('active'); animateSlide(next); }
+  current = n;
+  updateNav();
+}
+function changeSlide(dir) { let next = current + dir; if (next < 1) next = total; if (next > total) next = 1; goToSlide(next); }
+function updateNav() {
+  document.querySelectorAll('.dot').forEach((d, i) => { d.classList.toggle('active', i + 1 === current); });
+  counter.textContent = current + ' / ' + total;
+}
+document.addEventListener('keydown', (e) => { if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); changeSlide(1); } if (e.key === 'ArrowLeft') { e.preventDefault(); changeSlide(-1); } });
+let touchStartX = 0;
+document.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; });
+document.addEventListener('touchend', (e) => { const diff = touchStartX - e.changedTouches[0].clientX; if (Math.abs(diff) > 50) changeSlide(diff > 0 ? 1 : -1); });
+
+/* ═══════════════════════════════ REVEAL ANIMATION ═══════════════════════════════ */
+function animateSlide(slide) {
+  slide.querySelectorAll('.reveal').forEach((el, i) => {
+    el.style.transition = 'none';
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(16px)';
+    el.offsetHeight;
+    const delay = i * 0.08;
+    el.style.transition = `opacity 0.35s ease ${delay}s, transform 0.35s ease ${delay}s`;
+    el.style.opacity = '1';
+    el.style.transform = 'translateY(0px)';
+  });
+  animateProgressBars(slide);
+}
+
+function animateProgressBars(slide) {
+  slide.querySelectorAll('.progress-fill:not(.fill-init)').forEach((bar, i) => {
+    bar.classList.add('fill-init');
+    const target = bar.style.width;
+    bar.style.width = '0%';
+    bar.style.transition = `width 0.6s ease ${i * 0.1 + 0.4}s`;
+    bar.offsetHeight;
+    bar.style.width = target;
+  });
+}
+
+/* ═══════════════════════════════ VIDEO EMBED ═══════════════════════════════ */
+function playVideo(videoId) {
+  const container = document.getElementById('player-' + videoId);
+  if (!container) return;
+  const iframe = document.createElement('iframe');
+  iframe.src = 'https://www.youtube.com/embed/' + videoId + '?autoplay=1&rel=0';
+  iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+  iframe.allowFullscreen = true;
+  iframe.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;border:0;border-radius:13px;';
+  container.innerHTML = '';
+  container.appendChild(iframe);
+}
+
+/* ═══════════════════════════════ MOUSE SPOTLIGHT ═══════════════════════════════ */
+document.addEventListener('mousemove', (e) => {
+  const spotlight = document.getElementById('spotlight');
+  if (spotlight) {
+    spotlight.style.background = `radial-gradient(600px circle at ${e.clientX}px ${e.clientY}px, rgba(11,99,206,0.05), transparent 40%)`;
+  }
+});
+
+/* ═══════════════════════════════ PARTICLE CANVAS ═══════════════════════════════ */
+window.initParticles = function(canvas, opts) {
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  canvas.width = canvas.offsetWidth || window.innerWidth;
+  canvas.height = canvas.offsetHeight || window.innerHeight;
+  const count = opts.count || 40;
+  let mx = -1000, my = -1000;
+  const particles = Array.from({ length: count }, () => ({
+    x: Math.random() * canvas.width, y: Math.random() * canvas.height,
+    vx: (Math.random() - 0.5) * 0.3, vy: (Math.random() - 0.5) * 0.3,
+    size: Math.random() * 2.5 + 0.8, alpha: Math.random() * 0.3 + 0.08
+  }));
+  canvas.addEventListener('mousemove', (e) => { const r = canvas.getBoundingClientRect(); mx = e.clientX - r.left; my = e.clientY - r.top; });
+  canvas.addEventListener('mouseleave', () => { mx = -1000; my = -1000; });
+  (function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(p => {
+      const dx = p.x - mx, dy = p.y - my, dist = Math.sqrt(dx*dx+dy*dy);
+      if (dist < 120) { const force = (120-dist)/120*2; p.vx += (dx/dist)*force*0.1; p.vy += (dy/dist)*force*0.1; }
+      p.vx *= 0.98; p.vy *= 0.98; p.x += p.vx; p.y += p.vy;
+      if (p.x < 0) p.x = canvas.width; if (p.x > canvas.width) p.x = 0;
+      if (p.y < 0) p.y = canvas.height; if (p.y > canvas.height) p.y = 0;
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2);
+      ctx.fillStyle = `rgba(11,99,206,${p.alpha})`; ctx.fill();
+    });
+    requestAnimationFrame(animate);
+  })();
+};
+
+document.querySelectorAll('.particle-canvas').forEach(c => window.initParticles(c, { count: 45 }));
+
+/* Animate first slide */
+try { animateSlide(document.querySelector('.slide.active')); } catch(e) { console.warn(e); }
+</script>
+</body>
+</html>
