@@ -1,1 +1,784 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Activity Sheet · Session 9 · Python Variables, Input &amp; Output</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --color-bg: #f4fbff;
+  --color-surface: rgba(255,255,255,0.97);
+  --color-text: #1f2a37;
+  --color-text-secondary: #374151;
+  --color-text-muted: #5b6b7e;
+  --color-accent-1: #0b63ce;
+  --color-accent-2: #10b981;
+  --color-accent-3: #f59e0b;
+  --color-accent-red: #ef4444;
+  --color-accent-purple: #7c3aed;
+  --font-display: 'Fredoka', 'Trebuchet MS', sans-serif;
+  --font-body: 'Nunito', Arial, sans-serif;
+  --font-code: 'Fira Code', Consolas, monospace;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+@media print {
+  body { background: #fff !important; }
+  .no-print { display: none !important; }
+  .page-break { page-break-before: always; }
+  .card { box-shadow: none !important; border: 1.5px solid #d1d5db !important; }
+  .code-block { border: 1.5px solid #cbd5e1 !important; }
+}
+body {
+  font-family: var(--font-body);
+  color: var(--color-text);
+  background: var(--color-bg);
+  min-height: 100vh;
+}
+/* Print bar */
+.print-bar {
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(148,163,184,0.3);
+  padding: 10px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.print-bar .bar-title { font-family: var(--font-display); font-size: 1.05rem; font-weight: 700; color: var(--color-accent-1); }
+.print-bar .bar-sub { font-size: 0.78rem; color: var(--color-text-muted); }
+.btn-print {
+  background: var(--color-accent-1); color: #fff; border: none;
+  padding: 8px 20px; border-radius: 999px; font-family: var(--font-body);
+  font-size: 0.82rem; font-weight: 800; cursor: pointer;
+  letter-spacing: 0.06em; transition: background 0.2s, transform 0.15s;
+}
+.btn-print:hover { background: #0952b0; transform: translateY(-1px); }
+/* Page */
+.page { max-width: 920px; margin: 0 auto; padding: 32px 24px 60px; }
+/* Sheet header */
+.sheet-header {
+  background: linear-gradient(135deg, #0b63ce 0%, #10b981 100%);
+  border-radius: 20px; padding: 28px 32px 24px; color: #fff;
+  margin-bottom: 28px; position: relative; overflow: hidden;
+}
+.sheet-header::before { content: ''; position: absolute; top: -60px; right: -60px; width: 200px; height: 200px; background: rgba(255,255,255,0.08); border-radius: 50%; }
+.sheet-header::after { content: ''; position: absolute; bottom: -40px; left: -40px; width: 140px; height: 140px; background: rgba(255,255,255,0.06); border-radius: 50%; }
+.header-emoji { font-size: 2.8rem; margin-bottom: 6px; }
+.header-day { font-size: 0.75rem; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; opacity: 0.85; margin-bottom: 4px; }
+.header-title { font-family: var(--font-display); font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 700; line-height: 1.1; margin-bottom: 6px; }
+.header-sub { font-size: 0.88rem; opacity: 0.85; margin-bottom: 14px; }
+.header-pills { display: flex; gap: 8px; flex-wrap: wrap; }
+.header-pill {
+  background: rgba(255,255,255,0.22); border: 1px solid rgba(255,255,255,0.35);
+  border-radius: 999px; padding: 4px 14px; font-size: 0.72rem; font-weight: 800;
+  letter-spacing: 0.08em; text-transform: uppercase;
+}
+/* Student info */
+.student-info { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 28px; }
+@media (max-width: 600px) { .student-info { grid-template-columns: 1fr; } }
+.info-field { background: var(--color-surface); border-radius: 12px; padding: 12px 14px; border: 1.5px solid rgba(11,99,206,0.14); box-shadow: 0 2px 8px rgba(15,23,42,0.05); }
+.info-label { font-size: 0.65rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-accent-1); margin-bottom: 6px; }
+.info-line { border: none; border-bottom: 1.5px solid #cbd5e1; width: 100%; font-family: var(--font-body); font-size: 0.9rem; color: var(--color-text); background: transparent; outline: none; padding: 2px 0; }
+.info-line:focus { border-bottom-color: #0b63ce; }
+/* Section labels / titles */
+.section-label {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 5px 16px; border-radius: 999px; border: 1px solid rgba(148,163,184,0.4);
+  background: rgba(255,255,255,0.9); font-size: 0.72rem; font-weight: 800;
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-accent-1); margin-bottom: 10px;
+}
+.section-title {
+  font-family: var(--font-display); font-size: clamp(1.3rem, 2.5vw, 1.8rem);
+  font-weight: 700; margin-bottom: 16px; color: var(--color-text); line-height: 1.2;
+}
+/* Cards */
+.card {
+  background: var(--color-surface); border-radius: 16px; padding: 18px 20px;
+  box-shadow: 0 4px 18px rgba(15,23,42,0.07); border: 1px solid rgba(255,255,255,0.7);
+  margin-bottom: 16px;
+}
+.card.accent-blue { border-left: 4px solid var(--color-accent-1); }
+.card.accent-green { border-left: 4px solid var(--color-accent-2); }
+.card.accent-amber { border-left: 4px solid var(--color-accent-3); }
+.card.accent-red { border-left: 4px solid var(--color-accent-red); }
+.card.accent-purple { border-left: 4px solid var(--color-accent-purple); }
+.card-label { font-size: 0.68rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 8px; }
+.card-label.blue { color: var(--color-accent-1); }
+.card-label.green { color: #047857; }
+.card-label.amber { color: #b45309; }
+.card-label.red { color: #b91c1c; }
+.card-label.purple { color: #6d28d9; }
+/* Grids */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+@media (max-width: 680px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+/* Code blocks */
+.code-block {
+  background: #1e293b; color: #e2e8f0; border-radius: 12px; padding: 14px 18px;
+  font-family: var(--font-code); font-size: clamp(0.68rem, 1.1vw, 0.83rem);
+  line-height: 1.6; overflow-x: auto; border: 1px solid rgba(255,255,255,0.06);
+  margin-bottom: 12px; white-space: pre;
+}
+.kw { color: #93c5fd; } .nb { color: #fcd34d; } .st { color: #86efac; }
+.cm { color: #64748b; font-style: italic; } .hl { color: #fcd34d; font-weight: 700; }
+.var { color: #f0abfc; } .fn { color: #60a5fa; } .num { color: #38bdf8; }
+/* Write lines & areas */
+.write-lines { margin: 8px 0; }
+input.write-line {
+  border: none; border-bottom: 1.5px solid #cbd5e1; width: 100%;
+  margin-bottom: 10px; height: 28px; display: block; background: transparent;
+  font-family: var(--font-body); font-size: 0.88rem; color: var(--color-text); outline: none; padding: 2px 4px;
+}
+input.write-line:focus { border-bottom-color: #0b63ce; }
+input.write-line::placeholder { color: #bdc5d1; font-style: italic; }
+textarea.write-area {
+  border: 1.5px solid #cbd5e1; border-radius: 8px; width: 100%; min-height: 70px;
+  padding: 8px; font-family: var(--font-body); font-size: 0.85rem; color: var(--color-text);
+  resize: vertical; background: #f8fafc; outline: none; display: block;
+}
+textarea.write-area:focus { outline: 2px solid rgba(11,99,206,0.3); }
+textarea.write-area::placeholder { color: #bdc5d1; font-style: italic; }
+/* Blank inputs */
+input.blank-input {
+  display: inline-block; background: rgba(251,191,36,0.18); border: none;
+  border-bottom: 2px solid #f59e0b; min-width: 60px; width: 60px;
+  height: 1.1em; border-radius: 3px; vertical-align: middle; margin: 0 2px;
+  font-family: var(--font-code); font-size: inherit; color: #fcd34d;
+  text-align: center; outline: none; padding: 0 2px;
+}
+input.blank-input:focus { background: rgba(251,191,36,0.32); }
+input.blank-input.wide { min-width: 110px; width: 110px; }
+input.blank-input.narrow { min-width: 36px; width: 36px; }
+/* Dark code write */
+textarea.dark-code-write {
+  background: #1e293b; border-radius: 12px; padding: 14px 18px; width: 100%;
+  font-family: var(--font-code); font-size: clamp(0.7rem,1.1vw,0.84rem); line-height: 1.7;
+  border: 1px solid rgba(255,255,255,0.06); resize: vertical; display: block;
+  outline: none; color: #e2e8f0; box-sizing: border-box;
+}
+textarea.dark-code-write:focus { outline: 2px solid rgba(124,58,237,0.4); }
+/* Timeline */
+.timeline { position: relative; padding-left: 22px; }
+.timeline::before { content: ''; position: absolute; left: 8px; top: 4px; bottom: 4px; width: 3px; border-radius: 999px; background: linear-gradient(to bottom, #0b63ce, #10b981); }
+.timeline-step { position: relative; margin-bottom: 12px; }
+.timeline-dot {
+  position: absolute; left: -15px; top: 4px; width: 12px; height: 12px;
+  border-radius: 999px; border: 2px solid #f4fbff; background: #0b63ce;
+  box-shadow: 0 0 0 3px rgba(11,99,206,0.2);
+}
+.timeline-dot.green { background: #10b981; }
+.timeline-dot.amber { background: #f59e0b; }
+.timeline-dot.red { background: #ef4444; }
+.timeline-dot.purple { background: #7c3aed; }
+/* Tip boxes */
+.tip-box { border-radius: 10px; padding: 10px 14px; font-size: 0.8rem; line-height: 1.5; margin-top: 10px; }
+.tip-box.blue { background: rgba(11,99,206,0.07); color: #1e40af; }
+.tip-box.green { background: rgba(16,185,129,0.07); color: #065f46; }
+.tip-box.amber { background: rgba(245,158,11,0.07); color: #92400e; }
+.tip-box.purple { background: rgba(124,58,237,0.07); color: #5b21b6; }
+/* Level badges */
+.level-badge {
+  display: inline-flex; align-items: center; gap: 6px; padding: 4px 14px;
+  border-radius: 999px; font-size: 0.72rem; font-weight: 800;
+  letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 8px;
+}
+.level-a { background: linear-gradient(135deg, #10b981, #059669); color: #fff; }
+.level-b { background: linear-gradient(135deg, #0b63ce, #2563eb); color: #fff; }
+.level-c { background: linear-gradient(135deg, #7c3aed, #ef4444); color: #fff; }
+/* Rhythm badge */
+.rhythm-badge {
+  display: inline-flex; align-items: center; gap: 6px; padding: 4px 14px;
+  border-radius: 999px; font-size: 0.72rem; font-weight: 800;
+  letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 8px;
+}
+.rhythm-warmup { background: linear-gradient(135deg,#f59e0b,#d97706); color: #fff; }
+.rhythm-mini { background: linear-gradient(135deg,#0b63ce,#2563eb); color: #fff; }
+.rhythm-build { background: linear-gradient(135deg,#10b981,#059669); color: #fff; }
+.rhythm-break { background: linear-gradient(135deg,#ef4444,#dc2626); color: #fff; }
+.rhythm-open { background: linear-gradient(135deg,#7c3aed,#6d28d9); color: #fff; }
+.rhythm-share { background: linear-gradient(135deg,#0b63ce,#10b981); color: #fff; }
+/* Check list */
+.check-list { list-style: none; padding: 0; }
+.check-list li { display: flex; align-items: flex-start; gap: 8px; font-size: 0.85rem; color: var(--color-text-secondary); margin-bottom: 8px; line-height: 1.45; }
+.check-list li .box { flex-shrink: 0; width: 17px; height: 17px; border: 2px solid #94a3b8; border-radius: 4px; margin-top: 1px; background: #fff; display: inline-block; }
+/* Rubric table */
+table.rubric { width: 100%; border-collapse: collapse; font-size: 0.82rem; margin-top: 8px; }
+table.rubric th { background: #1e293b; color: #e2e8f0; padding: 8px 10px; text-align: left; font-weight: 700; letter-spacing: 0.05em; }
+table.rubric td { padding: 8px 10px; border-bottom: 1px solid #e2e8f0; vertical-align: top; color: var(--color-text-secondary); }
+table.rubric tr:nth-child(even) td { background: rgba(241,245,249,0.6); }
+table.rubric td:first-child { font-weight: 700; color: var(--color-text); }
+table.rubric .pts { font-family: var(--font-code); font-size: 0.75rem; font-weight: 800; color: var(--color-accent-1); white-space: nowrap; }
+/* IO arrows */
+.io-row { display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; }
+.io-box {
+  border: 2px solid; border-radius: 12px; padding: 10px 18px;
+  text-align: center; min-width: 110px;
+}
+.io-box.input { border-color: #3b82f6; background: #dbeafe; }
+.io-box.process { border-color: #94a3b8; background: #f1f5f9; }
+.io-box.output { border-color: #22c55e; background: #dcfce7; }
+.io-icon { font-size: 1.4rem; }
+.io-label { font-weight: 800; font-size: 0.88rem; }
+.io-sub { font-size: 0.76rem; color: #374151; }
+.io-arrow { font-size: 1.5rem; color: #0b63ce; line-height: 1; }
+/* Var box */
+.var-demo { display: flex; flex-direction: column; gap: 8px; }
+.var-box {
+  border: 3px solid; border-radius: 14px; padding: 8px 14px;
+  text-align: center; font-weight: 800;
+}
+.var-name-lbl { font-size: 0.65rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 2px; }
+.var-name { font-size: 1rem; font-family: var(--font-code); }
+.var-val { font-size: 0.72rem; color: #374151; }
+/* Brain break card */
+.break-card {
+  background: linear-gradient(135deg, #fdf4e3, #fff7e6);
+  border: 2px dashed rgba(245,158,11,0.4); border-radius: 18px; padding: 18px 22px;
+}
+/* Divider */
+.divider { border: none; border-top: 2px dashed #dde6f0; margin: 28px 0; }
+/* Grad text */
+.grad-text { background: linear-gradient(135deg,#7c3aed,#0b63ce,#10b981); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+/* Sheet footer */
+.sheet-footer {
+  margin-top: 40px; padding: 16px 20px; border-radius: 12px;
+  background: rgba(11,99,206,0.05); border: 1px solid rgba(11,99,206,0.12);
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; flex-wrap: wrap; font-size: 0.76rem; color: var(--color-text-muted);
+}
+.sheet-footer strong { color: var(--color-text); }
+p, li { font-size: 0.88rem; color: var(--color-text-secondary); line-height: 1.55; }
+strong { color: var(--color-text); }
+code { background: #e0f2ff; padding: 1px 6px; border-radius: 4px; font-family: var(--font-code); font-size: 0.82em; color: #0b63ce; }
+.mb-1 { margin-bottom: 6px; } .mb-2 { margin-bottom: 10px; } .mb-3 { margin-bottom: 14px; }
+.mt-2 { margin-top: 10px; } .mt-3 { margin-top: 14px; }
+.text-center { text-align: center; }
+.text-muted { color: var(--color-text-muted); font-size: 0.78rem; }
+/* Draw canvas */
+.draw-wrap { position: relative; margin-bottom: 6px; }
+.draw-toolbar { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; flex-wrap: wrap; }
+.draw-toolbar label { font-size: 0.7rem; font-weight: 700; color: #64748b; }
+.draw-color { width: 28px; height: 28px; border: none; border-radius: 6px; cursor: pointer; padding: 0; background: transparent; }
+.draw-size { width: 70px; accent-color: #7c3aed; cursor: pointer; }
+.draw-clear { background: #fee2e2; color: #b91c1c; border: none; border-radius: 6px; padding: 3px 10px; font-size: 0.72rem; font-weight: 800; cursor: pointer; letter-spacing: 0.05em; }
+.draw-clear:hover { background: #fecaca; }
+canvas.draw-canvas { display: block; width: 100%; border-radius: 8px; cursor: crosshair; touch-action: none; background: #faf5ff; }
+canvas.draw-canvas.white-bg { background: #fff; }
+</style>
+</head>
+<body>
 
+<!-- PRINT BAR -->
+<div class="print-bar no-print">
+  <div>
+    <div class="bar-title">Session 9 · In-Class Activity Sheet</div>
+    <div class="bar-sub">Python Variables, Input &amp; Output · Tiered · Ages 7–13</div>
+  </div>
+  <button class="btn-print" onclick="window.print()">🖨 Print / Save as PDF</button>
+</div>
+
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="sheet-header">
+    <div class="header-emoji">🐍</div>
+    <div class="header-day">Session 9 · Mon Jul 14 · Week 3 · In-Class Activity Sheet</div>
+    <div class="header-title">Python Variables, Input &amp; Output</div>
+    <div class="header-sub">Follow the Daily Rhythm — warm-up to share-out — through all 6 blocks</div>
+    <div class="header-pills">
+      <span class="header-pill">75–110 min</span>
+      <span class="header-pill">Python</span>
+      <span class="header-pill">Ages 7–13</span>
+      <span class="header-pill">3 Tiers</span>
+      <span class="header-pill">🤖 AI Moment</span>
+    </div>
+  </div>
+
+  <!-- STUDENT INFO -->
+  <div class="student-info">
+    <div class="info-field">
+      <div class="info-label">Your Name</div>
+      <input class="info-line" type="text" placeholder="First Last">
+    </div>
+    <div class="info-field">
+      <div class="info-label">Date</div>
+      <input class="info-line" type="text" placeholder="July 14, 2026">
+    </div>
+    <div class="info-field">
+      <div class="info-label">Section / Period</div>
+      <input class="info-line" type="text" placeholder="Section 1 / 2 / 3">
+    </div>
+  </div>
+
+  <!-- HOW THIS SHEET WORKS -->
+  <div class="section-label">Before You Begin</div>
+  <div class="section-title">Today's Daily Rhythm</div>
+  <div class="grid-2 mb-3">
+    <div class="card accent-blue">
+      <div class="card-label blue">Your Mission</div>
+      <p class="mb-2">Work through each block of the daily rhythm in order. Every student follows the same rhythm — the tier cards in Block 5 let you choose your own path.</p>
+      <div class="timeline">
+        <div class="timeline-step"><div class="timeline-dot amber"></div><p><strong>Block 1</strong> — Warm-Up (10 min, no screen)</p></div>
+        <div class="timeline-step"><div class="timeline-dot"></div><p><strong>Block 2</strong> — Mini-Lesson Check (15–20 min)</p></div>
+        <div class="timeline-step"><div class="timeline-dot green"></div><p><strong>Block 3</strong> — Guided Build (20 min)</p></div>
+        <div class="timeline-step"><div class="timeline-dot red"></div><p><strong>Block 4</strong> — Brain Break (5 min)</p></div>
+        <div class="timeline-step"><div class="timeline-dot purple"></div><p><strong>Block 5</strong> — Open Build · Tiered (30–40 min)</p></div>
+        <div class="timeline-step" style="margin-bottom:0"><div class="timeline-dot" style="background:#8b5cf6"></div><p><strong>Block 6</strong> — Share-Out (10 min)</p></div>
+      </div>
+    </div>
+    <div class="card accent-blue">
+      <div class="card-label blue">Key Ideas for Today</div>
+      <ul style="list-style:disc;padding-left:18px;line-height:1.9">
+        <li><strong>Variable</strong> — a named box in the computer's memory</li>
+        <li><strong>String</strong> — text data, always inside quotes</li>
+        <li><strong>Integer</strong> — a whole number, no quotes</li>
+        <li><strong>input()</strong> — asks the user to type something</li>
+        <li><strong>print()</strong> — shows something on the screen</li>
+        <li><strong>f-string</strong> — fills variables into a sentence automatically</li>
+      </ul>
+      <div class="tip-box blue mt-2"><strong>AI connection:</strong> A chatbot is just <em>input → process → output</em> — the same shape as today's Mad Libs! 🤖</div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- BLOCK 1 — WARM-UP -->
+  <div class="section-label"><span class="rhythm-warmup">⏱ Block 1</span></div>
+  <div class="section-title">Warm-Up — No Screens · 10 min</div>
+
+  <div class="card accent-amber mb-2">
+    <div class="card-label amber">Puzzle 1 — What's in the Variable?</div>
+    <p class="mb-2">Look at each Python assignment below. Write the <strong>value</strong> stored in the variable after each line runs, then answer the question.</p>
+    <div class="code-block"><span class="kw">name</span>  <span class="num">=</span> <span class="st">"Jordan"</span>
+<span class="kw">score</span> <span class="num">=</span> <span class="num">10</span>
+<span class="kw">score</span> <span class="num">=</span> score <span class="num">+</span> <span class="num">5</span>
+<span class="kw">level</span> <span class="num">=</span> <span class="num">3</span></div>
+    <div class="grid-2">
+      <div>
+        <p style="font-size:0.83rem;font-weight:700;color:#b45309;margin-bottom:6px">Fill in the value stored in each variable:</p>
+        <table style="width:100%;font-size:0.83rem;border-collapse:collapse">
+          <thead><tr><th style="background:#1e293b;color:#e2e8f0;padding:6px 10px;text-align:left">Variable</th><th style="background:#1e293b;color:#e2e8f0;padding:6px 10px;text-align:left">Value stored</th></tr></thead>
+          <tbody>
+            <tr><td style="padding:6px 10px;border-bottom:1px solid #e2e8f0"><code>name</code></td><td style="padding:6px 10px;border-bottom:1px solid #e2e8f0"><input type="text" style="width:100%;border:none;border-bottom:2px solid #f59e0b;text-align:center;font-family:var(--font-code);font-weight:700;color:#374151;background:transparent;outline:none" placeholder="?"></td></tr>
+            <tr><td style="padding:6px 10px;border-bottom:1px solid #e2e8f0"><code>score</code> (after line 3)</td><td style="padding:6px 10px;border-bottom:1px solid #e2e8f0"><input type="text" style="width:100%;border:none;border-bottom:2px solid #f59e0b;text-align:center;font-family:var(--font-code);font-weight:700;color:#374151;background:transparent;outline:none" placeholder="?"></td></tr>
+            <tr><td style="padding:6px 10px"><code>level</code></td><td style="padding:6px 10px"><input type="text" style="width:100%;border:none;border-bottom:2px solid #f59e0b;text-align:center;font-family:var(--font-code);font-weight:700;color:#374151;background:transparent;outline:none" placeholder="?"></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <p style="font-size:0.83rem;font-weight:700;color:#0b63ce;margin-bottom:6px">Explain to your neighbor:</p>
+        <p style="font-size:0.82rem;color:#374151;margin-bottom:8px">Why does <code>score</code> end up as <strong>15</strong> and not <strong>10</strong>? (hint: line 3 runs <em>after</em> line 2)</p>
+        <textarea class="write-area" style="min-height:70px" placeholder="Because Python runs line by line, and on line 3..."></textarea>
+      </div>
+    </div>
+  </div>
+
+  <div class="card accent-blue mb-3">
+    <div class="card-label blue">Puzzle 2 — Spot the Difference: String vs. Integer</div>
+    <p class="mb-2">Circle <strong>S</strong> if the value is a String or <strong>I</strong> if it is an Integer. Then answer: can Python do math on strings? Why not?</p>
+    <div class="grid-2">
+      <div>
+        <table style="width:100%;font-size:0.83rem;border-collapse:collapse">
+          <thead><tr><th style="background:#1e293b;color:#e2e8f0;padding:6px 10px;text-align:left">Value</th><th style="background:#1e293b;color:#e2e8f0;padding:6px 10px;text-align:center;width:80px">Type</th></tr></thead>
+          <tbody>
+            <tr><td style="padding:6px 10px;border-bottom:1px solid #e2e8f0"><code>"42"</code></td><td style="padding:6px 10px;border-bottom:1px solid #e2e8f0;font-weight:800;color:#0b63ce;text-align:center">S &nbsp;&nbsp; I</td></tr>
+            <tr><td style="padding:6px 10px;border-bottom:1px solid #e2e8f0"><code>42</code></td><td style="padding:6px 10px;border-bottom:1px solid #e2e8f0;font-weight:800;color:#0b63ce;text-align:center">S &nbsp;&nbsp; I</td></tr>
+            <tr><td style="padding:6px 10px;border-bottom:1px solid #e2e8f0"><code>"hello"</code></td><td style="padding:6px 10px;border-bottom:1px solid #e2e8f0;font-weight:800;color:#0b63ce;text-align:center">S &nbsp;&nbsp; I</td></tr>
+            <tr><td style="padding:6px 10px"><code>7</code></td><td style="padding:6px 10px;font-weight:800;color:#0b63ce;text-align:center">S &nbsp;&nbsp; I</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <p style="font-size:0.83rem;font-weight:700;color:#0b63ce;margin-bottom:6px">Why can't Python do math on a string?</p>
+        <div class="write-lines">
+          <input class="write-line" type="text" placeholder="Because strings are...">
+          <input class="write-line" type="text" placeholder="...">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- BLOCK 2 — MINI-LESSON CHECK -->
+  <div class="section-label"><span class="rhythm-mini">📺 Block 2</span></div>
+  <div class="section-title">Mini-Lesson Check — 15–20 min</div>
+
+  <div class="card accent-blue mb-2">
+    <div class="card-label blue">Input → Process → Output Flow</div>
+    <p class="mb-2">Label each box in the diagram below. Then fill in what each part does in a <strong>Mad Libs program</strong>.</p>
+    <div class="io-row mb-2" style="margin-bottom:16px">
+      <div class="io-box input">
+        <div class="io-icon">⌨️</div>
+        <div class="io-label">INPUT</div>
+        <div class="io-sub">User types</div>
+        <div style="margin-top:6px"><code>input()</code></div>
+      </div>
+      <div class="io-arrow">→</div>
+      <div class="io-box process">
+        <div class="io-icon">🔧</div>
+        <div class="io-label">PROCESS</div>
+        <div class="io-sub">Python thinks</div>
+        <div style="margin-top:6px"><code>variable = ...</code></div>
+      </div>
+      <div class="io-arrow">→</div>
+      <div class="io-box output">
+        <div class="io-icon">🖥</div>
+        <div class="io-label">OUTPUT</div>
+        <div class="io-sub">Screen shows</div>
+        <div style="margin-top:6px"><code>print()</code></div>
+      </div>
+    </div>
+    <div class="grid-2">
+      <div>
+        <p style="font-size:0.83rem;font-weight:700;color:#0b63ce;margin-bottom:4px">In our Mad Libs, what is the INPUT?</p>
+        <input class="write-line" type="text" placeholder="The user types...">
+        <p style="font-size:0.83rem;font-weight:700;color:#047857;margin-top:8px;margin-bottom:4px">What is the OUTPUT?</p>
+        <input class="write-line" type="text" placeholder="Python prints...">
+      </div>
+      <div>
+        <div class="tip-box blue">
+          <strong>🤖 AI Moment:</strong> A real chatbot like ChatGPT does the same thing — takes your input, processes it with billions of examples, and outputs a reply. Today's Mad Libs is the very foundation of that!
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card accent-green mb-3">
+    <div class="card-label green">Three Ways to Format Output — Match Each</div>
+    <p class="mb-2">Draw a line from each code snippet to the correct method name. Then circle the one you will use in your Mad Libs today.</p>
+    <div class="grid-2">
+      <div>
+        <div class="code-block"><span class="fn">print</span>(<span class="st">"Hi, "</span> + <span class="var">name</span>)</div>
+        <div class="code-block"><span class="fn">print</span>(<span class="st">"Hi,"</span>, <span class="var">name</span>)</div>
+        <div class="code-block"><span class="fn">print</span>(<span class="st">f"Hi, </span><span class="kw">{name}</span><span class="st">!"</span>)</div>
+      </div>
+      <div style="display:flex;flex-direction:column;justify-content:space-around;padding:8px 0">
+        <div style="background:#e0f2ff;border-radius:8px;padding:8px 12px;font-weight:700;font-size:0.85rem;color:#0b63ce;margin-bottom:8px">A. Concatenation (glue with +)</div>
+        <div style="background:#d1fae5;border-radius:8px;padding:8px 12px;font-weight:700;font-size:0.85rem;color:#047857;margin-bottom:8px">B. Commas in print</div>
+        <div style="background:#ede9fe;border-radius:8px;padding:8px 12px;font-weight:700;font-size:0.85rem;color:#6d28d9">C. f-string ⭐ Recommended</div>
+      </div>
+    </div>
+    <p class="mt-2" style="font-size:0.83rem;color:#374151">Which method is <strong>easiest to read</strong> when your sentence has 3+ variables? <input class="write-line" type="text" placeholder="I think... because..."></p>
+  </div>
+
+  <hr class="divider">
+
+  <!-- BLOCK 3 — GUIDED BUILD -->
+  <div class="section-label"><span class="rhythm-build">🔨 Block 3</span></div>
+  <div class="section-title">Guided Build — Mad Libs Generator · 20 min</div>
+
+  <div class="card mb-2">
+    <div class="card-label blue">Step-by-Step — Build Together</div>
+    <p class="mb-2">Open <a href="https://playcode.io/python-playground" target="_blank" style="color:#0b63ce">playcode.io/python-playground</a>. Type each step one at a time and run your code!</p>
+    <div class="timeline">
+      <div class="timeline-step"><div class="timeline-dot amber"></div>
+        <p><strong>Step 1 — Ask for an animal:</strong></p>
+        <div class="code-block" style="margin:4px 0"><span class="var">animal</span> = <span class="fn">input</span>(<span class="st">"Name an animal: "</span>)</div>
+        <p style="font-size:0.8rem;color:#374151">✏️ Run it. What happens when you press Play?</p>
+        <input class="write-line" type="text" placeholder="The program...">
+      </div>
+      <div class="timeline-step"><div class="timeline-dot"></div>
+        <p><strong>Step 2 — Ask for a verb (-ing):</strong></p>
+        <div class="code-block" style="margin:4px 0"><span class="var">action</span> = <span class="fn">input</span>(<span class="st">"A verb (-ing): "</span>)</div>
+      </div>
+      <div class="timeline-step"><div class="timeline-dot"></div>
+        <p><strong>Step 3 — Ask for a place:</strong></p>
+        <div class="code-block" style="margin:4px 0"><span class="var">place</span> = <span class="fn">input</span>(<span class="st">"A place: "</span>)</div>
+      </div>
+      <div class="timeline-step"><div class="timeline-dot green"></div>
+        <p><strong>Step 4 — Print the story using an f-string:</strong></p>
+        <div class="code-block" style="margin:4px 0"><span class="fn">print</span>(<span class="st">f"One day a </span><span class="kw">{animal}</span><span class="st"> was </span><span class="kw">{action}</span><span class="st"> in </span><span class="kw">{place}</span><span class="st">."</span>)</div>
+      </div>
+      <div class="timeline-step" style="margin-bottom:0"><div class="timeline-dot green"></div>
+        <p><strong>Step 5 — Run it and write your silly story here:</strong></p>
+        <input class="write-line" type="text" placeholder="My story: One day a _________ was ___________ in ___________...">
+      </div>
+    </div>
+    <div class="tip-box blue mt-2">✅ <strong>Guaranteed win:</strong> If your story printed on screen, you just wrote a working Python program with <em>input</em>, <em>variables</em>, and <em>output</em>!</div>
+  </div>
+
+  <div class="card accent-green mb-3">
+    <div class="card-label green">Upgrade — Add Your Name!</div>
+    <p class="mb-2">Add these two lines to make the story personal. Write the result below:</p>
+    <div class="code-block"><span class="var">hero</span>  = <span class="fn">input</span>(<span class="st">"Hero's name: "</span>)
+<span class="fn">print</span>(<span class="st">f"</span><span class="kw">{hero}</span><span class="st"> saved the day!"</span>)</div>
+    <p style="font-size:0.83rem;color:#374151;margin-bottom:6px">What prints when you type your own name as the hero?</p>
+    <input class="write-line" type="text" placeholder="It printed: ____________________ saved the day!">
+  </div>
+
+  <hr class="divider page-break">
+
+  <!-- BLOCK 4 — BRAIN BREAK -->
+  <div class="section-label"><span class="rhythm-break">💃 Block 4</span></div>
+  <div class="section-title">Brain Break — Human Variable Game · 5 min</div>
+
+  <div class="break-card mb-3">
+    <p style="font-size:1rem;font-weight:800;color:#78350f;margin-bottom:12px">🧠 Stand up and become a variable!</p>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div style="background:rgba(255,255,255,0.7);border-radius:10px;padding:8px 14px;font-size:0.9rem;color:#374151"><strong>Round 1 — String:</strong> Stand up and say your name out loud → <code>name = "You"</code></div>
+      <div style="background:rgba(255,255,255,0.7);border-radius:10px;padding:8px 14px;font-size:0.9rem;color:#374151"><strong>Round 2 — Integer:</strong> Hold up fingers showing how many pets you have → <code>pets = ?</code></div>
+      <div style="background:rgba(255,255,255,0.7);border-radius:10px;padding:8px 14px;font-size:0.9rem;color:#374151"><strong>Round 3 — Reassign:</strong> Swap seats with someone — you just changed the value of <code>my_seat</code>!</div>
+      <div style="background:rgba(255,255,255,0.7);border-radius:10px;padding:8px 14px;font-size:0.9rem;color:#374151"><strong>Bonus:</strong> Teacher calls <code>print(name)</code> — everyone shout your name at once!</div>
+    </div>
+    <div class="tip-box amber mt-2">You just <em>became</em> variables — a named container (you) holding a value (your name/number) that can be reassigned (swapping seats)!</div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- BLOCK 5 — OPEN BUILD (TIERED) -->
+  <div class="section-label"><span class="rhythm-open">🚀 Block 5</span></div>
+  <div class="section-title">Open Build — Choose Your Tier · 30–40 min</div>
+
+  <div class="card accent-blue mb-2">
+    <div class="card-label blue">Instructions — Pick Your Tier</div>
+    <div class="grid-3">
+      <div style="text-align:center;padding:8px">
+        <div style="font-size:1.8rem;margin-bottom:4px">🌱</div>
+        <span class="level-badge level-a">Tier A — Foundations</span>
+        <p style="font-size:0.82rem;color:#374151;margin-top:4px">Grades 1–3 / No experience</p>
+      </div>
+      <div style="text-align:center;padding:8px">
+        <div style="font-size:1.8rem;margin-bottom:4px">⭐</div>
+        <span class="level-badge level-b">Tier B — Core</span>
+        <p style="font-size:0.82rem;color:#374151;margin-top:4px">Grades 3–5 / Some Scratch</p>
+      </div>
+      <div style="text-align:center;padding:8px">
+        <div style="font-size:1.8rem;margin-bottom:4px">🚀</div>
+        <span class="level-badge level-c">Tier C — Accelerated</span>
+        <p style="font-size:0.82rem;color:#374151;margin-top:4px">Grades 6–9 / Python-curious</p>
+      </div>
+    </div>
+    <p style="font-size:0.8rem;color:#374151;margin-top:8px;text-align:center">Circle your tier: &nbsp; <strong>Tier A</strong> &nbsp;&nbsp; <strong>Tier B</strong> &nbsp;&nbsp; <strong>Tier C</strong></p>
+  </div>
+
+  <!-- TIER A -->
+  <div class="card mb-2" style="border-top:4px solid #10b981">
+    <div style="margin-bottom:8px"><span class="level-badge level-a">🌱 Tier A — Add 2 More Inputs</span></div>
+    <div class="grid-2">
+      <div>
+        <div class="card-label green">What to do</div>
+        <p class="mb-2">Start from the guided build. Add <strong>2 more input lines</strong> to collect a color and an adjective, then print a 3-sentence story. Use <em>commas in print</em> — no f-strings needed yet.</p>
+        <ul class="check-list mt-2">
+          <li><span class="box"></span>I have at least 5 variables (animal, action, place, color, adjective)</li>
+          <li><span class="box"></span>I use <code>print("word1", variable)</code> style (commas)</li>
+          <li><span class="box"></span>My story has 3 sentences that make sense</li>
+          <li><span class="box"></span>I can read my story out loud without errors</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card-label green">Starter — add these lines</div>
+        <div class="code-block" style="font-size:0.72rem"><span class="cm"># Add after your 3 existing inputs:</span>
+<span class="var">color</span>    = <span class="fn">input</span>(<span class="st">"A color: "</span>)
+<span class="var">adj</span>      = <span class="fn">input</span>(<span class="st">"An adjective: "</span>)
+
+<span class="cm"># Then add 2 more print lines:</span>
+<span class="fn">print</span>(<span class="st">"The"</span>, <span class="var">animal</span>, <span class="st">"was very"</span>, <span class="var">adj</span>)
+<span class="fn">print</span>(<span class="st">"Its fur was"</span>, <span class="var">color</span>)</div>
+        <p style="font-size:0.8rem;color:#374151;margin-top:8px;font-weight:700">Paste your full story here:</p>
+        <textarea class="write-area" style="min-height:80px" placeholder="My story printed: ..."></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- TIER B -->
+  <div class="card mb-2" style="border-top:4px solid #0b63ce">
+    <div style="margin-bottom:8px"><span class="level-badge level-b">⭐ Tier B — Full Mad Libs with f-strings</span></div>
+    <div class="grid-2">
+      <div>
+        <div class="card-label blue">What to do</div>
+        <p class="mb-2">Build a <strong>fresh Mad Libs</strong> with at least <strong>4 inputs</strong>, use f-strings throughout, write at least <strong>3 sentences</strong>, and give your program a title printed at the top.</p>
+        <ul class="check-list mt-2">
+          <li><span class="box"></span>At least 4 <code>input()</code> calls, each stored in a variable</li>
+          <li><span class="box"></span>Every <code>print()</code> uses an f-string <code>f"..."</code></li>
+          <li><span class="box"></span>Program prints a title at the top (e.g., <code>print("=== My Space Story ===")</code>)</li>
+          <li><span class="box"></span>Story has at least 3 sentences</li>
+          <li><span class="box"></span>I can run it twice with different words</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card-label blue">Write your code here</div>
+        <textarea class="dark-code-write" style="min-height:180px" spellcheck="false" placeholder="# Tier B Mad Libs
+print('=== My ___ Story ===')
+
+noun   = input('A noun: ')
+verb   = input('A verb (-ing): ')
+place  = input('A place: ')
+number = input('A number: ')
+
+print(f'Once there was a {noun}...')
+print(f'It spent all day {verb}...')
+print(f'Finally it reached {place}!')"></textarea>
+        <p style="font-size:0.8rem;color:#374151;margin-top:6px;font-weight:700">One thing you'd change or add:</p>
+        <input class="write-line" type="text" placeholder="I would add...">
+      </div>
+    </div>
+  </div>
+
+  <!-- TIER C -->
+  <div class="card accent-purple mb-3" style="border-top:4px solid #7c3aed">
+    <div style="margin-bottom:8px"><span class="level-badge level-c">🚀 Tier C — Number Input + Math + upper()</span></div>
+    <div class="grid-2">
+      <div>
+        <div class="card-label purple">What to do</div>
+        <p class="mb-2">Build a Mad Libs that adds a <strong>number input</strong> converted with <code>int()</code>, does <strong>math on it</strong> in the story, and uses <strong><code>.upper()</code></strong> on at least one string variable.</p>
+        <ul class="check-list mt-2">
+          <li><span class="box"></span>At least 1 input wrapped in <code>int(input(...))</code></li>
+          <li><span class="box"></span>Math used in an f-string (e.g., <code>{n * 2}</code>, <code>{n + 100}</code>)</li>
+          <li><span class="box"></span><code>.upper()</code> called on a string variable</li>
+          <li><span class="box"></span>Program has at least 4 sentences</li>
+          <li><span class="box"></span>Bonus: Use <code>print("=" * 30)</code> for a line divider</li>
+        </ul>
+        <p style="font-size:0.8rem;font-weight:700;color:#6d28d9;margin:10px 0 4px">What does <code>int()</code> do? Why is it needed?</p>
+        <textarea class="write-area" style="min-height:55px" placeholder="int() converts a string to a whole number because input() always..."></textarea>
+      </div>
+      <div>
+        <div class="card-label purple">Write your code here</div>
+        <textarea class="dark-code-write" style="min-height:200px" spellcheck="false" placeholder="# Tier C Mad Libs
+name   = input('Hero name: ')
+n      = int(input('A number: '))
+place  = input('A place: ')
+item   = input('A magical item: ')
+
+print(f'{name.upper()} arrived at {place}!')
+print(f'They carried {n} pieces of {item}.')
+print(f'After {n * 2} days, they became a legend.')
+print('=' * 30)"></textarea>
+        <p style="font-size:0.8rem;font-weight:700;color:#6d28d9;margin:8px 0 4px">What does <code>.upper()</code> do to a string?</p>
+        <input class="write-line" type="text" placeholder="It changes all letters to...">
+        <p style="font-size:0.8rem;font-weight:700;color:#6d28d9;margin:8px 0 4px">Challenge: What happens if you type a word instead of a number?</p>
+        <input class="write-line" type="text" placeholder="Python gives a __________ error because...">
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- BLOCK 6 — SHARE-OUT -->
+  <div class="section-label"><span class="rhythm-share">💬 Block 6</span></div>
+  <div class="section-title">Share-Out — Show Your Neighbor · 10 min</div>
+
+  <div class="card mb-3">
+    <div class="card-label blue">Pair Share — Always Opt-In, Always Warm</div>
+    <div class="grid-2">
+      <div>
+        <p class="mb-2">Turn to your neighbor. Run your Mad Libs and let them type the words. Then swap!</p>
+        <p style="font-size:0.83rem;font-weight:700;color:#374151;margin-bottom:6px">3 questions to ask your partner:</p>
+        <ul style="list-style:disc;padding-left:18px;font-size:0.83rem;color:#374151;line-height:1.8">
+          <li>What variable names did you choose — and why?</li>
+          <li>Did you use f-strings or commas? Which feels easier?</li>
+          <li>What's one thing you'd add to your Mad Libs?</li>
+        </ul>
+      </div>
+      <div>
+        <p style="font-size:0.83rem;font-weight:700;color:#0b63ce;margin-bottom:6px">Record your partner's best story sentence here:</p>
+        <textarea class="write-area" style="min-height:70px" placeholder="My partner's funniest line was..."></textarea>
+        <p style="font-size:0.8rem;font-weight:700;color:#047857;margin:8px 0 4px">One thing you'd like to add to <em>your own</em> program after seeing theirs:</p>
+        <input class="write-line" type="text" placeholder="I want to try...">
+      </div>
+    </div>
+    <div class="tip-box blue mt-2">🐛 <strong>Bugs count too!</strong> If something went wrong — share it! The best programmers debug the most. <em>It's not a mistake, it's a feature you haven't solved yet.</em></div>
+  </div>
+
+  <!-- EXIT TICKET / REFLECTION -->
+  <hr class="divider">
+  <div class="section-label">Reflect</div>
+  <div class="section-title">Exit Ticket &amp; Growth Check</div>
+
+  <div class="card mb-3">
+    <div class="grid-2">
+      <div>
+        <div class="card-label blue">Exit Ticket — 1–2 sentences each</div>
+        <p style="font-size:0.8rem;font-weight:700;color:#374151;margin:8px 0 3px">1. What is a variable? Give an example from today.</p>
+        <div class="write-lines"><input class="write-line" type="text" placeholder="A variable is..."><input class="write-line" type="text" placeholder="Example: ..."></div>
+        <p style="font-size:0.8rem;font-weight:700;color:#374151;margin:8px 0 3px">2. What does <code>input()</code> do?</p>
+        <div class="write-lines"><input class="write-line" type="text" placeholder="input() pauses the program and..."></div>
+        <p style="font-size:0.8rem;font-weight:700;color:#374151;margin:8px 0 3px">3. How is a Mad Libs similar to a chatbot?</p>
+        <div class="write-lines"><input class="write-line" type="text" placeholder="Both take input and..."><input class="write-line" type="text" placeholder="..."></div>
+      </div>
+      <div>
+        <div class="card-label green">Growth Mindset Check</div>
+        <p style="font-size:0.8rem;color:#374151;margin-bottom:8px">Circle the one that describes you today:</p>
+        <div style="display:flex;flex-direction:column;gap:7px;font-size:0.83rem;color:#374151">
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="radio" name="mood" style="accent-color:#0b63ce"> I got stuck but kept trying</label>
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="radio" name="mood" style="accent-color:#0b63ce"> I figured something out by myself</label>
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="radio" name="mood" style="accent-color:#0b63ce"> I helped a classmate understand</label>
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="radio" name="mood" style="accent-color:#0b63ce"> I finished early and tried Tier C</label>
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="radio" name="mood" style="accent-color:#0b63ce"> The f-string idea finally clicked!</label>
+        </div>
+        <p style="font-size:0.8rem;font-weight:700;color:#6d28d9;margin:12px 0 4px">One thing I still want to learn:</p>
+        <input class="write-line" type="text" placeholder="...">
+        <p style="font-size:0.8rem;font-weight:700;color:#047857;margin:8px 0 4px">One thing I did really well today:</p>
+        <input class="write-line" type="text" placeholder="...">
+      </div>
+    </div>
+  </div>
+
+  <!-- RUBRIC -->
+  <div class="section-label">Scoring</div>
+  <div class="section-title">Rubric &amp; Points</div>
+  <div class="card mb-3">
+    <table class="rubric">
+      <thead><tr><th>Block</th><th>What to Look For</th><th>Points</th></tr></thead>
+      <tbody>
+        <tr><td>Block 1 — Warm-Up</td><td>Variable trace correct; String vs. Integer correctly identified with explanation</td><td class="pts">3 pts</td></tr>
+        <tr><td>Block 2 — Mini-Lesson</td><td>I/P/O diagram filled; format methods matched; preference explained</td><td class="pts">3 pts</td></tr>
+        <tr><td>Block 3 — Guided Build</td><td>Steps completed; story recorded; upgrade attempted</td><td class="pts">4 pts</td></tr>
+        <tr><td>Block 5 — Open Build</td><td>Chosen tier fully completed; code written with variables &amp; print; checklist items met</td><td class="pts">7 pts</td></tr>
+        <tr><td>Block 6 — Share-Out</td><td>Partner story recorded; reflection answered thoughtfully</td><td class="pts">2 pts</td></tr>
+        <tr><td>Exit Ticket</td><td>All 3 questions answered with at least 1 complete sentence each</td><td class="pts">3 pts</td></tr>
+        <tr><td>⭐ Tier C Bonus</td><td>int() conversion used correctly; .upper() demonstrated; error question answered</td><td class="pts">+3</td></tr>
+      </tbody>
+    </table>
+    <div style="display:flex;justify-content:flex-end;margin-top:10px;gap:24px;font-size:0.82rem;color:#374151">
+      <span>Total (without bonus) <strong style="font-family:var(--font-code);color:#0b63ce">/ 22</strong></span>
+      <span>Total (with bonus) <strong style="font-family:var(--font-code);color:#10b981">/ 25</strong></span>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="sheet-footer">
+    <div><strong>Session 9 · Python Variables, Input &amp; Output</strong> · In-Class Activity Sheet · Mr. Hsiao (Hue Weng) · Summer 2026<br>
+    <span class="grad-text" style="font-weight:800">Variables · input() · print() · f-strings · I/O · Mad Libs</span></div>
+    <div style="text-align:right">Ages 7–13 · Grades 1–9<br><span style="font-size:0.7rem">The foundation for every chatbot, app, and AI system in the world!</span></div>
+  </div>
+
+</div><!-- end .page -->
+
+<script>
+// Draw canvas initialization
+function initCanvas(canvas) {
+  const ctx = canvas.getContext('2d');
+  let drawing = false, lastX = 0, lastY = 0, color = '#1f2a37', lineWidth = 2;
+  function getPos(e) {
+    const r = canvas.getBoundingClientRect();
+    const src = e.touches ? e.touches[0] : e;
+    return { x: src.clientX - r.left, y: src.clientY - r.top };
+  }
+  function startDraw(e) { drawing = true; const p = getPos(e); lastX = p.x; lastY = p.y; ctx.beginPath(); ctx.arc(p.x, p.y, lineWidth/2, 0, Math.PI*2); ctx.fillStyle = color; ctx.fill(); e.preventDefault(); }
+  function draw(e) { if (!drawing) return; const p = getPos(e); ctx.beginPath(); ctx.moveTo(lastX, lastY); ctx.lineTo(p.x, p.y); ctx.strokeStyle = color; ctx.lineWidth = lineWidth; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.stroke(); lastX = p.x; lastY = p.y; e.preventDefault(); }
+  function stopDraw() { drawing = false; }
+  canvas.addEventListener('mousedown', startDraw); canvas.addEventListener('mousemove', draw);
+  canvas.addEventListener('mouseup', stopDraw); canvas.addEventListener('mouseleave', stopDraw);
+  canvas.addEventListener('touchstart', startDraw, {passive:false}); canvas.addEventListener('touchmove', draw, {passive:false}); canvas.addEventListener('touchend', stopDraw);
+  const btn = canvas.parentElement.querySelector('.draw-clear');
+  if (btn) btn.addEventListener('click', () => ctx.clearRect(0, 0, canvas.width, canvas.height));
+  const colorPick = canvas.parentElement.querySelector('.draw-color');
+  if (colorPick) colorPick.addEventListener('input', e => color = e.target.value);
+  const sizePick = canvas.parentElement.querySelector('.draw-size');
+  if (sizePick) sizePick.addEventListener('input', e => lineWidth = e.target.value);
+}
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('canvas.draw-canvas').forEach(initCanvas);
+});
+</script>
+</body>
+</html>
