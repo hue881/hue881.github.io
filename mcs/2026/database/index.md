@@ -1,5 +1,4 @@
 # SACC School Database & Web Application: Complete 6–12 Month Build Plan
-*A PhD-level database engineering and web development blueprint based on the provided field specifications*
 
 ***
 ## Executive Summary
