@@ -32,7 +32,7 @@ Fields captured from page 2:
 | Class Age Range | |
 | Class Size | Formula/count from enrollment |
 ### Domain 3: Registrations / Enrollment (Student + Class Join)
-Fields from pages 1 and 4 notes:
+Fields:
 
 - Registration Form (per student)
 - Currently Registered Classes (AM1, AM2, PM1, PM2, PM3 Saturday)
