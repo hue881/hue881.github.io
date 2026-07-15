@@ -126,6 +126,7 @@ There is no textbook.  All materials, including computers are provided in class.
 - The course's printed handouts and reference sheets (provided each week, bilingual English + Chinese).
 - [Scratch](https://scratch.mit.edu) — free, browser-based.
 - [Python Playground](https://playcode.io/python-playground) — free, browser-based.
+- [One Compiler](https://onecompiler.com/python) — free, browser-based.
 - [Google Teachable Machine](https://teachablemachine.withgoogle.com) — used for live AI demos, in-browser, no install.
 - [Google Drive](https://drive.google.com) — free, browser-based (optional)
 - USB Drive (optional)
