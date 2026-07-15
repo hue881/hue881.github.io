@@ -1,7 +1,7 @@
 # SACC School Database & Web Application: Complete 6–12 Month Build Plan
 
 ## Executive Summary
-The attached notes describe a school aftercare program (likely SACC — School Age Child Care) that currently relies on Microsoft Access and manual paper forms. The goal is to replace this with a secure, modern, cloud-hosted web application built on **Django + PostgreSQL** — supporting three separate user roles (Admin, Teacher/TA, and a restricted student-data handler), featuring online registration, attendance, payment tracking, and an admin-only teacher HR database. This plan outlines the exact migration path from Access, the full database schema derived from the four pages of field specifications, a phased development timeline, and a cost comparison of hosting options from budget-friendly PaaS providers to AWS.
+The attached notes describe a school aftercare program (likely SACC — School Age Child Care) that currently relies on Microsoft Access and manual paper forms. The goal is to replace this with a secure, modern, cloud-hosted web application built on **Django + PostgreSQL** — supporting three separate user roles (Admin, Teacher/TA, and a restricted student-data handler), featuring online registration, attendance, payment tracking, and an admin-only teacher HR database. This plan outlines the exact migration path from Access, the full database schema derived from field specifications, a phased development timeline, and a cost comparison of hosting options from budget-friendly PaaS providers to AWS.
 
 
 ## Part 1 — Database Requirements: Reading the Specs
