@@ -7,7 +7,6 @@ The attached notes describe a school aftercare program (likely SACC — School A
 ## Part 1 — Database Requirements: Reading the Specs
 The system requires **four primary database domains** with one strict access-control boundary.
 ### Domain 1: Students (Public-Facing + Admin)
-Fields captured from pages 3 and 4:
 
 | Category | Fields |
 |---|---|
@@ -19,7 +18,6 @@ Fields captured from pages 3 and 4:
 | Logistics | Pick-Up (self/mom/M-B/B-M/bus), Term (duration of registration) |
 | Medical | Medical/Allergy Comments, Medical Form Scan (with flag for outdated) |
 ### Domain 2: Classes (Admin + Teacher Access)
-Fields captured from page 2:
 
 | Field | Notes |
 |---|---|
@@ -32,7 +30,6 @@ Fields captured from page 2:
 | Class Age Range | |
 | Class Size | Formula/count from enrollment |
 ### Domain 3: Registrations / Enrollment (Student + Class Join)
-Fields:
 
 - Registration Form (per student)
 - Currently Registered Classes (AM1, AM2, PM1, PM2, PM3 Saturday)
@@ -42,7 +39,7 @@ Fields:
 - Set (which registration set the record was written in)
 - Summer Field Trip waiver / permission / payment
 ### Domain 4: Teachers — Admin-Only, Separate Access
-From pages 1 and 2 (explicitly noted as **"separate database for admin only, not accessible by staff handling student data"**):
+Explicitly noted as **"separate database for admin only, not accessible by staff handling student data"**):
 
 | Field | Notes |
 |---|---|
@@ -59,7 +56,6 @@ From pages 1 and 2 (explicitly noted as **"separate database for admin only, not
 | Class Assignments | AM1, AM2, PM1, PM2, PM3/Saturday (current) |
 | Class Assignment History | |
 ### Domain 5: Operations & Logs
-From page 4 handwritten notes:
 
 - Attendance Sheets by class (Saturday, Summer, After School) — printable and tablet-accessible
 - School Bus Attendance with estimated arrival times
