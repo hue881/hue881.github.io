@@ -5,7 +5,7 @@ The attached notes describe a school aftercare program (likely SACC — School A
 
 
 ## Part 1 — Database Requirements: Reading the Specs
-Based on the four pages of handwritten and typed field listings, the system requires **four primary database domains** with one strict access-control boundary.
+The system requires **four primary database domains** with one strict access-control boundary.
 ### Domain 1: Students (Public-Facing + Admin)
 Fields captured from pages 3 and 4:
 
