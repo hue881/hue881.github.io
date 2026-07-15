@@ -462,16 +462,7 @@ Skip Months 8–9 features (Teacher HR, Incident Logs) until post-launch. Focus 
 
 ***
 ## Part 7 — Development Cost Estimate
-Based on 2026 market rates for custom school management software:
-### Build Cost Options
-| Development Path | Estimated Cost | Timeline | Notes |
-|---|---|---|---|
-| **Hire senior Django freelancer (US)** | $80–150/hr × 300–500 hrs = $24,000–75,000 | 4–10 months | Upwork/Toptal; quality varies widely |
-| **Hire Django developer (Eastern Europe/LatAm)** | $30–60/hr × 300–500 hrs = $9,000–30,000 | 4–10 months | Strong talent pool; async timezone management |
-| **Small dev agency (US)** | $40,000–120,000 flat | 6–12 months | Includes project management; higher but predictable |
-| **Small dev agency (offshore)** | $15,000–45,000 flat | 6–12 months | Lower cost; requires detailed spec upfront |
-| **In-house build (technical staff)** | $0–5,000 tooling + hosting | 6–18 months | Only if tech talent exists internally |
-| **Open-source base + customization** | $5,000–20,000 customization | 3–8 months | Use `django-scms` or similar as scaffold |
+
 ### Ongoing Annual Cost (Post-Launch)
 | Item | Annual Cost |
 |---|---|
@@ -507,7 +498,7 @@ Before going live, verify every item:
 - [ ] PostgreSQL: no `public` schema write access for app user — use dedicated schema
 - [ ] Row Level Security policies active on `teachers` table
 
-***
+
 ## Appendix: Recommended Open-Source Starting Points
 Rather than building entirely from scratch, begin with a proven Django school app as scaffold and customize to the SACC spec:
 
@@ -517,11 +508,7 @@ Rather than building entirely from scratch, begin with a proven Django school ap
 
 Using an open-source base as a starting scaffold can reduce custom development time by 30–50% and costs by $10,000–30,000 compared to a clean-slate build, while still allowing full customization for the SACC-specific fields (Chinese names, SACC certifications, bilingual class descriptions, bus attendance, etc.).
 
-***
 
-*Prepared July 2026. All hosting prices verified against July 2026 provider pricing pages. Development cost estimates based on 2026 freelance and agency market rates for Django/PostgreSQL school information systems.*
-
----
 
 ## References
 
