@@ -3,7 +3,7 @@
 ## Executive Summary
 The attached notes describe a school aftercare program (likely SACC — School Age Child Care) that currently relies on Microsoft Access and manual paper forms. The goal is to replace this with a secure, modern, cloud-hosted web application built on **Django + PostgreSQL** — supporting three separate user roles (Admin, Teacher/TA, and a restricted student-data handler), featuring online registration, attendance, payment tracking, and an admin-only teacher HR database. This plan outlines the exact migration path from Access, the full database schema derived from the four pages of field specifications, a phased development timeline, and a cost comparison of hosting options from budget-friendly PaaS providers to AWS.
 
-***
+
 ## Part 1 — Database Requirements: Reading the Specs
 Based on the four pages of handwritten and typed field listings, the system requires **four primary database domains** with one strict access-control boundary.
 ### Domain 1: Students (Public-Facing + Admin)
@@ -69,7 +69,7 @@ From page 4 handwritten notes:
 - Comments (per student and per teacher)
 - Payment status / balance payment portal reference
 
-***
+
 ## Part 2 — Phase 1: Access → PostgreSQL Migration (Weeks 1–8)
 This is the most technically critical phase. Rushing it creates data integrity problems that corrupt everything downstream.
 ### Step 1: Access Database Audit and Inventory (Week 1)
