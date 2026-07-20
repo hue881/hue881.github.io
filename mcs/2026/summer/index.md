@@ -22,6 +22,7 @@
 | **3-1** | [Midterm Review](https://hue881.github.io/mcs/2026/summer/midterm) | [3-1 Activity](https://hue881.github.io/mcs/2026/summer/midterm/activity) |-- | -- ||
 | **3-2** | [Python: Variables, Input & Output](https://hue881.github.io/mcs/2026/summer/3/2) | [3-2 Activity](https://hue881.github.io/mcs/2026/summer/3/2/activity) | [3-2 Homework](https://hue881.github.io/mcs/2026/summer/3/2/homework) | -- ||
 | **3-3** | [Midterm Exam]() |--  |--  | -- ||
+| **4-1** | [Python turtle Graphics + Loops](https://hue881.github.io/mcs/2026/summer/4/1) | [4-1 Activity](https://hue881.github.io/mcs/2026/summer/4/1/activity) | [4-1 Homework](https://hue881.github.io/mcs/2026/summer/4/1/homework) | -- ||
 
 
 
