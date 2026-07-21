@@ -1,0 +1,842 @@
+Session 12 - Python: Conditionals (if / elif / else) + Number-Guessing Game ("Teaching the Computer to Decide")
+Expert Teaching Script (CS-Rigorous Explanations, Beginner-Friendly Delivery)
+Modern Chinese School - Summer 2026 AI & Coding Program
+Instructor: Mr. Hsiao "Hue" Weng
+Ages 7-13 (Grades 1-9) - Mixed-Tier (A/B/C)
+Total Time: ~110 min (Sections 2 & 3) | ~75 min compressed (Section 1)
+Date: Session 12 - Tues, Jul 21 - Week 4 (post-field-trip, Phase 2 Bridge)
+================================================================================
+
+HOW TO USE THIS SCRIPT
+--------------------------------------------------------------------------------
+- Text in [BRACKETS] = instructor stage directions or timing cues
+- "Quoted text" = suggested exact words to say aloud
+- -> means a natural transition or follow-up thought
+- [KEY IDEA] = deep conceptual explanation (say or adapt to the age of the room)
+- [PAUSE] = student interaction moment -- stop and wait for responses
+- [ROBOT] = the daily AI Moment tie-in (5-10 min, folded in, never a lecture)
+- TIER A = Grades 1-3 scaffolding | TIER B = Grades 3-5 core | TIER C = Grades 6-9 stretch
+
+PACING MAP (from the syllabus Daily Rhythm):
+  Warm-up (unplugged) .............. 10 min    -> Slides 1-3
+  Mini-lesson (one concept, live) .. 15-20 min -> Slides 4-9  [ROBOT folded in]
+  Guided build (all together) ...... 20 min    -> Slides 10-13
+  Movement / brain break ........... 5 min     -> Slide 14
+  Open build + challenge cards ..... 30-40 min -> Slides 15-17
+  Share-out (opt-in, warm) ......... 10 min    -> Slide 18
+  (Homework assigned at close) ..... -> Slide 19
+
+  SECTION 1 (75 min): Warm-up(5) -> Mini-lesson+Robot(15) -> Guided build(20)
+  -> Break(5) -> Open build(25) -> Quick share(5). Build the CORE GAME (Script 1:
+  import random -> secret number -> while loop -> if/elif/else) together; treat
+  the guess-counter (Script 2, Slide 13) as a quick demo-and-preview rather than
+  an all-build; homework unchanged.
+
+  CALL-BACK: We are in Phase 2 (Bridge Scratch -> Python). In Session 5 you used
+  Scratch's "if <> then" and "if-else" blocks to make a sprite decide. Today's
+  idea is the EXACT same decision-making -- but typed in Python TEXT instead of
+  dragged as a block, and now with a THIRD option, elif, for "check something
+  else next." Reference the Scratch "if / if-else" blocks constantly. We also
+  re-meet random.randint() (met yesterday, Session 9-10 with turtle) as the
+  "dice roller" that gives the computer a secret nobody knows in advance. The AI
+  thread of Phase 2 (search strategies, rules vs. learning) lands hard today:
+  the "higher/lower" guessing game is BINARY SEARCH -- the exact halving strategy
+  search engines, databases, and some ML algorithms use to find one answer among
+  millions.
+
+  CONTINUITY NOTE: Monday Jul 20 was a FIELD TRIP (no class). Open the room by
+  cashing in the trip journal prompt -- "one AI/smart system you spotted." The
+  MIDTERM (Wed Jul 15) is now behind us; today is a confidence-rebuilding, hands-
+  on game day. Next session (Jul 22) is Functions -- we will refactor THIS game,
+  so build it clean today.
+================================================================================
+
+
+================================================================================
+                     PART 1 -- WARM-UP (UNPLUGGED)  [~10 min]
+                          No screens. Brains on.
+================================================================================
+
+
+--------------------------------------------------------------------------------
+SLIDE 1 -- TITLE & WELCOME  ("Teaching the Computer to Decide")
+[Duration: ~2 minutes]
+--------------------------------------------------------------------------------
+
+[Display the title slide as students settle. Keep laptops CLOSED -- this is a
+no-screen warm-up. Write on the board: "I'm thinking of a number 1-100. How few
+guesses do you REALLY need?" Energy: playful, competitive -- today the computer
+learns to make choices, and we learn to outsmart it.]
+
+"Welcome back, coders! Two quick things. One: you survived your first MIDTERM --
+be proud, that's a real milestone. Two: yesterday was our field trip. Before we
+touch a keyboard -- who spotted an AI or a 'smart' system out there? A ticket
+machine, a recommendation screen, a camera that found a face? Shout one out."
+
+[PAUSE -- take 3-4 quick trip journal answers. Validate every one. Bridge:]
+
+"Hold that thought -- almost every one of those 'smart' systems has to DECIDE
+something, and DECIDING is exactly today's superpower."
+
+[KEY IDEA -- say slowly, this frames the whole lesson]:
+"Every program you've written so far just did the SAME thing every time it ran.
+Today your program learns to make a CHOICE -- to look at a situation and do one
+thing OR a different thing depending on what's true. That's called a
+CONDITIONAL. In Scratch you already did this: 'if <touching edge> then bounce.'
+Today we type that same idea in Python -- and we build a real number-guessing
+game around it."
+
+
+--------------------------------------------------------------------------------
+SLIDE 2 -- WARM-UP: THE HIGHER/LOWER PARTNER GAME -- TRY IT, TURN & TALK
+[Duration: ~5 minutes]
+--------------------------------------------------------------------------------
+
+[No screens. This is the "Try It" + "Turn & Talk" moment. Pair students up.
+This game is secretly the entire lesson -- both the conditional (higher/lower)
+AND the AI Moment (binary search) live inside it.]
+
+"Try it with your partner. Partner A: pick a SECRET number between 1 and 100 --
+don't say it. Partner B: guess. Partner A, you may ONLY answer 'higher' or
+'lower' -- never the number itself. Keep going until B nails it. Count your
+guesses out loud. Go!"
+
+[PAUSE -- 60-90 seconds. Circulate. Some pairs guess randomly; some already
+halve. Note who says '50?' first -- you'll call on them.]
+
+"Freeze. Hands up -- who found it in 10 guesses or fewer? [hands] Fewer than 7?
+[hands] How did the fast pairs DO that? Turn and talk for thirty seconds: what
+was your STRATEGY -- not luck, strategy?"
+
+[PAUSE -- 30 seconds of pair talk. Circulate. Sample back 2-3: 'I started at
+50.' 'Every time they said higher, I jumped to the middle of what was left.'
+'I cut it in half each time.']
+
+[KEY IDEA]:
+"Listen to what the smart pairs just said -- they CUT THE LEFTOVERS IN HALF
+every single guess. Guess 50. 'Higher.' Now it's 51-100, so guess 75. 'Lower.'
+Now 51-74, guess 62. Every answer throws away HALF the numbers still possible.
+That's not luck -- it has a name, BINARY SEARCH, and it's one of the most
+powerful ideas in all of computer science. We'll circle back to why AI loves it.
+But first: notice that 'higher/lower' answer? That IS a conditional. The computer
+looks at your guess, compares it to the secret, and DECIDES what to say."
+
+[TIER A note: keep it concrete -- physically write 1...100 on the board and cross
+out halves as a volunteer guesses, so they SEE the pile shrink. TIER C stretch:
+"If the range were 1 to a MILLION, how many halvings to find any number? Guess
+first." Hold it -- the answer (about 20) will blow their minds at Slide 9.]
+
+
+--------------------------------------------------------------------------------
+SLIDE 3 -- CORE CONCEPT: THE CENTRAL QUESTION (SCRATCH / PYTHON / AI SEARCH)
+[Duration: ~3 minutes]
+--------------------------------------------------------------------------------
+
+[Display the "Big Idea" slide. Still no student screens. Three examples: the
+Scratch if-else block, the Python if/elif/else, and a search bar / AI narrowing
+results.]
+
+"Let's lock in why 'deciding' matters everywhere, not just in one little game.
+Look at these three examples."
+
+"In SCRATCH -- you already lived this in Session 5. 'if <> then, else' made your
+sprite say different things depending on where it was. One decision, two paths."
+
+"In PYTHON -- same idea, new clothes. 'if / elif / else' does the exact same
+job, just written in text -- and elif lets you check a THIRD, FOURTH, as many
+options as you want. You'll type it yourself today."
+
+"And in AI SEARCH -- when a search engine or an app narrows millions of
+possibilities down to the one answer you want, it is DECIDING and NARROWING,
+step by step -- often by cutting the possibilities in half, exactly like your
+higher/lower game. We'll come back to that."
+
+[PAUSE -- ask: "What do all three have in common?" Guide toward: the program
+LOOKS at something (a condition), decides if it's TRUE or FALSE, and picks a
+path based on the answer.]
+
+[KEY IDEA]:
+"A CONDITIONAL is code that runs only when something is TRUE. In Python,
+'if' asks a yes/no question; 'elif' means 'if that was false, check THIS next';
+'else' is the last-resort 'otherwise, do this.' Python reads them top to bottom
+and runs the FIRST one that's true -- then skips all the rest. That single idea
+powers your guessing game today, powers every menu and login you've ever used,
+and sits underneath how AI decides which answer to show you."
+
+
+================================================================================
+              PART 2 -- MINI-LESSON (ONE CONCEPT, LIVE)  [~15-20 min]
+                    Teacher demos on the big screen only.
+================================================================================
+
+
+--------------------------------------------------------------------------------
+SLIDE 4 -- BIG IDEA #1: A COMPARISON IS A YES/NO QUESTION (True / False)
+[Duration: ~3 minutes]
+--------------------------------------------------------------------------------
+
+[Open Python on the projector -- YOUR screen only, at Python Playground so there
+is zero install. Type comparisons live and show what they print.]
+
+"Here's the foundation everything today stands on. Before a program can DECIDE,
+it has to ask a yes-or-no question. In code, those questions are called
+COMPARISONS, and every one of them answers with exactly one of two words:
+True or False. Watch."
+
+[Type live and run each, one at a time:]
+"    print(5 > 3)      -> True"
+"    print(5 < 3)      -> False"
+"    print(7 == 7)     -> True"
+
+[KEY IDEA]:
+"Look at that. '5 > 3' isn't a command -- it's a QUESTION Python answers: True.
+Every comparison you write boils the whole world down to one of two answers,
+True or False. And that -- a True-or-False answer -- is EXACTLY what an 'if'
+statement is hungry for. The 'if' asks the question; True or False decides the
+path. Remember: 'guess < secret_number' is just a yes/no question waiting for
+an answer."
+
+
+--------------------------------------------------------------------------------
+SLIDE 5 -- BIG IDEA #2: THE COMPARISON OPERATORS (and the == trap)
+[Duration: ~4 minutes]
+--------------------------------------------------------------------------------
+
+[Display the "Comparison Operators" slide. Point to each pair as you say it.
+Spend EXTRA time on == vs = -- it is the #1 bug of the day.]
+
+"Here are the yes/no question marks you'll use. Only a handful -- you already
+know most from math class."
+
+"  ==   means 'equal to' -- TWO equals signs."
+"  !=   means 'not equal to' -- the exclamation mark means 'not.'"
+"  <  and  >   less than, greater than."
+"  <=  and  >=   less-than-or-equal, greater-than-or-equal."
+"  and / or   glue two questions together into one."
+
+[KEY IDEA -- the single biggest beginner trap, say it twice]:
+"Burn this in: ONE equals sign STORES a value. 'secret = 42' means 'put 42 into
+the box called secret.' TWO equals signs ASK A QUESTION. 'guess == 42' means
+'is guess the same as 42?' One equals = 'make it so.' Two equals == 'is it so?'
+Mix them up and Python either crashes or silently does the wrong thing -- and
+this bug will bite half the room today, so remember: comparing needs DOUBLE."
+
+[PAUSE -- quick check: "I want to ASK if score is 100. One equals or two?"
+[two -- 'score == 100']. "I want to SET score to 100?" [one -- 'score = 100'].
+Celebrate -- they just dodged the #1 bug.]
+
+[TIER C stretch: "'and' / 'or' let you ask compound questions --
+'guess > 0 and guess < 100' is true only if BOTH halves are true. That's called
+BOOLEAN LOGIC, and it's the same and/or gates inside every computer chip. We'll
+name it formally later."]
+
+
+--------------------------------------------------------------------------------
+SLIDE 6 -- BIG IDEA #3: if / elif / else -- THE SCRATCH -> PYTHON BRIDGE
+[Duration: ~4 minutes -- the heart of the mini-lesson]
+--------------------------------------------------------------------------------
+
+[Display the "Scratch <-> Python Bridge" slide -- Scratch if/if-else blocks on
+the left, Python if/elif/else on the right, lined up as matching pairs. Type the
+Python live on the projector and run it.]
+
+"Here's the Phase 2 promise again: nothing today is truly brand-new. In Scratch
+you dragged an 'if-else' block. Today you TYPE it, and you get one bonus word,
+elif, for the middle cases. Watch me build a tiny decider live."
+
+[Type live, narrating every line and the indentation:]
+"    secret = 42"
+"    guess = 30"
+"    if guess < secret:"
+"        print('Higher!')"
+"    elif guess > secret:"
+"        print('Lower!')"
+"    else:"
+"        print('You got it!')"
+
+[Run it -> prints 'Higher!'. Change guess to 50, run -> 'Lower!'. Change to 42,
+run -> 'You got it!'. Do all three live so they SEE the path change.]
+
+[KEY IDEA -- read it like a sentence]:
+"Read it out loud with me: 'IF the guess is less than the secret, say Higher.
+ELSE-IF the guess is greater, say Lower. ELSE -- otherwise -- you got it.'
+Python checks TOP TO BOTTOM and runs the FIRST true one, then skips the rest.
+That's why 'else' needs no question -- if the first two were both false, there's
+only one possibility left."
+
+[KEY IDEA -- indentation, said explicitly]:
+"See how the print lines are pushed IN, to the right, under each if/elif/else?
+That indent is not decoration -- it's how Python knows which line belongs to
+which branch. In Scratch, the if-block physically wrapped its arms around what's
+inside. In Python text, INDENTATION is those arms. Same idea, new look."
+
+[PAUSE -- ask: "In Scratch, how did you make a sprite decide? Now what THREE
+words do WE type in Python?" Let them answer 'if, elif, else.' Celebrate --
+they just translated a block into text.]
+
+
+--------------------------------------------------------------------------------
+SLIDE 7 -- BIG IDEA #4: random -- GIVING THE COMPUTER A SECRET
+[Duration: ~3 minutes]
+--------------------------------------------------------------------------------
+
+[Display the "random -- Python's dice roller" slide. You met random yesterday
+with turtle colors; today it hands us a secret NUMBER. Type live.]
+
+"For a guessing game, the computer needs a secret number that even WE don't know
+in advance -- otherwise it's no fun. We met our dice-roller yesterday: the
+random library. Two steps."
+
+[Type live:]
+"    import random                     # step 1: load the dice-roller, always at top"
+"    secret_number = random.randint(1, 100)   # step 2: one random whole number, 1-100"
+
+"Run this a few times with a print -- [add print(secret_number), run 3x] -- see?
+Different number every single time. random.randint(1, 100) hands back one whole
+number between 1 and 100, INCLUDING both ends."
+
+[KEY IDEA]:
+"Here's the beautiful part: after this line, the computer is holding a secret
+that NOBODY knows -- not you, not even the code that made it, until the game
+plays out. That unknown-until-you-look secret is what makes the whole game work.
+And 'import random' must always sit at the very TOP -- you can't roll dice you
+haven't taken out of the box yet."
+
+
+--------------------------------------------------------------------------------
+SLIDE 8 -- WATCH: VIDEO 1 (if/elif/else) + VIDEO 2 (game built live)
+[Duration: ~5 min video + 1 minute talk]
+--------------------------------------------------------------------------------
+
+[Play Video 1 ("if/elif/else", watch to 4:22, Beginner) on the projector. Prime
+them with focus questions BEFORE you press play, matching the on-screen prompts.]
+
+"Before I hit play -- watch for TWO things. One: WHY does an 'elif' only run if
+the 'if' above it was FALSE? Two: how does 'else' act like the 'last resort'
+when nothing else matched? Eyes up."
+
+[Play Video 1 to 4:22.]
+
+"Pause -- turn to a neighbor for thirty seconds: in your own words, what's the
+difference between 'if' and 'elif'? Say it out loud."
+
+[PAUSE -- 30 seconds pair talk. Sample back one. Guide toward: 'elif' is only
+even CHECKED when the 'if' before it failed; Python stops at the first True.]
+
+[If time in Sections 2 & 3, play Video 2 (~3 min) showing the 4 pieces built
+live: import random, a while loop, input() for a guess, if/elif/else to check
+it. In Section 1's compressed 75 min, SKIP Video 2 and go straight to building --
+you'll demo those exact 4 pieces yourself in the guided build.]
+
+"That video showed the four LEGO bricks of our game: import random, a loop to
+keep asking, input to catch the guess, and if/elif/else to judge it. We're about
+to snap those four bricks together ourselves."
+
+
+--------------------------------------------------------------------------------
+SLIDE 9 -- [ROBOT] AI MOMENT: HIGHER/LOWER IS BINARY SEARCH
+[Duration: ~5-6 minutes -- the daily AI tie-in, folded in]
+--------------------------------------------------------------------------------
+
+[Display the "Binary Search" slide, side by side: the shrinking 1-100 range vs.
+a search engine narrowing millions of results. Do the halving live on the board
+or as a printed countdown.]
+
+"Now my favorite part of every day -- how does today's idea connect to AI?
+Cast your mind back to the warm-up. The fast pairs guessed 50 first. Why 50?"
+
+[PAUSE -- let them answer: 'it's the middle, it cuts the pile in half.']
+
+"Exactly. Watch how fast halving finds ANY number 1 to 100. [Count aloud, hold
+up fingers:] Guess 50 -- now at most 50 numbers left. Guess the middle again --
+25 left. Then 12... 6... 3... 2... 1. SEVEN guesses, worst case, to find any
+number up to a hundred. Guessing one-at-a-time could take a hundred. Halving
+takes seven. THAT gap is the whole point."
+
+[Point to the AI/search image.]
+
+"Here's the mind-blowing part. When a search engine, a database, or even some
+machine-learning algorithms have to find one answer among MILLIONS, they do the
+SAME thing you just did: repeatedly cut the possibilities in half. It's called
+BINARY SEARCH, and it's everywhere AI has to narrow a huge space down fast."
+
+[KEY IDEA -- the number that lands the point]:
+"Remember my 1-to-a-MILLION question from the warm-up? Guessing one at a time
+could take a million tries. Halving? About TWENTY. Twenty guesses to find one
+number in a million. That's not a small improvement -- it's the difference
+between a computer that answers instantly and one that never finishes. Smart
+searching isn't magic; it's your higher/lower game, scaled up."
+
+[PAUSE -- ask the slide's question: "One-at-a-time vs. cut-in-half for 1 to a
+million -- how much faster is halving?" Let them react to 'a million vs. twenty.'
+Guide toward: the smarter the STRATEGY, the less WORK -- that's what makes an AI
+feel fast and 'smart,' not extra magic.]
+
+
+================================================================================
+                 PART 3 -- GUIDED BUILD (ALL TOGETHER)  [~20 min]
+                  Everyone builds the SAME thing, step by step.
+================================================================================
+
+
+--------------------------------------------------------------------------------
+SLIDE 10 -- GUIDED BUILD SETUP + SCRIPT 1a: SECRET NUMBER & FIRST GUESS
+[Duration: ~6 minutes -- go slowly, narrate every line]
+--------------------------------------------------------------------------------
+
+[Students open Python NOW at Python Playground (no install). Walk the room --
+confirm everyone sees the editor before continuing. Buddy-pair Tier A / Grade
+1-2 kids.]
+
+"Screens ON. Everybody open Python Playground. Thumbs up when you see a blank
+editor with a Run button. [Wait for all thumbs.]"
+
+"Here's what every one of us will have by the end of this guided build: a real
+number-guessing game -- the computer picks a secret, you guess, it tells you
+higher or lower until you win. We build it together, line by line -- type exactly
+what I type, no more, no less."
+
+"SCRIPT 1a -- THE SECRET. Type these two lines at the very top with me:"
+"    import random"
+"    secret_number = random.randint(1, 100)"
+
+[KEY IDEA]:
+"Line one loads the dice-roller. Line two rolls it once and stores the result in
+a box named secret_number. The computer now holds a secret. Do NOT print it --
+that would spoil the game!"
+
+"Now, ONE guess to test our decider. Add these lines:"
+"    guess = int(input('Guess a number 1-100: '))"
+"    if guess < secret_number:"
+"        print('Higher!')"
+"    elif guess > secret_number:"
+"        print('Lower!')"
+"    else:"
+"        print('You got it!')"
+
+"Run it. Type a guess. [Wait.] What did it say?"
+
+[PAUSE -- celebrate whatever it said. Then the teaching moment:]
+
+[KEY IDEA -- why int() matters]:
+"See that 'int(' wrapped around input? Here's why it's there. input() ALWAYS
+hands you back TEXT -- even if you type 5, Python sees the word '5', not the
+number 5. And you can't ask 'is the word five less than the number forty-two?' --
+Python crashes. int() converts the text into a real number so our comparison
+works. Text in quotes, numbers do math -- int() is the bridge between them."
+
+
+--------------------------------------------------------------------------------
+SLIDE 11 -- GUIDED BUILD SCRIPT 1b: KEEP ASKING WITH A while LOOP
+[Duration: ~7 minutes -- the piece that turns a check into a GAME]
+--------------------------------------------------------------------------------
+
+[Display the "while loop" slide. One guess isn't a game -- we need to keep
+asking. Modify the code live to wrap the guess in a loop.]
+
+"Right now the game ends after ONE guess -- not much of a game. We need it to
+keep asking until you win. That's a LOOP. We've used loops before; today's is a
+'while' loop -- 'keep going WHILE this is true.' Watch me wrap our code."
+
+[Rebuild live so it reads:]
+"    import random"
+"    secret_number = random.randint(1, 100)"
+"    while True:"
+"        guess = int(input('Guess a number 1-100: '))"
+"        if guess < secret_number:"
+"            print('Higher!')"
+"        elif guess > secret_number:"
+"            print('Lower!')"
+"        else:"
+"            print('You got it!')"
+"            break"
+
+"Run it. Guess wrong on purpose a few times -- then get it right. [Wait -- let
+the game loop live on every screen.] What happened when you finally got it?"
+
+[PAUSE -- guide toward: it kept asking after wrong guesses, and STOPPED when you
+won.]
+
+[KEY IDEA -- 'while True' and 'break', the two new words]:
+"Two things to understand. 'while True:' means 'repeat forever' -- it will ask
+again and again with no end. So how do we ever stop? That's 'break.' The moment
+you guess right, we hit the 'else' branch, print 'You got it!', and 'break'
+jumps us OUT of the loop. No break in the winning branch, and the game asks
+forever -- that's Bug #4, and it's the classic one. The rule: an endless loop
+needs an exit door, and break is that door."
+
+[PAUSE -- prediction game: "What if I delete the break? Predict, then I'll run."
+[It asks forever, even after you win.] "What if I forget int() around input?"
+[crash comparing text to a number.] Run each -- errors are lessons.]
+
+[TIER A note: if a Grade 1-2 pair is overwhelmed, narrow the world -- change the
+range to 1-20 (random.randint(1, 20)) so wins come faster. A working game that
+asks, judges, and stops is a COMPLETE win. Don't push further.]
+
+
+--------------------------------------------------------------------------------
+SLIDE 12 -- GUIDED BUILD: TEST IT LIKE A REAL DEVELOPER
+[Duration: ~4 minutes]
+--------------------------------------------------------------------------------
+
+[Display the "Test It!" slide. Teach that running your code with different
+inputs on purpose IS coding. Do it together on the projector.]
+
+"Real programmers don't just run code once and hope. They TEST it on purpose.
+Let's test all three paths together. Everyone: guess something you KNOW is too
+HIGH first -- does it say Lower? Now too LOW -- does it say Higher? Now play it
+for real and win -- does it stop?"
+
+[PAUSE -- circulate, confirm all three branches fire correctly on each screen.]
+
+[KEY IDEA -- connect straight back to binary search]:
+"Now play once more, but play SMART -- use your warm-up strategy. Start at 50.
+Whatever it says, jump to the middle of what's left. Count your guesses. Bet you
+land it in 7 or fewer. You're not just playing a game -- you're running BINARY
+SEARCH by hand, the same halving trick AI uses to search millions. Your fingers
+just did what a search engine does."
+
+"Try one change together: swap random.randint(1, 100) to (1, 1000). Does your
+strategy still work? [Yes -- it just needs a few more halvings, about 10.] Bigger
+haystack, same smart needle-finding."
+
+
+--------------------------------------------------------------------------------
+SLIDE 13 -- GUIDED BUILD LEVEL UP: ADD A GUESS COUNTER -- DEMO/PREVIEW
+[Duration: ~3 minutes -- Sections 2 & 3 build; Section 1 demos only]
+--------------------------------------------------------------------------------
+
+[Display the "guess counter" slide. This ties conditionals back to VARIABLES
+(Session 6) and is the core of tonight's homework. Type it live; younger tiers
+just watch.]
+
+"One more upgrade, then you build your own. Let's make the game COUNT your
+guesses -- that pulls back in variables from Session 6. Watch two small adds."
+
+[Type live -- highlight the two new lines:]
+"    import random"
+"    secret_number = random.randint(1, 100)"
+"    guesses = 0                       # <-- NEW: a counter, starts at zero"
+"    while True:"
+"        guess = int(input('Guess a number 1-100: '))"
+"        guesses = guesses + 1         # <-- NEW: add one every single guess"
+"        if guess < secret_number:"
+"            print('Higher!')"
+"        elif guess > secret_number:"
+"            print('Lower!')"
+"        else:"
+"            print('You got it in', guesses, 'guesses!')"
+"            break"
+
+"Run it. [Wait.] Now it tells you your score at the end!"
+
+[KEY IDEA]:
+"'guesses = 0' makes a memory box starting at zero. 'guesses = guesses + 1'
+means 'take whatever's in the box, add one, put it back' -- it ticks up once per
+loop. This is conditionals AND variables AND loops working together -- three
+concepts you learned separately, now cooperating in one program. THAT'S real
+coding: small ideas, combined."
+
+[SECTION 1 (75 min): DEMO this counter on the projector only; do not require
+students to add it live. Send them into Open Build with the working game they
+already have. The counter is tonight's homework for everyone.]
+
+[QUICK BUG CHECK before Open Build: "Run your game once. Does it keep asking
+after a wrong guess? (need the while loop). Does it STOP when you win? (need
+break). Did a red error mention text vs number? (need int() on input). Fix now."]
+
+
+================================================================================
+                   PART 4 -- MOVEMENT / BRAIN BREAK  [~5 min]
+================================================================================
+
+
+--------------------------------------------------------------------------------
+SLIDE 14 -- BRAIN BREAK ("The whole class plays higher/lower!")
+[Duration: ~5 minutes]
+--------------------------------------------------------------------------------
+
+[Display the calm break slide. This is an essential focus reset -- honor it
+fully, do not skip it. Make it a physical, whole-class version of the game.]
+
+"Everybody stand up! One student is 'It' -- pick a secret number 1 to 20 in your
+head, don't say it. Everyone else guesses TOGETHER, and It only says 'higher' or
+'lower.' Here's the challenge: can the whole class win in FIVE guesses or fewer?
+Only way to do it -- guess the MIDDLE every time. Ready? First guess -- shout it!"
+
+[Lead 3-4 rounds, coaching them to halve: "It said higher -- so what's the middle
+of what's LEFT?" Celebrate fast wins. Let them physically point high/low.]
+
+"You just ran binary search with your whole body and one voice -- middle, cut,
+middle, cut. Now shake it out. Arms up, big stretch. Roll your shoulders. Three
+deep breaths with me -- in... and out. In... and out. One more -- in... and out."
+
+"Tiny thing to dream about while we breathe: in Open Build, some of you will
+FLIP the game -- make the COMPUTER guess YOUR number using this exact halving
+trick, and watch it win in seven. Open Build in five."
+
+[Let them move, drink water, breathe. Bring them back gently and seated.]
+
+
+================================================================================
+             PART 5 -- OPEN BUILD + CHALLENGE CARDS  [~30-40 min]
+              Apply the concept to your OWN project. Explore & stretch.
+================================================================================
+
+
+--------------------------------------------------------------------------------
+SLIDE 15 -- OPEN BUILD LAUNCH: YOUR BUILD GOAL BY TIER
+[Duration: ~2 minutes launch, then circulate for the rest of the block]
+--------------------------------------------------------------------------------
+
+[Display the tiered "Your build goal" slide. Send students off with a clear,
+differentiated target, then spend the block circulating, not lecturing.]
+
+"Here is your build goal for the next 30 to 40 minutes -- it depends on your
+tier, but everyone is working on the SAME underlying idea, the CONDITIONAL, at
+your own depth."
+
+"TIER A (Grades 1-3) -- get the basic guessing game working, with a buddy if you
+like. Make it easier by setting the range to 1-20. Win goal: it asks, it says
+higher/lower, and it stops when you guess right."
+
+"TIER B (Grades 3-5) -- get the full game running, then ADD the guess counter
+variable that ticks up each try and prints your score when you win. Bonus: add
+a friendly message if it took more than 8 guesses ('So close!')."
+
+"TIER C (Grades 6-9) -- FLIP IT. Write code where the COMPUTER guesses YOUR
+number using binary search: it guesses the middle, you tell it too-high, too-low,
+or correct, and it narrows in ~7 tries. Grab the challenge card for the exact
+recipe."
+
+[KEY IDEA -- the driving question, keep repeating it as you circulate]:
+"Keep asking yourself as you build: what is my program DECIDING, and what are
+the possible answers? Every time you want the program to react differently to
+different situations -- that's a conditional. And every time it has to find one
+answer fast -- think 'can I cut the possibilities in half?'"
+
+"Reminder while you work: the 'smart' in a smart system is usually a good
+STRATEGY -- like halving -- not magic. You're building the exact strategy AI uses
+to search, at kid scale."
+
+[Circulate the room. Use the Debug Corner card below reactively whenever a bug
+appears -- don't lecture it up front. Fast finishers get the challenge card OR
+mentor a younger buddy through the basic game.]
+
+
+--------------------------------------------------------------------------------
+SLIDE 16 -- CHALLENGE CARD (TIER C): "COMPUTER GUESSES YOU" (BINARY SEARCH)
+[Duration: folded into Open Build for fast finishers]
+--------------------------------------------------------------------------------
+
+[Keep this ready for Tier C and any fast finisher -- extend, never idle-wait.]
+
+"Ready for the boss level? Make the COMPUTER guess YOUR secret number. Here's
+the skeleton -- type it, then make it work:"
+"    low = 1"
+"    high = 100"
+"    while True:"
+"        my_guess = (low + high) // 2         # the MIDDLE of what's left"
+"        print('Is it', my_guess, '?')"
+"        answer = input('h = too high, l = too low, c = correct: ')"
+"        if answer == 'c':"
+"            print('Found it!')"
+"            break"
+"        elif answer == 'h':"
+"            high = my_guess - 1              # secret is BELOW the guess"
+"        elif answer == 'l':"
+"            low = my_guess + 1               # secret is ABOVE the guess"
+
+"Run it, think of a secret, and answer honestly. Count how few tries it takes."
+
+[KEY IDEA -- what '//' does and why this is binary search]:
+"'(low + high) // 2' finds the exact middle -- the '//' is 'divide and throw away
+the remainder' so you get a whole number to guess. Each answer moves either 'low'
+UP or 'high' DOWN, shrinking the range by half every round. That's binary search
+written in real code -- and it will find your number 1-100 in at most SEVEN
+guesses, every single time. You just built the AI search strategy from Slide 9."
+
+"Fast finisher on THIS? Add a counter so it prints how many tries it took -- then
+prove to a neighbor it's never more than 7. And remember: explaining your elif
+logic out loud to someone stuck is the single best way to lock it into your own
+brain."
+
+
+--------------------------------------------------------------------------------
+SLIDE 17 -- [DEBUGGING] DEBUG CORNER -- USE REACTIVELY DURING OPEN BUILD
+[Duration: folded into circulation, ~1 minute per bug as it comes up]
+--------------------------------------------------------------------------------
+
+[Do NOT teach this as a block up front -- walk the room and diagnose live,
+matching whichever bug a student actually hits. Keep this slide open on your own
+laptop as a quick-reference while you circulate.]
+
+"BUG #1 -- Used = instead of ==. 'if guess = secret:' is a syntax error. One
+equals STORES a value; you need DOUBLE equals to COMPARE. 'if guess == secret:'.
+This is the single most common bug today."
+
+"BUG #2 -- Forgot int() on input. input() always returns TEXT. Comparing the
+word '50' to a number crashes. Wrap it: 'int(input(...))' -- that turns the text
+into a real number so the comparison works."
+
+"BUG #3 -- Wrong indentation. If a line under 'if' isn't indented, Python doesn't
+know it belongs to that branch. Push it in with 4 spaces (or Tab). Indentation
+is the Scratch block's 'arms' in text form -- keep it consistent."
+
+"BUG #4 -- Loop never ends. The 'while True:' loop runs forever unless you exit.
+Forgot 'break' in the correct-guess branch? Add 'break' -- it's the exit door
+out of the loop the moment you win."
+
+[Use this as a checklist while circulating -- point at the exact bug number when
+you spot it: "That's Bug 1 -- come look at this with me." And the pro move: "Read
+the LAST line of the red error message first -- it usually names the exact
+problem AND the line number. Errors are clues, not scoldings."]
+
+
+================================================================================
+                   PART 6 -- SHARE-OUT (OPT-IN, WARM)  [~10 min]
+================================================================================
+
+
+--------------------------------------------------------------------------------
+SLIDE 18 -- SHARE-OUT: SHOW & TELL, EXPLAIN, ONE THING NEXT
+[Duration: ~10 minutes]
+--------------------------------------------------------------------------------
+
+[Display the share-out slide. Keep this low-stakes and opt-in -- pair demo is
+always the default, whole-group volunteers are a bonus, never a requirement.]
+
+"Turn to the person next to you and play your game for them. Remember -- sharing
+is ALWAYS optional. Pair demo is our default; volunteering to show the whole room
+is a nice bonus, never required."
+
+"SHOW & TELL -- run your game live for your partner. Guess too high on purpose,
+then too low, then win. Let them watch the higher/lower decisions fire."
+
+"EXPLAIN -- ask your partner these three, and have them answer in their OWN
+words, not just read the code: One, why does the 'if' get checked FIRST? Two,
+what's the difference between == and =? Three -- bonus -- how is 'guess the
+middle' the same as how AI searches?"
+
+"ONE THING NEXT -- finish with: 'Tomorrow I want to add...' -- name one small
+thing you'd build next, like a counter, a 'too many tries' message, or the
+computer-guesses-you flip."
+
+[PAUSE -- circulate during pair-shares, listening for strong explanations. Invite
+1-2 volunteers to show the whole room if energy allows -- never cold-call. Remind
+them: "Bugs count too! If something didn't work, tell us what you TRIED -- that's
+real coding."]
+
+
+--------------------------------------------------------------------------------
+SLIDE 19 -- WRAP-UP + HOMEWORK ("You taught the computer to DECIDE!")
+[Duration: ~3 minutes wrap + 1 minute to assign homework]
+--------------------------------------------------------------------------------
+
+[Display the recap/homework slide. Deliver with genuine warmth. Note for the
+room: next session (Wed Jul 22) is FUNCTIONS -- we will refactor THIS very game,
+so a working game tonight sets them up perfectly.]
+
+"Look at what you did today. Three big wins."
+
+"YOU LEARNED: a CONDITIONAL -- if / elif / else -- lets a program make a choice.
+It reads top to bottom, runs the FIRST true branch, and skips the rest. It's the
+exact same idea as Scratch's if-else block, just in text -- plus elif for the
+middle cases."
+
+"YOU LEARNED: comparisons answer True or False, DOUBLE equals compares while
+single equals stores, int() turns input text into a real number, and a while
+loop with break keeps a game going until someone wins."
+
+"YOU BUILT: a real number-guessing game -- and, depending on your tier, a guess
+counter or the computer-guesses-YOU binary-search flip."
+
+[KEY IDEA -- the takeaway line]:
+"Remember our AI Moment: 'higher/lower' isn't just a game -- it's BINARY SEARCH,
+the halving strategy that lets search engines and AI find one answer among
+millions in a handful of steps. The 'smart' in smart systems is usually a smart
+STRATEGY, not magic. You didn't just play the game today -- you understand the
+trick from the inside."
+
+[Assign homework -- frame it as ~30 min, combining conditionals + variables:]
+
+"Tonight's task -- about 30 minutes. Get your basic game running end-to-end, and
+add ONE guess-counter variable that goes up each guess."
+
+"TIER A: get the game working (range 1-20 is fine) and print a happy message
+when you win."
+"TIER B: add the counter, print the guess count at the end, AND add a friendly
+message if it took more than 8 tries ('So close!')."
+"TIER C BONUS: finish the 'computer guesses your number' binary-search flip from
+the challenge card, and write 1-2 sentences: why does cutting the range in half
+beat guessing one at a time?"
+
+"ALL TIERS -- a field-trip callback: you were asked to spot AI and 'smart'
+systems on Monday's trip. If you jotted one, bring it -- now you know at least
+one way those systems might DECIDE and SEARCH under the hood."
+
+"See you tomorrow, coders. Today you taught a computer to make decisions -- and
+used the exact same logic real AI uses to search. Next session we package this
+game into a reusable FUNCTION, so keep your code -- we're refactoring YOUR game.
+Save what you're proud of. Great work today."
+
+[Let students save and pack up knowing they built something real. End on warmth
+and pride.]
+
+
+================================================================================
+APPENDIX A -- COMMON PITFALLS & HOW TO HANDLE THEM
+================================================================================
+
+PITFALL: Student wrote a single = in a comparison: 'if guess = secret:'.
+  Handle: "Comparing needs DOUBLE equals: 'if guess == secret:'. One equals
+          STORES a value; two equals ASKS a question. This is the #1 bug -- most
+          of the room hits it once, and once you feel it, you never forget it."
+
+PITFALL: Program crashes comparing a guess to the secret ('<' not supported...).
+  Handle: "input() gives you TEXT, not a number. Wrap it in int():
+          'int(input(...))'. Text can't do less-than with a number -- int() turns
+          the typed text into a real number so the comparison works."
+
+PITFALL: The loop runs forever -- keeps asking even after a correct guess.
+  Handle: "You're missing 'break' in the winning branch. 'while True:' repeats
+          endlessly; 'break' is the exit door. Put it right after 'You got it!'
+          so a correct guess jumps out of the loop."
+
+PITFALL: Lines under an if/elif/else aren't indented, or indent is inconsistent.
+  Handle: "Push the lines inside each branch in with 4 spaces (or a Tab), and
+          keep it the SAME everywhere. That indent IS the branch's arms -- it's
+          how Python knows which lines belong to which decision. Same job the
+          Scratch if-block did by wrapping around blocks."
+
+PITFALL: elif or else without a leading if, or forgetting the colon.
+  Handle: "Every if / elif / else line ends with a colon, and elif/else must
+          follow an if. Order is always if -> (optional elif's) -> (optional
+          else). The colon is Python saying 'here comes the branch.'"
+
+PITFALL: Student prints secret_number 'to check it,' spoiling the game.
+  Handle: "Delete that print -- the whole fun is that even the code keeps the
+          secret until you guess it. Use a wrong-then-right test instead: guess
+          too high, too low, then correct, to confirm all three branches work."
+
+PITFALL: In the Tier C flip, the range never shrinks / it re-guesses the same #.
+  Handle: "After 'too high' you must set 'high = my_guess - 1'; after 'too low',
+          'low = my_guess + 1'. If you don't move low/high, the middle never
+          changes and it guesses the same number forever. Moving the boundary is
+          what cuts the range in half."
+
+PITFALL: Young student (Grade 1-2) overwhelmed by loop + input + branches at once.
+  Handle: Narrow the world. "Today we only need: pick a secret, ask ONE guess,
+          say higher / lower / correct. Range 1-20 makes wins fast. A game that
+          asks and judges once is a complete, real win." Buddy them; celebrate it.
+
+PITFALL: Fast Tier-C student finishes the flip in minutes and is bored.
+  Handle: Add a guess-counter and challenge them to PROVE it never exceeds 7 for
+          1-100; or handle a lying/impossible answer; or invite them to mentor a
+          younger buddy through the basic game -- explaining locks it in.
+
+PITFALL: "Why guess 50 first? Why not just start at 1 and count up?"
+  Handle: "Let's race it. You count up from 1; I'll halve. [Play both for a
+          secret like 88.] Counting up could take 88 guesses; halving takes 7.
+          That gap is the whole reason binary search matters -- and it's exactly
+          how AI searches millions of things without checking every one."
