@@ -1,1 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Level 4 Challenge · Session 12 · Adaptive Binary Search Bot</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --color-bg: #f4fbff;
+    --color-surface: rgba(255,255,255,0.97);
+    --color-text: #1f2a37;
+    --color-text-secondary: #374151;
+    --color-text-muted: #5b6b7e;
+    --color-accent-1: #0b63ce;
+    --color-accent-2: #10b981;
+    --color-accent-3: #f59e0b;
+    --color-accent-red: #ef4444;
+    --font-display: 'Fredoka', 'Trebuchet MS', sans-serif;
+    --font-body: 'Nunito', Arial, sans-serif;
+    --font-code: 'Fira Code', Consolas, monospace;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  @media print {
+    body { background: #fff !important; }
+    .no-print { display: none !important; }
+    .page-break { page-break-before: always; }
+    .card { box-shadow: none !important; border: 1.5px solid #d1d5db !important; }
+    .code-block { border: 1.5px solid #cbd5e1 !important; }
+  }
+  body { font-family: var(--font-body); color: var(--color-text); background: var(--color-bg); min-height: 100vh; }
+  .print-bar {
+    background: rgba(255,255,255,0.92); backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(148,163,184,0.3);
+    padding: 10px 24px; display: flex; align-items: center;
+    justify-content: space-between; position: sticky; top: 0; z-index: 100; gap: 12px; flex-wrap: wrap;
+  }
+  .print-bar .bar-title { font-family: var(--font-display); font-size: 1.05rem; font-weight: 700; color: var(--color-accent-1); }
+  .print-bar .bar-sub { font-size: 0.78rem; color: var(--color-text-muted); }
+  .btn-print { background: var(--color-accent-1); color: #fff; border: none; padding: 8px 20px; border-radius: 999px; font-family: var(--font-body); font-size: 0.82rem; font-weight: 800; cursor: pointer; letter-spacing: 0.06em; transition: background 0.2s, transform 0.15s; }
+  .btn-print:hover { background: #0952b0; transform: translateY(-1px); }
+  .page { max-width: 920px; margin: 0 auto; padding: 32px 24px 60px; }
+  .sheet-header {
+    background: linear-gradient(135deg, #7c3aed 0%, #0b63ce 50%, #10b981 100%);
+    border-radius: 20px; padding: 28px 32px 24px; color: #fff; margin-bottom: 28px; position: relative; overflow: hidden;
+  }
+  .sheet-header::before { content: ''; position: absolute; top: -60px; right: -60px; width: 200px; height: 200px; background: rgba(255,255,255,0.08); border-radius: 50%; }
+  .sheet-header::after { content: ''; position: absolute; bottom: -40px; left: -40px; width: 140px; height: 140px; background: rgba(255,255,255,0.06); border-radius: 50%; }
+  .header-emoji { font-size: 2.8rem; margin-bottom: 6px; }
+  .header-day { font-size: 0.75rem; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; opacity: 0.85; margin-bottom: 4px; }
+  .header-title { font-family: var(--font-display); font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 700; line-height: 1.1; margin-bottom: 6px; }
+  .header-sub { font-size: 0.88rem; opacity: 0.85; margin-bottom: 14px; }
+  .header-pills { display: flex; gap: 8px; flex-wrap: wrap; }
+  .header-pill { background: rgba(255,255,255,0.22); border: 1px solid rgba(255,255,255,0.35); border-radius: 999px; padding: 4px 14px; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
+  .student-info { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 28px; }
+  @media (max-width: 600px) { .student-info { grid-template-columns: 1fr; } }
+  .info-field { background: var(--color-surface); border-radius: 12px; padding: 12px 14px; border: 1.5px solid rgba(11,99,206,0.14); box-shadow: 0 2px 8px rgba(15,23,42,0.05); }
+  .info-label { font-size: 0.65rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-accent-1); margin-bottom: 6px; }
+  .info-line { border: none; border-bottom: 1.5px solid #cbd5e1; width: 100%; font-family: var(--font-body); font-size: 0.9rem; color: var(--color-text); background: transparent; outline: none; padding: 2px 0; }
+  .info-line:focus { border-bottom-color: #0b63ce; }
+  .section-label { display: inline-flex; align-items: center; gap: 8px; padding: 5px 16px; border-radius: 999px; border: 1px solid rgba(148,163,184,0.4); background: rgba(255,255,255,0.9); font-size: 0.72rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-accent-1); margin-bottom: 10px; }
+  .section-title { font-family: var(--font-display); font-size: clamp(1.3rem, 2.5vw, 1.8rem); font-weight: 700; margin-bottom: 16px; color: var(--color-text); line-height: 1.2; }
+  .card { background: var(--color-surface); border-radius: 16px; padding: 18px 20px; box-shadow: 0 4px 18px rgba(15,23,42,0.07); border: 1px solid rgba(255,255,255,0.7); margin-bottom: 16px; }
+  .card.accent-blue { border-left: 4px solid var(--color-accent-1); }
+  .card.accent-green { border-left: 4px solid var(--color-accent-2); }
+  .card.accent-amber { border-left: 4px solid var(--color-accent-3); }
+  .card.accent-red { border-left: 4px solid var(--color-accent-red); }
+  .card.accent-purple { border-left: 4px solid #7c3aed; }
+  .card-label { font-size: 0.68rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 8px; }
+  .card-label.blue { color: var(--color-accent-1); }
+  .card-label.green { color: #047857; }
+  .card-label.amber { color: #b45309; }
+  .card-label.red { color: #b91c1c; }
+  .card-label.purple { color: #6d28d9; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  @media (max-width: 700px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+  .code-block { background: #1e293b; color: #e2e8f0; border-radius: 12px; padding: 14px 18px; font-family: var(--font-code); font-size: clamp(0.68rem, 1.1vw, 0.83rem); line-height: 1.6; overflow-x: auto; border: 1px solid rgba(255,255,255,0.06); margin-bottom: 12px; white-space: pre; }
+  .kw { color: #93c5fd; }
+  .nb { color: #fcd34d; }
+  .st { color: #86efac; }
+  .cm { color: #64748b; font-style: italic; }
+  .write-lines { margin: 8px 0; }
+  input.write-line { border: none; border-bottom: 1.5px solid #cbd5e1; width: 100%; margin-bottom: 10px; height: 28px; display: block; background: transparent; font-family: var(--font-body); font-size: 0.88rem; color: var(--color-text); outline: none; padding: 2px 4px; }
+  input.write-line:focus { border-bottom-color: #0b63ce; }
+  input.write-line::placeholder { color: #bdc5d1; font-style: italic; }
+  input.blank-input { display: inline-block; background: rgba(251,191,36,0.18); border: none; border-bottom: 2px solid #f59e0b; min-width: 60px; width: 60px; height: 1.1em; border-radius: 3px; vertical-align: middle; margin: 0 2px; font-family: var(--font-code); font-size: inherit; color: #fcd34d; text-align: center; outline: none; padding: 0 2px; }
+  input.blank-input:focus { background: rgba(251,191,36,0.32); }
+  input.blank-input.wide { min-width: 110px; width: 110px; }
+  input.blank-input.narrow { min-width: 36px; width: 36px; }
+  .tip-box { border-radius: 10px; padding: 10px 14px; font-size: 0.8rem; line-height: 1.5; margin-top: 10px; }
+  .tip-box.blue { background: rgba(11,99,206,0.07); color: #1e40af; }
+  .tip-box.green { background: rgba(16,185,129,0.07); color: #065f46; }
+  .tip-box.amber { background: rgba(245,158,11,0.07); color: #92400e; }
+  .tip-box.purple { background: rgba(124,58,237,0.07); color: #5b21b6; }
+  .formula-box { background: #1e293b; color: #e2e8f0; border-radius: 10px; padding: 10px 16px; font-family: var(--font-code); font-size: 0.88rem; text-align: center; margin-bottom: 10px; }
+  .divider { border: none; border-top: 2px dashed #dde6f0; margin: 28px 0; }
+  .check-list { list-style: none; padding: 0; }
+  .check-list li { display: flex; align-items: flex-start; gap: 8px; font-size: 0.85rem; color: var(--color-text-secondary); margin-bottom: 8px; line-height: 1.45; }
+  .check-list li .box { flex-shrink: 0; width: 17px; height: 17px; border: 2px solid #94a3b8; border-radius: 4px; margin-top: 1px; background: #fff; display: inline-block; appearance: none; -webkit-appearance: none; cursor: pointer; position: relative; }
+  .check-list li .box:checked { background: #0b63ce; border-color: #0b63ce; }
+  .check-list li .box:checked::after { content: ''; position: absolute; left: 4px; top: 0px; width: 5px; height: 9px; border: solid #fff; border-width: 0 2px 2px 0; transform: rotate(45deg); }
+  .level-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 14px; border-radius: 999px; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 8px; }
+  .level-1 { background: linear-gradient(135deg,#0b63ce,#10b981); color:#fff; }
+  .level-2 { background: linear-gradient(135deg,#f59e0b,#ef4444); color:#fff; }
+  .level-3 { background: linear-gradient(135deg,#7c3aed,#ef4444); color:#fff; }
+  .level-4 { background: linear-gradient(135deg,#7c3aed,#0b63ce,#10b981); color:#fff; }
+  .challenge-badge { display: inline-flex; align-items: center; gap: 6px; background: linear-gradient(135deg, #f59e0b, #ef4444); color: #fff; padding: 4px 14px; border-radius: 999px; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 8px; }
+  table.rubric { width: 100%; border-collapse: collapse; font-size: 0.82rem; margin-top: 8px; }
+  table.rubric th { background: #1e293b; color: #e2e8f0; padding: 8px 10px; text-align: left; font-weight: 700; letter-spacing: 0.05em; }
+  table.rubric td { padding: 8px 10px; border-bottom: 1px solid #e2e8f0; vertical-align: top; color: var(--color-text-secondary); }
+  table.rubric tr:nth-child(even) td { background: rgba(241,245,249,0.6); }
+  table.rubric td:first-child { font-weight: 700; color: var(--color-text); }
+  table.rubric .pts { font-family: var(--font-code); font-size: 0.75rem; font-weight: 800; color: var(--color-accent-1); white-space: nowrap; }
+  .sheet-footer { margin-top: 40px; padding: 16px 20px; border-radius: 12px; background: rgba(124,58,237,0.05); border: 1px solid rgba(124,58,237,0.12); display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; font-size: 0.76rem; color: var(--color-text-muted); }
+  .sheet-footer strong { color: var(--color-text); }
+  p, li { font-size: 0.88rem; color: var(--color-text-secondary); line-height: 1.55; }
+  strong { color: var(--color-text); }
+  code { background: #e0f2ff; padding: 1px 6px; border-radius: 4px; font-family: var(--font-code); font-size: 0.82em; color: #0b63ce; }
+  .mb-1 { margin-bottom: 6px; }
+  .mb-2 { margin-bottom: 10px; }
+  .mb-3 { margin-bottom: 14px; }
+  .mt-2 { margin-top: 10px; }
+  .mt-3 { margin-top: 14px; }
+  .text-center { text-align: center; }
+  .text-muted { color: var(--color-text-muted); font-size: 0.78rem; }
+  .grad-text { background: linear-gradient(135deg,#7c3aed,#0b63ce,#10b981); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  .dark-code-write { background:#1e293b; border-radius:12px; padding:14px 18px; width:100%; font-family:var(--font-code); font-size:clamp(0.7rem,1.1vw,0.84rem); line-height:1.7; border:1px solid rgba(255,255,255,0.06); resize:vertical; display:block; outline:none; color:#e2e8f0; box-sizing:border-box; }
+  .dark-code-write:focus { outline:2px solid rgba(124,58,237,0.4); }
+  .timer-badge { display:inline-flex; align-items:center; gap:6px; background:rgba(239,68,68,0.1); color:#b91c1c; border:1px solid rgba(239,68,68,0.25); border-radius:999px; padding:4px 14px; font-size:0.72rem; font-weight:800; letter-spacing:0.06em; text-transform:uppercase; }
+</style>
+</head>
+<body>
 
+<div class="print-bar no-print">
+  <div>
+    <div class="bar-title">🧠🔬 Session 12 · Level 4 Challenge</div>
+    <div class="bar-sub">Adaptive Binary Search Bot — Extension for Fast Finishers · 40 min</div>
+  </div>
+  <button class="btn-print" onclick="window.print()">🖨️ Print / Save as PDF</button>
+</div>
+
+<div class="page">
+
+<!-- ══════════ HEADER ══════════ -->
+<div class="sheet-header">
+  <div class="header-emoji">🧠🔬</div>
+  <div class="header-day">Session 12 · Python: Conditionals · Level 4 Extension Challenge</div>
+  <div class="header-title">Beyond Tier C: The Adaptive<br>Guessing-Game AI</div>
+  <div class="header-sub">Break your own binary search bot, then rebuild it to survive lies, ties, and 1,000,000 numbers</div>
+  <div class="header-pills">
+    <span class="header-pill">⏱ 40 min</span>
+    <span class="header-pill">🐍 Python + 🐱 Scratch</span>
+    <span class="header-pill">Above Tier C</span>
+    <span class="header-pill">Big-O · Adaptive Search</span>
+    <span class="timer-badge">🔥 Advanced</span>
+  </div>
+</div>
+
+<!-- ══════════ STUDENT INFO ══════════ -->
+<div class="student-info">
+  <div class="info-field">
+    <div class="info-label">Name</div>
+    <input class="info-line" type="text" placeholder="Your name" />
+  </div>
+  <div class="info-field">
+    <div class="info-label">Date</div>
+    <input class="info-line" type="text" placeholder="Jul 21, 2026" />
+  </div>
+  <div class="info-field">
+    <div class="info-label">Completed Tier</div>
+    <input class="info-line" type="text" placeholder="Tier A / B / C" />
+  </div>
+</div>
+
+<!-- ══════════ BEFORE YOU BEGIN ══════════ -->
+<div class="section-label">🎯 Before You Begin</div>
+<div class="card accent-purple mb-3">
+  <div class="card-label purple">🚪 Entry ticket — you must have finished Tier C first</div>
+  <p class="mb-2">This challenge assumes your computer-guesses-you binary search bot from the Challenge Card already works and finds numbers 1–100 in about 7 tries. If it doesn't run yet, raise your hand before starting — this sheet builds directly on top of it.</p>
+  <div class="grid-3">
+    <div style="text-align:center;padding:8px;">
+      <div style="font-size:1.6rem;margin-bottom:4px;">🥇</div>
+      <p style="font-size:0.82rem;color:#374151;">Mission 1 — Break It (10 min)</p>
+    </div>
+    <div style="text-align:center;padding:8px;">
+      <div style="font-size:1.6rem;margin-bottom:4px;">🥈</div>
+      <p style="font-size:0.82rem;color:#374151;">Mission 2 — Fix &amp; Scale It (20 min)</p>
+    </div>
+    <div style="text-align:center;padding:8px;">
+      <div style="font-size:1.6rem;margin-bottom:4px;">🥉</div>
+      <p style="font-size:0.82rem;color:#374151;">Mission 3 — Prove &amp; Port It (10 min)</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ MISSION 1 ══════════ -->
+<div class="section-label">🥇 Mission 1 of 3 — Break It (10 min)</div>
+<div class="section-title">Find the Bug: What If the Human Lies?</div>
+
+<div class="card accent-red mb-2">
+  <div class="grid-2">
+    <div>
+      <div class="card-label red">🐛 The setup</div>
+      <p class="mb-2">Your Tier C bot trusts the human completely. It types <code>(low+high)//2</code>, you answer "h", "l", or "c" — and it <strong>never checks</strong> whether your answers are even possible.</p>
+      <p class="mb-2"><strong>Try this on paper first:</strong> pretend the secret number is <strong>37</strong>. Answer honestly for the first 3 guesses, then on the 4th guess — lie on purpose (say "h" when it should be "l").</p>
+      <div class="write-lines">
+        <input class="write-line" type="text" placeholder="What happens to low and high after your lie?" />
+        <input class="write-line" type="text" placeholder="Does the bot ever recover and find 37? Why or why not?" />
+      </div>
+    </div>
+    <div>
+      <div class="card-label red">🔍 Diagnose the failure mode</div>
+      <p class="mb-2">This is the same problem real AI systems face: <strong>noisy or adversarial input</strong>. A self-driving car's sensor can misread a stop sign; a spam filter's training label can be wrong on purpose.</p>
+      <p style="font-size:0.8rem;font-weight:700;color:#b91c1c;margin-bottom:6px;">What could eventually happen to <code>low</code> and <code>high</code> if enough lies stack up?</p>
+      <input class="write-line" type="text" placeholder="e.g. low could cross above high..." />
+      <div class="tip-box amber mt-2">💡 <strong>Vocabulary:</strong> when a search range becomes impossible (<code>low &gt; high</code>), that's called an <strong>invariant violation</strong> — a rule the algorithm assumed would always hold, broken.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ MISSION 2 ══════════ -->
+<div class="section-label">🥈 Mission 2 of 3 — Fix &amp; Scale It (20 min)</div>
+<div class="section-title">Build a Lie-Tolerant, Million-Number Bot</div>
+
+<div class="card accent-blue mb-2">
+  <div class="card-label blue">📋 Requirements — all 3 must work</div>
+  <div class="check-list">
+    <li><input type="checkbox" class="box" /> Detects when <code>low &gt; high</code> and prints a "you gave a contradictory answer" message instead of crashing</li>
+    <li><input type="checkbox" class="box" /> Adds a <code>guess_count</code> and reports the actual guesses vs. the theoretical max <code>⌈log₂(range)⌉</code></li>
+    <li><input type="checkbox" class="box" /> Works correctly when the range is changed to <strong>1 – 1,000,000</strong> with no code changes besides the starting <code>high</code></li>
+  </div>
+  <div class="tip-box blue mt-2">💡 <strong>Big-O connection:</strong> this is <em>self-correcting</em> binary search — the same principle behind version control merge conflict detection and GPS route recalculation when you miss a turn.</div>
+</div>
+
+<div class="card mb-2">
+  <div style="margin-bottom:8px;"><span class="level-badge level-4">🧠 Starter — contradiction-checking binary search</span></div>
+  <div class="grid-2">
+    <div>
+      <div class="card-label amber">🧩 Fill in the blanks</div>
+      <div class="code-block" style="font-size:0.72rem;"><span class="kw">import</span> math
+
+low, high = <span class="nb">1</span>, <input class="blank-input wide" type="text" placeholder="1000000" />
+guess_count = <span class="nb">0</span>
+max_guesses = math.ceil(math.log2(high - low + <span class="nb">1</span>))
+
+<span class="kw">while</span> low <span class="kw"><=</span> high:
+    guess = (low + high) // <span class="nb">2</span>
+    guess_count += <span class="nb">1</span>
+    print(<span class="st">f"My guess: {guess}"</span>)
+    reply = input(<span class="st">"h/l/c: "</span>).lower().strip()
+
+    <span class="kw">if</span> reply == <span class="st">'c'</span>:
+        print(<span class="st">f"Found it in {guess_count} guesses "</span>
+              <span class="st">f"(theoretical max: {max_guesses})"</span>)
+        <span class="kw">break</span>
+    <span class="kw">elif</span> reply == <span class="st">'h'</span>:
+        high = <input class="blank-input wide" type="text" placeholder="guess - 1" />
+    <span class="kw">elif</span> reply == <span class="st">'l'</span>:
+        low = <input class="blank-input wide" type="text" placeholder="guess + 1" />
+
+    <span class="kw">if</span> <input class="blank-input wide" type="text" placeholder="low > high" />:
+        print(<span class="st">"⚠️ Contradiction! Your answers can't both be true."</span>)
+        <span class="kw">break</span></div>
+    </div>
+    <div>
+      <div class="card-label green">🐍 Write your full corrected version here (with comments):</div>
+      <textarea class="dark-code-write" style="min-height:280px;" spellcheck="false" placeholder="# Mission 2 — self-correcting, scalable binary search&#10;import math&#10;&#10;low, high = 1, 1000000&#10;guess_count = 0&#10;&#10;while low <= high:&#10;    guess = (low + high) // 2&#10;    guess_count += 1&#10;    ...&#10;    # detect contradiction here&#10;    ...">
+</textarea>
+    </div>
+  </div>
+</div>
+
+<div class="card accent-amber mb-3">
+  <div class="card-label amber">🧪 Run these 3 tests and record results</div>
+  <table style="width:100%;font-size:0.8rem;border-collapse:collapse;">
+    <tr><td style="padding:5px 0;border-bottom:1px solid #f1f5f9;">Secret = 500,000 in range 1–1,000,000, always honest</td><td style="padding:5px 0;border-bottom:1px solid #f1f5f9;"><input type="text" style="width:100%;border:none;border-bottom:1.5px solid #f59e0b;background:transparent;outline:none;font-size:0.8rem;" placeholder="guesses taken →" /></td></tr>
+    <tr><td style="padding:5px 0;border-bottom:1px solid #f1f5f9;">Secret = 37 in range 1–100, lie once on purpose</td><td style="padding:5px 0;border-bottom:1px solid #f1f5f9;"><input type="text" style="width:100%;border:none;border-bottom:1.5px solid #f59e0b;background:transparent;outline:none;font-size:0.8rem;" placeholder="does it catch the contradiction? →" /></td></tr>
+    <tr><td style="padding:5px 0;">Range 1–1,000,000, always honest</td><td style="padding:5px 0;"><input type="text" style="width:100%;border:none;border-bottom:1.5px solid #f59e0b;background:transparent;outline:none;font-size:0.8rem;" placeholder="actual vs theoretical max →" /></td></tr>
+  </table>
+</div>
+
+<!-- ══════════ MISSION 3 ══════════ -->
+<div class="section-label">🥉 Mission 3 of 3 — Prove &amp; Port It (10 min)</div>
+<div class="section-title">Math Proof + Scratch Port</div>
+
+<div class="card accent-green mb-2">
+  <div class="grid-2">
+    <div>
+      <div class="card-label green">📐 Prove the Big-O bound</div>
+      <p class="mb-2">You claimed binary search takes about <code>log₂(n)</code> guesses for a range of size <code>n</code>. Prove it by filling in the halving table below for <strong>n = 1,000,000</strong>.</p>
+      <div class="formula-box">range size after k halvings = n / 2^k</div>
+      <table class="score-table" style="width:100%;">
+        <tr><th>Guess #</th><th>Remaining range size</th></tr>
+        <tr><td>0 (start)</td><td>1,000,000</td></tr>
+        <tr><td>1</td><td><input class="blank-input wide" type="text" placeholder="500,000" /></td></tr>
+        <tr><td>2</td><td><input class="blank-input wide" type="text" placeholder="?" /></td></tr>
+        <tr><td>...</td><td>...</td></tr>
+        <tr><td>k</td><td><input class="blank-input wide" type="text" placeholder="1" /></td></tr>
+      </table>
+      <p class="mt-2" style="font-size:0.8rem;">Solve for k when the remaining range = 1. What is k, rounded up?</p>
+      <input class="write-line" type="text" placeholder="k = log2(1,000,000) ≈ ?" />
+    </div>
+    <div>
+      <div class="card-label purple">🐱 Port the logic to Scratch — design it</div>
+      <p class="mb-2">You don't need to build this in Scratch today — just design it. Which Scratch blocks would replace each Python line? Match them.</p>
+      <table style="width:100%;font-size:0.8rem;border-collapse:collapse;">
+        <tr><td style="padding:5px 0;border-bottom:1px solid #f1f5f9;"><code>low, high = 1, 1000000</code></td><td style="padding:5px 0;border-bottom:1px solid #f1f5f9;width:45%;"><input type="text" style="width:100%;border:none;border-bottom:1.5px solid #7c3aed;background:transparent;outline:none;font-size:0.78rem;" placeholder="set [low] to..." /></td></tr>
+        <tr><td style="padding:5px 0;border-bottom:1px solid #f1f5f9;"><code>while low &lt;= high:</code></td><td style="padding:5px 0;border-bottom:1px solid #f1f5f9;"><input type="text" style="width:100%;border:none;border-bottom:1.5px solid #7c3aed;background:transparent;outline:none;font-size:0.78rem;" placeholder="repeat until <...>" /></td></tr>
+        <tr><td style="padding:5px 0;border-bottom:1px solid #f1f5f9;"><code>guess = (low+high)//2</code></td><td style="padding:5px 0;border-bottom:1px solid #f1f5f9;"><input type="text" style="width:100%;border:none;border-bottom:1.5px solid #7c3aed;background:transparent;outline:none;font-size:0.78rem;" placeholder="set [guess] to..." /></td></tr>
+        <tr><td style="padding:5px 0;"><code>if low &gt; high: contradiction</code></td><td style="padding:5px 0;"><input type="text" style="width:100%;border:none;border-bottom:1.5px solid #7c3aed;background:transparent;outline:none;font-size:0.78rem;" placeholder="if <...> then..." /></td></tr>
+      </table>
+      <div class="tip-box purple mt-2">💡 <strong>Key insight:</strong> the algorithm is identical in every language — Python, Scratch, or JavaScript. Only the syntax for loops and variables changes. That's what "language-independent thinking" means in CS.</div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ══════════ REAL WORLD ══════════ -->
+<div class="section-label">🌍 Real World Connection</div>
+<div class="card accent-blue mb-3">
+  <div class="card-label blue">Where adaptive, error-tolerant binary search shows up</div>
+  <ul style="list-style:disc;padding-left:18px;font-size:0.85rem;color:#374151;line-height:1.9;">
+    <li><strong>Git bisect</strong> finds which commit introduced a bug among thousands, using the exact same halving strategy — and tolerates the developer occasionally marking a commit wrong.</li>
+    <li><strong>Adaptive testing (like SHSAT/SAT computer-adaptive sections)</strong> narrows in on your true skill level by adjusting difficulty up or down after every answer — a "fuzzy" binary search on your ability.</li>
+    <li><strong>Database index lookups</strong> use binary search across millions of sorted rows, and must handle corrupted or missing data without crashing — same contradiction-check idea.</li>
+  </ul>
+</div>
+
+<!-- ══════════ REFLECT ══════════ -->
+<div class="section-label">💬 Reflect</div>
+<div class="card accent-purple mb-3">
+  <div class="card-label purple">Exit questions</div>
+  <p style="font-size:0.85rem;font-weight:700;margin-bottom:4px;">1. Why does checking for contradictions make your bot more "intelligent" than Tier C's version?</p>
+  <input class="write-line" type="text" placeholder="Your answer..." />
+  <p style="font-size:0.85rem;font-weight:700;margin:10px 0 4px;">2. What would happen to guess count if the range grew to 1 billion instead of 1 million? Estimate without running the code.</p>
+  <input class="write-line" type="text" placeholder="Your answer..." />
+  <p style="font-size:0.85rem;font-weight:700;margin:10px 0 4px;">3. Rate this challenge: 🟢 Too easy · 🟡 Just right · 🔴 Too hard — and tell us why.</p>
+  <input class="write-line" type="text" placeholder="Your answer..." />
+</div>
+
+<!-- ══════════ SCORING ══════════ -->
+<div class="section-label">📊 Scoring</div>
+<div class="card mb-3">
+  <table class="rubric">
+    <tr><th>Mission</th><th>What to Look For</th><th>Points</th></tr>
+    <tr><td>Mission 1 — Break It</td><td>Traced the lie scenario correctly; identified invariant violation (low &gt; high)</td><td class="pts">3 pts</td></tr>
+    <tr><td>Mission 2 — Fix &amp; Scale It</td><td>Contradiction check works; guess_count + theoretical max reported; scales to 1M with no logic changes</td><td class="pts">8 pts</td></tr>
+    <tr><td>Mission 2 — Test Table</td><td>All 3 test cases run and recorded with real output</td><td class="pts">3 pts</td></tr>
+    <tr><td>Mission 3 — Big-O Proof</td><td>Halving table filled correctly; k solved and rounded up properly</td><td class="pts">3 pts</td></tr>
+    <tr><td>Mission 3 — Scratch Port</td><td>All 4 rows matched with reasonable Scratch block equivalents</td><td class="pts">2 pts</td></tr>
+    <tr><td>Reflection</td><td>Thoughtful answers to all 3 exit questions</td><td class="pts">2 pts</td></tr>
+    <tr><td>⭐ Bonus — Adversarial Stress Test</td><td>Deliberately fed 3+ contradictory answers in a row without crashing the program</td><td class="pts">+2</td></tr>
+  </table>
+  <div class="text-center mt-3">
+    <span>Score: <strong style="font-family:var(--font-code);color:#0b63ce;">____ / 21</strong></span>
+    &nbsp;&nbsp;
+    <span>With bonus: <strong style="font-family:var(--font-code);color:#10b981;">____ / 23</strong></span>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="sheet-footer">
+  <div>
+    <strong>Session 12 · Python Conditionals — Level 4 Extension Challenge</strong> · Mr. Hsiao "Hue" Weng · Summer 2026<br>
+    <span class="grad-text" style="font-weight:800;">Binary Search · Invariants · Big-O · Adaptive Algorithms · Cross-Language Design</span>
+  </div>
+  <div style="text-align:right;">
+    Fast finishers only · Above Tier C<br>
+    <span style="font-size:0.7rem;">🧠 The same trick that powers Git, adaptive tests, and database engines!</span>
+  </div>
+</div>
+
+</div><!-- end .page -->
+
+</body>
+</html>
