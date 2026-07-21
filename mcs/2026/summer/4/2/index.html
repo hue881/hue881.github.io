@@ -1,1 +1,909 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="slides-format" content="viewport">
+<title>Session 12 · Python: Conditionals & a Number-Guessing Game</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<style type="text/tailwindcss">
+@theme {
+  --color-bg:#f0f8ff; --color-bg-deep:#e6f2ff; --color-surface:#ffffff;
+  --color-text:#0f2747; --color-text-secondary:#3a5a7a; --color-text-muted:#5b7290;
+  --color-accent-1:#0b63ce; --color-accent-2:#f59e0b; --color-accent-3:#10b981;
+  --color-glass-bg:rgba(11,99,206,0.05); --color-glass-border:rgba(11,99,206,0.14);
+  --color-vignette:rgba(11,99,206,0.08);
+  --font-display:"Fredoka","Trebuchet MS",sans-serif;
+  --font-body:"Nunito",Arial,sans-serif;
+}
+</style>
+<style>
+:root{ --color-bg:#f0f8ff; --color-text:#0f2747; --glow-color-rgb:11,99,206; }
+*,*::before,*::after{box-sizing:border-box;}
+html,body{background:var(--color-bg);margin:0;}
+body{font-family:"Nunito",Arial,sans-serif;color:var(--color-text);overflow:hidden;height:100vh;width:100vw;}
+.deck{width:100vw;height:100vh;position:relative;}
+.slide{position:absolute;top:0;left:0;width:100%;height:100%;background:var(--color-bg);display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;transform:scale(0.96);transition:opacity 0.6s ease,transform 0.6s ease;pointer-events:none;overflow:hidden;}
+.slide.active{opacity:1;transform:scale(1);pointer-events:all;}
+.slide>.content{position:relative;z-index:2;width:100%;max-width:1100px;padding:clamp(1.2rem,3.4vw,3rem);}
+.slide::before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");background-repeat:repeat;background-size:256px 256px;opacity:0.03;mix-blend-mode:overlay;}
+.slide::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:radial-gradient(ellipse at center,transparent 55%,var(--color-vignette) 100%);}
+.gradient-mesh{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none;}
+.blob{position:absolute;border-radius:50%;filter:blur(80px);animation:float-slow 12s ease-in-out infinite;}
+.blob:nth-child(2){animation:float-drift 16s ease-in-out infinite;}
+.blob:nth-child(3){animation:float-slow 20s ease-in-out infinite reverse;}
+@keyframes float-slow{0%{transform:translate(0,0) scale(1);}25%{transform:translate(60px,-50px) scale(1.12);}50%{transform:translate(-40px,40px) scale(0.9);}75%{transform:translate(50px,20px) scale(1.08);}100%{transform:translate(0,0) scale(1);}}
+@keyframes float-drift{0%{transform:translate(0,0) scale(1) rotate(0deg);}33%{transform:translate(-50px,-60px) scale(1.15) rotate(3deg);}66%{transform:translate(40px,30px) scale(0.88) rotate(-2deg);}100%{transform:translate(0,0) scale(1) rotate(0deg);}}
+@keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-14px);}}
+.particle-canvas{position:absolute;inset:0;z-index:1;}
+.reveal{opacity:0;transform:translateY(18px);}
+.nav-controls{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:12px;z-index:100;background:rgba(255,255,255,0.85);backdrop-filter:blur(12px);padding:9px 20px;border-radius:999px;border:1px solid var(--color-glass-border);box-shadow:0 10px 30px rgba(11,99,206,0.18);}
+.nav-btn{width:36px;height:36px;border:none;background:var(--color-glass-bg);color:var(--color-accent-2);border-radius:999px;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 0.2s,transform 0.15s;}
+.nav-btn:hover{background:rgba(11,99,206,0.15);transform:translateY(-1px);}
+.slide-dots{display:flex;gap:5px;flex-wrap:wrap;max-width:420px;}
+.dot{width:8px;height:8px;border-radius:50%;background:rgba(11,99,206,0.25);cursor:pointer;transition:background 0.25s,transform 0.25s;}
+.dot.active{background:var(--color-accent-2);transform:scale(1.4);}
+.dot.warmup{background:rgba(250,204,21,0.4);} .dot.warmup.active{background:#f59e0b;}
+.dot.mini{background:rgba(59,130,246,0.4);} .dot.mini.active{background:#0b63ce;}
+.dot.build{background:rgba(52,211,153,0.4);} .dot.build.active{background:#10b981;}
+.dot.share{background:rgba(167,139,250,0.4);} .dot.share.active{background:#7c3aed;}
+.slide-counter{font-size:0.78rem;color:var(--color-text-muted);min-width:52px;text-align:center;font-weight:700;}
+.card{background:var(--color-surface);border:1px solid var(--color-glass-border);border-radius:16px;padding:14px 18px;box-shadow:0 8px 24px rgba(11,99,206,0.1);backdrop-filter:blur(10px);}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:4px 14px;border-radius:999px;border:1px solid var(--color-glass-border);background:rgba(11,99,206,0.08);font-size:0.76rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#0b63ce;}
+.pill.blue{color:#0b63ce;} .pill.green{color:#0d9488;} .pill.purple{color:#7c3aed;} .pill.red{color:#dc2626;}
+.big-text{font-size:clamp(0.92rem,1.5vw,1.15rem);line-height:1.65;color:var(--color-text-secondary);}
+.code-block{background:#0f2747;color:#e6f2ff;font-family:"Fira Code",Consolas,monospace;border-radius:12px;padding:14px 18px;font-size:clamp(0.78rem,1.2vw,0.95rem);line-height:1.7;overflow-x:auto;border:1px solid var(--color-glass-border);}
+.code-block .kw{color:#f59e0b;font-weight:600;} .code-block .str{color:#65a30d;} .code-block .cmt{color:#5b7290;font-style:italic;} .code-block .num{color:#0284c7;} .code-block .fn{color:#db2777;}
+.think-chip{display:inline-flex;align-items:center;gap:8px;padding:7px 13px;border-radius:999px;background:rgba(59,130,246,0.14);color:#0b63ce;font-size:0.82rem;font-weight:700;}
+.question-chip{display:inline-flex;align-items:center;gap:8px;padding:7px 13px;border-radius:999px;background:rgba(250,204,21,0.14);color:#b45309;font-size:0.82rem;font-weight:700;}
+.grid-cards{display:grid;gap:14px;}
+@media(min-width:700px){.grid-2{grid-template-columns:repeat(2,minmax(0,1fr));}.grid-3{grid-template-columns:repeat(3,minmax(0,1fr));}}
+.grad-text{background:linear-gradient(135deg,#0b63ce 0%,#f59e0b 55%,#10b981 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.media-embed{position:relative;padding-top:56.25%;border-radius:13px;overflow:hidden;background:#000;cursor:pointer;box-shadow:0 10px 30px rgba(11,99,206,0.25);}
+.media-embed img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+.media-embed .play-btn{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;}
+.media-embed .play-btn div{width:58px;height:58px;background:rgba(255,0,0,0.92);border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(0,0,0,0.5);transition:transform 0.2s;}
+.media-embed:hover .play-btn div{transform:scale(1.1);}
+.media-embed iframe{position:absolute;inset:0;width:100%;height:100%;border:0;border-radius:13px;}
+.dtree{display:flex;flex-direction:column;align-items:center;gap:0;}
+.dnode{padding:8px 18px;border-radius:10px;font-weight:700;font-size:clamp(0.76rem,1.1vw,0.92rem);text-align:center;border:2px solid;}
+.dnode.root{background:rgba(59,130,246,0.18);border-color:#0b63ce;color:#0b63ce;}
+.dnode.yes{background:rgba(52,211,153,0.18);border-color:#10b981;color:#0d9488;}
+.dnode.no{background:rgba(248,113,113,0.16);border-color:#ef4444;color:#dc2626;}
+.dtree-row{display:flex;gap:26px;align-items:flex-start;justify-content:center;}
+.dtree-branch{display:flex;flex-direction:column;align-items:center;gap:0;}
+.dtree-line{width:2px;height:18px;background:rgba(11,99,206,0.25);margin:0 auto;}
+.dtree-labels{display:flex;gap:70px;font-size:0.7rem;font-weight:700;color:var(--color-text-muted);margin-bottom:2px;}
+.progress-track{height:6px;background:rgba(11,99,206,0.1);border-radius:999px;overflow:hidden;margin-top:6px;}
+.progress-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,#0b63ce,#10b981);transition:width 0.6s ease;}
+.challenge-card{background:linear-gradient(135deg,rgba(167,139,250,0.14),rgba(59,130,246,0.10));border:2px solid rgba(167,139,250,0.30);border-radius:16px;padding:14px 18px;}
+.break-card{background:linear-gradient(135deg,rgba(250,204,21,0.10),rgba(250,204,21,0.05));border:2px solid rgba(250,204,21,0.28);border-radius:18px;padding:18px 22px;}
+.tier-a{display:inline-flex;align-items:center;padding:3px 10px;border-radius:999px;background:rgba(52,211,153,0.18);color:#0d9488;font-size:0.72rem;font-weight:800;}
+.tier-b{display:inline-flex;align-items:center;padding:3px 10px;border-radius:999px;background:rgba(59,130,246,0.18);color:#0b63ce;font-size:0.72rem;font-weight:800;}
+.tier-c{display:inline-flex;align-items:center;padding:3px 10px;border-radius:999px;background:rgba(167,139,250,0.18);color:#7c3aed;font-size:0.72rem;font-weight:800;}
+.mouse-spotlight{position:fixed;inset:0;z-index:99;pointer-events:none;}
+.step-num{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#0b63ce,#10b981);color:#04101f;font-weight:800;font-size:0.82rem;flex-shrink:0;}
+.ai-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:999px;background:rgba(52,211,153,0.14);border:1px solid rgba(52,211,153,0.3);color:#0d9488;font-size:0.76rem;font-weight:800;}
+.timeline-row{display:flex;align-items:center;gap:12px;padding:8px 0;}
+.timeline-dot{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 3px 10px rgba(11,99,206,0.2);overflow:hidden;background:var(--color-surface);}
+.timeline-line{width:2px;height:16px;background:linear-gradient(180deg,rgba(59,130,246,0.35),rgba(52,211,153,0.15));margin-left:17px;}
+.pyblock{display:inline-block;border-radius:6px;padding:4px 10px;font-family:'Fira Code',Consolas,monospace;font-size:0.8rem;font-weight:700;margin:2px 3px;}
+.pb-blue{background:#0b63ce;color:#04101f;} .pb-gold{background:#f59e0b;color:#1e1400;} .pb-green{background:#10b981;color:#03170f;}
+.vocab-tag{display:inline-flex;align-items:center;padding:4px 12px;border-radius:999px;background:rgba(59,130,246,0.14);font-size:0.84rem;font-weight:800;color:#0b63ce;}
+.hover-lift{transition:transform 0.25s ease,box-shadow 0.25s ease;}
+.hover-lift:hover{transform:translateY(-4px);box-shadow:0 14px 30px rgba(11,99,206,0.2);}
+</style>
+</head>
+<body>
+<div class="mouse-spotlight" id="spotlight"></div>
+<div class="deck">
+<!-- SLIDE 1 · TITLE -->
+<div class="slide active" data-slide="1" data-type="title">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:500px;height:500px;top:-100px;right:-90px;background:#0b63ce;opacity:.16;"></div>
+    <div class="blob" style="width:320px;height:320px;bottom:-80px;left:-60px;background:#f59e0b;opacity:.10;"></div>
+    <div class="blob" style="width:220px;height:220px;top:38%;left:10%;background:#10b981;opacity:.10;"></div>
+  </div>
+  <canvas class="particle-canvas"></canvas>
+  <div class="content" style="text-align:center;">
+    <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/5e80c6e7fd213beb981d4ad3af98fb0076ebc178.jpg"
+         alt="Student coding Python on a computer"
+         style="height:clamp(80px,14vh,130px);object-fit:cover;border-radius:16px;margin:0 auto 1rem;animation:float 3s ease-in-out infinite;box-shadow:0 12px 36px rgba(59,130,246,0.30);"
+         class="reveal">
+    <p class="pill reveal" style="margin:0 auto 0.8rem;display:inline-flex;">Session 12 · Tues Jul 21 · Week 4</p>
+    <h1 class="font-display grad-text reveal" style="font-size:clamp(2rem,5.5vw,4rem);font-weight:700;line-height:1.1;margin-bottom:0.5rem;">
+      Python: Conditionals
+    </h1>
+    <h2 class="font-display reveal" style="font-size:clamp(1.2rem,2.8vw,2.2rem);font-weight:600;color:#3a5a7a;margin-bottom:0.7rem;">
+      if / elif / else &nbsp;+&nbsp; a Number-Guessing Game
+    </h2>
+    <p class="reveal" style="font-size:clamp(0.9rem,1.5vw,1.2rem);color:#3a5a7a;margin-bottom:1.2rem;">
+      Teaching Python to make real decisions — the same trick machines use to search smartly
+    </p>
+    <div class="reveal" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+      <span class="pill blue">Modern Chinese School</span>
+      <span class="pill green">Ages 7–13</span>
+      <span class="pill" style="color:#dc2626;">Summer 2026</span>
+    </div>
+  </div>
+</div>
 
+<!-- SLIDE 2 · TODAY'S PLAN (Daily Rhythm) -->
+<div class="slide" data-slide="2" data-type="lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:380px;height:380px;top:-70px;right:-60px;background:#0b63ce;opacity:0.10;"></div>
+    <div class="blob" style="width:230px;height:230px;bottom:-50px;left:-30px;background:#10b981;opacity:0.08;"></div>
+  </div>
+  <div class="content">
+    <p class="pill mb-3 reveal">Today's Plan · Daily Rhythm</p>
+    <h2 class="font-display reveal" style="font-weight:700;margin-bottom:1.1rem;color:#0f2747;">How our 90 minutes unfold</h2>
+    <div class="grid-cards reveal" style="gap:8px;">
+
+      <div class="timeline-row">
+        <div class="timeline-dot" style="background:#f59e0b;color:#1e1400;font-weight:800;font-size:1rem;display:flex;align-items:center;justify-content:center;">1</div>
+        <div><strong style="color:#0f2747;font-size:0.9rem;">10 min · Warm-Up</strong>
+          <div class="big-text">Unplugged higher/lower guessing puzzle — no screens yet. Your brain already runs this search!</div>
+        </div>
+      </div>
+      <div class="timeline-line"></div>
+
+      <div class="timeline-row">
+        <div class="timeline-dot" style="background:#0b63ce;color:#04101f;font-weight:800;font-size:1rem;display:flex;align-items:center;justify-content:center;">2</div>
+        <div><strong style="color:#0f2747;font-size:0.9rem;">15–20 min · Mini-Lesson + Videos + AI Moment</strong>
+          <div class="big-text"><span class="pyblock pb-blue">if</span><span class="pyblock pb-gold">elif</span><span class="pyblock pb-green">else</span> in Python, comparison operators, <code>random</code> — plus how "higher/lower" is a real search strategy AI uses</div>
+        </div>
+      </div>
+      <div class="timeline-line"></div>
+
+      <div class="timeline-row">
+        <div class="timeline-dot" style="background:#10b981;color:#03170f;font-weight:800;font-size:1rem;display:flex;align-items:center;justify-content:center;">3</div>
+        <div><strong style="color:#0f2747;font-size:0.9rem;">20 min · Guided Build</strong>
+          <div class="big-text">Everyone builds the Number-Guessing Game together, step by step, in Python Playground</div>
+        </div>
+      </div>
+      <div class="timeline-line"></div>
+
+      <div class="timeline-row">
+        <div class="timeline-dot" style="background:#f43f5e;color:#1e0509;font-weight:800;font-size:1rem;display:flex;align-items:center;justify-content:center;">4</div>
+        <div><strong style="color:#0f2747;font-size:0.9rem;">5 min · Brain Break</strong>
+          <div class="big-text">Human Higher-or-Lower — move your body while narrowing down a secret number</div>
+        </div>
+      </div>
+      <div class="timeline-line"></div>
+
+      <div class="timeline-row">
+        <div class="timeline-dot" style="background:#7c3aed;color:#140a2b;font-weight:800;font-size:1rem;display:flex;align-items:center;justify-content:center;">5</div>
+        <div><strong style="color:#0f2747;font-size:0.9rem;">30–40 min · Open Build + Challenge Cards</strong>
+          <div class="big-text">Finish your game, add a guess counter, or flip it — make the computer guess YOUR number</div>
+        </div>
+      </div>
+      <div class="timeline-line"></div>
+
+      <div class="timeline-row">
+        <div class="timeline-dot" style="background:#0b63ce;color:#04101f;font-weight:800;font-size:1rem;display:flex;align-items:center;justify-content:center;">6</div>
+        <div><strong style="color:#0f2747;font-size:0.9rem;">10 min · Share-Out</strong>
+          <div class="big-text">Show your neighbor or volunteer to demo — always opt-in, always warm</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 3 · WARM-UP -->
+<div class="slide" data-slide="3" data-type="warmup">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:380px;height:380px;top:-90px;right:-70px;background:#f59e0b;opacity:.10;"></div>
+    <div class="blob" style="width:260px;height:260px;bottom:-60px;left:-50px;background:#0b63ce;opacity:.09;"></div>
+  </div>
+  <div class="content">
+    <p class="pill mb-3 reveal" style="color:#b45309;">Warm-Up · No Screens · 10 min</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.5rem,2.6vw,2.1rem);font-weight:700;margin-bottom:0.8rem;color:#0f2747;">
+      I'm thinking of a number between 1 and 100...
+    </h2>
+
+    <div class="grid-cards grid-2 reveal" style="gap:12px;margin-bottom:12px;">
+      <div class="card hover-lift" style="padding:14px 16px;">
+        <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/2e5bd00ea1b3abbf8689e55328375cedf7ed9b2f.jpg"
+             alt="Student thinking about a mystery number"
+             style="width:100%;height:100px;object-fit:cover;border-radius:10px;margin-bottom:10px;">
+        <p class="question-chip" style="margin-bottom:8px;display:inline-flex;">Try It — Partner Game</p>
+        <p class="big-text">One partner picks a secret number 1–100. The other guesses. You may only say <strong>"higher"</strong> or <strong>"lower"</strong> — never the number.</p>
+      </div>
+      <div class="card hover-lift" style="padding:14px 16px;">
+        <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/329369e401adfb854882be86ff91fd5f5be13b9d.jpg"
+             alt="Guessing game with too high and too low feedback"
+             style="width:100%;height:100px;object-fit:cover;border-radius:10px;margin-bottom:10px;">
+        <p class="think-chip" style="margin-bottom:8px;display:inline-flex;">Count It</p>
+        <p class="big-text">How many guesses did it take? Could you have guessed <strong>faster</strong> on purpose? What was your strategy?</p>
+      </div>
+    </div>
+
+    <div class="card reveal" style="background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.22);padding:12px 16px;">
+      <p style="margin:0;font-size:0.88rem;color:#0b63ce;font-weight:700;">
+        Big Idea: Every "higher/lower" answer <em>cuts your search space roughly in half</em>. That's not luck — it's a strategy called <strong>binary search</strong>, and it's exactly what we'll build in Python today.
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 4 · IF/ELIF/ELSE INTRO -->
+<div class="slide" data-slide="4" data-type="mini-lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:360px;height:360px;top:-80px;right:-60px;background:#0b63ce;opacity:.11;"></div>
+    <div class="blob" style="width:240px;height:240px;bottom:-50px;left:-40px;background:#10b981;opacity:.08;"></div>
+  </div>
+  <div class="content">
+    <p class="pill blue mb-3 reveal">Mini-Lesson — Part 1</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.5rem,2.5vw,2rem);font-weight:700;margin-bottom:0.9rem;color:#0f2747;">From Scratch blocks to Python text</h2>
+
+    <div class="grid-cards grid-2 reveal" style="gap:14px;margin-bottom:12px;">
+      <div class="card" style="padding:16px 18px;">
+        <p style="font-weight:800;color:#0b63ce;margin:0 0 10px;font-size:0.92rem;">Remember Scratch?</p>
+        <p style="font-size:0.85rem;color:#3a5a7a;margin:0 0 10px;">You dragged <span class="pyblock pb-gold">if &lt;&gt; then</span> and <span class="pyblock pb-blue">if &lt;&gt; then else</span> blocks. The logic is identical — we're just typing it now.</p>
+        <div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:10px 14px;font-size:0.85rem;color:#3a5a7a;">
+          IF touching edge? → THEN say "Ouch!"<br>ELSE → say "Cruising..."
+        </div>
+      </div>
+      <div class="card" style="padding:16px 18px;">
+        <p style="font-weight:800;color:#0b63ce;margin:0 0 10px;font-size:0.92rem;">Same logic, in Python</p>
+        <div class="code-block">
+<span class="kw">if</span> age &lt; 13:<br>
+&nbsp;&nbsp;print(<span class="str">"Kid zone!"</span>)<br>
+<span class="kw">elif</span> age &lt; 18:<br>
+&nbsp;&nbsp;print(<span class="str">"Teen zone!"</span>)<br>
+<span class="kw">else</span>:<br>
+&nbsp;&nbsp;print(<span class="str">"Adult zone!"</span>)
+        </div>
+      </div>
+    </div>
+
+    <div class="card reveal" style="padding:12px 16px;background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.22);">
+      <p style="margin:0;font-size:0.9rem;color:#0b63ce;">
+        Python checks conditions <strong>top to bottom</strong> and runs the <em>first</em> one that's true — then skips the rest. Indentation (the spaces) is what shows Python which lines belong to which branch.
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 5 · COMPARISON OPERATORS -->
+<div class="slide" data-slide="5" data-type="mini-lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:340px;height:340px;top:-70px;right:-50px;background:#10b981;opacity:.10;"></div>
+    <div class="blob" style="width:220px;height:220px;bottom:-40px;left:-30px;background:#0b63ce;opacity:.08;"></div>
+  </div>
+  <div class="content">
+    <p class="pill green mb-3 reveal">Mini-Lesson — Part 2</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.4rem,2.4vw,1.9rem);font-weight:700;margin-bottom:0.9rem;color:#0f2747;">Comparison operators — the questions Python can ask</h2>
+
+    <div class="grid-cards grid-3 reveal" style="gap:12px;margin-bottom:12px;">
+      <div class="card hover-lift" style="padding:13px 15px;text-align:center;">
+        <p style="font-family:'Fira Code';font-size:1.3rem;color:#f59e0b;font-weight:700;margin:0 0 6px;">==</p>
+        <p style="font-size:0.8rem;color:#3a5a7a;margin:0;">equal to (2 signs! one <code>=</code> means "store")</p>
+      </div>
+      <div class="card hover-lift" style="padding:13px 15px;text-align:center;">
+        <p style="font-family:'Fira Code';font-size:1.3rem;color:#f59e0b;font-weight:700;margin:0 0 6px;">!=</p>
+        <p style="font-size:0.8rem;color:#3a5a7a;margin:0;">not equal to</p>
+      </div>
+      <div class="card hover-lift" style="padding:13px 15px;text-align:center;">
+        <p style="font-family:'Fira Code';font-size:1.3rem;color:#f59e0b;font-weight:700;margin:0 0 6px;">&lt;  &gt;</p>
+        <p style="font-size:0.8rem;color:#3a5a7a;margin:0;">less than / greater than</p>
+      </div>
+      <div class="card hover-lift" style="padding:13px 15px;text-align:center;">
+        <p style="font-family:'Fira Code';font-size:1.3rem;color:#f59e0b;font-weight:700;margin:0 0 6px;">&lt;=  &gt;=</p>
+        <p style="font-size:0.8rem;color:#3a5a7a;margin:0;">less/greater than <em>or equal</em></p>
+      </div>
+      <div class="card hover-lift" style="padding:13px 15px;text-align:center;">
+        <p style="font-family:'Fira Code';font-size:1.05rem;color:#f59e0b;font-weight:700;margin:0 0 6px;">and / or</p>
+        <p style="font-size:0.8rem;color:#3a5a7a;margin:0;">combine two conditions</p>
+      </div>
+      <div class="card hover-lift" style="padding:13px 15px;text-align:center;background:rgba(52,211,153,0.10);border-color:rgba(52,211,153,0.3);">
+        <p style="font-family:'Fira Code';font-size:1.15rem;color:#0d9488;font-weight:700;margin:0 0 6px;">True / False</p>
+        <p style="font-size:0.8rem;color:#3a5a7a;margin:0;">what every comparison returns</p>
+      </div>
+    </div>
+
+    <div class="card reveal" style="padding:11px 16px;background:rgba(250,204,21,0.08);border:1px solid rgba(250,204,21,0.22);">
+      <p style="margin:0;font-size:0.85rem;color:#b45309;">
+        <strong>Quick check:</strong> <code>guess &lt; secret_number</code> — this whole expression evaluates to either <strong>True</strong> or <strong>False</strong>. That's exactly what an <code>if</code> needs.
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 6 · THE RANDOM MODULE -->
+<div class="slide" data-slide="6" data-type="mini-lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:340px;height:340px;top:-70px;left:-50px;background:#0b63ce;opacity:.09;"></div>
+    <div class="blob" style="width:250px;height:250px;bottom:-60px;right:-40px;background:#f59e0b;opacity:.08;"></div>
+  </div>
+  <div class="content">
+    <p class="pill mb-3 reveal">Mini-Lesson — Part 3</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.4rem,2.4vw,1.9rem);font-weight:700;margin-bottom:0.9rem;color:#0f2747;">Meet <code style="background:rgba(59,130,246,0.14);padding:2px 8px;border-radius:6px;">random</code> — Python's dice roller</h2>
+
+    <div class="grid-cards grid-2 reveal" style="gap:14px;margin-bottom:12px;">
+      <div class="code-block">
+<span class="kw">import</span> random<br><br>
+secret = random.randint(<span class="num">1</span>, <span class="num">100</span>)<br>
+<span class="cmt"># picks a whole number from 1 to 100, inclusive</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div class="card" style="padding:12px 15px;">
+          <p style="font-weight:800;color:#0b63ce;margin:0 0 5px;font-size:0.86rem;">Step 1</p>
+          <p style="font-size:0.82rem;color:#3a5a7a;margin:0;"><code>import random</code> — always the first line. It loads Python's built-in randomness toolkit.</p>
+        </div>
+        <div class="card" style="padding:12px 15px;">
+          <p style="font-weight:800;color:#0b63ce;margin:0 0 5px;font-size:0.86rem;">Step 2</p>
+          <p style="font-size:0.82rem;color:#3a5a7a;margin:0;"><code>random.randint(1, 100)</code> — hands you back one random integer in that range, every time.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card reveal" style="padding:12px 16px;background:rgba(52,211,153,0.08);border:1px solid rgba(52,211,153,0.22);">
+      <p style="margin:0;font-size:0.87rem;color:#0d9488;">
+        Now the computer has a secret number nobody — not even the code — "knows" in advance. That's the setup for our whole game.
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 7 · VIDEO 1 -->
+<div class="slide" data-slide="7" data-type="mini-lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:350px;height:350px;top:-80px;right:-60px;background:#0b63ce;opacity:.10;"></div>
+    <div class="blob" style="width:220px;height:220px;bottom:-50px;left:-30px;background:#10b981;opacity:.07;"></div>
+  </div>
+  <div class="content">
+    <p class="pill mb-3 reveal">Video 1 · Mini-Lesson Boost</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.4rem,2.4vw,1.9rem);font-weight:700;margin-bottom:0.8rem;color:#0f2747;">
+      If Statements in Python Are Easy
+    </h2>
+
+    <div class="grid-cards grid-2 reveal" style="gap:14px;align-items:start;">
+      <div>
+        <div class="media-embed" id="player-FvMPfrgGeKs" onclick="playVideo('FvMPfrgGeKs')" title="Click to play video">
+          <img src="https://img.youtube.com/vi/FvMPfrgGeKs/hqdefault.jpg" alt="If statements in Python are easy tutorial thumbnail">
+          <div class="play-btn"><div><svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg></div></div>
+        </div>
+        <p style="font-size:0.78rem;color:#5b7290;margin:6px 0 0;text-align:center;">
+          <a href="https://www.youtube.com/watch?v=FvMPfrgGeKs" target="_blank" rel="noopener" style="color:#0b63ce;text-decoration:underline;">▶ YouTube · Bro Code — "If statements in Python are easy (if, elif, else)"</a>
+        </p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div class="card" style="padding:12px 15px;">
+          <p style="font-weight:800;color:#0b63ce;margin:0 0 6px;font-size:0.85rem;">While watching, think about:</p>
+          <ul style="margin:0;padding-left:18px;font-size:0.85rem;color:#3a5a7a;line-height:1.65;">
+            <li>Why does <code>elif</code> only run if the <code>if</code> above it was false?</li>
+            <li>What's the difference between <code>=</code> and <code>==</code>?</li>
+            <li>Where does <code>else</code> fit as the "last resort"?</li>
+          </ul>
+        </div>
+        <div class="card" style="padding:12px 15px;background:rgba(52,211,153,0.08);border:1px solid rgba(52,211,153,0.22);">
+          <p style="margin:0;font-size:0.84rem;color:#0d9488;font-weight:700;">First 8 minutes cover exactly what we need — full video available if you want to review at home.</p>
+        </div>
+        <div class="card" style="padding:10px 14px;background:rgba(250,204,21,0.08);border:1px solid rgba(250,204,21,0.22);">
+          <p style="margin:0;font-size:0.82rem;color:#b45309;"><strong>Duration:</strong> under 5 min (watch to 4:22) &nbsp;|&nbsp; <strong>Level:</strong> Beginner</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 8 · AI MOMENT -->
+<div class="slide" data-slide="8" data-type="mini-lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:360px;height:360px;top:-80px;left:-60px;background:#10b981;opacity:.12;"></div>
+    <div class="blob" style="width:240px;height:240px;bottom:-60px;right:-40px;background:#0b63ce;opacity:.09;"></div>
+  </div>
+  <div class="content">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:0.6rem;">
+      <span class="ai-badge reveal">AI Moment</span>
+      <p class="pill green reveal">Phase 2 · Sessions 8–14</p>
+    </div>
+    <h2 class="font-display reveal" style="font-size:clamp(1.4rem,2.5vw,2rem);font-weight:700;margin-bottom:0.9rem;color:#0f2747;">
+      "Higher / lower" is the simplest search strategy AI uses
+    </h2>
+
+    <div class="grid-cards grid-2 reveal" style="gap:12px;margin-bottom:12px;">
+      <div>
+        <div class="card" style="padding:14px 16px;">
+          <p style="font-weight:800;color:#0b63ce;margin:0 0 8px;font-size:0.87rem;">Finding "50" in 1–100 — binary search</p>
+          <div class="dtree" style="gap:0;">
+            <div class="dnode root" style="font-size:0.76rem;padding:5px 14px;">Guess 50 (middle)</div>
+            <div class="dtree-line"></div>
+            <div class="dtree-labels" style="gap:50px;margin-top:2px;"><span>Too low</span><span>Too high</span></div>
+            <div class="dtree-row">
+              <div class="dtree-branch"><div class="dtree-line"></div><div class="dnode yes" style="font-size:0.7rem;padding:4px 10px;">Try 75</div></div>
+              <div class="dtree-branch"><div class="dtree-line"></div><div class="dnode no" style="font-size:0.7rem;padding:4px 10px;">Try 25</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div class="card" style="padding:13px 15px;background:rgba(52,211,153,0.10);border:1px solid rgba(52,211,153,0.24);">
+          <p style="font-weight:800;color:#0d9488;margin:0 0 5px;font-size:0.87rem;">Each guess cuts the space in half</p>
+          <p style="font-size:0.84rem;color:#3a5a7a;margin:0;">1 → 100 numbers becomes 50, then 25, then 12... in just <strong>7 guesses</strong> you can find any number up to 100.</p>
+        </div>
+        <div class="card" style="padding:13px 15px;background:rgba(250,204,21,0.08);border:1px solid rgba(250,204,21,0.22);">
+          <p style="font-weight:800;color:#b45309;margin:0 0 5px;font-size:0.87rem;">Real AI uses this constantly</p>
+          <p style="font-size:0.84rem;color:#3a5a7a;margin:0;">Search engines, databases, and even some machine-learning algorithms narrow down huge possibilities by repeatedly splitting them in half — exactly like your "higher/lower" strategy.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card reveal" style="padding:10px 15px;background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.22);">
+      <p style="margin:0;font-size:0.84rem;color:#0b63ce;">
+        <strong>Question for later:</strong> If the number could be anywhere from 1 to 1,000,000 — would guessing "one at a time" or "cutting in half" find it faster? By how much?
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 9 · VIDEO 2 -->
+<div class="slide" data-slide="9" data-type="mini-lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:340px;height:340px;top:-70px;right:-50px;background:#0b63ce;opacity:.10;"></div>
+    <div class="blob" style="width:220px;height:220px;bottom:-50px;left:-40px;background:#10b981;opacity:.07;"></div>
+  </div>
+  <div class="content">
+    <p class="pill mb-3 reveal">Video 2 · See It Built Live</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.4rem,2.4vw,1.9rem);font-weight:700;margin-bottom:0.8rem;color:#0f2747;">
+      Number Guessing Game in Python — in 3 Minutes
+    </h2>
+
+    <div class="grid-cards grid-2 reveal" style="gap:14px;align-items:start;">
+      <div>
+        <div class="media-embed" id="player-rKudaAla0Jo" onclick="playVideo('rKudaAla0Jo')" title="Click to play video">
+          <img src="https://img.youtube.com/vi/rKudaAla0Jo/hqdefault.jpg" alt="Number guessing game python tutorial in 3 minutes thumbnail">
+          <div class="play-btn"><div><svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg></div></div>
+        </div>
+        <p style="font-size:0.78rem;color:#5b7290;margin:6px 0 0;text-align:center;">
+          <a href="https://www.youtube.com/watch?v=rKudaAla0Jo" target="_blank" rel="noopener" style="color:#0b63ce;text-decoration:underline;">▶ YouTube · "How to Create a Number Guessing Game using Python in only 3 minutes!"</a>
+        </p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div class="card" style="padding:12px 15px;">
+          <p style="font-weight:800;color:#0b63ce;margin:0 0 6px;font-size:0.85rem;">This video shows the exact 4 pieces we need:</p>
+          <div style="display:flex;flex-direction:column;gap:4px;">
+            <div style="display:flex;align-items:center;gap:8px;font-size:0.83rem;color:#3a5a7a;"><span class="step-num" style="width:22px;height:22px;font-size:0.72rem;">1</span> <code>import random</code></div>
+            <div style="display:flex;align-items:center;gap:8px;font-size:0.83rem;color:#3a5a7a;"><span class="step-num" style="width:22px;height:22px;font-size:0.72rem;">2</span> <code>while True:</code> loop</div>
+            <div style="display:flex;align-items:center;gap:8px;font-size:0.83rem;color:#3a5a7a;"><span class="step-num" style="width:22px;height:22px;font-size:0.72rem;">3</span> <code>input()</code> for a guess</div>
+            <div style="display:flex;align-items:center;gap:8px;font-size:0.83rem;color:#3a5a7a;"><span class="step-num" style="width:22px;height:22px;font-size:0.72rem;">4</span> <code>if / elif / else</code> to check it</div>
+          </div>
+        </div>
+        <div class="card" style="padding:12px 15px;background:rgba(52,211,153,0.08);border:1px solid rgba(52,211,153,0.22);">
+          <p style="margin:0;font-size:0.84rem;color:#0d9488;font-weight:700;">We'll build this together next, using Python Playground.</p>
+        </div>
+        <div class="card" style="padding:10px 14px;background:rgba(250,204,21,0.08);border:1px solid rgba(250,204,21,0.22);">
+          <p style="margin:0;font-size:0.82rem;color:#b45309;"><strong>Duration:</strong> ~3 min &nbsp;|&nbsp; <strong>Level:</strong> Beginner</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 10 · GUIDED BUILD -->
+<div class="slide" data-slide="10" data-type="build">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:360px;height:360px;top:-80px;right:-60px;background:#10b981;opacity:.12;"></div>
+    <div class="blob" style="width:240px;height:240px;bottom:-50px;left:-40px;background:#0b63ce;opacity:.09;"></div>
+  </div>
+  <div class="content">
+    <p class="pill green mb-3 reveal">Guided Build — Step by Step (20 min)</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.4rem,2.4vw,1.9rem);font-weight:700;margin-bottom:0.9rem;color:#0f2747;">
+      Build: The Number-Guessing Game
+    </h2>
+
+    <div class="grid-cards grid-2 reveal" style="gap:12px;">
+      <div style="display:flex;flex-direction:column;gap:9px;">
+        <div class="card" style="padding:11px 14px;display:flex;gap:10px;align-items:flex-start;">
+          <span class="step-num">1</span>
+          <div><p style="font-weight:800;color:#0f2747;margin:0 0 3px;font-size:0.85rem;">Open Python Playground &amp; import random</p>
+          <div class="code-block" style="padding:6px 10px;font-size:0.76rem;"><span class="kw">import</span> random</div></div>
+        </div>
+        <div class="card" style="padding:11px 14px;display:flex;gap:10px;align-items:flex-start;">
+          <span class="step-num">2</span>
+          <div><p style="font-weight:800;color:#0f2747;margin:0 0 3px;font-size:0.85rem;">Pick the secret number</p>
+          <div class="code-block" style="padding:6px 10px;font-size:0.76rem;">secret = random.randint(<span class="num">1</span>,<span class="num">100</span>)</div></div>
+        </div>
+        <div class="card" style="padding:11px 14px;display:flex;gap:10px;align-items:flex-start;">
+          <span class="step-num">3</span>
+          <div><p style="font-weight:800;color:#0f2747;margin:0 0 3px;font-size:0.85rem;">Start a loop &amp; get a guess</p>
+          <div class="code-block" style="padding:6px 10px;font-size:0.76rem;"><span class="kw">while</span> True:<br>&nbsp;&nbsp;guess = int(input(<span class="str">"Guess: "</span>))</div></div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:9px;">
+        <div class="card" style="padding:11px 14px;display:flex;gap:10px;align-items:flex-start;">
+          <span class="step-num">4</span>
+          <div><p style="font-weight:800;color:#0f2747;margin:0 0 3px;font-size:0.85rem;">Check it with if / elif / else</p>
+          <div class="code-block" style="padding:6px 10px;font-size:0.76rem;"><span class="kw">if</span> guess &lt; secret: print(<span class="str">"Too low!"</span>)<br><span class="kw">elif</span> guess &gt; secret: print(<span class="str">"Too high!"</span>)<br><span class="kw">else</span>: print(<span class="str">"You got it!"</span>); break</div></div>
+        </div>
+        <div class="card" style="padding:11px 14px;display:flex;gap:10px;align-items:flex-start;">
+          <span class="step-num" style="background:linear-gradient(135deg,#10b981,#0b63ce);">5</span>
+          <div><p style="font-weight:800;color:#0d9488;margin:0 0 3px;font-size:0.85rem;">Run it! Test high, low, and correct guesses</p>
+          <p style="font-size:0.8rem;color:#3a5a7a;margin:0;">Click Run ▶. Try a wrong guess, then the right one. What happens to the loop?</p></div>
+        </div>
+        <div class="card" style="padding:10px 13px;background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.22);">
+          <p style="margin:0;font-size:0.8rem;color:#0b63ce;"><strong>Try:</strong> Change the range to 1–1000 — does your strategy still work?</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 11 · BRAIN BREAK -->
+<div class="slide" data-slide="11" data-type="break">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:380px;height:380px;top:-90px;right:-70px;background:#f59e0b;opacity:.12;"></div>
+    <div class="blob" style="width:260px;height:260px;bottom:-60px;left:-50px;background:#10b981;opacity:.10;"></div>
+  </div>
+  <div class="content" style="text-align:center;">
+    <p class="pill mb-3 reveal" style="margin:0 auto 0.8rem;display:inline-flex;color:#b45309;">Movement Break · 5 min</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.6rem,3vw,2.4rem);font-weight:700;margin-bottom:0.5rem;color:#0f2747;">
+      Stand Up — Human Higher/Lower!
+    </h2>
+
+    <div class="break-card reveal" style="max-width:680px;margin:0 auto 14px;">
+      <p style="font-size:1rem;font-weight:800;color:#b45309;margin:0 0 12px;">One student is "It" — secretly thinks of a number 1–20</p>
+      <div style="display:flex;flex-direction:column;gap:8px;text-align:left;">
+        <div style="background:rgba(255,255,255,0.06);border-radius:10px;padding:8px 14px;font-size:0.9rem;color:#0f2747;">Class calls out a guess together — <strong>"It" says only "higher" or "lower"</strong></div>
+        <div style="background:rgba(255,255,255,0.06);border-radius:10px;padding:8px 14px;font-size:0.9rem;color:#0f2747;">If "higher" → everyone <strong>jumps</strong> once</div>
+        <div style="background:rgba(255,255,255,0.06);border-radius:10px;padding:8px 14px;font-size:0.9rem;color:#0f2747;">If "lower" → everyone <strong>squats</strong> once</div>
+        <div style="background:rgba(255,255,255,0.06);border-radius:10px;padding:8px 14px;font-size:0.9rem;color:#0f2747;">Found it → everyone <strong>cheers</strong> and counts total guesses</div>
+      </div>
+    </div>
+
+    <div class="card reveal" style="max-width:520px;margin:0 auto;padding:12px 16px;background:rgba(52,211,153,0.08);border:1px solid rgba(52,211,153,0.22);">
+      <p style="margin:0;font-size:0.88rem;color:#0d9488;font-weight:700;">
+        Try halving your guesses each time — see if the class can win in 5 guesses or fewer!
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 12 · OPEN BUILD + CHALLENGE CARDS -->
+<div class="slide" data-slide="12" data-type="build">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:360px;height:360px;top:-80px;right:-60px;background:#10b981;opacity:.11;"></div>
+    <div class="blob" style="width:250px;height:250px;bottom:-60px;left:-40px;background:#0b63ce;opacity:.08;"></div>
+  </div>
+  <div class="content">
+    <p class="pill green mb-3 reveal">Open Build · 30–40 min</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.4rem,2.4vw,1.9rem);font-weight:700;margin-bottom:0.9rem;color:#0f2747;">
+      Finish your game — then stretch it
+    </h2>
+
+    <div class="grid-cards grid-3 reveal" style="gap:12px;margin-bottom:12px;">
+      <div class="card" style="padding:14px 16px;border-top:3px solid #10b981;">
+        <span class="tier-a">TIER A · Foundations</span>
+        <p style="font-weight:800;color:#0f2747;margin:8px 0 6px;font-size:0.87rem;">Grades 1–3</p>
+        <p style="font-size:0.82rem;color:#3a5a7a;margin:0;">Get the basic guessing game working with a partner's help. Change the range to 1–20 to make it easier.</p>
+        <div class="progress-track" style="margin-top:10px;"><div class="progress-fill" style="width:33%;"></div></div>
+      </div>
+      <div class="card" style="padding:14px 16px;border-top:3px solid #0b63ce;">
+        <span class="tier-b">TIER B · Core</span>
+        <p style="font-weight:800;color:#0f2747;margin:8px 0 6px;font-size:0.87rem;">Grades 3–5</p>
+        <p style="font-size:0.82rem;color:#3a5a7a;margin:0;">Add a <strong>guess counter</strong> variable that goes up each attempt, and print it when the player wins.</p>
+        <div class="progress-track" style="margin-top:10px;"><div class="progress-fill" style="width:66%;"></div></div>
+      </div>
+      <div class="card" style="padding:14px 16px;border-top:3px solid #7c3aed;">
+        <span class="tier-c">TIER C · Accelerated</span>
+        <p style="font-weight:800;color:#0f2747;margin:8px 0 6px;font-size:0.87rem;">Grades 6–9</p>
+        <p style="font-size:0.82rem;color:#3a5a7a;margin:0;">Flip it! Write code where the <strong>computer</strong> guesses YOUR number using a smart binary-search strategy — always guessing the middle of the remaining range.</p>
+        <div class="progress-track" style="margin-top:10px;"><div class="progress-fill" style="width:100%;"></div></div>
+      </div>
+    </div>
+
+    <div class="challenge-card reveal" style="display:flex;gap:12px;align-items:flex-start;">
+      <span style="font-size:1.5rem;flex-shrink:0;">🎯</span>
+      <div>
+        <p style="font-weight:800;color:#7c3aed;margin:0 0 4px;font-size:0.88rem;">Challenge Card · Tier C — Computer Guesses YOU</p>
+        <p style="font-size:0.84rem;color:#3a5a7a;margin:0;">Set <code>low = 1</code>, <code>high = 100</code>. Loop: computer guesses <code>(low+high)//2</code>, you type "h" (too high), "l" (too low), or "c" (correct). Update <code>low</code>/<code>high</code> and watch it find your number in ~7 tries.</p>
+      </div>
+    </div>
+
+    <div class="card reveal" style="margin-top:10px;padding:10px 15px;background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.22);">
+      <p style="margin:0;font-size:0.84rem;color:#0b63ce;">
+        <strong>Fast finisher?</strong> Help a neighbor get their <code>elif</code> working — explaining it out loud is one of the best ways to lock it in.
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 13 · VOCABULARY -->
+<div class="slide" data-slide="13" data-type="lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:340px;height:340px;top:-70px;right:-50px;background:#0b63ce;opacity:.10;"></div>
+    <div class="blob" style="width:230px;height:230px;bottom:-50px;left:-40px;background:#f59e0b;opacity:.08;"></div>
+  </div>
+  <div class="content">
+    <p class="pill mb-3 reveal">Vocabulary · 6 Key Words</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.4rem,2.4vw,1.9rem);font-weight:700;margin-bottom:0.9rem;color:#0f2747;">Words every Python coder knows</h2>
+
+    <div class="grid-cards grid-2 reveal" style="gap:10px;">
+      <div class="card" style="display:flex;gap:10px;align-items:flex-start;padding:11px 14px;">
+        <div><span class="vocab-tag" style="margin-bottom:5px;display:inline-flex;">Conditional</span>
+        <p style="font-size:0.83rem;color:#3a5a7a;margin:4px 0 0;">Code that runs only when a condition is true — <code>if / elif / else</code>.</p></div>
+      </div>
+      <div class="card" style="display:flex;gap:10px;align-items:flex-start;padding:11px 14px;">
+        <div><span class="vocab-tag" style="margin-bottom:5px;display:inline-flex;">Boolean</span>
+        <p style="font-size:0.83rem;color:#3a5a7a;margin:4px 0 0;">A value that is only ever <strong>True</strong> or <strong>False</strong> — what every comparison produces.</p></div>
+      </div>
+      <div class="card" style="display:flex;gap:10px;align-items:flex-start;padding:11px 14px;">
+        <div><span class="vocab-tag" style="margin-bottom:5px;display:inline-flex;">Module</span>
+        <p style="font-size:0.83rem;color:#3a5a7a;margin:4px 0 0;">A toolkit of extra code you load with <code>import</code>, like <code>random</code>.</p></div>
+      </div>
+      <div class="card" style="display:flex;gap:10px;align-items:flex-start;padding:11px 14px;">
+        <div><span class="vocab-tag" style="margin-bottom:5px;display:inline-flex;">Indentation</span>
+        <p style="font-size:0.83rem;color:#3a5a7a;margin:4px 0 0;">The spaces before a line that tell Python which block it belongs to.</p></div>
+      </div>
+      <div class="card" style="display:flex;gap:10px;align-items:flex-start;padding:11px 14px;">
+        <div><span class="vocab-tag" style="margin-bottom:5px;display:inline-flex;">Loop</span>
+        <p style="font-size:0.83rem;color:#3a5a7a;margin:4px 0 0;">Code that repeats — our game uses <code>while True:</code> to keep asking for guesses.</p></div>
+      </div>
+      <div class="card" style="display:flex;gap:10px;align-items:flex-start;padding:11px 14px;background:rgba(52,211,153,0.08);border-color:rgba(52,211,153,0.22);">
+        <div><span class="vocab-tag" style="margin-bottom:5px;display:inline-flex;background:rgba(52,211,153,0.16);color:#0d9488;">Binary Search</span>
+        <p style="font-size:0.83rem;color:#3a5a7a;margin:4px 0 0;">Repeatedly cutting a search range in half — the strategy behind today's AI Moment.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 14 · DEBUG CORNER -->
+<div class="slide" data-slide="14" data-type="lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:360px;height:360px;top:-80px;left:-60px;background:#ef4444;opacity:.08;"></div>
+    <div class="blob" style="width:240px;height:240px;bottom:-50px;right:-40px;background:#0b63ce;opacity:.08;"></div>
+  </div>
+  <div class="content">
+    <p class="pill mb-3 reveal" style="color:#dc2626;">Debug Corner · Common Bugs</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.4rem,2.4vw,1.9rem);font-weight:700;margin-bottom:0.9rem;color:#0f2747;">Bugs are normal — let's squash them together</h2>
+
+    <div class="grid-cards grid-2 reveal" style="gap:11px;margin-bottom:10px;">
+      <div class="card" style="padding:12px 15px;background:rgba(248,113,113,0.08);border-color:rgba(248,113,113,0.24);">
+        <p style="font-weight:800;color:#dc2626;margin:0 0 5px;font-size:0.86rem;">Bug 1: Used = instead of ==</p>
+        <p style="font-size:0.82rem;color:#3a5a7a;margin:0;"><code>if guess = secret:</code> is a syntax error. A single <code>=</code> stores a value; double <code>==</code> compares two values.</p>
+      </div>
+      <div class="card" style="padding:12px 15px;background:rgba(248,113,113,0.08);border-color:rgba(248,113,113,0.24);">
+        <p style="font-weight:800;color:#dc2626;margin:0 0 5px;font-size:0.86rem;">Bug 2: Forgot int() on input</p>
+        <p style="font-size:0.82rem;color:#3a5a7a;margin:0;"><code>input()</code> always returns text. Comparing text "50" to a number crashes — wrap it: <code>int(input(...))</code>.</p>
+      </div>
+      <div class="card" style="padding:12px 15px;background:rgba(250,204,21,0.08);border-color:rgba(250,204,21,0.24);">
+        <p style="font-weight:800;color:#b45309;margin:0 0 5px;font-size:0.86rem;">Bug 3: Wrong indentation</p>
+        <p style="font-size:0.82rem;color:#3a5a7a;margin:0;">If a line under <code>if</code> isn't indented, Python won't know it belongs there. Keep spacing consistent.</p>
+      </div>
+      <div class="card" style="padding:12px 15px;background:rgba(250,204,21,0.08);border-color:rgba(250,204,21,0.24);">
+        <p style="font-weight:800;color:#b45309;margin:0 0 5px;font-size:0.86rem;">Bug 4: Loop never ends</p>
+        <p style="font-size:0.82rem;color:#3a5a7a;margin:0;">Forgot <code>break</code> in the "correct guess" branch? The <code>while True:</code> loop runs forever. Add <code>break</code> to exit.</p>
+      </div>
+    </div>
+
+    <div class="card reveal" style="padding:11px 15px;background:rgba(52,211,153,0.08);border:1px solid rgba(52,211,153,0.22);">
+      <p style="margin:0;font-size:0.85rem;color:#0d9488;font-weight:700;">
+        Pro move: read the error message's <em>last line</em> first — it usually names the exact problem and line number.
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 15 · SHARE-OUT -->
+<div class="slide" data-slide="15" data-type="share">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:360px;height:360px;top:-80px;right:-60px;background:#7c3aed;opacity:.10;"></div>
+    <div class="blob" style="width:240px;height:240px;bottom:-50px;left:-40px;background:#10b981;opacity:.09;"></div>
+  </div>
+  <div class="content">
+    <p class="pill purple mb-3 reveal">Share-Out · 10 min · Opt-In</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.4rem,2.5vw,2rem);font-weight:700;margin-bottom:0.9rem;color:#0f2747;">
+      Show your neighbor — or show the class!
+    </h2>
+
+    <div class="grid-cards grid-2 reveal" style="gap:12px;margin-bottom:12px;">
+      <div class="card" style="padding:14px 16px;">
+        <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/5e80c6e7fd213beb981d4ad3af98fb0076ebc178.jpg"
+             alt="Student presenting their Python code"
+             style="width:100%;height:100px;object-fit:cover;border-radius:10px;margin-bottom:10px;">
+        <p style="font-weight:800;color:#0b63ce;margin:0 0 6px;font-size:0.87rem;">Pair Share (Default)</p>
+        <p style="font-size:0.83rem;color:#3a5a7a;margin:0;">Turn to your neighbor. Run your game live and explain what happens when your guess is too high vs. too low.</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div class="card" style="padding:12px 15px;background:rgba(59,130,246,0.08);border-color:rgba(59,130,246,0.22);">
+          <p style="font-weight:800;color:#0b63ce;margin:0 0 6px;font-size:0.87rem;">3 questions to ask your partner:</p>
+          <ol style="margin:0;padding-left:18px;font-size:0.83rem;color:#3a5a7a;line-height:1.65;">
+            <li>What does your <code>if</code> check first?</li>
+            <li>How many branches (if/elif/else) did you use?</li>
+            <li>Did you add a guess counter or the binary-search flip?</li>
+          </ol>
+        </div>
+        <div class="card" style="padding:12px 15px;background:rgba(167,139,250,0.08);border-color:rgba(167,139,250,0.22);">
+          <p style="font-weight:800;color:#7c3aed;margin:0 0 5px;font-size:0.87rem;">Volunteer to show the class?</p>
+          <p style="font-size:0.83rem;color:#3a5a7a;margin:0;">Raise your hand — totally optional! Show your game running and one sentence about your logic.</p>
+        </div>
+        <div class="card" style="padding:10px 14px;background:rgba(52,211,153,0.08);border-color:rgba(52,211,153,0.22);">
+          <p style="margin:0;font-size:0.82rem;color:#0d9488;font-weight:700;">Bugs count too! Explaining what you tried is real coding.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 16 · HOMEWORK -->
+<div class="slide" data-slide="16" data-type="share">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:360px;height:360px;top:-80px;right:-60px;background:#0b63ce;opacity:.12;"></div>
+    <div class="blob" style="width:250px;height:250px;bottom:-60px;left:-50px;background:#f59e0b;opacity:.09;"></div>
+  </div>
+  <div class="content">
+    <p class="pill mb-3 reveal">Homework</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.4rem,2.5vw,2rem);font-weight:700;margin-bottom:0.9rem;color:#0f2747;">Tonight's Mission</h2>
+
+    <div class="grid-cards grid-2 reveal" style="gap:12px;margin-bottom:12px;">
+      <div class="card" style="padding:14px 16px;">
+        <p style="font-weight:800;color:#0b63ce;margin:0 0 8px;font-size:0.9rem;">The Task</p>
+        <div style="background:rgba(59,130,246,0.10);border-radius:10px;padding:10px 14px;font-size:0.87rem;color:#0b63ce;font-weight:700;margin-bottom:8px;">
+          Finish the guessing game and add a guess counter — combining conditionals + variables.
+        </div>
+        <ul style="margin:0;padding-left:18px;font-size:0.83rem;color:#3a5a7a;line-height:1.75;">
+          <li>Use your Session 12 code, or rebuild from scratch</li>
+          <li>Must include at least one <code>elif</code></li>
+          <li>Print the total number of guesses when the player wins</li>
+        </ul>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div class="card" style="padding:12px 15px;background:rgba(52,211,153,0.08);border-color:rgba(52,211,153,0.22);">
+          <span class="tier-a" style="margin-bottom:6px;display:inline-flex;">TIER A</span>
+          <p style="font-size:0.82rem;color:#3a5a7a;margin:0;">Get the basic game running end-to-end and add one counter variable that goes up each guess.</p>
+        </div>
+        <div class="card" style="padding:12px 15px;background:rgba(59,130,246,0.08);border-color:rgba(59,130,246,0.22);">
+          <span class="tier-b" style="margin-bottom:6px;display:inline-flex;">TIER B</span>
+          <p style="font-size:0.82rem;color:#3a5a7a;margin:0;">Print the guess count at the end, and add a friendly message if it took more than 8 tries ("So close!").</p>
+        </div>
+        <div class="card" style="padding:12px 15px;background:rgba(167,139,250,0.08);border-color:rgba(167,139,250,0.22);">
+          <span class="tier-c" style="margin-bottom:6px;display:inline-flex;">TIER C</span>
+          <p style="font-size:0.82rem;color:#3a5a7a;margin:0;">Finish the "computer guesses your number" binary-search flip from the challenge card. Write 1–2 sentences: why does cutting the range in half beat guessing one at a time?</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card reveal" style="padding:11px 15px;background:rgba(250,204,21,0.08);border:1px solid rgba(250,204,21,0.22);">
+      <p style="margin:0;font-size:0.85rem;color:#b45309;">
+        <strong>Field Trip Mon Jul 20 (no class):</strong> Look for AI and "smart" systems out there — ticket machines, recommendation screens, cameras. Jot one line for our next warm-up!
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 17 · CLOSING -->
+<div class="slide" data-slide="17" data-type="close">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:500px;height:500px;top:-120px;right:-100px;background:#0b63ce;opacity:.16;"></div>
+    <div class="blob" style="width:340px;height:340px;bottom:-90px;left:-70px;background:#10b981;opacity:.12;"></div>
+    <div class="blob" style="width:220px;height:220px;top:35%;left:8%;background:#f59e0b;opacity:.10;"></div>
+  </div>
+  <canvas class="particle-canvas"></canvas>
+  <div class="content" style="text-align:center;">
+    <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/1e608af79a75bbd37cc5b9b3595c65b4ccea2cda.jpg"
+         alt="Kids learning Python coding"
+         style="height:clamp(70px,11vh,110px);object-fit:cover;border-radius:14px;margin:0 auto 1rem;animation:float 3s ease-in-out infinite;box-shadow:0 10px 30px rgba(59,130,246,0.25);"
+         class="reveal">
+    <h1 class="font-display grad-text reveal" style="font-size:clamp(2rem,5vw,3.8rem);font-weight:700;margin-bottom:0.4rem;">
+      Great work today!
+    </h1>
+    <p class="reveal" style="font-size:clamp(1rem,1.8vw,1.35rem);color:#3a5a7a;margin-bottom:1rem;">
+      You taught Python to <strong>make decisions</strong> — and used the same logic real AI uses to search.
+    </p>
+
+    <div class="grid-cards grid-3 reveal" style="gap:10px;margin-bottom:1rem;max-width:860px;margin-left:auto;margin-right:auto;">
+      <div class="card" style="padding:12px 14px;text-align:left;">
+        <p style="font-weight:800;color:#0b63ce;margin:0 0 5px;font-size:0.84rem;">Today you learned:</p>
+        <ul style="margin:0;padding-left:16px;font-size:0.81rem;color:#3a5a7a;line-height:1.6;">
+          <li>if / elif / else in Python</li>
+          <li>Comparison operators</li>
+          <li>The random module</li>
+          <li>Binary search — real AI logic</li>
+        </ul>
+      </div>
+      <div class="card" style="padding:12px 14px;text-align:left;">
+        <p style="font-weight:800;color:#0d9488;margin:0 0 5px;font-size:0.84rem;">Tonight:</p>
+        <p style="font-size:0.81rem;color:#3a5a7a;margin:0;">Finish the guessing game and add a guess counter. Tier C: flip it and let the computer guess you!</p>
+      </div>
+      <div class="card" style="padding:12px 14px;text-align:left;">
+        <p style="font-weight:800;color:#b45309;margin:0 0 5px;font-size:0.84rem;">Next session (Jul 22):</p>
+        <p style="font-size:0.81rem;color:#3a5a7a;margin:0;">Functions — packaging your logic into reusable blocks. Refactor the guessing game!</p>
+      </div>
+    </div>
+
+    <div class="reveal" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+      <span class="pill">Session 12 of 26</span>
+      <span class="pill green">Phase 2 — Bridge Scratch → Python</span>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="nav-controls">
+  <button class="nav-btn" onclick="changeSlide(-1)" aria-label="Previous slide">&#8249;</button>
+  <div class="slide-dots" id="dots"></div>
+  <button class="nav-btn" onclick="changeSlide(1)" aria-label="Next slide">&#8250;</button>
+  <span class="slide-counter" id="counter">1 / 17</span>
+</div>
+
+<script>
+let current = 1;
+const total = document.querySelectorAll('.slide').length;
+const dotTypeMap = {warmup:'warmup',build:'build',share:'share'};
+const dotsContainer = document.getElementById('dots');
+const counter = document.getElementById('counter');
+document.querySelectorAll('.slide').forEach((s,i)=>{
+  const n=i+1;
+  const type = s.getAttribute('data-type')||'lesson';
+  const dot=document.createElement('div');
+  dot.className='dot'+(dotTypeMap[type]?(' '+dotTypeMap[type]):'')+(n===1?' active':'');
+  dot.onclick=()=>goToSlide(n);
+  dotsContainer.appendChild(dot);
+});
+function goToSlide(n){
+  const prev=document.querySelector('.slide.active');
+  const next=document.querySelector(`.slide[data-slide="${n}"]`);
+  if(prev) prev.classList.remove('active');
+  if(next){ next.classList.add('active'); animateSlide(next); }
+  current=n; updateNav();
+}
+function changeSlide(dir){ let next=current+dir; if(next<1) next=total; if(next>total) next=1; goToSlide(next); }
+function updateNav(){ document.querySelectorAll('.dot').forEach((d,i)=>{ d.classList.toggle('active', i+1===current); }); counter.textContent=current+' / '+total; }
+document.addEventListener('keydown',(e)=>{ if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();changeSlide(1);} if(e.key==='ArrowLeft'){e.preventDefault();changeSlide(-1);} });
+let touchStartX=0;
+document.addEventListener('touchstart',(e)=>{ touchStartX=e.touches[0].clientX; });
+document.addEventListener('touchend',(e)=>{ const diff=touchStartX-e.changedTouches[0].clientX; if(Math.abs(diff)>50) changeSlide(diff>0?1:-1); });
+
+function animateSlide(slide){
+  slide.querySelectorAll('.reveal').forEach((el,i)=>{
+    el.style.transition='none'; el.style.opacity='0'; el.style.transform='translateY(18px)';
+    el.offsetHeight;
+    const delay=i*0.07;
+    el.style.transition=`opacity 0.35s ease ${delay}s, transform 0.35s ease ${delay}s`;
+    el.style.opacity='1'; el.style.transform='translateY(0px)';
+  });
+}
+
+document.addEventListener('mousemove',(e)=>{
+  const spot=document.getElementById('spotlight');
+  if(spot) spot.style.background=`radial-gradient(600px circle at ${e.clientX}px ${e.clientY}px, rgba(59,130,246,0.06), transparent 40%)`;
+});
+
+window.initParticles = function(canvas){
+  if(!canvas) return;
+  const ctx=canvas.getContext('2d');
+  canvas.width=canvas.offsetWidth; canvas.height=canvas.offsetHeight;
+  const count=50; let mx=-1000,my=-1000;
+  const particles=Array.from({length:count},()=>({x:Math.random()*canvas.width,y:Math.random()*canvas.height,vx:(Math.random()-0.5)*0.3,vy:(Math.random()-0.5)*0.3,size:Math.random()*2.5+0.8,alpha:Math.random()*0.35+0.1}));
+  canvas.addEventListener('mousemove',(e)=>{ const r=canvas.getBoundingClientRect(); mx=e.clientX-r.left; my=e.clientY-r.top; });
+  canvas.addEventListener('mouseleave',()=>{ mx=-1000; my=-1000; });
+  (function animate(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    particles.forEach(p=>{
+      const dx=p.x-mx, dy=p.y-my, dist=Math.sqrt(dx*dx+dy*dy);
+      if(dist<120){ const f=(120-dist)/120*2; p.vx+=(dx/dist)*f*0.1; p.vy+=(dy/dist)*f*0.1; }
+      p.vx*=0.98; p.vy*=0.98; p.x+=p.vx; p.y+=p.vy;
+      if(p.x<0)p.x=canvas.width; if(p.x>canvas.width)p.x=0;
+      if(p.y<0)p.y=canvas.height; if(p.y>canvas.height)p.y=0;
+      ctx.beginPath(); ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
+      ctx.fillStyle=`rgba(59,130,246,${p.alpha})`; ctx.fill();
+    });
+    requestAnimationFrame(animate);
+  })();
+};
+document.querySelectorAll('.particle-canvas').forEach(c=>window.initParticles(c));
+
+function playVideo(videoId){
+  const container = document.getElementById('player-'+videoId);
+  if(!container) return;
+  container.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+}
+
+try { animateSlide(document.querySelector('.slide.active')); } catch(e) { console.warn('init animation error', e); }
+</script>
+</body>
+</html>
