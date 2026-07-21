@@ -9,7 +9,7 @@
 
 [Dropbox Transfer](https://www.dropbox.com/request/6ef6fxmcmxaslq2o2gr3)
 
-| Week-Day | Lesson | Activity | Homework |Class | Notes |
+| Week-Day | Lesson | Activity | Homework | Challenge | Notes |
 |:-----:|:----------|:---------------:|:-------|:-------|:----------|
 | **1-1** | [Welcome! What is Computer Thinking?](https://hue881.github.io/mcs/2026/summer/1/1) | [1-1 Activity](https://hue881.github.io/mcs/2026/summer/1/1/activity) | [1-1 Homework](https://hue881.github.io/mcs/2026/summer/1/1/homework) | -- ||
 | **1-2** | [Internet Safety, Responsible AI & Our First Algorithm](https://hue881.github.io/mcs/2026/summer/1/2) | [1-2 Activity](https://hue881.github.io/mcs/2026/summer/1/2/activity) | [1-2 Homework](https://hue881.github.io/mcs/2026/summer/1/2/homework) | -- |*|
@@ -23,6 +23,7 @@
 | **3-2** | [Python: Variables, Input & Output](https://hue881.github.io/mcs/2026/summer/3/2) | [3-2 Activity](https://hue881.github.io/mcs/2026/summer/3/2/activity) | [3-2 Homework](https://hue881.github.io/mcs/2026/summer/3/2/homework) | -- ||
 | **3-3** | [Midterm Exam]() |--  |--  | -- ||
 | **4-1** | [Python turtle Graphics + Loops](https://hue881.github.io/mcs/2026/summer/4/1) | [4-1 Activity](https://hue881.github.io/mcs/2026/summer/4/1/activity) | [4-1 Homework](https://hue881.github.io/mcs/2026/summer/4/1/homework) | -- ||
+| **4-1** | [Python: Conditionals](https://hue881.github.io/mcs/2026/summer/4/2) | [4-2 Activity](https://hue881.github.io/mcs/2026/summer/4/2/activity) | [4-2 Homework](https://hue881.github.io/mcs/2026/summer/4/2/homework) | [4-2 Challenge](https://hue881.github.io/mcs/2026/summer/4/2/challenge) ||
 
 
 
