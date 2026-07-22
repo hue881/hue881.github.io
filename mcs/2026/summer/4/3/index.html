@@ -1,1 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="slides-format" content="viewport">
+<title>Session 13 · Python: Functions (Reusable Blocks)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<style type="text/tailwindcss">
+@theme {
+  --color-bg:#f0f8ff; --color-bg-deep:#dceefb; --color-surface:rgba(255,255,255,0.96);
+  --color-text:#0f2747; --color-text-secondary:#1e3a5f; --color-text-muted:#4a6380;
+  --color-accent-1:#0b63ce; --color-accent-2:#10b981; --color-accent-3:#f59e0b;
+  --color-glass-bg:rgba(255,255,255,0.88); --color-glass-border:rgba(11,99,206,0.16);
+  --color-vignette:rgba(15,23,42,0.06);
+  --font-display:"Fredoka","Trebuchet MS",sans-serif;
+  --font-body:"Nunito",Arial,sans-serif;
+}
+</style>
+<style>
+:root{ --color-bg:#f0f8ff; --color-text:#0f2747; --glow-color-rgb:11,99,206; --a1:#0b63ce; --a2:#10b981; --a3:#f59e0b; --ar:#ef4444; }
+*,*::before,*::after{box-sizing:border-box;}
+html,body{background:var(--color-bg);margin:0;}
+body{font-family:"Nunito",Arial,sans-serif;color:var(--color-text);overflow:hidden;height:100vh;width:100vw;}
+.deck{width:100vw;height:100vh;position:relative;}
 
+.slide{position:absolute;top:0;left:0;width:100%;height:100%;
+  background:radial-gradient(circle at top left,rgba(56,189,248,0.14),transparent 40%),
+             radial-gradient(circle at bottom right,rgba(16,185,129,0.10),transparent 40%),
+             var(--color-bg);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  opacity:0;transform:scale(0.96);transition:opacity 0.55s ease,transform 0.55s ease;
+  pointer-events:none;overflow:hidden;}
+.slide.active{opacity:1;transform:scale(1);pointer-events:all;}
+.slide>.content{position:relative;z-index:2;width:100%;max-width:1080px;padding:clamp(1rem,3vw,2.6rem);max-height:92vh;overflow:hidden;}
+
+.slide::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:radial-gradient(ellipse at center,transparent 55%,var(--color-vignette) 100%);}
+
+.nav-controls{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:12px;z-index:100;background:rgba(255,255,255,0.92);backdrop-filter:blur(12px);padding:8px 20px;border-radius:999px;border:1px solid rgba(148,163,184,0.4);box-shadow:0 8px 28px rgba(15,23,42,0.13);}
+.nav-btn{width:34px;height:34px;border:none;background:rgba(15,23,42,0.06);color:#0b63ce;border-radius:999px;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 0.2s,transform 0.15s;}
+.nav-btn:hover{background:rgba(15,23,42,0.12);transform:translateY(-1px);}
+.slide-dots{display:flex;gap:5px;flex-wrap:wrap;max-width:420px;}
+.dot{width:8px;height:8px;border-radius:50%;background:rgba(148,163,184,0.6);cursor:pointer;transition:background 0.25s,transform 0.25s;}
+.dot.active{background:#0b63ce;transform:scale(1.4);}
+.dot.warmup{background:rgba(245,158,11,0.6);}
+.dot.warmup.active{background:#f59e0b;}
+.dot.mini{background:rgba(11,99,206,0.45);}
+.dot.mini.active{background:#e8622c;}
+.dot.build{background:rgba(16,185,129,0.55);}
+.dot.build.active{background:#10b981;}
+.dot.share{background:rgba(139,92,246,0.55);}
+.dot.share.active{background:#8b5cf6;}
+.slide-counter{font-size:0.78rem;color:#64748b;min-width:52px;text-align:center;font-weight:700;}
+
+.reveal{opacity:0;transform:translateY(16px);}
+@keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-12px);}}
+@keyframes float-slow{0%{transform:translate(0,0) scale(1);}25%{transform:translate(50px,-40px) scale(1.1);}50%{transform:translate(-30px,35px) scale(0.92);}75%{transform:translate(45px,18px) scale(1.07);}100%{transform:translate(0,0) scale(1);}}
+@keyframes float-drift{0%{transform:translate(0,0) scale(1);}33%{transform:translate(-45px,-55px) scale(1.13);}66%{transform:translate(38px,28px) scale(0.9);}100%{transform:translate(0,0) scale(1);}}
+.gradient-mesh{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none;}
+.blob{position:absolute;border-radius:50%;filter:blur(72px);animation:float-slow 12s ease-in-out infinite;}
+.blob:nth-child(2){animation:float-drift 16s ease-in-out infinite;}
+.blob:nth-child(3){animation:float-slow 20s ease-in-out infinite reverse;}
+.particle-canvas{position:absolute;inset:0;width:100%;height:100%;z-index:1;}
+
+.card{background:var(--color-surface);border-radius:16px;padding:14px 18px;box-shadow:0 8px 24px rgba(15,23,42,0.07);border:1px solid rgba(255,255,255,0.7);}
+.accent-card-orange{background:#eaf2fd;border:1px solid rgba(11,99,206,0.22);}
+.accent-card-green{background:#e6f7f0;border:1px solid rgba(5,150,105,0.22);}
+.accent-card-blue{background:#fdf4e3;border:1px solid rgba(245,158,11,0.28);}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:4px 14px;border-radius:999px;border:1px solid rgba(148,163,184,0.5);background:rgba(255,255,255,0.9);font-size:0.75rem;font-weight:800;letter-spacing:0.06em;text-transform:uppercase;color:#0b63ce;}
+.pill.green{color:#047857;}
+.pill.blue{color:#1e3a8a;}
+.big-text{font-size:clamp(0.95rem,1.6vw,1.2rem);line-height:1.6;}
+.code-block{background:#0f172a;color:#e2e8f0;font-family:"Fira Code",Consolas,monospace;border-radius:12px;padding:14px 18px;font-size:clamp(0.78rem,1.25vw,0.98rem);line-height:1.65;overflow-x:auto;}
+.code-block .kw{color:#f59e0b;font-weight:600;}
+.code-block .str{color:#a3e635;}
+.code-block .cmt{color:#64748b;font-style:italic;}
+.code-block .num{color:#38bdf8;}
+.code-block .fn{color:#f59e0b;}
+.vocab-tag{display:inline-flex;align-items:center;padding:4px 12px;border-radius:999px;background:rgba(232,98,44,0.10);font-size:0.82rem;font-weight:800;color:#0b63ce;}
+.grid-cards{display:grid;gap:14px;}
+@media(min-width:700px){.grid-2{grid-template-columns:repeat(2,minmax(0,1fr));}.grid-3{grid-template-columns:repeat(3,minmax(0,1fr));}}
+.grad-text{background:linear-gradient(135deg,#0b63ce 0%,#10b981 55%,#f59e0b 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+
+.media-embed{position:relative;padding-top:56.25%;border-radius:13px;overflow:hidden;background:#1e293b;cursor:pointer;}
+.media-embed img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+.media-embed .play-btn{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;}
+.media-embed .play-btn div{width:54px;height:54px;background:rgba(255,0,0,0.90);border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 18px rgba(0,0,0,0.35);transition:transform 0.2s;}
+.media-embed:hover .play-btn div{transform:scale(1.1);}
+.media-embed iframe{position:absolute;inset:0;width:100%;height:100%;border:0;border-radius:13px;}
+
+.timer-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 14px;border-radius:999px;background:rgba(11,99,206,0.10);color:#1e40af;font-size:0.82rem;font-weight:800;}
+.break-card{background:linear-gradient(135deg,#fdf4e3,#fff7e6);border:2px solid rgba(245,158,11,0.30);border-radius:18px;padding:18px 22px;}
+.challenge-card{background:linear-gradient(135deg,rgba(139,92,246,0.10),rgba(232,98,44,0.06));border:2px solid rgba(139,92,246,0.28);border-radius:16px;padding:14px 18px;}
+.tier-a{display:inline-flex;align-items:center;padding:3px 10px;border-radius:999px;background:#dcfce7;color:#14532d;font-size:0.72rem;font-weight:800;}
+.tier-c{display:inline-flex;align-items:center;padding:3px 10px;border-radius:999px;background:#ede9fe;color:#6d28d9;font-size:0.72rem;font-weight:800;}
+
+.machine-box{background:#fff;border:3px solid #e8622c;border-radius:16px;padding:16px 22px;text-align:center;box-shadow:0 8px 22px rgba(232,98,44,0.15);}
+.arrow-flow{display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;}
+.arrow-flow .arrow{font-size:1.8rem;color:#64748b;}
+
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:0.01ms !important;transition-duration:0.2s !important;}}
+</style>
+</head>
+<body>
+<div id="spotlight" style="position:fixed;inset:0;z-index:99;pointer-events:none;"></div>
+<div class="deck">
+
+<!-- SLIDE 1: TITLE -->
+<div class="slide active" data-slide="1" data-type="title">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:460px;height:460px;top:-100px;right:-100px;background:#e8622c;opacity:0.16;"></div>
+    <div class="blob" style="width:320px;height:320px;bottom:-80px;left:-60px;background:#10b981;opacity:0.14;"></div>
+    <div class="blob" style="width:220px;height:220px;top:42%;left:12%;background:#f59e0b;opacity:0.12;"></div>
+  </div>
+  <canvas class="particle-canvas"></canvas>
+  <div class="content text-center">
+    <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/4dbdf51e7fdbe44e462c2589262bfe0547921450.jpg" alt="Friendly robot representing a reusable code machine" style="height:120px;object-fit:contain;margin:0 auto 14px;border-radius:20px;box-shadow:0 12px 30px rgba(58,42,26,0.2);animation:float 3s ease-in-out infinite;">
+    <p class="pill reveal" style="margin-bottom:10px;">Session 13 · Wednesday, July 22</p>
+    <h1 class="font-display reveal grad-text" style="font-size:clamp(2.2rem,5.2vw,3.6rem);font-weight:800;line-height:1.1;margin-bottom:10px;">Functions: Reusable Blocks</h1>
+    <p class="reveal" style="font-size:clamp(0.9rem,1.4vw,1.15rem);color:#374151;letter-spacing:2px;text-transform:uppercase;font-weight:600;">Build it once. Use it forever. — Python, Week 4</p>
+  </div>
+</div>
+
+<!-- SLIDE 2: DAILY RHYTHM AGENDA -->
+<div class="slide" data-slide="2" data-type="lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:340px;height:340px;top:-70px;right:-70px;background:#f59e0b;opacity:0.08;"></div>
+    <div class="blob" style="width:260px;height:260px;bottom:-60px;left:-40px;background:#10b981;opacity:0.07;"></div>
+  </div>
+  <div class="content">
+    <p class="pill blue reveal mb-2">Today's Daily Rhythm</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.6rem,3vw,2.2rem);font-weight:700;margin-bottom:14px;">How our 110 minutes will flow</h2>
+    <div class="grid-cards grid-2 reveal">
+      <div class="card accent-card-blue" style="padding:12px 16px;"><span class="timer-badge">⏱ 10 min</span><p style="font-weight:800;margin:6px 0 2px;">Warm-Up</p><p style="font-size:0.85rem;color:#374151;">Unplugged logic puzzle — no screens yet.</p></div>
+      <div class="card accent-card-orange" style="padding:12px 16px;"><span class="timer-badge" style="background:rgba(232,98,44,0.10);color:#0b63ce;">⏱ 15–20 min</span><p style="font-weight:800;margin:6px 0 2px;">Mini-Lesson + 🤖 AI Moment</p><p style="font-size:0.85rem;color:#374151;">What a function is, live demo, videos.</p></div>
+      <div class="card accent-card-green" style="padding:12px 16px;"><span class="timer-badge" style="background:rgba(47,158,110,0.10);color:#047857;">⏱ 20 min</span><p style="font-weight:800;margin:6px 0 2px;">Guided Build</p><p style="font-size:0.85rem;color:#374151;">Everyone writes greet() together, step by step.</p></div>
+      <div class="card" style="padding:12px 16px;background:#fdf1e0;border:1px solid rgba(232,98,44,0.2);"><span class="timer-badge" style="background:rgba(232,98,44,0.1);color:#0b63ce;">⏱ 5 min</span><p style="font-weight:800;margin:6px 0 2px;">Movement Break</p><p style="font-size:0.85rem;color:#374151;">Stand, stretch, reset our focus.</p></div>
+      <div class="card accent-card-blue" style="padding:12px 16px;"><span class="timer-badge">⏱ 30–40 min</span><p style="font-weight:800;margin:6px 0 2px;">Open Build + Challenge</p><p style="font-size:0.85rem;color:#374151;">Refactor the guessing game with functions.</p></div>
+      <div class="card accent-card-green" style="padding:12px 16px;"><span class="timer-badge" style="background:rgba(47,158,110,0.10);color:#047857;">⏱ 10 min</span><p style="font-weight:800;margin:6px 0 2px;">Share-Out</p><p style="font-size:0.85rem;color:#374151;">Optional — show a neighbor your function.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 3: WARM-UP -->
+<div class="slide" data-slide="3" data-type="warmup">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:300px;height:300px;top:-60px;left:-60px;background:#f59e0b;opacity:0.10;"></div>
+    <div class="blob" style="width:240px;height:240px;bottom:-60px;right:-40px;background:#e8622c;opacity:0.08;"></div>
+  </div>
+  <div class="content">
+    <p class="pill blue reveal mb-2">🧩 Warm-Up · No Screens</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.6rem,3vw,2.2rem);font-weight:700;margin-bottom:14px;">The Sandwich-Making Puzzle</h2>
+    <div class="grid-cards grid-2 reveal" style="align-items:center;">
+      <div class="card accent-card-blue" style="padding:16px 20px;">
+        <p class="big-text">Think about making the exact same peanut butter sandwich for five friends.</p>
+        <p class="big-text" style="margin-top:8px;"><strong>Question:</strong> Would you rather write out all the steps five separate times, or write them once and just say "make it" five times?</p>
+      </div>
+      <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/3d03951b7b52401a4ca245a1541db508977c6bda.jpg" alt="Step by step recipe cards for kids" style="width:100%;border-radius:16px;box-shadow:0 10px 26px rgba(58,42,26,0.15);object-fit:cover;max-height:260px;">
+    </div>
+    <p class="reveal" style="margin-top:14px;font-size:0.9rem;color:#64748b;">Turn and talk with a neighbor for 2 minutes — no wrong answers yet.</p>
+  </div>
+</div>
+
+<!-- SLIDE 4: WHAT IS A FUNCTION -->
+<div class="slide" data-slide="4" data-type="mini-lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:340px;height:340px;top:-80px;right:-60px;background:#e8622c;opacity:0.09;"></div>
+    <div class="blob" style="width:240px;height:240px;bottom:-50px;left:-40px;background:#10b981;opacity:0.07;"></div>
+  </div>
+  <div class="content">
+    <p class="pill reveal mb-2">💡 Mini-Lesson</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.6rem,3vw,2.2rem);font-weight:700;margin-bottom:6px;">What is a function, really?</h2>
+    <p class="reveal big-text" style="margin-bottom:14px;">A <span class="vocab-tag">function</span> is a named block of code that runs only when you call it — like a recipe you can follow anytime.</p>
+    <div class="grid-cards grid-2 reveal">
+      <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/4dbdf51e7fdbe44e462c2589262bfe0547921450.jpg" alt="Cartoon robot machine that performs the same task when activated" style="width:100%;border-radius:16px;box-shadow:0 10px 26px rgba(58,42,26,0.15);object-fit:cover;max-height:220px;">
+      <div class="card accent-card-orange" style="padding:14px 18px;">
+        <p style="font-weight:800;color:#0b63ce;margin-bottom:8px;">Think of it like a vending machine:</p>
+        <ul style="margin:0;padding-left:18px;font-size:0.9rem;color:#374151;line-height:1.7;">
+          <li>You <strong>press the button</strong> (call the function)</li>
+          <li>The machine <strong>does the same steps</strong> every time</li>
+          <li>It gives you <strong>something back</strong> (a return value)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 5: SYNTAX -->
+<div class="slide" data-slide="5" data-type="mini-lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:320px;height:320px;top:-70px;left:-60px;background:#f59e0b;opacity:0.08;"></div>
+    <div class="blob" style="width:220px;height:220px;bottom:-50px;right:-40px;background:#e8622c;opacity:0.07;"></div>
+  </div>
+  <div class="content">
+    <p class="pill reveal mb-2">💡 Mini-Lesson · Syntax</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.6rem,3vw,2.2rem);font-weight:700;margin-bottom:12px;">Two moves: define, then call</h2>
+    <div class="grid-cards grid-2 reveal">
+      <div class="code-block"><pre style="margin:0;white-space:pre-wrap;font-family:inherit;line-height:1.7;"><span class="cmt"># 1. DEFINE the function (the recipe)</span>
+<span class="kw">def</span> <span class="fn">greet</span>(name):
+    print(<span class="str">"Hello,"</span>, name, <span class="str">"!"</span>)
+
+<span class="cmt"># 2. CALL the function (press the button)</span>
+<span class="fn">greet</span>(<span class="str">"Maya"</span>)
+<span class="fn">greet</span>(<span class="str">"Leo"</span>)</pre></div>
+      <div class="card accent-card-blue" style="padding:14px 18px;">
+        <p style="font-weight:800;color:#1e3a8a;margin-bottom:8px;">Question to hold onto:</p>
+        <p class="big-text">If we call <code>greet("Maya")</code> and then <code>greet("Leo")</code>, does the function's code change at all between calls?</p>
+        <p style="margin-top:10px;font-size:0.85rem;color:#64748b;">What changes is only what we hand it — the <strong>parameter</strong>.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 6: VOCAB -->
+<div class="slide" data-slide="6" data-type="mini-lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:300px;height:300px;top:-60px;right:-60px;background:#10b981;opacity:0.08;"></div>
+    <div class="blob" style="width:240px;height:240px;bottom:-60px;left:-50px;background:#f59e0b;opacity:0.07;"></div>
+  </div>
+  <div class="content">
+    <p class="pill reveal mb-2">📖 New Vocabulary</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.6rem,3vw,2.2rem);font-weight:700;margin-bottom:14px;">Four words we need today</h2>
+    <div class="grid-cards grid-2 reveal">
+      <div class="card" style="padding:14px 18px;"><span class="vocab-tag">def</span><p style="margin-top:8px;font-size:0.88rem;">The keyword that starts a function definition.</p></div>
+      <div class="card" style="padding:14px 18px;"><span class="vocab-tag">parameter</span><p style="margin-top:8px;font-size:0.88rem;">A placeholder name inside the parentheses, e.g. <code>name</code>.</p></div>
+      <div class="card" style="padding:14px 18px;"><span class="vocab-tag">argument</span><p style="margin-top:8px;font-size:0.88rem;">The real value you hand over when calling, e.g. <code>"Maya"</code>.</p></div>
+      <div class="card" style="padding:14px 18px;"><span class="vocab-tag">return</span><p style="margin-top:8px;font-size:0.88rem;">Sends a value back out of the function to be used later.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 7: VIDEO 1 -->
+<div class="slide" data-slide="7" data-type="mini-lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:300px;height:300px;top:-60px;left:-60px;background:#e8622c;opacity:0.08;"></div>
+    <div class="blob" style="width:240px;height:240px;bottom:-60px;right:-40px;background:#10b981;opacity:0.07;"></div>
+  </div>
+  <div class="content">
+    <p class="pill mb-2 reveal">▶ Video 1 · Mini-Lesson Boost (2 min)</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.3rem,2.3vw,1.8rem);font-weight:700;margin-bottom:10px;">Functions Explained for Kids</h2>
+    <div class="grid-cards grid-2 reveal" style="gap:14px;align-items:start;">
+      <div>
+        <div class="media-embed" id="player-GbDpOMW-dfk" onclick="playVideo('GbDpOMW-dfk')" title="Click to play video">
+          <img src="https://img.youtube.com/vi/GbDpOMW-dfk/hqdefault.jpg" alt="Python Basics for Kids: Functions Explained video thumbnail">
+          <div class="play-btn"><div><svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg></div></div>
+        </div>
+        <p style="font-size:0.76rem;color:#64748b;margin:6px 0 0;text-align:center;">
+          <a href="https://www.youtube.com/watch?v=GbDpOMW-dfk" target="_blank" rel="noopener" style="color:#0b63ce;text-decoration:underline;">▶ YouTube · BrightCHAMPS — "Python Basics for Kids: Functions Explained"</a>
+        </p>
+      </div>
+      <div class="card accent-card-orange" style="padding:14px 18px;">
+        <p style="font-weight:800;color:#0b63ce;margin:0 0 8px;font-size:0.85rem;">While watching, look for:</p>
+        <ul style="margin:0;padding-left:18px;font-size:0.85rem;color:#374151;line-height:1.65;">
+          <li>What everyday machine do they compare a function to?</li>
+          <li>Name two places we already see functions in real life.</li>
+          <li>Why do functions "save time"?</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 8: VIDEO 2 -->
+<div class="slide" data-slide="8" data-type="mini-lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:300px;height:300px;top:-60px;right:-60px;background:#f59e0b;opacity:0.08;"></div>
+    <div class="blob" style="width:240px;height:240px;bottom:-60px;left:-40px;background:#e8622c;opacity:0.07;"></div>
+  </div>
+  <div class="content">
+    <p class="pill mb-2 reveal">▶ Video 2 · Syntax Deep-Dive (4:29)</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.3rem,2.3vw,1.8rem);font-weight:700;margin-bottom:10px;">def, Parameters &amp; Calling — a Real Example</h2>
+    <div class="grid-cards grid-2 reveal" style="gap:14px;align-items:start;">
+      <div>
+        <div class="media-embed" id="player-lsSHD_1vSvQ" onclick="playVideo('lsSHD_1vSvQ')" title="Click to play video">
+          <img src="https://img.youtube.com/vi/lsSHD_1vSvQ/hqdefault.jpg" alt="Python Functions Explained for Beginners in 5 Minutes video thumbnail">
+          <div class="play-btn"><div><svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg></div></div>
+        </div>
+        <p style="font-size:0.76rem;color:#64748b;margin:6px 0 0;text-align:center;">
+          <a href="https://www.youtube.com/watch?v=lsSHD_1vSvQ" target="_blank" rel="noopener" style="color:#0b63ce;text-decoration:underline;">▶ YouTube · DataWithNeelam — "Python Functions Explained for Beginners in 5 Minutes"</a>
+        </p>
+      </div>
+      <div class="card accent-card-blue" style="padding:14px 18px;">
+        <p style="font-weight:800;color:#1e3a8a;margin:0 0 8px;font-size:0.85rem;">While watching, think about:</p>
+        <ul style="margin:0;padding-left:18px;font-size:0.85rem;color:#374151;line-height:1.65;">
+          <li>What problem does repeating <code>print("Hello world")</code> create?</li>
+          <li>Where does the colon <code>:</code> go, and why?</li>
+          <li>What's different between <em>defining</em> and <em>calling</em>?</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 9: AI MOMENT -->
+<div class="slide" data-slide="9" data-type="mini-lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:320px;height:320px;top:-70px;left:-50px;background:#10b981;opacity:0.09;"></div>
+    <div class="blob" style="width:250px;height:250px;bottom:-60px;right:-40px;background:#f59e0b;opacity:0.08;"></div>
+  </div>
+  <div class="content">
+    <p class="pill green mb-2 reveal">🤖 AI Moment</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.5rem,2.8vw,2.1rem);font-weight:700;margin-bottom:12px;">Same-answer function vs. an AI that improves</h2>
+    <div class="grid-cards grid-2 reveal">
+      <div class="card accent-card-orange" style="padding:14px 18px;">
+        <p style="font-weight:800;color:#0b63ce;margin-bottom:6px;">Our function today</p>
+        <p style="font-size:0.9rem;color:#374151;">Rule-based: given the same input, <code>greet("Maya")</code> ALWAYS prints the same greeting. It never changes unless we edit the code ourselves.</p>
+      </div>
+      <div class="card accent-card-green" style="padding:14px 18px;">
+        <p style="font-weight:800;color:#047857;margin-bottom:6px;">A learned AI system</p>
+        <p style="font-size:0.9rem;color:#374151;">Given more examples over time, it can change its own answer — it "learns" patterns instead of following one fixed rule.</p>
+      </div>
+    </div>
+    <p class="reveal big-text" style="margin-top:14px;">🧠 <strong>Discussion question:</strong> Can you think of an app on your phone that behaves the same way every time, versus one that seems to "get smarter" as you use it?</p>
+  </div>
+</div>
+
+<!-- SLIDE 10: GUIDED BUILD 1 -->
+<div class="slide" data-slide="10" data-type="build">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:340px;height:340px;top:-80px;right:-60px;background:#10b981;opacity:0.10;"></div>
+    <div class="blob" style="width:250px;height:250px;bottom:-60px;left:-50px;background:#e8622c;opacity:0.08;"></div>
+  </div>
+  <div class="content">
+    <p class="pill green mb-2 reveal">🛠 Guided Build · Everyone Together</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.5rem,2.8vw,2.1rem);font-weight:700;margin-bottom:10px;">Step 1 — Write greet(name)</h2>
+    <div class="grid-cards grid-2 reveal">
+      <div class="code-block"><pre style="margin:0;white-space:pre-wrap;font-family:inherit;line-height:1.7;"><span class="kw">def</span> <span class="fn">greet</span>(name):
+    print(<span class="str">"Hey "</span> + name + <span class="str">", ready to code?"</span>)
+
+<span class="fn">greet</span>(<span class="str">"Aiden"</span>)
+<span class="fn">greet</span>(<span class="str">"Sofia"</span>)
+<span class="fn">greet</span>(<span class="str">"Kai"</span>)</pre></div>
+      <div class="card" style="padding:14px 18px;">
+        <p style="font-weight:800;margin-bottom:6px;">Type this together, then predict:</p>
+        <p class="big-text">How many lines will print to the screen when this runs — and why is it not six lines even though we wrote six lines of code?</p>
+        <div style="margin-top:10px;"><span class="tier-a">Tier A: type it exactly as shown</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 11: BREAK -->
+<div class="slide" data-slide="11" data-type="break">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:280px;height:280px;top:-60px;left:-40px;background:#f59e0b;opacity:0.10;"></div>
+    <div class="blob" style="width:220px;height:220px;bottom:-60px;right:-40px;background:#e8622c;opacity:0.08;"></div>
+  </div>
+  <div class="content text-center">
+    <p class="pill blue mb-2 reveal">🧍 Movement Break · 5 minutes</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.7rem,3.2vw,2.4rem);font-weight:700;margin-bottom:14px;">Be Your Own Function!</h2>
+    <div class="break-card reveal" style="max-width:620px;margin:0 auto;">
+      <p class="big-text">Stand up. With a partner, act out a "function" — one person calls out a name (the argument), and the other person performs the SAME three moves every time (jump, spin, wave) no matter who is named.</p>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 12: OPEN BUILD -->
+<div class="slide" data-slide="12" data-type="build">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:340px;height:340px;top:-80px;right:-60px;background:#e8622c;opacity:0.09;"></div>
+    <div class="blob" style="width:250px;height:250px;bottom:-60px;left:-50px;background:#10b981;opacity:0.08;"></div>
+  </div>
+  <div class="content">
+    <p class="pill green mb-2 reveal">🛠 Open Build + Challenge Cards</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.5rem,2.8vw,2.1rem);font-weight:700;margin-bottom:10px;">Refactor the guessing game with a function</h2>
+    <div class="grid-cards grid-2 reveal">
+      <div class="card accent-card-blue" style="padding:14px 18px;">
+        <p style="font-weight:800;color:#1e3a8a;margin-bottom:6px;">Your mission</p>
+        <p class="big-text">Take your Week 3 number-guessing game. Find any code you wrote more than once and wrap it inside a function you name yourself.</p>
+        <div style="margin-top:8px;"><span class="tier-a">Tier A: use a pre-written function and just call it</span></div>
+      </div>
+      <div class="challenge-card">
+        <p style="font-weight:800;color:#6d28d9;margin-bottom:6px;">🌟 Challenge Card (Tier C)</p>
+        <p class="big-text">Write a function that RETURNS a value and use that value inside a calculation — for example, a function that returns a random number to compare against a guess.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 13: EXAMPLE RETURN -->
+<div class="slide" data-slide="13" data-type="lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:300px;height:300px;top:-60px;left:-60px;background:#f59e0b;opacity:0.08;"></div>
+    <div class="blob" style="width:230px;height:230px;bottom:-50px;right:-40px;background:#e8622c;opacity:0.07;"></div>
+  </div>
+  <div class="content">
+    <p class="pill mb-2 reveal">💡 Deeper Look</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.5rem,2.8vw,2.1rem);font-weight:700;margin-bottom:10px;">A function that hands something back</h2>
+    <div class="grid-cards grid-2 reveal">
+      <div class="code-block"><pre style="margin:0;white-space:pre-wrap;font-family:inherit;line-height:1.7;"><span class="kw">def</span> <span class="fn">double</span>(number):
+    <span class="kw">return</span> number * <span class="num">2</span>
+
+result = <span class="fn">double</span>(<span class="num">7</span>)
+print(result)  <span class="cmt"># 14</span></pre></div>
+      <div class="card accent-card-orange" style="padding:14px 18px;">
+        <p style="font-weight:800;color:#0b63ce;margin-bottom:6px;">Notice:</p>
+        <p class="big-text"><code>print()</code> just shows something on screen. <code>return</code> sends a value back so we can SAVE it in a variable and use it again later.</p>
+        <p style="margin-top:8px;font-size:0.85rem;color:#64748b;">Which one would you need if you wanted to add the function's answer to another number?</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 14: MACHINE DIAGRAM -->
+<div class="slide" data-slide="14" data-type="lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:320px;height:320px;top:-70px;right:-60px;background:#10b981;opacity:0.09;"></div>
+    <div class="blob" style="width:240px;height:240px;bottom:-60px;left:-40px;background:#f59e0b;opacity:0.07;"></div>
+  </div>
+  <div class="content">
+    <p class="pill mb-2 reveal">🔍 Picture It: The Function Machine</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.5rem,2.8vw,2.1rem);font-weight:700;margin-bottom:16px;">Input → Process → Output</h2>
+    <div class="arrow-flow reveal">
+      <div class="machine-box"><p style="font-weight:800;color:#1e3a8a;">Argument</p><p style="font-size:0.85rem;">"Maya"</p></div>
+      <span class="arrow">→</span>
+      <div class="machine-box" style="border-color:#2f9e6e;"><p style="font-weight:800;color:#047857;">Function Body</p><p style="font-size:0.85rem;">print("Hello", name)</p></div>
+      <span class="arrow">→</span>
+      <div class="machine-box" style="border-color:#0b63ce;"><p style="font-weight:800;color:#0b63ce;">Output</p><p style="font-size:0.85rem;">"Hello Maya"</p></div>
+    </div>
+    <p class="reveal big-text" style="margin-top:18px;text-align:center;">Same machine, different argument in — different (but predictable) result out. That predictability is exactly what makes it "rule-based," not "learned."</p>
+  </div>
+</div>
+
+<!-- SLIDE 15: SHARE OUT -->
+<div class="slide" data-slide="15" data-type="share">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:300px;height:300px;top:-60px;left:-50px;background:#8b5cf6;opacity:0.10;"></div>
+    <div class="blob" style="width:230px;height:230px;bottom:-60px;right:-40px;background:#e8622c;opacity:0.08;"></div>
+  </div>
+  <div class="content text-center">
+    <p class="pill reveal mb-2" style="color:#6d28d9;">🎤 Share-Out · Optional</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.6rem,3vw,2.2rem);font-weight:700;margin-bottom:14px;">Show your neighbor one function</h2>
+    <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/01fead2a2af607d8a3142357433b40b3db2e374a.jpg" alt="Two students sharing what they built on a laptop" class="reveal" style="max-width:420px;width:100%;border-radius:16px;box-shadow:0 10px 26px rgba(58,42,26,0.15);margin:0 auto;">
+    <p class="reveal big-text" style="margin-top:14px;">No pressure — 1–2 volunteers can share with the whole group, or just turn and show the person next to you.</p>
+  </div>
+</div>
+
+<!-- SLIDE 16: HOMEWORK -->
+<div class="slide" data-slide="16" data-type="share">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:300px;height:300px;top:-60px;right:-50px;background:#e8622c;opacity:0.09;"></div>
+    <div class="blob" style="width:230px;height:230px;bottom:-60px;left:-40px;background:#f59e0b;opacity:0.07;"></div>
+  </div>
+  <div class="content">
+    <p class="pill reveal mb-2">📝 Homework · ~30 minutes tonight</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.6rem,3vw,2.2rem);font-weight:700;margin-bottom:14px;">Write one useful function, call it twice</h2>
+    <div class="grid-cards grid-2 reveal">
+      <div class="card accent-card-orange" style="padding:16px 20px;">
+        <p style="font-weight:800;color:#0b63ce;margin-bottom:8px;">The task</p>
+        <p class="big-text">Write one function that does something useful (math, a message, a mini game action). Call it TWICE with two different inputs and see how the output changes.</p>
+      </div>
+      <div class="card accent-card-blue" style="padding:16px 20px;">
+        <p style="font-weight:800;color:#1e3a8a;margin-bottom:8px;">Reflection question to bring back</p>
+        <p class="big-text">Could you explain to a family member, in your own words, why writing a function saves you typing?</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 17: CLOSING -->
+<div class="slide" data-slide="17" data-type="close">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:440px;height:440px;top:-100px;left:-100px;background:#e8622c;opacity:0.16;"></div>
+    <div class="blob" style="width:320px;height:320px;bottom:-90px;right:-70px;background:#10b981;opacity:0.14;"></div>
+    <div class="blob" style="width:220px;height:220px;top:40%;right:15%;background:#f59e0b;opacity:0.11;"></div>
+  </div>
+  <canvas class="particle-canvas"></canvas>
+  <div class="content text-center">
+    <p class="pill reveal" style="margin-bottom:10px;">See you Thursday — Lists &amp; Rock-Paper-Scissors!</p>
+    <h2 class="font-display reveal grad-text" style="font-size:clamp(2rem,4.4vw,3rem);font-weight:800;margin-bottom:10px;">Great work, functions builders!</h2>
+    <p class="reveal big-text" style="max-width:560px;margin:0 auto;">You defined it once and used it as many times as you wanted — that's the whole superpower of a function.</p>
+  </div>
+</div>
+
+</div><!-- /deck -->
+
+<div class="nav-controls">
+  <button class="nav-btn" onclick="changeSlide(-1)">&#8249;</button>
+  <div class="slide-dots" id="dots"></div>
+  <button class="nav-btn" onclick="changeSlide(1)">&#8250;</button>
+  <span class="slide-counter" id="counter">1 / 17</span>
+</div>
+
+<script>
+let current = 1;
+const total = document.querySelectorAll('.slide').length;
+const dotsContainer = document.getElementById('dots');
+const counter = document.getElementById('counter');
+const dotTypes = ['','','','warmup','mini','mini','mini','mini','mini','mini','build','','build','mini','mini','share','share',''];
+for (let i = 1; i <= total; i++) {
+  const dot = document.createElement('div');
+  const t = dotTypes[i] || '';
+  dot.className = 'dot' + (t ? ' ' + t : '') + (i === 1 ? ' active' : '');
+  dot.onclick = () => goToSlide(i);
+  dotsContainer.appendChild(dot);
+}
+function goToSlide(n) {
+  const prev = document.querySelector('.slide.active');
+  const next = document.querySelector('.slide[data-slide="' + n + '"]');
+  if (prev) prev.classList.remove('active');
+  if (next) { next.classList.add('active'); animateSlide(next); }
+  current = n; updateNav();
+}
+function changeSlide(dir) { let n = current + dir; if (n < 1) n = total; if (n > total) n = 1; goToSlide(n); }
+function updateNav() {
+  document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i + 1 === current));
+  counter.textContent = current + ' / ' + total;
+}
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); changeSlide(1); }
+  if (e.key === 'ArrowLeft') { e.preventDefault(); changeSlide(-1); }
+});
+let tx = 0;
+document.addEventListener('touchstart', e => { tx = e.touches[0].clientX; });
+document.addEventListener('touchend', e => { const dx = tx - e.changedTouches[0].clientX; if (Math.abs(dx) > 60) changeSlide(dx > 0 ? 1 : -1); });
+
+function animateSlide(slide) {
+  slide.querySelectorAll('.reveal').forEach((el, i) => {
+    el.style.transition = 'none'; el.style.opacity = '0'; el.style.transform = 'translateY(16px)';
+    el.offsetHeight;
+    const d = i * 0.06;
+    el.style.transition = 'opacity 0.32s ease ' + d + 's, transform 0.32s ease ' + d + 's';
+    el.style.opacity = '1'; el.style.transform = 'translateY(0)';
+  });
+}
+
+function playVideo(videoId) {
+  const container = document.getElementById('player-' + videoId);
+  if (!container) return;
+  container.onclick = null; container.style.cursor = 'default';
+  container.innerHTML = '<iframe src="https://www.youtube.com/embed/' + videoId + '?autoplay=1&rel=0" allowfullscreen allow="autoplay; encrypted-media" style="position:absolute;inset:0;width:100%;height:100%;border:0;border-radius:13px;"></iframe>';
+}
+
+document.addEventListener('mousemove', e => {
+  const s = document.getElementById('spotlight');
+  if (s) s.style.background = 'radial-gradient(600px circle at ' + e.clientX + 'px ' + e.clientY + 'px, rgba(11,99,206,0.05), transparent 40%)';
+});
+
+window.initParticles = function(canvas) {
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight;
+  const particles = Array.from({length:40}, () => ({x:Math.random()*canvas.width,y:Math.random()*canvas.height,vx:(Math.random()-0.5)*0.3,vy:(Math.random()-0.5)*0.3,size:Math.random()*2+0.8,alpha:Math.random()*0.3+0.08}));
+  (function animate(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    particles.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.x<0)p.x=canvas.width;if(p.x>canvas.width)p.x=0;if(p.y<0)p.y=canvas.height;if(p.y>canvas.height)p.y=0;
+      ctx.beginPath();ctx.arc(p.x,p.y,p.size,0,Math.PI*2);ctx.fillStyle='rgba(11,99,206,'+p.alpha+')';ctx.fill();});
+    requestAnimationFrame(animate);
+  })();
+};
+document.querySelectorAll('.particle-canvas').forEach(c => window.initParticles(c));
+
+try { animateSlide(document.querySelector('.slide.active')); } catch(e) {}
+</script>
+</body>
+</html>
