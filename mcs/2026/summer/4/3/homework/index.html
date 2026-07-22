@@ -1,1 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Homework Sheet · Session 13 · Python Functions (30 min)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --color-bg: #f4fbff;
+    --color-surface: rgba(255,255,255,0.97);
+    --color-text: #1f2a37;
+    --color-text-secondary: #374151;
+    --color-text-muted: #5b6b7e;
+    --color-accent-1: #0b63ce;
+    --color-accent-2: #10b981;
+    --color-accent-3: #f59e0b;
+    --color-accent-red: #ef4444;
+    --font-display: 'Fredoka', 'Trebuchet MS', sans-serif;
+    --font-body: 'Nunito', Arial, sans-serif;
+    --font-code: 'Fira Code', Consolas, monospace;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  @media print {
+    body { background: #fff !important; }
+    .no-print { display: none !important; }
+    .page-break { page-break-before: always; }
+    .card { box-shadow: none !important; border: 1.5px solid #d1d5db !important; }
+    .code-block { border: 1.5px solid #cbd5e1 !important; }
+  }
+  body { font-family: var(--font-body); color: var(--color-text); background: var(--color-bg); min-height: 100vh; }
+  .print-bar {
+    background: rgba(255,255,255,0.92); backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(148,163,184,0.3);
+    padding: 10px 24px; display: flex; align-items: center;
+    justify-content: space-between; position: sticky; top: 0; z-index: 100; gap: 12px; flex-wrap: wrap;
+  }
+  .print-bar .bar-title { font-family: var(--font-display); font-size: 1.05rem; font-weight: 700; color: var(--color-accent-1); }
+  .print-bar .bar-sub { font-size: 0.78rem; color: var(--color-text-muted); }
+  .btn-print { background: var(--color-accent-1); color: #fff; border: none; padding: 8px 20px; border-radius: 999px; font-family: var(--font-body); font-size: 0.82rem; font-weight: 800; cursor: pointer; letter-spacing: 0.06em; transition: background 0.2s, transform 0.15s; }
+  .btn-print:hover { background: #0952b0; transform: translateY(-1px); }
+  .page { max-width: 920px; margin: 0 auto; padding: 32px 24px 60px; }
+  .sheet-header {
+    background: linear-gradient(135deg, #7c3aed 0%, #0b63ce 50%, #10b981 100%);
+    border-radius: 20px; padding: 28px 32px 24px; color: #fff; margin-bottom: 28px; position: relative; overflow: hidden;
+  }
+  .sheet-header::before { content: ''; position: absolute; top: -60px; right: -60px; width: 200px; height: 200px; background: rgba(255,255,255,0.08); border-radius: 50%; }
+  .sheet-header::after { content: ''; position: absolute; bottom: -40px; left: -40px; width: 140px; height: 140px; background: rgba(255,255,255,0.06); border-radius: 50%; }
+  .header-emoji { font-size: 2.8rem; margin-bottom: 6px; }
+  .header-day { font-size: 0.75rem; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; opacity: 0.85; margin-bottom: 4px; }
+  .header-title { font-family: var(--font-display); font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 700; line-height: 1.1; margin-bottom: 6px; }
+  .header-sub { font-size: 0.88rem; opacity: 0.85; margin-bottom: 14px; }
+  .header-pills { display: flex; gap: 8px; flex-wrap: wrap; }
+  .header-pill { background: rgba(255,255,255,0.22); border: 1px solid rgba(255,255,255,0.35); border-radius: 999px; padding: 4px 14px; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
+  .student-info { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 28px; }
+  @media (max-width: 600px) { .student-info { grid-template-columns: 1fr; } }
+  .info-field { background: var(--color-surface); border-radius: 12px; padding: 12px 14px; border: 1.5px solid rgba(11,99,206,0.14); box-shadow: 0 2px 8px rgba(15,23,42,0.05); }
+  .info-label { font-size: 0.65rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-accent-1); margin-bottom: 6px; }
+  .info-line { border: none; border-bottom: 1.5px solid #cbd5e1; width: 100%; font-family: var(--font-body); font-size: 0.9rem; color: var(--color-text); background: transparent; outline: none; padding: 2px 0; }
+  .info-line:focus { border-bottom-color: #0b63ce; }
+  .section-label { display: inline-flex; align-items: center; gap: 8px; padding: 5px 16px; border-radius: 999px; border: 1px solid rgba(148,163,184,0.4); background: rgba(255,255,255,0.9); font-size: 0.72rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-accent-1); margin-bottom: 10px; }
+  .section-title { font-family: var(--font-display); font-size: clamp(1.3rem, 2.5vw, 1.8rem); font-weight: 700; margin-bottom: 16px; color: var(--color-text); line-height: 1.2; }
+  .card { background: var(--color-surface); border-radius: 16px; padding: 18px 20px; box-shadow: 0 4px 18px rgba(15,23,42,0.07); border: 1px solid rgba(255,255,255,0.7); margin-bottom: 16px; }
+  .card.accent-blue { border-left: 4px solid var(--color-accent-1); }
+  .card.accent-green { border-left: 4px solid var(--color-accent-2); }
+  .card.accent-amber { border-left: 4px solid var(--color-accent-3); }
+  .card.accent-red { border-left: 4px solid var(--color-accent-red); }
+  .card.accent-purple { border-left: 4px solid #7c3aed; }
+  .card-label { font-size: 0.68rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 8px; }
+  .card-label.blue { color: var(--color-accent-1); }
+  .card-label.green { color: #047857; }
+  .card-label.amber { color: #b45309; }
+  .card-label.red { color: #b91c1c; }
+  .card-label.purple { color: #6d28d9; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  @media (max-width: 680px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+  .code-block { background: #1e293b; color: #e2e8f0; border-radius: 12px; padding: 14px 18px; font-family: var(--font-code); font-size: clamp(0.68rem, 1.1vw, 0.83rem); line-height: 1.6; overflow-x: auto; border: 1px solid rgba(255,255,255,0.06); margin-bottom: 12px; white-space: pre; }
+  .kw { color: #93c5fd; }
+  .nb { color: #fcd34d; }
+  .st { color: #86efac; }
+  .cm { color: #64748b; font-style: italic; }
+  .hl { color: #fcd34d; font-weight: 700; }
+  .bug { color: #f87171; font-weight: 700; }
+  .write-lines { margin: 8px 0; }
+  input.write-line { border: none; border-bottom: 1.5px solid #cbd5e1; width: 100%; margin-bottom: 10px; height: 28px; display: block; background: transparent; font-family: var(--font-body); font-size: 0.88rem; color: var(--color-text); outline: none; padding: 2px 4px; }
+  input.write-line:focus { border-bottom-color: #0b63ce; }
+  input.write-line::placeholder { color: #bdc5d1; font-style: italic; }
+  textarea.write-area { border: 1.5px solid #cbd5e1; border-radius: 8px; width: 100%; min-height: 70px; padding: 8px; font-family: var(--font-body); font-size: 0.85rem; color: var(--color-text); resize: vertical; background: #f8fafc; outline: none; display: block; }
+  textarea.write-area:focus { outline: 2px solid rgba(11,99,206,0.3); }
+  textarea.write-area::placeholder { color: #bdc5d1; font-style: italic; }
+  input.blank-input { display: inline-block; background: rgba(251,191,36,0.18); border: none; border-bottom: 2px solid #f59e0b; min-width: 60px; width: 60px; height: 1.1em; border-radius: 3px; vertical-align: middle; margin: 0 2px; font-family: var(--font-code); font-size: inherit; color: #fcd34d; text-align: center; outline: none; padding: 0 2px; }
+  input.blank-input:focus { background: rgba(251,191,36,0.32); }
+  input.blank-input.wide { min-width: 110px; width: 110px; }
+  input.blank-input.narrow { min-width: 36px; width: 36px; }
+  .timeline { position: relative; padding-left: 22px; }
+  .timeline::before { content: ''; position: absolute; left: 8px; top: 4px; bottom: 4px; width: 3px; border-radius: 999px; background: linear-gradient(to bottom, #7c3aed, #0b63ce, #10b981); }
+  .timeline-step { position: relative; margin-bottom: 12px; }
+  .timeline-dot { position: absolute; left: -15px; top: 4px; width: 12px; height: 12px; border-radius: 999px; border: 2px solid #f4fbff; background: #0b63ce; box-shadow: 0 0 0 3px rgba(11,99,206,0.2); }
+  .timeline-dot.green { background: #10b981; }
+  .timeline-dot.purple { background: #7c3aed; }
+  .timeline-dot.amber { background: #f59e0b; }
+  .tip-box { border-radius: 10px; padding: 10px 14px; font-size: 0.8rem; line-height: 1.5; margin-top: 10px; }
+  .tip-box.blue { background: rgba(11,99,206,0.07); color: #1e40af; }
+  .tip-box.green { background: rgba(16,185,129,0.07); color: #065f46; }
+  .tip-box.amber { background: rgba(245,158,11,0.07); color: #92400e; }
+  .tip-box.purple { background: rgba(124,58,237,0.07); color: #5b21b6; }
+  .formula-box { background: #1e293b; color: #e2e8f0; border-radius: 10px; padding: 10px 16px; font-family: var(--font-code); font-size: 0.88rem; text-align: center; margin-bottom: 10px; }
+  .divider { border: none; border-top: 2px dashed #dde6f0; margin: 28px 0; }
+  .check-list { list-style: none; padding: 0; }
+  .check-list li { display: flex; align-items: flex-start; gap: 8px; font-size: 0.85rem; color: var(--color-text-secondary); margin-bottom: 8px; line-height: 1.45; }
+  .check-list li .box { flex-shrink: 0; width: 17px; height: 17px; border: 2px solid #94a3b8; border-radius: 4px; margin-top: 1px; background: #fff; display: inline-block; }
+  .level-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 14px; border-radius: 999px; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 8px; }
+  .level-1 { background: linear-gradient(135deg,#0b63ce,#10b981); color:#fff; }
+  .level-2 { background: linear-gradient(135deg,#f59e0b,#ef4444); color:#fff; }
+  .level-3 { background: linear-gradient(135deg,#7c3aed,#ef4444); color:#fff; }
+  .challenge-badge { display: inline-flex; align-items: center; gap: 6px; background: linear-gradient(135deg, #f59e0b, #ef4444); color: #fff; padding: 4px 14px; border-radius: 999px; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 8px; }
+  table.rubric { width: 100%; border-collapse: collapse; font-size: 0.82rem; margin-top: 8px; }
+  table.rubric th { background: #1e293b; color: #e2e8f0; padding: 8px 10px; text-align: left; font-weight: 700; letter-spacing: 0.05em; }
+  table.rubric td { padding: 8px 10px; border-bottom: 1px solid #e2e8f0; vertical-align: top; color: var(--color-text-secondary); }
+  table.rubric tr:nth-child(even) td { background: rgba(241,245,249,0.6); }
+  table.rubric td:first-child { font-weight: 700; color: var(--color-text); }
+  table.rubric .pts { font-family: var(--font-code); font-size: 0.75rem; font-weight: 800; color: var(--color-accent-1); white-space: nowrap; }
+  .sheet-footer { margin-top: 40px; padding: 16px 20px; border-radius: 12px; background: rgba(124,58,237,0.05); border: 1px solid rgba(124,58,237,0.12); display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; font-size: 0.76rem; color: var(--color-text-muted); }
+  .sheet-footer strong { color: var(--color-text); }
+  p, li { font-size: 0.88rem; color: var(--color-text-secondary); line-height: 1.55; }
+  strong { color: var(--color-text); }
+  code { background: #e0f2ff; padding: 1px 6px; border-radius: 4px; font-family: var(--font-code); font-size: 0.82em; color: #0b63ce; }
+  .mb-1 { margin-bottom: 6px; }
+  .mb-2 { margin-bottom: 10px; }
+  .mb-3 { margin-bottom: 14px; }
+  .mt-2 { margin-top: 10px; }
+  .mt-3 { margin-top: 14px; }
+  .text-center { text-align: center; }
+  .text-muted { color: var(--color-text-muted); font-size: 0.78rem; }
+  .grad-text { background: linear-gradient(135deg,#7c3aed,#0b63ce,#10b981); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  .fsm-diagram { display: flex; align-items: center; justify-content: center; gap: 6px; flex-wrap: wrap; padding: 10px; }
+  .fsm-state { background: #e0f2ff; border: 2px solid #0b63ce; border-radius: 50px; padding: 6px 16px; font-family: var(--font-code); font-size: 0.78rem; font-weight: 700; color: #0b63ce; white-space: nowrap; }
+  .fsm-state.start { background: #ede9fe; border-color: #7c3aed; color: #6d28d9; }
+  .fsm-state.end { background: #d1fae5; border-color: #10b981; color: #047857; }
+  .fsm-arrow { font-size: 0.75rem; color: #64748b; text-align: center; white-space: nowrap; }
+  .score-table { width:100%; border-collapse:collapse; font-size:0.82rem; }
+  .score-table th { background:#1e293b; color:#e2e8f0; padding:7px 10px; text-align:left; }
+  .score-table td { padding:7px 10px; border-bottom:1px solid #e2e8f0; color:var(--color-text-secondary); vertical-align:top; }
+  .score-table tr:nth-child(even) td { background:rgba(241,245,249,0.6); }
+  .score-table td:first-child { font-weight:700; color:var(--color-text); }
+  .dark-code-write { background:#1e293b; border-radius:12px; padding:14px 18px; width:100%; font-family:var(--font-code); font-size:clamp(0.7rem,1.1vw,0.84rem); line-height:1.7; border:1px solid rgba(255,255,255,0.06); resize:vertical; display:block; outline:none; color:#e2e8f0; box-sizing:border-box; }
+  .dark-code-write:focus { outline:2px solid rgba(124,58,237,0.4); }
 
+  .draw-wrap { position:relative; margin-bottom:6px; }
+  .draw-toolbar { display:flex; align-items:center; gap:8px; margin-bottom:4px; flex-wrap:wrap; }
+  .draw-toolbar label { font-size:0.7rem; font-weight:700; color:#64748b; }
+  .draw-color { width:28px; height:28px; border:none; border-radius:6px; cursor:pointer; padding:0; background:transparent; }
+  .draw-size { width:70px; accent-color:#7c3aed; cursor:pointer; }
+  .draw-clear { background:#fee2e2; color:#b91c1c; border:none; border-radius:6px; padding:3px 10px; font-size:0.72rem; font-weight:800; cursor:pointer; letter-spacing:0.05em; }
+  .draw-clear:hover { background:#fecaca; }
+  canvas.draw-canvas { display:block; width:100%; border-radius:8px; cursor:crosshair; touch-action:none; background:#faf5ff; }
+  canvas.draw-canvas.white-bg { background:#fff; }
+
+</style>
+</head>
+<body>
+
+<!-- PRINT BAR -->
+<div class="print-bar no-print">
+  <div>
+    <div class="bar-title">📝🔁 Session 13 · Homework Sheet</div>
+    <div class="bar-sub">Python: Functions (Reusable Blocks) — ~30 minutes · Tiered A · B · C</div>
+  </div>
+  <button class="btn-print" onclick="window.print()">🖨️ Print / Save as PDF</button>
+</div>
+
+<div class="page">
+
+<!-- ══════════ HEADER ══════════ -->
+<div class="sheet-header">
+  <div class="header-emoji">📝🔁</div>
+  <div class="header-day">Session 13 Homework · Assigned Tuesday, July 21 · Due Wednesday, July 22</div>
+  <div class="header-title">Write One Useful Function.<br>Call It Twice.</div>
+  <div class="header-sub">Tonight's mission: one function, two different inputs — watch how the output changes while the code stays the same</div>
+  <div class="header-pills">
+    <span class="header-pill">⏱ ~30 min</span>
+    <span class="header-pill">🐍 Python (standard library)</span>
+    <span class="header-pill">Tiers A · B · C</span>
+    <span class="header-pill">def · call · return</span>
+  </div>
+</div>
+
+<!-- ══════════ STUDENT INFO ══════════ -->
+<div class="student-info">
+  <div class="info-field">
+    <div class="info-label">👤 Your Name · 姓名</div>
+    <input class="info-line" type="text" placeholder="First Last" />
+  </div>
+  <div class="info-field">
+    <div class="info-label">🏫 Section · 班级</div>
+    <input class="info-line" type="text" placeholder="Section 1 / 2 / 3" />
+  </div>
+  <div class="info-field">
+    <div class="info-label">🎯 My Tier · 层级</div>
+    <input class="info-line" type="text" placeholder="A / B / C" />
+  </div>
+</div>
+
+<!-- ══════════ TIME PLAN ══════════ -->
+<div class="section-label">⏱ Your 30 Minutes</div>
+<div class="section-title">Tonight's Plan — Four Small Steps</div>
+
+<div class="card accent-blue mb-3">
+  <div class="timeline">
+    <div class="timeline-step"><div class="timeline-dot amber"></div>
+      <p><strong>Step 1 (5 min)</strong> — Warm-up: remember today's moves (fill-in blanks)</p></div>
+    <div class="timeline-step"><div class="timeline-dot"></div>
+      <p><strong>Step 2 (15 min)</strong> — Build: write YOUR function at your tier and call it twice</p></div>
+    <div class="timeline-step"><div class="timeline-dot green"></div>
+      <p><strong>Step 3 (5 min)</strong> — Test: record both calls in the test log</p></div>
+    <div class="timeline-step" style="margin-bottom:0"><div class="timeline-dot purple"></div>
+      <p><strong>Step 4 (5 min)</strong> — Reflect: teach it to a family member</p></div>
+  </div>
+  <div class="tip-box blue mt-2">💻 Use the free <strong>Python Playground</strong> (playcode.io/python-playground) — no install needed. No outside AI chatbots: the goal is YOUR brain building it!</div>
+</div>
+
+<hr class="divider">
+
+<!-- ══════════ STEP 1 · WARM-UP ══════════ -->
+<div class="section-label">🔥 Step 1 of 4 · 5 min · 热身</div>
+<div class="section-title">Remember Today's Moves</div>
+
+<div class="grid-2 mb-3">
+  <div class="card accent-amber">
+    <div class="card-label amber">🧩 Fill in the blanks</div>
+    <div class="code-block"><span class="cm"># The keyword that starts a function:</span>
+<input class="blank-input" type="text" placeholder="???" /> welcome(name):
+    <span class="cm"># Don't forget the colon and the indent!</span>
+    <span class="kw">print</span>(<span class="st">"Welcome, "</span> + name)
+
+<span class="cm"># Now CALL it — press the button:</span>
+<input class="blank-input wide" type="text" placeholder="???" />(<span class="st">"Grandma"</span>)</div>
+    <p style="font-size:0.83rem;color:#374151;">In the call above, <code>"Grandma"</code> is the (circle one): &nbsp; <strong>parameter</strong> &nbsp;/&nbsp; <strong>argument</strong></p>
+  </div>
+  <div class="card accent-blue">
+    <div class="card-label blue">💭 Predict the output</div>
+    <div class="code-block"><span class="kw">def</span> double(number):
+    <span class="kw">return</span> number * <span class="nb">2</span>
+
+result = double(<span class="nb">7</span>)
+<span class="kw">print</span>(result)</div>
+    <p style="font-size:0.83rem;color:#374151;margin-bottom:4px;">What prints? <input class="blank-input narrow" type="text" placeholder="?" /></p>
+    <p style="font-size:0.83rem;color:#374151;margin-bottom:4px;">What would <code>double(50)</code> return? <input class="blank-input narrow" type="text" placeholder="?" /></p>
+    <p style="font-size:0.83rem;color:#374151;">Did the function's <em>code</em> change between the two calls? &nbsp; <strong>Yes</strong> / <strong>No</strong></p>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ══════════ STEP 2 · TIERED BUILD ══════════ -->
+<div class="section-label">💻 Step 2 of 4 · 15 min · Choose Your Tier · 选择层级</div>
+<div class="section-title">Build: One Useful Function, Called Twice</div>
+
+<div class="card accent-blue mb-2">
+  <div class="card-label blue">📋 Pick the SAME tier you worked at in class today (or level up if you feel strong!)</div>
+  <div class="grid-3">
+    <div style="text-align:center;padding:8px;">
+      <div style="font-size:1.8rem;margin-bottom:4px;">🟢</div>
+      <span class="level-badge level-1">Tier A — Foundations</span>
+      <p style="font-size:0.82rem;color:#374151;margin-top:4px;">Copy the given function, then call it twice with your own inputs</p>
+    </div>
+    <div style="text-align:center;padding:8px;">
+      <div style="font-size:1.8rem;margin-bottom:4px;">🟡</div>
+      <span class="level-badge level-2">Tier B — Core</span>
+      <p style="font-size:0.82rem;color:#374151;margin-top:4px;">Invent your OWN useful function and call it twice with different inputs</p>
+    </div>
+    <div style="text-align:center;padding:8px;">
+      <div style="font-size:1.8rem;margin-bottom:4px;">🟣</div>
+      <span class="level-badge level-3">Tier C — Accelerated</span>
+      <p style="font-size:0.82rem;color:#374151;margin-top:4px;">Your function must RETURN a value you then use in a calculation</p>
+    </div>
+  </div>
+</div>
+
+<!-- TIER A -->
+<div class="card mb-2">
+  <div style="margin-bottom:8px;"><span class="level-badge level-1">🟢 Tier A — Copy, Then Call It Twice</span></div>
+  <div class="grid-2">
+    <div>
+      <div class="card-label blue">📋 What to do</div>
+      <p class="mb-2">Type this function into Python Playground <strong>exactly</strong>. Then add <strong>two calls</strong> with two different family or friend names, and run it.</p>
+      <div class="code-block" style="font-size:0.74rem;"><span class="kw">def</span> superstar(name):
+    <span class="kw">print</span>(name + <span class="st">" is tonight's superstar! ⭐"</span>)
+
+<span class="cm"># your two calls go here:</span></div>
+      <p style="font-size:0.8rem;font-weight:700;color:#0b63ce;margin:8px 0 4px;">Write your two calls here too:</p>
+      <div class="write-lines">
+        <input class="write-line" type="text" placeholder='superstar("____________")' />
+        <input class="write-line" type="text" placeholder='superstar("____________")' />
+      </div>
+    </div>
+    <div>
+      <div class="card-label green">✅ Tier A checklist</div>
+      <ul class="check-list">
+        <li><span class="box"></span> I typed <code>def</code>, the colon <code>:</code>, and the indented line</li>
+        <li><span class="box"></span> I called the function TWICE with different names</li>
+        <li><span class="box"></span> Both lines printed — and only the name changed</li>
+        <li><span class="box"></span> I fixed any red error message by checking spelling and the colon</li>
+      </ul>
+      <div class="tip-box green mt-2">🌱 <strong>Feeling brave?</strong> Change the message inside the function and run your calls again — both outputs change at once. THAT is the superpower!</div>
+    </div>
+  </div>
+</div>
+
+<!-- TIER B -->
+<div class="card mb-2">
+  <div style="margin-bottom:8px;"><span class="level-badge level-2">🟡 Tier B — Invent Your Own Useful Function</span></div>
+  <div class="grid-2">
+    <div>
+      <div class="card-label amber">📋 What to do</div>
+      <p class="mb-2">Write <strong>one function that does something useful</strong> — math, a message, or a mini game action — and call it <strong>twice with two different inputs</strong>.</p>
+      <ul style="list-style:disc;padding-left:18px;font-size:0.83rem;color:#374151;line-height:1.8;">
+        <li>It must have at least <strong>1 parameter</strong></li>
+        <li>Call it twice — different argument each time</li>
+        <li>Ideas: <code>birthday_song(name)</code>, <code>add_tax(price)</code>, <code>pet_talk(animal)</code>, <code>minutes_to_seconds(mins)</code></li>
+      </ul>
+      <p style="font-size:0.8rem;font-weight:700;color:#b45309;margin:8px 0 4px;">🧩 Plan before you type:</p>
+      <input class="write-line" type="text" placeholder="My function's name: ____________" />
+      <input class="write-line" type="text" placeholder="Its parameter means: ____________" />
+      <input class="write-line" type="text" placeholder="It is useful because: ____________" />
+    </div>
+    <div>
+      <div class="card-label blue">🐍 Write your final code here:</div>
+      <textarea class="dark-code-write" style="min-height:170px;" spellcheck="false" placeholder="# Tier B — my useful function&#10;def birthday_song(name):&#10;    print('Happy birthday, dear ' + name + '!')&#10;&#10;birthday_song('Mom')&#10;birthday_song('Leo')"></textarea>
+    </div>
+  </div>
+</div>
+
+<!-- TIER C -->
+<div class="card accent-purple mb-3">
+  <div style="margin-bottom:8px;"><span class="level-badge level-3">🟣 Tier C — Return a Value, Use It Twice</span></div>
+  <div class="grid-2">
+    <div>
+      <div class="card-label purple">📋 What to do</div>
+      <p class="mb-2">Write a function that <strong>returns</strong> a value. Call it <strong>twice with different inputs</strong>, save both results in variables, then <strong>combine them in one calculation</strong>.</p>
+      <ul style="list-style:disc;padding-left:18px;font-size:0.83rem;color:#374151;line-height:1.8;">
+        <li>Must use <code>return</code>, not just <code>print</code></li>
+        <li>Ideas: <code>area(width, height)</code>, <code>allowance(weeks)</code>, <code>dice_total(rolls)</code> with <code>random</code></li>
+        <li>Combine the two results: add them, compare them, or print which is bigger</li>
+      </ul>
+      <p style="font-size:0.8rem;font-weight:700;color:#6d28d9;margin:8px 0 4px;">In one sentence — why could <code>print</code> alone NOT do this job?</p>
+      <input class="write-line" type="text" placeholder="Because I need to SAVE the answer so that..." />
+    </div>
+    <div>
+      <div class="card-label purple">🐍 Write your final code here:</div>
+      <textarea class="dark-code-write" style="min-height:170px;" spellcheck="false" placeholder="# Tier C — return + calculation&#10;def area(width, height):&#10;    return width * height&#10;&#10;room1 = area(3, 4)&#10;room2 = area(5, 2)&#10;print('Total area:', room1 + room2)"></textarea>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ══════════ STEP 3 · TEST LOG ══════════ -->
+<div class="section-label">🧪 Step 3 of 4 · 5 min · 测试</div>
+<div class="section-title">Test Log — Prove It Ran Twice</div>
+
+<div class="card accent-green mb-3">
+  <div class="card-label green">📊 Record both calls (every tier fills this in)</div>
+  <table style="width:100%;font-size:0.83rem;border-collapse:collapse;border:1px solid #e2e8f0;">
+    <thead><tr>
+      <th style="background:#1e293b;color:#e2e8f0;padding:7px 10px;text-align:left;">Run</th>
+      <th style="background:#1e293b;color:#e2e8f0;padding:7px 10px;text-align:left;">Input (argument I used)</th>
+      <th style="background:#1e293b;color:#e2e8f0;padding:7px 10px;text-align:left;">Output (what happened)</th>
+    </tr></thead>
+    <tbody>
+      <tr>
+        <td style="padding:7px 10px;border-bottom:1px solid #f1f5f9;font-weight:700;">Call 1</td>
+        <td style="padding:7px 10px;border-bottom:1px solid #f1f5f9;"><input type="text" style="width:100%;border:none;border-bottom:1.5px solid #cbd5e1;background:transparent;outline:none;font-size:0.82rem;font-family:var(--font-code);" placeholder='e.g. "Mom"' /></td>
+        <td style="padding:7px 10px;border-bottom:1px solid #f1f5f9;"><input type="text" style="width:100%;border:none;border-bottom:1.5px solid #cbd5e1;background:transparent;outline:none;font-size:0.82rem;" placeholder="What printed / returned..." /></td>
+      </tr>
+      <tr>
+        <td style="padding:7px 10px;border-bottom:1px solid #f1f5f9;font-weight:700;">Call 2</td>
+        <td style="padding:7px 10px;border-bottom:1px solid #f1f5f9;"><input type="text" style="width:100%;border:none;border-bottom:1.5px solid #cbd5e1;background:transparent;outline:none;font-size:0.82rem;font-family:var(--font-code);" placeholder='e.g. "Leo"' /></td>
+        <td style="padding:7px 10px;border-bottom:1px solid #f1f5f9;"><input type="text" style="width:100%;border:none;border-bottom:1.5px solid #cbd5e1;background:transparent;outline:none;font-size:0.82rem;" placeholder="What printed / returned..." /></td>
+      </tr>
+      <tr>
+        <td style="padding:7px 10px;font-weight:700;">Compare</td>
+        <td colspan="2" style="padding:7px 10px;"><input type="text" style="width:100%;border:none;border-bottom:1.5px solid #cbd5e1;background:transparent;outline:none;font-size:0.82rem;" placeholder="What stayed the same, and what changed between the two calls?" /></td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="tip-box amber mt-2">🐛 <strong>Got an error?</strong> That's normal — bugs are part of coding! Check: spelling of the function name, the colon after <code>()</code>, and the indent. Write down one bug you beat: <input class="blank-input wide" type="text" placeholder="my bug..." style="min-width:160px;width:200px;" /></div>
+</div>
+
+<hr class="divider">
+
+<!-- ══════════ STEP 4 · REFLECT ══════════ -->
+<div class="section-label">💬 Step 4 of 4 · 5 min · Reflect · 反思</div>
+<div class="section-title">Teach It to a Family Member</div>
+
+<div class="grid-2 mb-3">
+  <div class="card accent-blue">
+    <div class="card-label blue">🗣 The reflection question from class</div>
+    <p class="mb-2">Explain to a family member, <strong>in your own words</strong>, why writing a function saves you typing. Then write what you told them (1–2 sentences):</p>
+    <div class="write-lines">
+      <input class="write-line" type="text" placeholder="I told them that a function..." />
+      <input class="write-line" type="text" placeholder="..." />
+    </div>
+    <p style="font-size:0.8rem;color:#64748b;">Optional: family member's initials after listening 👂 <input class="blank-input narrow" type="text" placeholder="__" /></p>
+  </div>
+  <div class="card accent-green">
+    <div class="card-label green">⭐ Optional Bonus (only if you want more!)</div>
+    <ul style="list-style:disc;padding-left:18px;font-size:0.85rem;color:#374151;line-height:1.8;">
+      <li><strong>⭐ Bonus 1:</strong> Call your function a THIRD time — with a silly input. What happens?</li>
+      <li><strong>⭐⭐ Bonus 2:</strong> Add a second parameter, like <code>greet(name, emoji)</code></li>
+      <li><strong>⭐⭐⭐ Bonus 3:</strong> 🤖 Ask a grown-up: what's one app they use that "learns"? Is your function like that? Why not?</li>
+    </ul>
+    <input class="write-line mt-2" type="text" placeholder="Bonus notes..." />
+  </div>
+</div>
+
+<!-- ══════════ RUBRIC ══════════ -->
+<div class="section-label">📊 Scoring</div>
+<div class="section-title">How This Is Checked (Effort &amp; Growth)</div>
+
+<div class="card mb-3">
+  <table class="rubric">
+    <thead><tr><th>Step</th><th>What to Look For</th><th>Points</th></tr></thead>
+    <tbody>
+      <tr><td>Step 1 — Warm-Up</td><td>Blanks filled; output of <code>double(7)</code> predicted</td><td class="pts">2 pts</td></tr>
+      <tr><td>Step 2 — Build (your tier)</td><td>One working function with a parameter, called TWICE with different inputs</td><td class="pts">4 pts</td></tr>
+      <tr><td>Step 3 — Test Log</td><td>Both calls recorded; same-vs-changed compared</td><td class="pts">2 pts</td></tr>
+      <tr><td>Step 4 — Reflection</td><td>Explained to a family member in your own words</td><td class="pts">2 pts</td></tr>
+      <tr><td>⭐ Bonus</td><td>Any bonus attempted (never required!)</td><td class="pts">+1</td></tr>
+    </tbody>
+  </table>
+  <div style="display:flex;justify-content:flex-end;margin-top:10px;gap:24px;font-size:0.82rem;color:#374151;">
+    <span>Total: <strong style="font-family:var(--font-code);color:#0b63ce;">____ / 10</strong></span>
+    <span>With bonus: <strong style="font-family:var(--font-code);color:#10b981;">____ / 11</strong></span>
+  </div>
+  <p class="mt-2 text-muted">📧 <strong>Bring this sheet to class Wednesday</strong>, or email your code to hue.weng.88@gmail.com · Subject: <em>Session 13 HW · [Your Name] · Tier [A/B/C]</em></p>
+</div>
+
+<!-- FOOTER -->
+<div class="sheet-footer">
+  <div>
+    <strong>Session 13 · Python: Functions (Reusable Blocks)</strong> · 30-Minute Homework · Mr. Hsiao "Hue" Weng · Summer 2026<br>
+    <span class="grad-text" style="font-weight:800;">One function · two calls · different inputs · same recipe</span>
+  </div>
+  <div style="text-align:right;">
+    Ages 7–13 · Grades 1–9 · Tiers A/B/C<br>
+    <span style="font-size:0.7rem;">🔁 Tomorrow: Lists &amp; Rock-Paper-Scissors!</span>
+  </div>
+</div>
+
+</div><!-- end .page -->
+<script>
+(function() {
+  function initCanvas(canvas) {
+    var ctx = canvas.getContext('2d');
+    var drawing = false;
+    var lastX = 0, lastY = 0;
+    var tool = canvas.dataset.tool || 'pen';
+    var color = '#1f2a37';
+    var lineWidth = 2;
+
+    function getPos(e) {
+      var r = canvas.getBoundingClientRect();
+      var src = e.touches ? e.touches[0] : e;
+      return { x: src.clientX - r.left, y: src.clientY - r.top };
+    }
+
+    function startDraw(e) {
+      drawing = true;
+      var p = getPos(e);
+      lastX = p.x; lastY = p.y;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, lineWidth/2, 0, Math.PI*2);
+      ctx.fillStyle = color;
+      ctx.fill();
+      e.preventDefault();
+    }
+    function draw(e) {
+      if (!drawing) return;
+      var p = getPos(e);
+      ctx.beginPath();
+      ctx.moveTo(lastX, lastY);
+      ctx.lineTo(p.x, p.y);
+      ctx.strokeStyle = color;
+      ctx.lineWidth = lineWidth;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      ctx.stroke();
+      lastX = p.x; lastY = p.y;
+      e.preventDefault();
+    }
+    function stopDraw() { drawing = false; }
+
+    canvas.addEventListener('mousedown', startDraw);
+    canvas.addEventListener('mousemove', draw);
+    canvas.addEventListener('mouseup', stopDraw);
+    canvas.addEventListener('mouseleave', stopDraw);
+    canvas.addEventListener('touchstart', startDraw, {passive:false});
+    canvas.addEventListener('touchmove', draw, {passive:false});
+    canvas.addEventListener('touchend', stopDraw);
+
+    // Clear button
+    var btn = canvas.parentElement.querySelector('.draw-clear');
+    if (btn) btn.addEventListener('click', function() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    });
+
+    // Color/size controls
+    var colorPick = canvas.parentElement.querySelector('.draw-color');
+    if (colorPick) colorPick.addEventListener('input', function(e) { color = e.target.value; });
+    var sizePick = canvas.parentElement.querySelector('.draw-size');
+    if (sizePick) sizePick.addEventListener('input', function(e) { lineWidth = +e.target.value; });
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('canvas.draw-canvas').forEach(initCanvas);
+  });
+})();
+</script>
+
+</body>
+</html>
