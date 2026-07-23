@@ -25,6 +25,7 @@
 | **4-1** | [Python turtle Graphics + Loops](https://hue881.github.io/mcs/2026/summer/4/1) | [4-1 Activity](https://hue881.github.io/mcs/2026/summer/4/1/activity) | [4-1 Homework](https://hue881.github.io/mcs/2026/summer/4/1/homework) | -- ||
 | **4-2** | [Python: Conditionals](https://hue881.github.io/mcs/2026/summer/4/2) | [4-2 Activity](https://hue881.github.io/mcs/2026/summer/4/2/activity) | [4-2 Homework](https://hue881.github.io/mcs/2026/summer/4/2/homework) | [4-2 Challenge](https://hue881.github.io/mcs/2026/summer/4/2/challenge) ||
 | **4-3** | [Functions: Reusable Blocks](https://hue881.github.io/mcs/2026/summer/4/3) | [4-3 Activity](https://hue881.github.io/mcs/2026/summer/4/3/activity) | [4-3 Homework](https://hue881.github.io/mcs/2026/summer/4/3/homework) | [4-3 Challenge](https://hue881.github.io/mcs/2026/summer/4/3/challenge) ||
+| **4-4** | [Python: Lists & Rock-Paper-Scissors](https://hue881.github.io/mcs/2026/summer/4/4) | [4-4 Activity](https://hue881.github.io/mcs/2026/summer/4/4/activity) | [4-4 Homework](https://hue881.github.io/mcs/2026/summer/4/4/homework) | [4-4 Challenge](https://hue881.github.io/mcs/2026/summer/4/4/challenge) ||
 
 
 
