@@ -1,1 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="slides-format" content="viewport" />
+  <title>Session 14 · Thurs Jul 23 — Python: Lists & Rock-Paper-Scissors</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <style type="text/tailwindcss">
+    @theme {
+      --color-bg: #eef7ff;
+      --color-bg-deep: #d7ebfb;
+      --color-surface: rgba(255,255,255,0.96);
+      --color-text: #102949;
+      --color-text-secondary: #1d3d66;
+      --color-text-muted: #56708e;
+      --color-accent-1: #1666c5;
+      --color-accent-2: #0f9b8e;
+      --color-accent-3: #ee9b12;
+      --color-glass-bg: rgba(255,255,255,0.88);
+      --color-glass-border: rgba(22,102,197,0.16);
+      --color-vignette: rgba(15,23,42,0.07);
+      --font-display: 'Fredoka', sans-serif;
+      --font-body: 'Nunito', sans-serif;
+    }
+  </style>
+  <style>
+    :root { --color-bg:#eef7ff; --color-text:#102949; --glow-color-rgb:22,102,197; --a1:#1666c5; --a2:#0f9b8e; --a3:#ee9b12; }
+    *,*::before,*::after{box-sizing:border-box}
+    html,body{background:var(--color-bg);margin:0}
+    body{font-family:'Nunito',sans-serif;color:var(--color-text);overflow:hidden;height:100vh;width:100vw}
+    .deck{width:100vw;height:100vh;position:relative}
+    .slide{position:absolute;top:0;left:0;width:100%;height:100%;background:
+      radial-gradient(circle at top left,rgba(22,102,197,.14),transparent 40%),
+      radial-gradient(circle at bottom right,rgba(15,155,142,.1),transparent 40%),
+      var(--color-bg);display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;transform:scale(.96);transition:opacity .55s ease,transform .55s ease;pointer-events:none;overflow:hidden}
+    .slide.active{opacity:1;transform:scale(1);pointer-events:all}
+    .slide > .content{position:relative;z-index:2;width:100%;max-width:1060px;padding:clamp(1rem,3vw,2.8rem)}
+    .slide.interior{background:
+      radial-gradient(circle at 18% 12%,rgba(22,102,197,.15),transparent 48%),
+      radial-gradient(circle at 82% 88%,rgba(15,155,142,.12),transparent 46%),
+      linear-gradient(160deg,#b9d9f5 0%,#d9eefb 50%,#d7f1ea 100%)}
+    .slide.interior::after{background:radial-gradient(ellipse at center,transparent 58%,rgba(15,23,42,.12) 100%)}
+    .slide::before{content:'';position:absolute;inset:0;z-index:1;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");background-repeat:repeat;background-size:256px 256px;opacity:.03;mix-blend-mode:overlay}
+    .slide::after{content:'';position:absolute;inset:0;z-index:1;pointer-events:none;background:radial-gradient(ellipse at center,transparent 55%,var(--color-vignette) 100%)}
+    .gradient-mesh{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+    .blob{position:absolute;border-radius:50%;filter:blur(72px);animation:float-slow 12s ease-in-out infinite}
+    .blob:nth-child(2){animation:float-drift 16s ease-in-out infinite}.blob:nth-child(3){animation:float-slow 20s ease-in-out infinite reverse}
+    .particle-canvas,.particle-canvas-ambient{position:absolute;inset:0;width:100%;height:100%;z-index:1}
+    .nav-controls{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:12px;z-index:100;background:rgba(255,255,255,.92);backdrop-filter:blur(12px);padding:8px 20px;border-radius:999px;border:1px solid rgba(148,163,184,.4);box-shadow:0 8px 28px rgba(15,23,42,.13)}
+    .nav-btn{width:34px;height:34px;border:none;background:rgba(15,23,42,.06);color:#1666c5;border-radius:999px;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s,transform .15s}
+    .nav-btn:hover{background:rgba(15,23,42,.12);transform:translateY(-1px)}
+    .slide-dots{display:flex;gap:5px;flex-wrap:wrap;max-width:400px}.dot{width:8px;height:8px;border-radius:50%;background:rgba(148,163,184,.6);cursor:pointer;transition:background .25s,transform .25s}.dot.active{background:#1666c5;transform:scale(1.4)}
+    .slide-counter{font-size:.78rem;color:#64748b;min-width:52px;text-align:center;font-weight:700}
+    .reveal{opacity:0;transform:translateY(16px)}
+    .card{background:var(--color-surface);border-radius:18px;padding:14px 18px;box-shadow:0 12px 30px rgba(15,23,42,.11),0 2px 6px rgba(15,23,42,.05);border:1px solid rgba(255,255,255,.7)}
+    .accent-card-blue{background:#eaf2fd;border:1px solid rgba(22,102,197,.22)}
+    .accent-card-green{background:#e8f7f4;border:1px solid rgba(15,155,142,.22)}
+    .accent-card-amber{background:#fff4df;border:1px solid rgba(238,155,18,.28)}
+    .accent-card-purple{background:#f2ebff;border:1px solid rgba(124,58,237,.22)}
+    .pill{display:inline-flex;align-items:center;gap:6px;padding:4px 14px;border-radius:999px;border:1px solid rgba(148,163,184,.5);background:rgba(255,255,255,.9);font-size:.76rem;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:#1666c5}
+    .pill.green{color:#047857}.pill.amber{color:#b45309}.pill.purple{color:#6d28d9}
+    .big-text{font-size:clamp(.94rem,1.55vw,1.14rem);line-height:1.62;color:#334155}
+    .code-block{background:#0f172a;color:#e2e8f0;font-family:'Fira Code',monospace;border-radius:12px;padding:14px 18px;font-size:clamp(.79rem,1.18vw,.96rem);line-height:1.65;overflow-x:auto}
+    .kw{color:#f59e0b;font-weight:600}.str{color:#a3e635}.num{color:#38bdf8}.cmt{color:#94a3b8;font-style:italic}
+    .grid-cards{display:grid;gap:12px}.grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}.grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+    .timeline-row{display:flex;align-items:center;gap:12px;padding:7px 0}.timeline-dot{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 3px 10px rgba(0,0,0,.12);font-size:1rem}.timeline-line{width:2px;height:18px;background:linear-gradient(180deg,rgba(22,102,197,.3),rgba(15,155,142,.2));margin-left:16px}
+    .step-num{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#1666c5,#0f9b8e);color:#fff;font-weight:800;font-size:.82rem;flex-shrink:0}
+    .vocab-tag{display:inline-flex;align-items:center;padding:4px 12px;border-radius:999px;background:rgba(22,102,197,.08);font-size:.83rem;font-weight:800;color:#1666c5}
+    .think-chip,.question-chip,.ai-badge{display:inline-flex;align-items:center;gap:8px;padding:7px 13px;border-radius:999px;font-size:.81rem;font-weight:700}
+    .think-chip{background:rgba(22,102,197,.1);color:#1d4ed8}.question-chip{background:rgba(238,155,18,.12);color:#92400e}.ai-badge{background:rgba(15,155,142,.12);border:1px solid rgba(15,155,142,.24);color:#065f46;font-size:.76rem;font-weight:800}
+    .media-embed{position:relative;padding-top:56.25%;border-radius:14px;overflow:hidden;background:#1e293b;cursor:pointer}
+    .media-embed img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+    .media-embed .play-btn{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+    .media-embed .play-btn div{width:58px;height:58px;background:rgba(255,0,0,.9);border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 18px rgba(0,0,0,.38);transition:transform .2s}.media-embed:hover .play-btn div{transform:scale(1.08)}
+    .media-embed iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+    .challenge-card{background:linear-gradient(135deg,rgba(124,58,237,.12),rgba(22,102,197,.08));border:2px solid rgba(124,58,237,.25);border-radius:16px;padding:14px 18px}
+    .break-card{background:linear-gradient(135deg,#fff4df,#fff8ea);border:2px solid rgba(238,155,18,.3);border-radius:18px;padding:18px 22px}
+    .tier-a,.tier-b,.tier-c{display:inline-flex;align-items:center;padding:3px 10px;border-radius:999px;font-size:.72rem;font-weight:800}
+    .tier-a{background:#dcfce7;color:#14532d}.tier-b{background:#dbeafe;color:#1e3a8a}.tier-c{background:#ede9fe;color:#4c1d95}
+    .mouse-spotlight{position:fixed;inset:0;z-index:99;pointer-events:none}
+    .rps-token{width:88px;height:88px;border-radius:22px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,rgba(22,102,197,.14),rgba(15,155,142,.10));border:1px solid rgba(22,102,197,.18);box-shadow:inset 0 1px 0 rgba(255,255,255,.55)}
+    .rps-token img{width:58px;height:58px;object-fit:contain}
+    .compare-arrow{font-size:1.4rem;font-weight:800;color:#1666c5}
+    .list-cell{padding:10px 12px;border-radius:12px;background:rgba(255,255,255,.72);border:1px solid rgba(148,163,184,.28);text-align:center}
+    .score-pill{display:inline-flex;align-items:center;gap:7px;padding:7px 12px;border-radius:999px;background:#edf5ff;border:1px solid rgba(22,102,197,.22);font-weight:800;color:#1d4ed8}
+    .line-note{font-size:.81rem;color:#64748b}
+    @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+    @keyframes float-slow{0%{transform:translate(0,0) scale(1)}25%{transform:translate(50px,-40px) scale(1.1)}50%{transform:translate(-30px,35px) scale(.92)}75%{transform:translate(45px,18px) scale(1.07)}100%{transform:translate(0,0) scale(1)}}
+    @keyframes float-drift{0%{transform:translate(0,0) scale(1)}33%{transform:translate(-45px,-55px) scale(1.13)}66%{transform:translate(38px,28px) scale(.9)}100%{transform:translate(0,0) scale(1)}}
+    @media (max-width: 900px){.grid-2,.grid-3{grid-template-columns:1fr}}
+    @media (prefers-reduced-motion: reduce){*,*::before,*::after{animation-duration:.01ms !important;transition-duration:.2s !important}}
+  </style>
+</head>
+<body>
+<div class="mouse-spotlight" id="spotlight"></div>
+<div class="deck">
 
+  <div class="slide active" data-slide="1">
+    <div class="gradient-mesh">
+      <div class="blob" style="width:480px;height:480px;top:-100px;right:-70px;background:#1666c5;opacity:.14"></div>
+      <div class="blob" style="width:320px;height:320px;bottom:-80px;left:-50px;background:#0f9b8e;opacity:.11"></div>
+      <div class="blob" style="width:220px;height:220px;top:38%;left:12%;background:#ee9b12;opacity:.10"></div>
+    </div>
+    <canvas class="particle-canvas"></canvas>
+    <div class="content" style="text-align:center">
+      <img class="reveal" src="https://d1ng1bucl7w66k.cloudfront.net/ghost-blog/2022/07/Screen-Shot-2022-07-25-at-9.31.58-AM.png" alt="Illustrated rock paper scissors coding tutorial" style="height:clamp(84px,14vh,130px);object-fit:cover;border-radius:18px;margin:0 auto 1rem;animation:float 3s ease-in-out infinite;box-shadow:0 12px 36px rgba(22,102,197,.20)">
+      <p class="pill reveal" style="margin:0 auto .75rem;display:inline-flex">Session 14 · Thurs Jul 23 · Week 4</p>
+      <h1 class="reveal" style="font-family:'Fredoka',sans-serif;font-size:clamp(2rem,5.4vw,4rem);font-weight:700;line-height:1.08;margin:0 0 .5rem;background:linear-gradient(135deg,#1666c5 0%,#0f9b8e 58%,#ee9b12 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">Python: Lists &amp; Rock-Paper-Scissors</h1>
+      <h2 class="reveal" style="font-family:'Fredoka',sans-serif;font-size:clamp(1.18rem,2.6vw,2.15rem);font-weight:600;color:#1d3d66;margin:.1rem 0 .7rem">Organize choices, pick at random, and build a real game</h2>
+      <p class="reveal" style="font-size:clamp(.92rem,1.55vw,1.18rem);color:#334155;max-width:760px;margin:0 auto 1rem;line-height:1.6">Today students learn how Python stores many items in one place, how a computer can choose from a list, and how game rules turn into code through a playful rock-paper-scissors challenge.</p>
+      <div class="reveal" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+        <span class="pill">Daily Rhythm</span>
+        <span class="pill green">Interactive Build</span>
+        <span class="pill amber">AI Connection</span>
+        <span class="pill purple">Ages 7–13</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide interior" data-slide="2">
+    <div class="gradient-mesh"><div class="blob" style="width:340px;height:340px;top:-60px;right:-50px;background:#1666c5;opacity:.09"></div><div class="blob" style="width:220px;height:220px;bottom:-50px;left:-30px;background:#0f9b8e;opacity:.07"></div></div>
+    <div class="content">
+      <p class="pill mb-3 reveal">Today’s Rhythm</p>
+      <h2 class="reveal" style="font-family:'Fredoka',sans-serif;font-weight:700;margin-bottom:1rem;color:#102949;font-size:clamp(1.45rem,2.7vw,2.1rem)">What are we doing today?</h2>
+      <div class="grid-cards reveal" style="gap:10px">
+        <div><div class="timeline-row"><div class="timeline-dot" style="background:#ee9b12">1</div><div><strong style="color:#1f2a37;font-size:.9rem">10 min Warm-Up</strong><div class="big-text">Rapid prediction game: what will this list output, and what move wins against what?</div></div></div><div class="timeline-line"></div></div>
+        <div><div class="timeline-row"><div class="timeline-dot" style="background:#1666c5">2</div><div><strong style="color:#1f2a37;font-size:.9rem">15–20 min Mini-Lesson + Videos</strong><div class="big-text">Learn list, index, and <code>random.choice()</code>; connect a list to a tiny dataset.</div></div></div><div class="timeline-line"></div></div>
+        <div><div class="timeline-row"><div class="timeline-dot" style="background:#0f9b8e">3</div><div><strong style="color:#1f2a37;font-size:.9rem">20 min Guided Build</strong><div class="big-text">Build rock-paper-scissors step by step with teacher modeling and prediction pauses.</div></div></div><div class="timeline-line"></div></div>
+        <div><div class="timeline-row"><div class="timeline-dot" style="background:#ef4444">4</div><div><strong style="color:#1f2a37;font-size:.9rem">5 min Movement Break</strong><div class="big-text">Become the “computer” and respond to rock, paper, and scissors commands with body motions.</div></div></div><div class="timeline-line"></div></div>
+        <div><div class="timeline-row"><div class="timeline-dot" style="background:#8b5cf6">5</div><div><strong style="color:#1f2a37;font-size:.9rem">30–40 min Open Build</strong><div class="big-text">Tiered extensions: keep score, play multiple rounds, or make the computer remember patterns.</div></div></div><div class="timeline-line"></div></div>
+        <div><div class="timeline-row"><div class="timeline-dot" style="background:#1666c5">6</div><div><strong style="color:#1f2a37;font-size:.9rem">10 min Share-Out</strong><div class="big-text">Students test each other’s games, explain one bug they fixed, and show one smart choice in their code.</div></div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide interior" data-slide="3">
+    <div class="gradient-mesh"><div class="blob" style="width:360px;height:360px;top:-70px;right:-50px;background:#ee9b12;opacity:.10"></div><div class="blob" style="width:220px;height:220px;bottom:-45px;left:-35px;background:#1666c5;opacity:.08"></div></div>
+    <div class="content">
+      <p class="pill amber reveal" style="margin-bottom:.75rem">Warm-Up · No Screens</p>
+      <h2 class="reveal" style="font-family:'Fredoka',sans-serif;font-size:clamp(1.5rem,2.6vw,2.08rem);font-weight:700;margin-bottom:.8rem;color:#102949">How can one variable hold many choices?</h2>
+      <div class="grid-cards grid-2 reveal" style="gap:12px;margin-bottom:12px">
+        <div class="card accent-card-amber">
+          <img src="https://d1ng1bucl7w66k.cloudfront.net/ghost-blog/2022/07/Screen-Shot-2022-07-25-at-9.31.58-AM.png" alt="Illustrated children coding rock paper scissors" style="width:100%;height:140px;object-fit:cover;border-radius:12px;margin-bottom:10px">
+          <p class="question-chip" style="margin-bottom:8px;display:inline-flex">Look &amp; Predict</p>
+          <p class="big-text" style="margin:0">If our game choices are rock, paper, and scissors, should we store them in three separate variables or in one organized container? Why might one place be easier?</p>
+        </div>
+        <div class="card accent-card-blue">
+          <div style="display:flex;gap:12px;justify-content:center;align-items:center;margin-bottom:12px">
+            <div class="rps-token"><img src="https://upload.wikimedia.org/wikipedia/commons/5/5f/Rock-paper-scissors_%28rock%29.png" alt="Rock hand sign"></div>
+            <div class="rps-token"><img src="https://upload.wikimedia.org/wikipedia/commons/a/af/Rock-paper-scissors_%28paper%29.png" alt="Paper hand sign"></div>
+            <div class="rps-token"><img src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Rock-paper-scissors_%28scissors%29.png" alt="Scissors hand sign"></div>
+          </div>
+          <p class="think-chip" style="margin-bottom:8px;display:inline-flex">Turn &amp; Talk</p>
+          <p class="big-text" style="margin:0">A partner picks a move. You say what beats it. Then switch. Which rule is easiest to remember? Which one could a computer check fastest?</p>
+        </div>
+      </div>
+      <div class="card reveal" style="background:rgba(22,102,197,.06);border:1px solid rgba(22,102,197,.18);padding:12px 16px"><p style="margin:0;font-size:.88rem;color:#1e3a5f;font-weight:700"><strong>Big idea:</strong> Lists help us group related items so our code can grab one, compare one, or loop through all of them.</p></div>
+    </div>
+  </div>
+
+  <div class="slide interior" data-slide="4">
+    <div class="gradient-mesh"><div class="blob" style="width:350px;height:350px;top:-70px;right:-40px;background:#1666c5;opacity:.11"></div><div class="blob" style="width:240px;height:240px;bottom:-50px;left:-35px;background:#0f9b8e;opacity:.08"></div></div>
+    <div class="content">
+      <p class="pill reveal" style="margin-bottom:.75rem">Mini-Lesson Part 1</p>
+      <h2 class="reveal" style="font-family:'Fredoka',sans-serif;font-size:clamp(1.45rem,2.5vw,2rem);font-weight:700;margin-bottom:.9rem;color:#102949">What is a Python list?</h2>
+      <div class="grid-cards grid-2 reveal" style="gap:14px;margin-bottom:12px">
+        <div class="card">
+          <p style="font-weight:800;color:#1666c5;margin:0 0 10px;font-size:.92rem">Real-world picture</p>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="background:#f1f5f9;border-radius:12px;padding:10px 13px;font-size:.92rem;color:#1e3a5f">A cubby shelf holds many folders in one place.</div>
+            <div style="background:#f1f5f9;border-radius:12px;padding:10px 13px;font-size:.92rem;color:#1e3a5f">A playlist holds many songs in one order.</div>
+            <div style="background:#f1f5f9;border-radius:12px;padding:10px 13px;font-size:.92rem;color:#1e3a5f">A list in Python holds many values in one variable.</div>
+          </div>
+        </div>
+        <div class="card accent-card-blue">
+          <p style="font-weight:800;color:#1666c5;margin:0 0 10px;font-size:.92rem">Code picture</p>
+          <div class="code-block"><span class="kw">moves</span> = [<span class="str">"rock"</span>, <span class="str">"paper"</span>, <span class="str">"scissors"</span>]<br><br><span class="kw">print</span>(moves)<br><span class="kw">print</span>(moves[<span class="num">0</span>])<br><span class="kw">print</span>(moves[<span class="num">1</span>])<br><span class="kw">print</span>(moves[<span class="num">2</span>])</div>
+        </div>
+      </div>
+      <div class="card reveal" style="padding:12px 16px;background:rgba(15,155,142,.08);border:1px solid rgba(15,155,142,.2)"><p style="margin:0;font-size:.88rem;color:#065f46"><strong>Teacher prompt:</strong> If <code>moves[0]</code> is rock, what do you think <code>moves[2]</code> will be? Why do you think counting starts at 0 instead of 1?</p></div>
+    </div>
+  </div>
+
+  <div class="slide interior" data-slide="5">
+    <div class="gradient-mesh"><div class="blob" style="width:330px;height:330px;top:-70px;left:-40px;background:#0f9b8e;opacity:.10"></div><div class="blob" style="width:220px;height:220px;bottom:-45px;right:-30px;background:#ee9b12;opacity:.08"></div></div>
+    <div class="content">
+      <p class="pill green reveal" style="margin-bottom:.75rem">Mini-Lesson Part 2</p>
+      <h2 class="reveal" style="font-family:'Fredoka',sans-serif;font-size:clamp(1.42rem,2.5vw,1.95rem);font-weight:700;margin-bottom:.9rem;color:#102949">Indexing: how does Python find one item?</h2>
+      <div class="grid-cards grid-2 reveal" style="gap:14px;margin-bottom:12px">
+        <div class="card accent-card-green">
+          <p style="font-weight:800;color:#047857;margin:0 0 10px;font-size:.92rem">The list as numbered boxes</p>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:10px">
+            <div class="list-cell"><div class="line-note">index 0</div><div style="font-weight:800;color:#102949;font-size:1rem">rock</div></div>
+            <div class="list-cell"><div class="line-note">index 1</div><div style="font-weight:800;color:#102949;font-size:1rem">paper</div></div>
+            <div class="list-cell"><div class="line-note">index 2</div><div style="font-weight:800;color:#102949;font-size:1rem">scissors</div></div>
+          </div>
+          <p class="big-text" style="margin:0">An index is the position number Python uses to reach inside the list and grab exactly one value.</p>
+        </div>
+        <div class="card">
+          <p style="font-weight:800;color:#1666c5;margin:0 0 10px;font-size:.92rem">Prediction challenge</p>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="background:#fff;border-radius:12px;padding:10px 12px;border:1px solid rgba(148,163,184,.28)"><span class="vocab-tag">What prints?</span><p class="big-text" style="margin:8px 0 0"><code>print(moves[1])</code></p></div>
+            <div style="background:#fff;border-radius:12px;padding:10px 12px;border:1px solid rgba(148,163,184,.28)"><span class="vocab-tag">What if?</span><p class="big-text" style="margin:8px 0 0">What mistake happens if we ask for an index that is not there?</p></div>
+            <div style="background:#fff;border-radius:12px;padding:10px 12px;border:1px solid rgba(148,163,184,.28)"><span class="vocab-tag">Why useful?</span><p class="big-text" style="margin:8px 0 0">A game menu, class roster, and score history can all be stored as lists.</p></div>
+          </div>
+        </div>
+      </div>
+      <div class="card reveal" style="background:rgba(238,155,18,.08);border:1px solid rgba(238,155,18,.22);padding:11px 16px"><p style="margin:0;font-size:.85rem;color:#78350f"><strong>Helpful misconception check:</strong> students often say “first item is 1.” Pause and have them point to the leftmost box and say, “computers begin at 0.”</p></div>
+    </div>
+  </div>
+
+  <div class="slide interior" data-slide="6">
+    <div class="gradient-mesh"><div class="blob" style="width:340px;height:340px;top:-75px;right:-45px;background:#1666c5;opacity:.10"></div><div class="blob" style="width:220px;height:220px;bottom:-45px;left:-35px;background:#0f9b8e;opacity:.07"></div></div>
+    <div class="content">
+      <p class="pill reveal" style="margin-bottom:.75rem">Mini-Lesson Part 3</p>
+      <h2 class="reveal" style="font-family:'Fredoka',sans-serif;font-size:clamp(1.42rem,2.45vw,1.95rem);font-weight:700;margin-bottom:.8rem;color:#102949">How does the computer choose a move?</h2>
+      <div class="grid-cards grid-2 reveal" style="gap:14px;align-items:start">
+        <div class="card accent-card-blue">
+          <p style="font-weight:800;color:#1666c5;margin:0 0 10px;font-size:.92rem">New tool: random.choice()</p>
+          <div class="code-block"><span class="kw">import</span> random<br><br>moves = [<span class="str">"rock"</span>, <span class="str">"paper"</span>, <span class="str">"scissors"</span>]<br>computer_move = random.choice(moves)<br><span class="kw">print</span>(computer_move)</div>
+          <p class="big-text" style="margin:.75rem 0 0">Python looks inside the list and picks one item for us. We do not know which one in advance.</p>
+        </div>
+        <div class="card accent-card-green">
+          <p style="font-weight:800;color:#047857;margin:0 0 10px;font-size:.92rem">Ask before revealing</p>
+          <ul style="margin:0;padding-left:18px;font-size:.86rem;color:#374151;line-height:1.65">
+            <li>Could the computer pick something that is not in the list?</li>
+            <li>What must be true before <code>random.choice(moves)</code> can work?</li>
+            <li>Why is a list a perfect partner for random choice?</li>
+          </ul>
+          <div style="margin-top:12px;padding:10px 12px;border-radius:12px;background:rgba(255,255,255,.7);border:1px solid rgba(15,155,142,.16)"><span class="score-pill">Prediction Stop</span><span class="big-text" style="display:block;margin-top:8px">If we add “lizard” and “spock,” the computer can pick from five items with the same one line of code.</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide interior" data-slide="7">
+    <div class="gradient-mesh"><div class="blob" style="width:340px;height:340px;top:-70px;right:-50px;background:#1666c5;opacity:.10"></div><div class="blob" style="width:220px;height:220px;bottom:-50px;left:-35px;background:#0f9b8e;opacity:.07"></div></div>
+    <div class="content">
+      <p class="pill reveal" style="margin-bottom:.75rem">Video 1 · Mini-Lesson Boost</p>
+      <h2 class="reveal" style="font-family:'Fredoka',sans-serif;font-size:clamp(1.38rem,2.4vw,1.88rem);font-weight:700;margin-bottom:.8rem;color:#102949">Python Lists - Intro to Python for Kids</h2>
+      <div class="grid-cards grid-2 reveal" style="gap:14px;align-items:start">
+        <div>
+          <div class="media-embed" id="player-ZiOb3uRb208" onclick="playVideo('ZiOb3uRb208')" title="Click to play video">
+            <img src="https://img.youtube.com/vi/ZiOb3uRb208/hqdefault.jpg" alt="Python lists for kids tutorial thumbnail">
+            <div class="play-btn"><div><svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"></path></svg></div></div>
+          </div>
+          <p style="font-size:.78rem;color:#64748b;margin:6px 0 0;text-align:center"><a href="https://www.youtube.com/watch?v=ZiOb3uRb208" target="_blank" rel="noopener noreferrer" style="color:#1666c5;text-decoration:underline">Source: YouTube</a></p>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div class="card accent-card-blue"><p style="font-weight:800;color:#1666c5;margin:0 0 6px;font-size:.85rem">Watch for these ideas</p><ul style="margin:0;padding-left:18px;font-size:.84rem;color:#374151;line-height:1.65"><li>How square brackets create a list.</li><li>How indexes point to positions.</li><li>What changes when a list stores words instead of numbers.</li></ul></div>
+          <div class="card" style="background:rgba(15,155,142,.08);border:1px solid rgba(15,155,142,.22)"><p style="margin:0;font-size:.84rem;color:#065f46;font-weight:700">After the clip, ask a partner: “What is one thing a list can do that one single variable cannot do?”</p></div>
+          <div class="card accent-card-amber"><p style="margin:0;font-size:.82rem;color:#78350f"><strong>Duration</strong> under 5 minutes · <strong>Purpose</strong> quick reinforcement before students code</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide interior" data-slide="8">
+    <div class="gradient-mesh"><div class="blob" style="width:350px;height:350px;top:-75px;left:-45px;background:#0f9b8e;opacity:.12"></div><div class="blob" style="width:220px;height:220px;bottom:-45px;right:-35px;background:#1666c5;opacity:.08"></div></div>
+    <div class="content">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:.55rem"><span class="ai-badge reveal">AI Moment</span><p class="pill green reveal">Session 14 Connection</p></div>
+      <h2 class="reveal" style="font-family:'Fredoka',sans-serif;font-size:clamp(1.42rem,2.5vw,2rem);font-weight:700;margin-bottom:.9rem;color:#102949">Why is a list like a tiny dataset?</h2>
+      <div class="grid-cards grid-2 reveal" style="gap:12px;margin-bottom:12px">
+        <div class="card">
+          <p style="font-weight:800;color:#1666c5;margin:0 0 8px;font-size:.87rem">Our game list</p>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:10px">
+            <div class="list-cell"><div class="line-note">example 1</div><div style="font-weight:800">rock</div></div>
+            <div class="list-cell"><div class="line-note">example 2</div><div style="font-weight:800">paper</div></div>
+            <div class="list-cell"><div class="line-note">example 3</div><div style="font-weight:800">scissors</div></div>
+          </div>
+          <p class="big-text" style="margin:0">A list is organized data. It is small, but it still stores examples the program can use.</p>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div class="card accent-card-green"><p style="font-weight:800;color:#065f46;margin:0 0 5px;font-size:.87rem">Rule-based today</p><p style="font-size:.84rem;color:#374151;margin:0">We write the rules ourselves: rock beats scissors, scissors beats paper, paper beats rock.</p></div>
+          <div class="card accent-card-amber"><p style="font-weight:800;color:#78350f;margin:0 0 5px;font-size:.87rem">Modern AI later</p><p style="font-size:.84rem;color:#374151;margin:0">Modern AI uses much bigger datasets and learns patterns from many examples instead of only following hand-written rules.</p></div>
+          <div class="card" style="background:rgba(22,102,197,.06);border:1px solid rgba(22,102,197,.18)"><p style="margin:0;font-size:.84rem;color:#1e3a5f"><strong>Question to ask:</strong> if our list had only one item, could the game feel fair? What does that tell us about why AI needs enough examples?</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide interior" data-slide="9">
+    <div class="gradient-mesh"><div class="blob" style="width:340px;height:340px;top:-70px;right:-50px;background:#1666c5;opacity:.10"></div><div class="blob" style="width:220px;height:220px;bottom:-50px;left:-40px;background:#0f9b8e;opacity:.07"></div></div>
+    <div class="content">
+      <p class="pill reveal" style="margin-bottom:.75rem">Video 2 · See It Built</p>
+      <h2 class="reveal" style="font-family:'Fredoka',sans-serif;font-size:clamp(1.38rem,2.4vw,1.88rem);font-weight:700;margin-bottom:.8rem;color:#102949">Rock Paper Scissors with Python</h2>
+      <div class="grid-cards grid-2 reveal" style="gap:14px;align-items:start">
+        <div>
+          <div class="media-embed" id="player-c4U2_pFo5Bk" onclick="playVideo('c4U2_pFo5Bk')" title="Click to play video">
+            <img src="https://img.youtube.com/vi/c4U2_pFo5Bk/hqdefault.jpg" alt="Rock paper scissors Python tutorial thumbnail">
+            <div class="play-btn"><div><svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"></path></svg></div></div>
+          </div>
+          <p style="font-size:.78rem;color:#64748b;margin:6px 0 0;text-align:center"><a href="https://www.youtube.com/watch?v=c4U2_pFo5Bk" target="_blank" rel="noopener noreferrer" style="color:#1666c5;text-decoration:underline">Source: YouTube</a></p>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div class="card accent-card-blue"><p style="font-weight:800;color:#1666c5;margin:0 0 6px;font-size:.85rem">Notice the ingredients</p><div style="display:flex;flex-direction:column;gap:5px;font-size:.83rem;color:#374151"><div><span class="step-num" style="width:22px;height:22px;font-size:.72rem">1</span> list of moves</div><div><span class="step-num" style="width:22px;height:22px;font-size:.72rem">2</span> random choice for the computer</div><div><span class="step-num" style="width:22px;height:22px;font-size:.72rem">3</span> input from the player</div><div><span class="step-num" style="width:22px;height:22px;font-size:.72rem">4</span> if/elif game rules</div></div></div>
+          <div class="card" style="background:rgba(15,155,142,.08);border:1px solid rgba(15,155,142,.22)"><p style="margin:0;font-size:.84rem;color:#065f46;font-weight:700">Pause before the result and ask: “How will the program decide who wins this round?”</p></div>
+          <div class="card accent-card-amber"><p style="margin:0;font-size:.82rem;color:#78350f"><strong>Duration</strong> 5 minutes total, with coding starting within the first few minutes and testing shown right after.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide interior" data-slide="10">
+    <div class="gradient-mesh"><div class="blob" style="width:360px;height:360px;top:-80px;right:-50px;background:#0f9b8e;opacity:.12"></div><div class="blob" style="width:240px;height:240px;bottom:-50px;left:-35px;background:#1666c5;opacity:.09"></div></div>
+    <div class="content">
+      <p class="pill green reveal" style="margin-bottom:.75rem">Guided Build · 20 min</p>
+      <h2 class="reveal" style="font-family:'Fredoka',sans-serif;font-size:clamp(1.4rem,2.4vw,1.92rem);font-weight:700;margin-bottom:.9rem;color:#102949">Build the game, one thought at a time</h2>
+      <div class="grid-cards grid-2 reveal" style="gap:12px">
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div class="card" style="display:flex;gap:10px;align-items:flex-start"><span class="step-num">1</span><div><p style="font-weight:800;color:#102949;margin:0 0 3px;font-size:.86rem">Make the list</p><p style="font-size:.82rem;color:#374151;margin:0">Type <code>moves = ["rock", "paper", "scissors"]</code>. Ask: why is this better than three separate variables?</p></div></div>
+          <div class="card" style="display:flex;gap:10px;align-items:flex-start"><span class="step-num">2</span><div><p style="font-weight:800;color:#102949;margin:0 0 3px;font-size:.86rem">Import random and pick for the computer</p><p style="font-size:.82rem;color:#374151;margin:0">Use <code>import random</code> and <code>computer = random.choice(moves)</code>.</p></div></div>
+          <div class="card" style="display:flex;gap:10px;align-items:flex-start"><span class="step-num">3</span><div><p style="font-weight:800;color:#102949;margin:0 0 3px;font-size:.86rem">Get the player’s move</p><p style="font-size:.82rem;color:#374151;margin:0">Use <code>input()</code>. Ask students what exact words the player should type so comparisons will work.</p></div></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div class="card" style="display:flex;gap:10px;align-items:flex-start"><span class="step-num">4</span><div><p style="font-weight:800;color:#102949;margin:0 0 3px;font-size:.86rem">Compare the two moves</p><p style="font-size:.82rem;color:#374151;margin:0">Start with tie first. Then use <code>elif</code> branches to test each win or loss case.</p></div></div>
+          <div class="card" style="display:flex;gap:10px;align-items:flex-start"><span class="step-num">5</span><div><p style="font-weight:800;color:#102949;margin:0 0 3px;font-size:.86rem">Print both choices clearly</p><p style="font-size:.82rem;color:#374151;margin:0">Students should see “You chose…” and “Computer chose…” before the result. This makes debugging easier.</p></div></div>
+          <div class="card accent-card-blue"><p style="margin:0;font-size:.82rem;color:#1e3a5f"><strong>Prediction pause:</strong> before running, have students whisper whether the code can ever say “You win!” when both choices match.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide interior" data-slide="11">
+    <div class="gradient-mesh"><div class="blob" style="width:360px;height:360px;top:-70px;left:-45px;background:#1666c5;opacity:.11"></div><div class="blob" style="width:250px;height:250px;bottom:-55px;right:-35px;background:#ee9b12;opacity:.09"></div></div>
+    <div class="content">
+      <p class="pill green reveal" style="margin-bottom:.75rem">Model Code</p>
+      <h2 class="reveal" style="font-family:'Fredoka',sans-serif;font-size:clamp(1.35rem,2.35vw,1.88rem);font-weight:700;margin-bottom:.8rem;color:#102949">Readable beginner version</h2>
+      <div class="card reveal" style="padding:18px 20px">
+        <div class="code-block"> <span class="kw">import</span> random<br><br>moves = [<span class="str">"rock"</span>, <span class="str">"paper"</span>, <span class="str">"scissors"</span>]<br>player = <span class="kw">input</span>(<span class="str">"Type rock, paper, or scissors: "</span>).lower()<br>computer = random.choice(moves)<br><br><span class="kw">print</span>(<span class="str">"You chose:"</span>, player)<br><span class="kw">print</span>(<span class="str">"Computer chose:"</span>, computer)<br><br><span class="kw">if</span> player == computer:<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">print</span>(<span class="str">"Tie!"</span>)<br><span class="kw">elif</span> player == <span class="str">"rock"</span> <span class="kw">and</span> computer == <span class="str">"scissors"</span>:<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">print</span>(<span class="str">"You win!"</span>)<br><span class="kw">elif</span> player == <span class="str">"paper"</span> <span class="kw">and</span> computer == <span class="str">"rock"</span>:<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">print</span>(<span class="str">"You win!"</span>)<br><span class="kw">elif</span> player == <span class="str">"scissors"</span> <span class="kw">and</span> computer == <span class="str">"paper"</span>:<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">print</span>(<span class="str">"You win!"</span>)<br><span class="kw">else</span>:<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">print</span>(<span class="str">"Computer wins!"</span>)</div>
+      </div>
+      <div class="grid-cards grid-3 reveal" style="margin-top:12px">
+        <div class="card accent-card-amber"><p style="margin:0;font-size:.83rem;color:#78350f"><strong>Ask:</strong> why do we call <code>.lower()</code> on the player input?</p></div>
+        <div class="card accent-card-blue"><p style="margin:0;font-size:.83rem;color:#1e3a5f"><strong>Ask:</strong> which line uses the list directly?</p></div>
+        <div class="card accent-card-green"><p style="margin:0;font-size:.83rem;color:#065f46"><strong>Ask:</strong> which branch catches all remaining lose cases?</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide interior" data-slide="12">
+    <div class="gradient-mesh"><div class="blob" style="width:360px;height:360px;top:-80px;right:-60px;background:#ee9b12;opacity:.12"></div><div class="blob" style="width:250px;height:250px;bottom:-55px;left:-45px;background:#0f9b8e;opacity:.10"></div></div>
+    <div class="content" style="text-align:center">
+      <p class="pill amber reveal" style="margin:0 auto .8rem;display:inline-flex">Movement Break · 5 min</p>
+      <h2 class="reveal" style="font-family:'Fredoka',sans-serif;font-size:clamp(1.55rem,2.9vw,2.35rem);font-weight:700;margin-bottom:.55rem;color:#102949">Stand up and become the program</h2>
+      <div class="break-card reveal" style="max-width:760px;margin:0 auto 14px">
+        <p style="font-size:1rem;font-weight:800;color:#78350f;margin:0 0 12px">Human Rock-Paper-Scissors Logic</p>
+        <div style="display:flex;flex-direction:column;gap:8px;text-align:left">
+          <div style="background:rgba(255,255,255,.72);border-radius:10px;padding:8px 14px;font-size:.9rem;color:#374151"><strong>IF</strong> teacher says “rock,” make a rock fist.</div>
+          <div style="background:rgba(255,255,255,.72);border-radius:10px;padding:8px 14px;font-size:.9rem;color:#374151"><strong>IF</strong> teacher says “paper,” open your hand flat.</div>
+          <div style="background:rgba(255,255,255,.72);border-radius:10px;padding:8px 14px;font-size:.9rem;color:#374151"><strong>IF</strong> teacher says “scissors,” make a V shape.</div>
+          <div style="background:rgba(255,255,255,.72);border-radius:10px;padding:8px 14px;font-size:.9rem;color:#374151"><strong>ELSE</strong> freeze like a confused computer and wait for a valid input.</div>
+        </div>
+      </div>
+      <div class="card reveal" style="max-width:560px;margin:0 auto;padding:12px 16px;background:rgba(15,155,142,.08);border:1px solid rgba(15,155,142,.2)"><p style="margin:0;font-size:.88rem;color:#065f46;font-weight:700">Students feel the difference between valid inputs and invalid inputs before they return to the keyboard.</p></div>
+    </div>
+  </div>
+
+  <div class="slide interior" data-slide="13">
+    <div class="gradient-mesh"><div class="blob" style="width:350px;height:350px;top:-70px;right:-50px;background:#0f9b8e;opacity:.11"></div><div class="blob" style="width:240px;height:240px;bottom:-55px;left:-35px;background:#1666c5;opacity:.08"></div></div>
+    <div class="content">
+      <p class="pill green reveal" style="margin-bottom:.75rem">Open Build · 30–40 min</p>
+      <h2 class="reveal" style="font-family:'Fredoka',sans-serif;font-size:clamp(1.38rem,2.38vw,1.9rem);font-weight:700;margin-bottom:.9rem;color:#102949">Three entry points, one game idea</h2>
+      <div class="grid-cards grid-3 reveal" style="gap:12px;margin-bottom:12px">
+        <div class="card" style="padding:14px 16px;border-top:3px solid #22c55e"><span class="tier-a">Tier A · Foundations</span><p style="font-weight:800;color:#102949;margin:8px 0 6px;font-size:.87rem">Get one clean round working</p><p style="font-size:.82rem;color:#374151;margin:0">Use the starter code. Focus on the list, one random computer choice, and correct win/lose/tie output.</p></div>
+        <div class="card" style="padding:14px 16px;border-top:3px solid #3b82f6"><span class="tier-b">Tier B · Core</span><p style="font-weight:800;color:#102949;margin:8px 0 6px;font-size:.87rem">Add score-keeping</p><p style="font-size:.82rem;color:#374151;margin:0">Track player score and computer score across rounds. Print the score after each game.</p></div>
+        <div class="card" style="padding:14px 16px;border-top:3px solid #8b5cf6"><span class="tier-c">Tier C · Accelerated</span><p style="font-size:.87rem;font-weight:800;color:#102949;margin:8px 0 6px">Add simple pattern memory</p><p style="font-size:.82rem;color:#374151;margin:0">Keep a list of the player’s past moves and let the computer guess the most common move, then try to counter it.</p></div>
+      </div>
+      <div class="challenge-card reveal" style="display:flex;gap:12px;align-items:flex-start"><span style="font-size:1.5rem;flex-shrink:0">★</span><div><p style="font-weight:800;color:#4c1d95;margin:0 0 4px;font-size:.88rem">Challenge Card · All Tiers</p><p style="font-size:.84rem;color:#374151;margin:0">Extend the list to <strong>rock-paper-scissors-lizard-spock</strong>. Which part of the code becomes harder now? Which part stays easy because the list already exists?</p></div></div>
+      <div class="card reveal" style="margin-top:10px;padding:10px 15px;background:rgba(22,102,197,.06);border:1px solid rgba(22,102,197,.18)"><p style="margin:0;font-size:.84rem;color:#1e3a5f"><strong>Fast finisher move:</strong> ask students to refactor repeated win-checking into a helper function or a dictionary of rules.</p></div>
+    </div>
+  </div>
+
+  <div class="slide interior" data-slide="14">
+    <div class="gradient-mesh"><div class="blob" style="width:340px;height:340px;top:-70px;left:-40px;background:#1666c5;opacity:.10"></div><div class="blob" style="width:230px;height:230px;bottom:-50px;right:-35px;background:#ee9b12;opacity:.08"></div></div>
+    <div class="content">
+      <p class="pill purple reveal" style="margin-bottom:.75rem">Share-Out &amp; Reflection</p>
+      <h2 class="reveal" style="font-family:'Fredoka',sans-serif;font-size:clamp(1.4rem,2.4vw,1.9rem);font-weight:700;margin-bottom:.9rem;color:#102949">What should students be able to explain?</h2>
+      <div class="grid-cards grid-2 reveal" style="gap:12px;margin-bottom:12px">
+        <div class="card accent-card-blue"><p style="font-weight:800;color:#1666c5;margin:0 0 8px;font-size:.88rem">Show your neighbor</p><ul style="margin:0;padding-left:18px;font-size:.84rem;color:#374151;line-height:1.65"><li>Point to the line where the list is created.</li><li>Explain how the computer gets one move from the list.</li><li>Name one bug you fixed today.</li></ul></div>
+        <div class="card accent-card-green"><p style="font-weight:800;color:#065f46;margin:0 0 8px;font-size:.88rem">Teacher listening-for</p><ul style="margin:0;padding-left:18px;font-size:.84rem;color:#374151;line-height:1.65"><li>“A list stores multiple items.”</li><li>“Index means position.”</li><li>“random.choice picks from the list.”</li><li>“The rules are checked with if/elif/else.”</li></ul></div>
+      </div>
+      <div class="card reveal" style="padding:12px 16px;background:rgba(238,155,18,.08);border:1px solid rgba(238,155,18,.22)"><p style="margin:0;font-size:.86rem;color:#78350f"><strong>Exit question:</strong> If you wanted this same game to use 10 possible moves instead of 3, which part of the program would change first, and why?</p></div>
+    </div>
+  </div>
+
+  <div class="slide interior" data-slide="15">
+    <div class="gradient-mesh"><div class="blob" style="width:340px;height:340px;top:-70px;right:-50px;background:#1666c5;opacity:.10"></div><div class="blob" style="width:220px;height:220px;bottom:-50px;left:-35px;background:#0f9b8e;opacity:.08"></div></div>
+    <div class="content">
+      <p class="pill amber reveal" style="margin-bottom:.75rem">Homework · 30 min</p>
+      <h2 class="reveal" style="font-family:'Fredoka',sans-serif;font-size:clamp(1.4rem,2.4vw,1.92rem);font-weight:700;margin-bottom:.9rem;color:#102949">Two strong homework paths</h2>
+      <div class="grid-cards grid-2 reveal" style="gap:14px">
+        <div class="card accent-card-amber"><p style="font-weight:800;color:#78350f;margin:0 0 8px;font-size:.88rem">Path 1 · Score across rounds</p><p style="font-size:.84rem;color:#374151;margin:0 0 8px">Add variables for player score and computer score. Play several rounds and print the updated score after each round.</p><p class="line-note" style="margin:0">This reinforces variables, loops, and repeated testing.</p></div>
+        <div class="card accent-card-purple"><p style="font-weight:800;color:#6d28d9;margin:0 0 8px;font-size:.88rem">Path 2 · Extend the list</p><p style="font-size:.84rem;color:#374151;margin:0 0 8px">Add new items such as lizard and spock. Write the extra rules carefully and test every matchup you can think of.</p><p class="line-note" style="margin:0">This reinforces list thinking and precise logic.</p></div>
+      </div>
+      <div class="card reveal" style="margin-top:12px;background:rgba(22,102,197,.06);border:1px solid rgba(22,102,197,.18)"><p style="margin:0;font-size:.84rem;color:#1e3a5f"><strong>Optional reflection line:</strong> “One thing lists made easier in my program was…”</p></div>
+    </div>
+  </div>
+
+  <div class="slide" data-slide="16">
+    <div class="gradient-mesh">
+      <div class="blob" style="width:470px;height:470px;top:-90px;right:-80px;background:#1666c5;opacity:.15"></div>
+      <div class="blob" style="width:300px;height:300px;bottom:-70px;left:-50px;background:#0f9b8e;opacity:.12"></div>
+      <div class="blob" style="width:220px;height:220px;top:36%;left:18%;background:#ee9b12;opacity:.10"></div>
+    </div>
+    <canvas class="particle-canvas"></canvas>
+    <div class="content" style="text-align:center">
+      <img class="reveal" src="https://d1ng1bucl7w66k.cloudfront.net/ghost-blog/2022/07/Screen-Shot-2022-07-25-at-9.31.58-AM.png" alt="Illustrated coding lesson for rock paper scissors" style="height:clamp(80px,13vh,118px);object-fit:cover;border-radius:18px;margin:0 auto 1rem;animation:float 3s ease-in-out infinite;box-shadow:0 12px 36px rgba(22,102,197,.18)">
+      <h1 class="reveal" style="font-family:'Fredoka',sans-serif;font-size:clamp(2rem,5vw,3.8rem);font-weight:700;line-height:1.08;margin:0 0 .5rem;background:linear-gradient(135deg,#1666c5 0%,#0f9b8e 58%,#ee9b12 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">Session 14 Ready to Teach</h1>
+      <p class="reveal" style="font-size:clamp(.95rem,1.6vw,1.2rem);color:#475569;max-width:740px;margin:0 auto 1rem">Lists become meaningful when students use them to power something playful, visible, and testable. This lesson turns abstract storage into a game they can explain.</p>
+      <p class="pill reveal" style="margin:0 auto;display:inline-flex">Python · Lists · Random Choice · Game Logic · AI Tie-In</p>
+    </div>
+  </div>
+
+</div>
+
+<div class="nav-controls">
+  <button class="nav-btn" onclick="changeSlide(-1)" aria-label="Previous slide">&#8249;</button>
+  <div class="slide-dots" id="dots"></div>
+  <button class="nav-btn" onclick="changeSlide(1)" aria-label="Next slide">&#8250;</button>
+  <span class="slide-counter" id="counter">1 / 16</span>
+</div>
+
+<script>
+let current=1;const total=document.querySelectorAll('.slide').length;const dotsContainer=document.getElementById('dots');const counter=document.getElementById('counter');
+for(let i=1;i<=total;i++){const dot=document.createElement('div');dot.className='dot'+(i===1?' active':'');dot.onclick=()=>goToSlide(i);dotsContainer.appendChild(dot)}
+function goToSlide(n){const prev=document.querySelector('.slide.active');const next=document.querySelector(`.slide[data-slide="${n}"]`);if(prev)prev.classList.remove('active');if(next){next.classList.add('active');animateSlide(next)}current=n;updateNav()}
+function changeSlide(dir){let next=current+dir;if(next<1)next=total;if(next>total)next=1;goToSlide(next)}
+function updateNav(){document.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('active',i+1===current));counter.textContent=current+' / '+total}
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();changeSlide(1)}if(e.key==='ArrowLeft'){e.preventDefault();changeSlide(-1)}})
+let touchStartX=0;document.addEventListener('touchstart',e=>{touchStartX=e.touches[0].clientX});document.addEventListener('touchend',e=>{const diff=touchStartX-e.changedTouches[0].clientX;if(Math.abs(diff)>50)changeSlide(diff>0?1:-1)})
+function animateSlide(slide){slide.querySelectorAll('.reveal').forEach((el,i)=>{el.style.transition='none';el.style.opacity='0';el.style.transform='translateY(16px)';el.offsetHeight;const delay=i*0.08;el.style.transition=`opacity .35s ease ${delay}s, transform .35s ease ${delay}s`;el.style.opacity='1';el.style.transform='translateY(0px)'})}
+function playVideo(id){const box=document.getElementById('player-'+id);if(!box)return;box.innerHTML=`<iframe src="https://www.youtube.com/embed/${id}?autoplay=1&rel=0" title="Embedded lesson video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`}
+document.addEventListener('mousemove',e=>{const spotlight=document.getElementById('spotlight');if(spotlight){spotlight.style.background=`radial-gradient(600px circle at ${e.clientX}px ${e.clientY}px, rgba(22,102,197,.06), transparent 40%)`}})
+window.initParticles=function(canvas,options){if(!canvas)return;const ctx=canvas.getContext('2d');canvas.width=canvas.offsetWidth;canvas.height=canvas.offsetHeight;const interactive=options.interactive!==false;const count=options.count||(interactive?55:18);let mx=-1000,my=-1000;const particles=Array.from({length:count},()=>({x:Math.random()*canvas.width,y:Math.random()*canvas.height,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,size:Math.random()*2.5+.8,alpha:Math.random()*.35+.1}));if(interactive){canvas.addEventListener('mousemove',e=>{const rect=canvas.getBoundingClientRect();mx=e.clientX-rect.left;my=e.clientY-rect.top});canvas.addEventListener('mouseleave',()=>{mx=-1000;my=-1000})}(function animate(){ctx.clearRect(0,0,canvas.width,canvas.height);particles.forEach(p=>{if(interactive){const dx=p.x-mx,dy=p.y-my,dist=Math.sqrt(dx*dx+dy*dy);if(dist<120){const force=(120-dist)/120*2;p.vx+=(dx/dist)*force*.1;p.vy+=(dy/dist)*force*.1}}p.vx*=.98;p.vy*=.98;p.x+=p.vx;p.y+=p.vy;if(p.x<0)p.x=canvas.width;if(p.x>canvas.width)p.x=0;if(p.y<0)p.y=canvas.height;if(p.y>canvas.height)p.y=0;ctx.beginPath();ctx.arc(p.x,p.y,p.size,0,Math.PI*2);ctx.fillStyle=`rgba(22,102,197,${p.alpha})`;ctx.fill()});requestAnimationFrame(animate)})()}
+document.querySelectorAll('.particle-canvas').forEach(c=>window.initParticles(c,{interactive:true,count:55}));
+try{animateSlide(document.querySelector('.slide.active'))}catch(e){}
+</script>
+</body>
+</html>
