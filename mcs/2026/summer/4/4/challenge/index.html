@@ -1,1 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tier 4 Challenge · Session 14 · Python Lists &amp; Rock-Paper-Scissors</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --color-bg: #f4fbff;
+    --color-surface: rgba(255,255,255,0.97);
+    --color-text: #1f2a37;
+    --color-text-secondary: #374151;
+    --color-text-muted: #5b6b7e;
+    --color-accent-1: #1666c5;
+    --color-accent-2: #0f9b8e;
+    --color-accent-3: #ee9b12;
+    --color-accent-red: #ef4444;
+    --font-display: 'Fredoka', 'Trebuchet MS', sans-serif;
+    --font-body: 'Nunito', Arial, sans-serif;
+    --font-code: 'Fira Code', Consolas, monospace;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  @media print {
+    body { background: #fff !important; }
+    .no-print { display: none !important; }
+    .page-break { page-break-before: always; }
+    .card { box-shadow: none !important; border: 1.5px solid #d1d5db !important; }
+    .code-block { border: 1.5px solid #cbd5e1 !important; }
+  }
+  body { font-family: var(--font-body); color: var(--color-text); background: var(--color-bg); min-height: 100vh; }
+  .print-bar {
+    background: rgba(255,255,255,0.92); backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(148,163,184,0.3);
+    padding: 10px 24px; display: flex; align-items: center;
+    justify-content: space-between; position: sticky; top: 0; z-index: 100; gap: 12px; flex-wrap: wrap;
+  }
+  .print-bar .bar-title { font-family: var(--font-display); font-size: 1.05rem; font-weight: 700; color: var(--color-accent-1); }
+  .print-bar .bar-sub { font-size: 0.78rem; color: var(--color-text-muted); }
+  .btn-print { background: var(--color-accent-1); color: #fff; border: none; padding: 8px 20px; border-radius: 999px; font-family: var(--font-body); font-size: 0.82rem; font-weight: 800; cursor: pointer; letter-spacing: 0.06em; transition: background 0.2s, transform 0.15s; }
+  .btn-print:hover { background: #0f4f9e; transform: translateY(-1px); }
+  .page { max-width: 920px; margin: 0 auto; padding: 32px 24px 60px; }
+  .sheet-header {
+    background: linear-gradient(135deg, #1666c5 0%, #0f9b8e 55%, #ee9b12 100%);
+    border-radius: 20px; padding: 28px 32px 24px; color: #fff; margin-bottom: 28px; position: relative; overflow: hidden;
+  }
+  .sheet-header::before { content: ''; position: absolute; top: -60px; right: -60px; width: 200px; height: 200px; background: rgba(255,255,255,0.08); border-radius: 50%; }
+  .sheet-header::after { content: ''; position: absolute; bottom: -40px; left: -40px; width: 140px; height: 140px; background: rgba(255,255,255,0.06); border-radius: 50%; }
+  .header-emoji { font-size: 2.8rem; margin-bottom: 6px; }
+  .header-day { font-size: 0.75rem; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; opacity: 0.85; margin-bottom: 4px; }
+  .header-title { font-family: var(--font-display); font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 700; line-height: 1.1; margin-bottom: 6px; }
+  .header-sub { font-size: 0.88rem; opacity: 0.85; margin-bottom: 14px; }
+  .header-pills { display: flex; gap: 8px; flex-wrap: wrap; }
+  .header-pill { background: rgba(255,255,255,0.22); border: 1px solid rgba(255,255,255,0.35); border-radius: 999px; padding: 4px 14px; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
+  .student-info { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 28px; }
+  @media (max-width: 600px) { .student-info { grid-template-columns: 1fr; } }
+  .info-field { background: var(--color-surface); border-radius: 12px; padding: 12px 14px; border: 1.5px solid rgba(22,102,197,0.14); box-shadow: 0 2px 8px rgba(15,23,42,0.05); }
+  .info-label { font-size: 0.65rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-accent-1); margin-bottom: 6px; }
+  .info-line { border: none; border-bottom: 1.5px solid #cbd5e1; width: 100%; font-family: var(--font-body); font-size: 0.9rem; color: var(--color-text); background: transparent; outline: none; padding: 2px 0; }
+  .info-line:focus { border-bottom-color: #1666c5; }
+  .section-label { display: inline-flex; align-items: center; gap: 8px; padding: 5px 16px; border-radius: 999px; border: 1px solid rgba(148,163,184,0.4); background: rgba(255,255,255,0.9); font-size: 0.72rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-accent-1); margin-bottom: 10px; }
+  .section-title { font-family: var(--font-display); font-size: clamp(1.3rem, 2.5vw, 1.8rem); font-weight: 700; margin-bottom: 16px; color: var(--color-text); line-height: 1.2; }
+  .card { background: var(--color-surface); border-radius: 16px; padding: 18px 20px; box-shadow: 0 4px 18px rgba(15,23,42,0.07); border: 1px solid rgba(255,255,255,0.7); margin-bottom: 16px; }
+  .card.accent-blue { border-left: 4px solid var(--color-accent-1); }
+  .card.accent-green { border-left: 4px solid var(--color-accent-2); }
+  .card.accent-amber { border-left: 4px solid var(--color-accent-3); }
+  .card.accent-red { border-left: 4px solid var(--color-accent-red); }
+  .card.accent-purple { border-left: 4px solid #7c3aed; }
+  .card-label { font-size: 0.68rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 8px; }
+  .card-label.blue { color: var(--color-accent-1); }
+  .card-label.green { color: #047857; }
+  .card-label.amber { color: #b45309; }
+  .card-label.red { color: #b91c1c; }
+  .card-label.purple { color: #6d28d9; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  @media (max-width: 680px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+  .code-block { background: #1e293b; color: #e2e8f0; border-radius: 12px; padding: 14px 18px; font-family: var(--font-code); font-size: clamp(0.68rem, 1.1vw, 0.83rem); line-height: 1.6; overflow-x: auto; border: 1px solid rgba(255,255,255,0.06); margin-bottom: 12px; white-space: pre; }
+  .kw { color: #93c5fd; }
+  .nb { color: #fcd34d; }
+  .st { color: #86efac; }
+  .cm { color: #64748b; font-style: italic; }
+  .hl { color: #fcd34d; font-weight: 700; }
+  .bug { color: #f87171; font-weight: 700; }
+  .write-lines { margin: 8px 0; }
+  input.write-line { border: none; border-bottom: 1.5px solid #cbd5e1; width: 100%; margin-bottom: 10px; height: 28px; display: block; background: transparent; font-family: var(--font-body); font-size: 0.88rem; color: var(--color-text); outline: none; padding: 2px 4px; }
+  input.write-line:focus { border-bottom-color: #1666c5; }
+  input.write-line::placeholder { color: #bdc5d1; font-style: italic; }
+  textarea.write-area { border: 1.5px solid #cbd5e1; border-radius: 8px; width: 100%; min-height: 70px; padding: 8px; font-family: var(--font-body); font-size: 0.85rem; color: var(--color-text); resize: vertical; background: #f8fafc; outline: none; display: block; }
+  textarea.write-area:focus { outline: 2px solid rgba(22,102,197,0.3); }
+  textarea.write-area::placeholder { color: #bdc5d1; font-style: italic; }
+  input.blank-input { display: inline-block; background: rgba(238,155,18,0.18); border: none; border-bottom: 2px solid #ee9b12; min-width: 60px; width: 60px; height: 1.1em; border-radius: 3px; vertical-align: middle; margin: 0 2px; font-family: var(--font-code); font-size: inherit; color: #b45309; text-align: center; outline: none; padding: 0 2px; }
+  input.blank-input:focus { background: rgba(238,155,18,0.32); }
+  input.blank-input.wide { min-width: 110px; width: 110px; }
+  input.blank-input.narrow { min-width: 36px; width: 36px; }
+  .timeline { position: relative; padding-left: 22px; }
+  .timeline::before { content: ''; position: absolute; left: 8px; top: 4px; bottom: 4px; width: 3px; border-radius: 999px; background: linear-gradient(to bottom, #1666c5, #0f9b8e, #ee9b12); }
+  .timeline-step { position: relative; margin-bottom: 12px; }
+  .timeline-dot { position: absolute; left: -15px; top: 4px; width: 12px; height: 12px; border-radius: 999px; border: 2px solid #f4fbff; background: #1666c5; box-shadow: 0 0 0 3px rgba(22,102,197,0.2); }
+  .timeline-dot.green { background: #0f9b8e; }
+  .timeline-dot.purple { background: #7c3aed; }
+  .timeline-dot.amber { background: #ee9b12; }
+  .tip-box { border-radius: 10px; padding: 10px 14px; font-size: 0.8rem; line-height: 1.5; margin-top: 10px; }
+  .tip-box.blue { background: rgba(22,102,197,0.07); color: #1e40af; }
+  .tip-box.green { background: rgba(15,155,142,0.07); color: #065f46; }
+  .tip-box.amber { background: rgba(238,155,18,0.07); color: #92400e; }
+  .tip-box.purple { background: rgba(124,58,237,0.07); color: #5b21b6; }
+  .formula-box { background: #1e293b; color: #e2e8f0; border-radius: 10px; padding: 10px 16px; font-family: var(--font-code); font-size: 0.88rem; text-align: center; margin-bottom: 10px; }
+  .divider { border: none; border-top: 2px dashed #dde6f0; margin: 28px 0; }
+  .check-list { list-style: none; padding: 0; }
+  .check-list li { display: flex; align-items: flex-start; gap: 8px; font-size: 0.85rem; color: var(--color-text-secondary); margin-bottom: 8px; line-height: 1.45; }
+  .check-list li .box { flex-shrink: 0; width: 17px; height: 17px; border: 2px solid #94a3b8; border-radius: 4px; margin-top: 1px; background: #fff; display: inline-block; }
+  .level-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 14px; border-radius: 999px; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 8px; }
+  .level-4 { background: linear-gradient(135deg,#7c3aed,#1666c5,#0f9b8e); color:#fff; }
+  .challenge-badge { display: inline-flex; align-items: center; gap: 6px; background: linear-gradient(135deg, #ee9b12, #ef4444); color: #fff; padding: 4px 14px; border-radius: 999px; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 8px; }
+  table.rubric { width: 100%; border-collapse: collapse; font-size: 0.82rem; margin-top: 8px; }
+  table.rubric th { background: #1e293b; color: #e2e8f0; padding: 8px 10px; text-align: left; font-weight: 700; letter-spacing: 0.05em; }
+  table.rubric td { padding: 8px 10px; border-bottom: 1px solid #e2e8f0; vertical-align: top; color: var(--color-text-secondary); }
+  table.rubric tr:nth-child(even) td { background: rgba(241,245,249,0.6); }
+  table.rubric td:first-child { font-weight: 700; color: var(--color-text); }
+  table.rubric .pts { font-family: var(--font-code); font-size: 0.75rem; font-weight: 800; color: var(--color-accent-1); white-space: nowrap; }
+  .sheet-footer { margin-top: 40px; padding: 16px 20px; border-radius: 12px; background: rgba(124,58,237,0.05); border: 1px solid rgba(124,58,237,0.12); display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; font-size: 0.76rem; color: var(--color-text-muted); }
+  .sheet-footer strong { color: var(--color-text); }
+  p, li { font-size: 0.88rem; color: var(--color-text-secondary); line-height: 1.55; }
+  strong { color: var(--color-text); }
+  code { background: #e0f2ff; padding: 1px 6px; border-radius: 4px; font-family: var(--font-code); font-size: 0.82em; color: #1666c5; }
+  .mb-1 { margin-bottom: 6px; }
+  .mb-2 { margin-bottom: 10px; }
+  .mb-3 { margin-bottom: 14px; }
+  .mt-2 { margin-top: 10px; }
+  .mt-3 { margin-top: 14px; }
+  .text-center { text-align: center; }
+  .text-muted { color: var(--color-text-muted); font-size: 0.78rem; }
+  .grad-text { background: linear-gradient(135deg,#7c3aed,#1666c5,#0f9b8e); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  .score-table { width:100%; border-collapse:collapse; font-size:0.82rem; }
+  .score-table th { background:#1e293b; color:#e2e8f0; padding:7px 10px; text-align:left; }
+  .score-table td { padding:7px 10px; border-bottom:1px solid #e2e8f0; color:var(--color-text-secondary); vertical-align:top; }
+  .score-table tr:nth-child(even) td { background:rgba(241,245,249,0.6); }
+  .score-table td:first-child { font-weight:700; color:var(--color-text); }
+  .dark-code-write { background:#1e293b; border-radius:12px; padding:14px 18px; width:100%; font-family:var(--font-code); font-size:clamp(0.7rem,1.1vw,0.84rem); line-height:1.7; border:1px solid rgba(255,255,255,0.06); resize:vertical; display:block; outline:none; color:#e2e8f0; box-sizing:border-box; }
+  .dark-code-write:focus { outline:2px solid rgba(124,58,237,0.4); }
+  .scratch-block { display:inline-block; background:#3b82f6; color:#fff; padding:5px 12px; border-radius:8px; font-family:var(--font-body); font-weight:700; font-size:0.8rem; margin:2px; box-shadow: 0 2px 0 rgba(0,0,0,0.15); }
+  .scratch-block.orange { background:#ee9b12; }
+  .scratch-block.green { background:#0f9b8e; }
+  .scratch-block.purple { background:#7c3aed; }
+  .scratch-row { display:flex; flex-wrap:wrap; gap:4px; align-items:center; margin-bottom:8px; }
+</style>
+</head>
+<body>
 
+<!-- PRINT BAR -->
+<div class="print-bar no-print">
+  <div>
+    <div class="bar-title">🏆🐍 Tier 4 · Advanced Challenge</div>
+    <div class="bar-sub">Session 14 — Python Lists &amp; Rock-Paper-Scissors · 40-Minute Extension</div>
+  </div>
+  <button class="btn-print" onclick="window.print()">🖨️ Print / Save as PDF</button>
+</div>
+
+<div class="page">
+
+<!-- ══════════ HEADER ══════════ -->
+<div class="sheet-header">
+  <div class="header-emoji">🏆🐍</div>
+  <div class="header-day">Session 14 · Tier 4 — Beyond Accelerated · Advanced Challenge Activity</div>
+  <div class="header-title">RPS Arena: Build a Self-Learning<br>Rock-Paper-Scissors AI</div>
+  <div class="header-sub">From a simple list of moves → a strategy-learning agent that adapts, scores itself, and explains its own decisions</div>
+  <div class="header-pills">
+    <span class="header-pill">⏱ 40 min</span>
+    <span class="header-pill">🐍 Python + 🧩 Scratch</span>
+    <span class="header-pill">Above Tier C</span>
+    <span class="header-pill">Lists · Dicts · Game Theory · AI</span>
+  </div>
+</div>
+
+<!-- ══════════ STUDENT INFO ══════════ -->
+<div class="student-info">
+  <div class="info-field">
+    <div class="info-label">👤 Your Name</div>
+    <input class="info-line" type="text" placeholder="First Last" />
+  </div>
+  <div class="info-field">
+    <div class="info-label">📅 Date</div>
+    <input class="info-line" type="text" placeholder="Month Day, Year" />
+  </div>
+  <div class="info-field">
+    <div class="info-label">🏫 Class / Period</div>
+    <input class="info-line" type="text" placeholder="Period ___" />
+  </div>
+</div>
+
+<!-- ══════════ BEFORE YOU BEGIN ══════════ -->
+<div class="section-label">🎯 Before You Begin</div>
+<div class="section-title">Who This Challenge Is For</div>
+
+<div class="grid-2 mb-3">
+  <div class="card accent-purple">
+    <div class="card-label purple">🎯 Your Mission</div>
+    <p class="mb-2">You already finished Tier A, B, and C. This sheet is <strong>Tier 4 — a standalone 40-minute stretch goal</strong> for students ready to think like AI engineers, not just coders. You will design an opponent-modeling algorithm, analyze it with real game theory, and defend your design in writing.</p>
+    <div class="timeline">
+      <div class="timeline-step"><div class="timeline-dot purple"></div>
+        <p><strong>Part 1</strong> (8 min) — Game Theory Warm-Up: Nash Equilibrium in RPS</p></div>
+      <div class="timeline-step"><div class="timeline-dot"></div>
+        <p><strong>Part 2</strong> (14 min) — Build a Markov-Chain Predictor in Python</p></div>
+      <div class="timeline-step"><div class="timeline-dot amber"></div>
+        <p><strong>Part 3</strong> (8 min) — Port Your Strategy Logic to Scratch</p></div>
+      <div class="timeline-step"><div class="timeline-dot green"></div>
+        <p><strong>Part 4</strong> (6 min) — Tournament Stress Test &amp; Big-O Analysis</p></div>
+      <div class="timeline-step" style="margin-bottom:0"><div class="timeline-dot"></div>
+        <p><strong>Part 5</strong> (4 min) — Written Defense: Justify Your AI's Strategy</p></div>
+    </div>
+  </div>
+  <div class="card accent-blue">
+    <div class="card-label blue">🔑 Key Ideas for This Challenge</div>
+    <ul style="list-style:disc;padding-left:18px;line-height:1.9;">
+      <li><strong>Nash Equilibrium</strong> — the strategy where no player benefits from changing alone</li>
+      <li><strong>Markov chain</strong> — predicting the next move using only the previous move(s)</li>
+      <li><strong>Dictionary of counters</strong> — a list-of-lists structure that tracks transition frequency</li>
+      <li><strong>Exploitability</strong> — how much a pattern-based player can be beaten by a predictor</li>
+      <li><strong>Big-O</strong> — measuring how your predictor's speed changes as history grows</li>
+    </ul>
+    <div class="tip-box purple mt-2">💡 <strong>Above Tier C:</strong> Tier C guessed the single most common move. This challenge builds a predictor that learns <em>sequences</em> of moves — a real technique used in game AI and cybersecurity pattern detection.</div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ══════════ PART 1 · GAME THEORY WARM-UP ══════════ -->
+<div class="section-label">🧮 Part 1 of 5 · 8 min</div>
+<div class="section-title">Game Theory Warm-Up: Why Can't RPS Be "Solved"?</div>
+
+<div class="card accent-purple mb-3">
+  <div class="card-label purple">🎲 The Nash Equilibrium Puzzle</div>
+  <p class="mb-2">In Rock-Paper-Scissors, the mathematically optimal strategy is to play rock, paper, and scissors <strong>each with exactly 1/3 probability, completely at random</strong>. This is called the <strong>Nash Equilibrium</strong> — no other fixed strategy beats it in the long run.</p>
+  <div class="grid-2">
+    <div>
+      <p style="font-size:0.83rem;font-weight:700;color:#6d28d9;margin-bottom:6px;">Question 1: If a player always throws rock, what is the optimal counter-strategy, and what is your expected win rate against them?</p>
+      <input class="write-line" type="text" placeholder="My counter-strategy is..." />
+      <input class="write-line" type="text" placeholder="Expected win rate: ____%" />
+    </div>
+    <div>
+      <p style="font-size:0.83rem;font-weight:700;color:#1666c5;margin-bottom:6px;">Question 2: If both players play perfect 1/3-1/3-1/3 randomness, what is each player's expected win rate? Why can no strategy do better against this opponent?</p>
+      <input class="write-line" type="text" placeholder="Expected win rate: ____%  Because..." />
+    </div>
+  </div>
+  <div class="tip-box purple mt-2">🧠 <strong>The catch:</strong> Humans are bad at being truly random — we unconsciously repeat patterns. A predictor that studies a human's history can win more than 33% of rounds. That is exactly what you will build in Part 2.</div>
+</div>
+
+<!-- Payoff Matrix -->
+<div class="card mb-3">
+  <div class="card-label blue">📊 Complete the Payoff Matrix</div>
+  <p class="mb-2">Fill in each cell with <strong>W</strong> (row wins), <strong>L</strong> (row loses), or <strong>T</strong> (tie) from the row player's perspective.</p>
+  <table class="score-table">
+    <thead><tr><th>Row \ Column</th><th>Rock</th><th>Paper</th><th>Scissors</th></tr></thead>
+    <tbody>
+      <tr><td>Rock</td><td style="text-align:center;"><input class="blank-input narrow" type="text" placeholder="?" /></td><td style="text-align:center;"><input class="blank-input narrow" type="text" placeholder="?" /></td><td style="text-align:center;"><input class="blank-input narrow" type="text" placeholder="?" /></td></tr>
+      <tr><td>Paper</td><td style="text-align:center;"><input class="blank-input narrow" type="text" placeholder="?" /></td><td style="text-align:center;"><input class="blank-input narrow" type="text" placeholder="?" /></td><td style="text-align:center;"><input class="blank-input narrow" type="text" placeholder="?" /></td></tr>
+      <tr><td>Scissors</td><td style="text-align:center;"><input class="blank-input narrow" type="text" placeholder="?" /></td><td style="text-align:center;"><input class="blank-input narrow" type="text" placeholder="?" /></td><td style="text-align:center;"><input class="blank-input narrow" type="text" placeholder="?" /></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<hr class="divider">
+
+<!-- ══════════ PART 2 · MARKOV PREDICTOR ══════════ -->
+<div class="section-label">🐍 Part 2 of 5 · 14 min</div>
+<div class="section-title">Build a Markov-Chain Move Predictor</div>
+
+<div class="card accent-blue mb-3">
+  <div class="card-label blue">📋 The Idea</div>
+  <p class="mb-2">Instead of counting which move a player uses <em>most overall</em> (Tier C), track which move they play <strong>after each previous move</strong>. Store this as a <strong>dictionary of dictionaries</strong>: <code>transitions[previous_move][next_move] = count</code>. Then predict whatever move most often follows the opponent's last move, and counter it.</p>
+  <div class="grid-2">
+    <div>
+      <div class="card-label amber">🧩 Starter — fill in the blanks</div>
+      <div class="code-block" style="font-size:0.72rem;"><span class="nb">MOVES</span> = [<span class="st">"rock"</span>, <span class="st">"paper"</span>, <span class="st">"scissors"</span>]
+<span class="nb">BEATS</span> = {<span class="st">"rock"</span>: <span class="st">"paper"</span>, <span class="st">"paper"</span>: <span class="st">"scissors"</span>, <span class="st">"scissors"</span>: <span class="st">"rock"</span>}
+
+<span class="nb">transitions</span> = {m: {n: <input class="blank-input narrow" type="text" placeholder="0" /> <span class="kw">for</span> n <span class="kw">in</span> MOVES} <span class="kw">for</span> m <span class="kw">in</span> MOVES}
+<span class="nb">history</span> = []
+
+<span class="kw">def</span> record(prev_move, this_move):
+    <span class="kw">if</span> prev_move <span class="kw">is</span> <span class="kw">not</span> <span class="kw">None</span>:
+        transitions[<input class="blank-input wide" type="text" placeholder="prev_move" />][<input class="blank-input wide" type="text" placeholder="this_move" />] += <input class="blank-input narrow" type="text" placeholder="1" />
+    history.append(this_move)
+
+<span class="kw">def</span> predict_next(prev_move):
+    <span class="kw">if</span> prev_move <span class="kw">is</span> <span class="kw">None</span> <span class="kw">or</span> <span class="kw">sum</span>(transitions[prev_move].values()) == <span class="nb">0</span>:
+        <span class="kw">import</span> random
+        <span class="kw">return</span> random.choice(MOVES)
+    row = transitions[prev_move]
+    <span class="kw">return</span> <span class="kw">max</span>(row, key=<input class="blank-input wide" type="text" placeholder="row.get" />)
+
+<span class="kw">def</span> counter_move(predicted):
+    <span class="kw">return</span> <input class="blank-input wide" type="text" placeholder="BEATS[predicted]" /></div>
+    </div>
+    <div>
+      <div class="card-label green">🐍 Write your full play_round() loop here:</div>
+      <textarea class="dark-code-write" style="min-height:150px;" spellcheck="false" placeholder="# Wire it together: get player move, predict, counter,&#10;# decide win/lose/tie, then call record()&#10;def play_round(player_move, prev_move):&#10;    predicted = predict_next(prev_move)&#10;    ai_move = counter_move(predicted)&#10;    ...&#10;    record(prev_move, player_move)&#10;    return ai_move"></textarea>
+      <p class="mt-2" style="font-size:0.8rem;color:#374151;"><strong>Test it:</strong> Play 15 rounds against yourself on paper, always following the pattern rock → paper → rock → paper. After how many rounds did the predictor start beating you consistently?</p>
+      <input class="write-line" type="text" placeholder="It started winning consistently around round..." />
+    </div>
+  </div>
+  <div class="tip-box blue mt-2">💡 <strong>Why a nested dict beats a flat counter:</strong> A flat counter answers "what move do they like overall?" A transition dict answers "what move do they like <em>right after playing X</em>?" — a much stronger signal for real players who fall into rhythms.</div>
+</div>
+
+<hr class="divider">
+
+<!-- ══════════ PART 3 · SCRATCH PORT ══════════ -->
+<div class="section-label">🧩 Part 3 of 5 · 8 min</div>
+<div class="section-title">Port Your Strategy Logic to Scratch</div>
+
+<div class="card accent-amber mb-3">
+  <div class="card-label amber">🧩 Block-Based Thinking</div>
+  <p class="mb-2">Python dictionaries do not exist as a native block in Scratch. Below is a block-style plan using <strong>three parallel lists</strong> to simulate one row of the transition table for a single "previous move." Complete the missing blocks by writing what each should say.</p>
+  <div class="scratch-row">
+    <span class="scratch-block purple">when green flag clicked</span>
+  </div>
+  <div class="scratch-row">
+    <span class="scratch-block">set [rockCount] to (0)</span>
+    <span class="scratch-block">set [paperCount] to (0)</span>
+    <span class="scratch-block">set [scissorsCount] to (0)</span>
+  </div>
+  <div class="scratch-row">
+    <span class="scratch-block orange">if &lt;(lastMove) = [rock]&gt; then</span>
+  </div>
+  <div class="scratch-row" style="padding-left:20px;">
+    <span class="scratch-block">change [<input class="blank-input wide" type="text" placeholder="which counter?" />] by (1)</span>
+  </div>
+  <div class="scratch-row">
+    <span class="scratch-block green">if &lt;(rockCount) &gt; (paperCount)&gt; then</span>
+  </div>
+  <div class="scratch-row" style="padding-left:20px;">
+    <span class="scratch-block">set [predictedMove] to <input class="blank-input wide" type="text" placeholder="'rock' or 'paper'?" /></span>
+  </div>
+  <div class="grid-2 mt-2">
+    <div>
+      <p style="font-size:0.83rem;font-weight:700;color:#b45309;margin-bottom:6px;">Why does Scratch need 3 separate variables (rockCount, paperCount, scissorsCount) to do what one Python dictionary does in one line?</p>
+      <textarea class="write-area" style="min-height:70px;" placeholder="Scratch needs 3 variables because..."></textarea>
+    </div>
+    <div>
+      <p style="font-size:0.83rem;font-weight:700;color:#1666c5;margin-bottom:6px;">If you had to track transitions after <em>all 3</em> previous moves (rock, paper, AND scissors), how many total counter variables would plain Scratch need? Show your math.</p>
+      <input class="write-line" type="text" placeholder="3 previous moves × 3 next moves = ___ variables" />
+    </div>
+  </div>
+  <div class="tip-box amber mt-2">🌍 <strong>This is why real AI uses dictionaries and arrays:</strong> A 3×3 transition table has 9 cells. A chatbot predicting the next word from a 50,000-word vocabulary would need a table with 2.5 billion cells — only possible with the data structures you are learning in Python, not flat variables.</div>
+</div>
+
+<hr class="divider">
+
+<!-- ══════════ PART 4 · TOURNAMENT & BIG-O ══════════ -->
+<div class="section-label">⚔️ Part 4 of 5 · 6 min</div>
+<div class="section-title">Tournament Stress Test &amp; Big-O Analysis</div>
+
+<div class="grid-2 mb-3">
+  <div class="card accent-green">
+    <div class="card-label green">⚔️ Run the Tournament</div>
+    <p class="mb-2">Run your Part 2 predictor for <strong>3 different simulated opponents</strong> and record your AI's win rate over 20 rounds each.</p>
+    <table class="score-table">
+      <thead><tr><th>Opponent style</th><th>Win rate</th><th>Beat Nash's 33%?</th></tr></thead>
+      <tbody>
+        <tr><td>Always same move</td><td><input type="text" style="width:100%;border:none;border-bottom:1.5px solid #0f9b8e;background:transparent;outline:none;font-size:0.8rem;" placeholder="____%" /></td><td><input type="text" style="width:100%;border:none;border-bottom:1.5px solid #0f9b8e;background:transparent;outline:none;font-size:0.8rem;" placeholder="Y / N" /></td></tr>
+        <tr><td>Repeats a 2-move cycle</td><td><input type="text" style="width:100%;border:none;border-bottom:1.5px solid #0f9b8e;background:transparent;outline:none;font-size:0.8rem;" placeholder="____%" /></td><td><input type="text" style="width:100%;border:none;border-bottom:1.5px solid #0f9b8e;background:transparent;outline:none;font-size:0.8rem;" placeholder="Y / N" /></td></tr>
+        <tr><td>Truly random (random.choice)</td><td><input type="text" style="width:100%;border:none;border-bottom:1.5px solid #0f9b8e;background:transparent;outline:none;font-size:0.8rem;" placeholder="____%" /></td><td><input type="text" style="width:100%;border:none;border-bottom:1.5px solid #0f9b8e;background:transparent;outline:none;font-size:0.8rem;" placeholder="Y / N" /></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="card accent-red">
+    <div class="card-label red">⏱ Big-O of Your Predictor</div>
+    <p class="mb-2">Your <code>transitions</code> dictionary always has exactly 3 rows and 3 columns, no matter how many rounds are played.</p>
+    <p style="font-size:0.83rem;font-weight:700;margin-bottom:6px;">What is the time complexity of <code>predict_next()</code> as the number of rounds played grows?</p>
+    <p>O( <input class="blank-input narrow" type="text" placeholder="?" /> ) — because <input class="blank-input wide" type="text" placeholder="explain why" /></p>
+    <p style="font-size:0.83rem;font-weight:700;margin:10px 0 6px;">Now compare: if you tracked the <em>last 2 moves</em> as context instead of 1, how many rows would the transition table need?</p>
+    <input class="write-line" type="text" placeholder="3 × 3 = ___ rows, because each context is a pair" />
+    <div class="tip-box purple mt-2">🔬 This growth pattern — context length increasing table size exponentially — is exactly why large language models use neural networks instead of lookup tables for predicting the next word.</div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ══════════ PART 5 · WRITTEN DEFENSE ══════════ -->
+<div class="section-label">✍️ Part 5 of 5 · 4 min</div>
+<div class="section-title">Written Defense: Justify Your AI's Strategy</div>
+
+<div class="card accent-purple mb-3">
+  <div class="challenge-badge">⭐ Required — 5–7 sentences total</div>
+  <p class="mb-2">Imagine you must convince a skeptical classmate that your Markov predictor is a real, legitimate "AI" and not just a lucky script. Address all three prompts below.</p>
+  <div class="grid-2">
+    <div>
+      <p style="font-size:0.82rem;font-weight:700;color:#6d28d9;margin-bottom:4px;">1. What exactly does your program "learn," and how do you know it changes behavior over time?</p>
+      <textarea class="write-area" style="min-height:80px;" placeholder="My program learns..."></textarea>
+    </div>
+    <div>
+      <p style="font-size:0.82rem;font-weight:700;color:#1666c5;margin-bottom:4px;">2. What is one weakness of your predictor — a case where it would guess wrong every time?</p>
+      <textarea class="write-area" style="min-height:80px;" placeholder="One weakness is..."></textarea>
+    </div>
+  </div>
+  <p style="font-size:0.82rem;font-weight:700;color:#047857;margin:10px 0 4px;">3. If you had one more class period, what single upgrade would most improve your predictor's win rate, and why?</p>
+  <textarea class="write-area" style="min-height:70px;" placeholder="I would improve it by..."></textarea>
+  <p class="mt-2 text-muted">📧 <strong>Submit to:</strong> your teacher's inbox · Subject: <em>Session 14 Tier 4 · [Your Name]</em></p>
+</div>
+
+<hr class="divider">
+
+<!-- ══════════ RUBRIC ══════════ -->
+<div class="section-label">📊 Scoring</div>
+<div class="section-title">Rubric &amp; Points</div>
+
+<div class="card mb-3">
+  <table class="rubric">
+    <thead><tr><th>Section</th><th>What to Look For</th><th>Points</th></tr></thead>
+    <tbody>
+      <tr><td>Part 1 — Game Theory</td><td>Nash Equilibrium questions answered with correct reasoning; payoff matrix fully correct</td><td class="pts">4 pts</td></tr>
+      <tr><td>Part 2 — Markov Predictor</td><td>All code blanks correct; play_round() written and logically complete; test trial recorded</td><td class="pts">6 pts</td></tr>
+      <tr><td>Part 3 — Scratch Port</td><td>Correct block answers; thoughtful comparison of data structures with accurate math</td><td class="pts">4 pts</td></tr>
+      <tr><td>Part 4 — Tournament &amp; Big-O</td><td>All 3 win rates recorded; Big-O answer correct with explanation; scaling question answered</td><td class="pts">4 pts</td></tr>
+      <tr><td>Part 5 — Written Defense</td><td>All 3 prompts answered thoughtfully in 5–7 total sentences using correct vocabulary</td><td class="pts">3 pts</td></tr>
+    </tbody>
+  </table>
+  <div style="display:flex;justify-content:flex-end;margin-top:10px;gap:24px;font-size:0.82rem;color:#374151;">
+    <span>Total: <strong style="font-family:var(--font-code);color:#1666c5;">____ / 21</strong></span>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="sheet-footer">
+  <div>
+    <strong>Session 14 · Tier 4 Advanced Challenge</strong> · Python Lists &amp; Rock-Paper-Scissors — Above Tier A/B/C
+  </div>
+  <div>For students who finished Tier C early and want a true extension challenge.</div>
+</div>
+
+</div>
+</body>
+</html>
