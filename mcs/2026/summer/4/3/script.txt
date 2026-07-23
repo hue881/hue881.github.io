@@ -1,0 +1,903 @@
+Session 14 - Python: Lists & Rock-Paper-Scissors
+Expert Teaching Script (CS-Rigorous Explanations, Beginner-Friendly Delivery)
+Modern Chinese School - Summer 2026 AI & Coding Program
+Instructor: Mr. Hsiao "Hue" Weng
+Ages 7-13 (Grades 1-9) - Mixed-Tier (A/B/C)
+Total Time: ~110 min (Sections 2 & 3) | ~75 min compressed (Section 1)
+================================================================================
+
+HOW TO USE THIS SCRIPT
+--------------------------------------------------------------------------------
+- Text in [BRACKETS] = instructor stage directions or timing cues
+- "Quoted text" = suggested exact words to say aloud
+- -> means a natural transition or follow-up thought
+- [KEY IDEA] = deep conceptual explanation (say or adapt to the age of the room)
+- [PAUSE] = student interaction moment -- stop and wait for responses
+- [ROBOT] = the daily AI Moment tie-in (5-10 min, folded in, never a lecture)
+- TIER A = Grades 1-3 scaffolding | TIER B = Grades 3-5 core | TIER C = Grades 6-9 stretch
+
+PACING MAP (from the syllabus Daily Rhythm + the slide deck's own rhythm
+tracker on Slide 2 -- Warm-Up 10 / Mini-Lesson 15-20 / Guided Build 20 /
+Move Break 5 / Open Build 30-40 / Share-Out 10):
+  Warm-up (unplugged, list-vs-variables prediction) . 10 min -> Slides 1-3
+  Mini-lesson (list, index, random.choice + AI) ...... 15-20 min -> Slides
+                                                        4-9 [ROBOT folded in
+                                                        at Slide 8]
+  Guided build (5-step RPS build + model code) ....... 20 min -> Slides 10-11
+  Movement / brain break ............................. 5 min -> Slide 12
+  Open build + tiered extensions + challenge card .... 30-40 min -> Slide 13
+  Share-out (opt-in, warm) ............................ 10 min -> Slide 14
+  Homework (two paths) ................................ -> Slide 15
+  Closing ...................................................... -> Slide 16
+
+  SECTION 1 (75 min): Warm-up(5) -> Mini-lesson + Robot(15) -> Guided
+  build(20) -> Break(5) -> Open build(25) -> Quick share(5). Drop Video 2 /
+  Slide 9 to protect Open Build time -- fold its "notice the ingredients"
+  list into one spoken sentence during the guided build instead. Every
+  student still gets a working list-powered game. Homework unchanged.
+
+  CALL-BACK: This is Session 14 -- the final session of Phase 2 (Bridge
+  Scratch -> Python) before Phase 3 (AI made tangible) begins tomorrow with
+  Teachable Machine. Students already know variables (Session 9), turtle +
+  loops (Session 10), passed the midterm (Session 11), conditionals with
+  random (Session 12 -- the number-guessing game), and functions (Session
+  13, yesterday). Today's brand-new ingredient is the LIST -- the first time
+  students store MANY related values in ONE variable instead of one value
+  per variable. Everything else -- input(), if/elif/else, random -- is
+  review, now recombined around this one new idea. This directly sets up
+  tomorrow's leap: a list of examples is a tiny, hand-built preview of what
+  a training dataset is, which is the single biggest AI idea coming next.
+================================================================================
+
+
+================================================================================
+                     PART 1 -- WARM-UP (UNPLUGGED)  [~10 min]
+                          No screens. Brains on.
+================================================================================
+
+
+--------------------------------------------------------------------------------
+SLIDE 1 -- TITLE & WELCOME  ("Python: Lists & Rock-Paper-Scissors")
+[Duration: ~2 minutes]
+--------------------------------------------------------------------------------
+
+[Display the title slide as students settle. Laptops CLOSED -- warm-up is
+always unplugged. Energy: playful and a little competitive -- today's
+project is a game everyone already knows how to play, which lowers anxiety
+before a single line of code appears.]
+
+"Good morning, coders! Raise your hand if you have ever played rock, paper,
+scissors -- with a sibling, a cousin, a friend, anybody." 
+
+[PAUSE -- nearly every hand should go up. Use that.]
+
+"Perfect -- that means today, you already know 100% of the RULES before we
+write a single line of code. Our job today isn't to invent a new game.
+Our job is to teach the rules you already know... to a computer that knows
+nothing until we tell it."
+
+[KEY IDEA -- say slowly, this frames the whole lesson]:
+"Here's the new tool we need to do that: up until yesterday, every value
+you stored in Python lived in its own separate variable -- one box, one
+value. Today you're going to meet something called a LIST -- a single
+variable that can hold MANY values at once, in order, like a row of numbered
+cubbies. Rock, paper, and scissors are going to live together in ONE list.
+And once they're in a list, Python can do something we could never do with
+three separate variables: it can look inside that list and pick one, at
+random, all by itself."
+
+"By the end of today, you will have a real rock-paper-scissors game where
+YOU play against the computer, and the computer's move comes straight out
+of a list you built yourself."
+
+
+--------------------------------------------------------------------------------
+SLIDE 2 -- TODAY'S RHYTHM: WHAT ARE WE DOING TODAY?
+[Duration: ~2 minutes]
+--------------------------------------------------------------------------------
+
+[Display the six-row rhythm timeline. Point down the timeline top to bottom
+as you narrate -- Warm-Up, Mini-Lesson + Videos, Guided Build, Movement
+Break, Open Build, Share-Out.]
+
+"Here's the shape of our next hour-and-a-half. Ten minutes of warm-up --
+that's right now, no screens, just a prediction game about lists and
+rock-paper-scissors rules. Fifteen to twenty minutes of mini-lesson, where
+we meet lists, indexing, and a new tool called random.choice(), plus two
+short videos. Twenty minutes of guided build, where we build the whole
+game together, step by step, with prediction pauses along the way. Five
+minutes to stand up and literally become the program's if/elif/else logic
+with our bodies. Then thirty to forty minutes of open build, where the game
+becomes YOUR game, with three different entry points depending on where
+you're starting from. And we close with ten minutes of share-out."
+
+[KEY IDEA]:
+"Notice something about today's structure: warm-up asks a QUESTION about
+lists before you've seen any code. Mini-lesson answers that question WITH
+code. Guided build has you TYPE the answer yourself. Open build lets you
+STRETCH the answer. That's the whole spiral of this course, compressed into
+one ninety-minute session."
+
+"Let's go meet our new tool."
+
+
+--------------------------------------------------------------------------------
+SLIDE 3 -- WARM-UP: HOW CAN ONE VARIABLE HOLD MANY CHOICES?
+[Duration: ~6 minutes]
+--------------------------------------------------------------------------------
+
+[No screens. Display the two warm-up cards -- "Look & Predict" with the
+illustrated rock-paper-scissors image, and "Turn & Talk" with the three RPS
+hand-sign tokens (rock, paper, scissors).]
+
+"Here's today's big warm-up question, and I want you to really wrestle with
+it before we open anything: if our game has three choices -- rock, paper,
+scissors -- should we store them in THREE separate variables, like
+choice_one, choice_two, choice_three? Or in ONE organized container that
+holds all three? Turn to your neighbor, thirty seconds, make your case
+either way."
+
+[PAUSE -- 30 seconds of pair talk. Circulate, listen for early reasoning.
+Some students will say 'three variables is simpler.' That's a completely
+fair guess at this stage -- don't correct it yet, just collect it.]
+
+[Reveal the "Big idea" card at the bottom of the slide.]
+
+[KEY IDEA]:
+"Here's the problem with three separate variables that you'll feel in about
+five minutes when we start coding: if I want the computer to PICK one of
+your three choices at random, how would it do that with three separate
+variables sitting in three different places in memory? It would need some
+clunky way to roll a die and then chase down the right variable by name.
+But if all three choices live together, in ORDER, inside one list, the
+computer can just say 'give me a random item from this list' -- one line,
+done. Lists help us group related items so our code can grab one, compare
+one, or loop through all of them, using their POSITION instead of needing a
+brand-new variable name for every single item."
+
+"Now the Turn & Talk: imagine a partner picks a move -- rock, paper, or
+scissors -- and you have to say out loud what beats it, as fast as you can.
+Which rule is easiest for YOUR brain to remember instantly? And here's the
+real question: which one do you think would be EASIEST for a computer to
+check quickly?"
+
+[PAUSE -- sample 2-3 pairs. Guide toward: humans remember rules by feel;
+computers check rules by comparing exact text, like the string "rock"
+against the string "scissors" -- there's no 'feel,' only exact matching.]
+
+[TIER A note: keep this fully concrete -- point at the three physical hand-
+sign images, have them physically hold up rock/paper/scissors while
+guessing which one beats which, skip the abstract 'why lists' reasoning
+until the mini-lesson shows it in code. TIER C stretch: push further --
+"If we had FIVE choices instead of three, would the three-separate-
+variables plan get worse faster, or about the same? Why?" (It gets much
+worse -- five variable names to track and compare by hand versus one list
+that scales for free.)]
+
+
+================================================================================
+              PART 2 -- MINI-LESSON (ONE CONCEPT, LIVE)  [~15-20 min]
+                    Teacher demos on the big screen only.
+================================================================================
+
+
+--------------------------------------------------------------------------------
+SLIDE 4 -- MINI-LESSON PART 1: WHAT IS A PYTHON LIST?
+[Duration: ~3 minutes]
+--------------------------------------------------------------------------------
+
+[Display the two-card slide -- "Real-world picture" (cubby shelf, playlist,
+list) on the left, "Code picture" with the moves list and four print()
+lines on the right.]
+
+"Let's answer the warm-up question with real code. First, three real-world
+pictures, because the idea of a list existed long before Python did. A
+cubby shelf holds many folders in one place. A playlist holds many songs,
+in order, in one place. A Python list holds many VALUES, in order, in one
+variable."
+
+[KEY IDEA -- go slowly, this is the spine of the whole session]:
+"Here's the code: moves equals a square bracket, then 'rock' comma 'paper'
+comma 'scissors', then a closing square bracket. Those square brackets are
+the signal to Python: 'everything inside here is one collection, stored
+together, in this exact order, under this one name -- moves.' That's the
+entire syntax for a list. You just built a container that holds three
+values using ONE variable name, which directly answers the warm-up: we do
+NOT need three separate variables. We need one list."
+
+"Now watch what happens when I print pieces of it: print(moves) shows the
+whole list at once, brackets and all. But print(moves[0]) shows just ONE
+item -- and that square bracket with a number inside it is called an
+INDEX. It tells Python exactly which position to reach into."
+
+[PAUSE -- ask: "If moves[0] is rock, what do you predict moves[2] will
+be?" Let a few guesses land -- most will correctly guess scissors by
+counting positions. Then ask: "Why do you think counting starts at 0
+instead of 1?" Let a few guesses land -- don't fully answer yet, Slide 5
+answers this properly.]
+
+
+--------------------------------------------------------------------------------
+SLIDE 5 -- MINI-LESSON PART 2: INDEXING -- HOW DOES PYTHON FIND ONE ITEM?
+[Duration: ~4 minutes]
+--------------------------------------------------------------------------------
+
+[Display the numbered-boxes card -- index 0 / rock, index 1 / paper, index
+2 / scissors -- alongside the "Prediction challenge" card.]
+
+"Here's the answer to 'why does counting start at 0': picture your list as
+a row of numbered boxes, left to right. The FIRST box is not labeled '1' --
+it's labeled '0.' That's not Python being weird for no reason -- it's
+because the index actually measures 'how many steps away from the start of
+the list is this item.' The very first item is zero steps away from the
+start. The second item is one step away. That's WHY index 0 holds the
+first item, index 1 holds the second, and index 2 holds the third."
+
+[KEY IDEA]:
+"This matters enormously in real code, because it's the single most common
+beginner mistake in almost every programming language, not just Python:
+assuming the first item is at position 1. If you ever get an answer that's
+'off by one' -- too high or too low by exactly one -- indexing starting at
+zero is very often the reason. Get comfortable with it now, because you
+will use it in nearly every program from here to the end of the course."
+
+[PAUSE -- run the prediction challenge live: "What prints if I run
+print(moves[1])?" Let them answer -- paper. -> "What mistake happens if we
+ask for an index that isn't there, like moves[5], when our list only has
+three items?" Let them guess. Confirm: Python throws an IndexError -- it
+refuses to guess, it tells you plainly that position doesn't exist.]
+
+"One more prompt on this slide: a game menu, a class roster, and a score
+history can all be stored as lists too -- this isn't a rock-paper-scissors-
+only trick, it's a general tool you'll reuse constantly."
+
+[Point to the misconception-check card.]
+
+"Common mix-up to watch for in your own head today: if you catch yourself
+saying 'the first item is index 1,' pause, point at the leftmost box, and
+say out loud, 'computers begin at zero.' Say it enough times today that it
+starts to feel normal instead of backwards."
+
+[TIER A note: keep this fully hands-on -- have them count on fingers
+starting at zero, touching each box in order, before touching any code.
+TIER C stretch: ask "If a list has 10 items, what is the index of the
+LAST item?" (9, not 10 -- reinforces the off-by-one pattern early.)]
+
+
+--------------------------------------------------------------------------------
+SLIDE 6 -- MINI-LESSON PART 3: HOW DOES THE COMPUTER CHOOSE A MOVE?
+[Duration: ~4 minutes]
+--------------------------------------------------------------------------------
+
+[Display the "New tool: random.choice()" card with the import random code
+block, alongside the "Ask before revealing" card with its three bullet
+questions and the "Prediction Stop" callout about lizard and spock.]
+
+"Now for the tool that makes today's game actually feel like a GAME instead
+of a script that does the same thing every time. Watch this code: import
+random -- that line tells Python 'I want to use the random toolbox that's
+already built into the language, I don't have to build randomness myself.'
+Then: computer_move equals random.choice(moves)."
+
+[KEY IDEA -- this is the payoff of the whole mini-lesson]:
+"Think about what just happened. random.choice() reaches INTO our list --
+the exact same list we built two slides ago -- and pulls out ONE item, and
+we, the programmers, do not know in advance which one it will be. That
+unpredictability is exactly what makes rock-paper-scissors fun to play
+against a computer instead of boring. And notice: this only works because
+our three choices are organized together in a list. random.choice() needs
+something to choose FROM -- a single container of options -- it has no way
+to reach into three separate, disconnected variables and pick among them."
+
+[PAUSE -- run the three "ask before revealing" questions live, one at a
+time: "Could the computer pick something that is NOT in the list?" (No --
+random.choice() can only return an item that's actually inside the list you
+give it.) "What must be true before random.choice(moves) can work?" (The
+list has to already exist, with at least one item in it.) "Why is a list a
+perfect partner for random choice?" (Because random.choice needs a
+collection to search inside -- a list IS that collection.)]
+
+"Here's the Prediction Stop on this slide, and I want you to really feel
+the power of this: if we add 'lizard' and 'spock' to our moves list, making
+it five items instead of three, how much of THIS line of code has to
+change?" 
+
+[PAUSE -- let them guess. Reveal: zero characters change. random.choice(moves)
+stays exactly the same, because it doesn't care how many items are in the
+list -- it just looks at whatever is there. That is the real power of
+storing things in a list instead of separate variables: your code scales
+without you rewriting it.]
+
+[TIER C stretch: "What Python keyword did we need before we could even use
+random.choice() -- and why do you think Python makes us ask for that
+toolbox by name instead of giving it to us automatically?" (import random --
+Python keeps extra tools separate so your basic programs stay small and
+fast unless you specifically ask for more.)]
+
+
+--------------------------------------------------------------------------------
+SLIDE 7 -- WATCH: VIDEO 1 -- PYTHON LISTS: INTRO TO PYTHON FOR KIDS
+[Duration: ~5 min video + 2 min talk]
+--------------------------------------------------------------------------------
+
+[Play "Python Lists - Intro to Python for Kids" on the projector. Prime
+focus questions before pressing play, matching the on-screen prompts.]
+
+"Before I hit play -- under five minutes, quick reinforcement -- watch for
+three specific things, listed right on the slide. One: how do square
+brackets actually CREATE a list on screen? Two: how do indexes point to a
+position -- watch exactly how they count. Three: what changes when a list
+stores WORDS instead of numbers, if anything?"
+
+[Play the video, ~5 minutes.]
+
+"Turn to a neighbor and answer this out loud, no peeking back at the
+screen: what is ONE thing a list can do that a single variable cannot do?"
+
+[PAUSE -- 30-45 seconds of pair talk. Circulate, listen for answers like
+'hold many things at once' or 'you can grab just one piece by its
+position.' Gently correct any confusion about indexing starting at 0 --
+this is the second time today that idea has come up, and repetition is the
+point.]
+
+[KEY IDEA -- connect back to what we just built]:
+"Notice that everything the video showed you, you had already predicted
+correctly in our own mini-lesson -- the square brackets, the index numbers,
+the idea that a list can hold words just as easily as numbers. That's not
+an accident. Real Python works exactly the way we've been describing it,
+which means you're not learning a simplified 'kid version' of the
+language -- you're learning the real thing, at a pace that makes sense."
+
+
+--------------------------------------------------------------------------------
+SLIDE 8 -- AI MOMENT: WHY IS A LIST LIKE A TINY DATASET?
+[Duration: ~4 minutes]
+--------------------------------------------------------------------------------
+
+[Display the AI Moment badge slide -- "Our game list" (three example
+cells: rock, paper, scissors) on the left, "Rule-based today" / "Modern AI
+later" cards on the right.]
+
+[ROBOT] -- AI MOMENT: A LIST IS ORGANIZED DATA
+"Now my favorite part of every day -- how does today's brand-new tool,
+the list, connect to AI? Here's the question on the slide: why is a list
+like a tiny dataset?"
+
+[KEY IDEA]:
+"Look at our three list cells: rock is labeled 'example 1,' paper is
+'example 2,' scissors is 'example 3.' That word -- EXAMPLE -- is exactly
+the word data scientists use. A dataset, in AI, is a big organized
+collection of examples the computer can use. Our list is tiny -- only three
+examples -- but it is structurally the SAME idea: organized data, stored in
+order, ready for a program to use."
+
+"Here's the honest contrast, and I want you to hold both halves of it at
+once. TODAY, our program is rule-based -- WE wrote the rules ourselves:
+rock beats scissors, scissors beats paper, paper beats rock. We typed every
+single rule by hand, and the computer just checks them. Modern AI, the kind
+you'll start touching tomorrow with Teachable Machine, works differently --
+it uses much BIGGER datasets, often thousands or millions of examples, and
+it LEARNS patterns from those examples instead of us hand-writing every
+rule."
+
+[PAUSE -- ask the question on the card directly: "If our list had only ONE
+item instead of three, could the game still feel fair?" Let them answer --
+obviously not, there'd be no real choice or challenge. -> "What does that
+tell us about why AI needs enough examples?" Let a few answer. Guide
+toward: just like our tiny 3-item list needs all three moves to make the
+game work fairly, a real AI model needs ENOUGH good examples in its dataset
+to make fair, accurate predictions. Too few examples, in either case, means
+something breaks or feels unfair.]
+
+"Keep that in your pocket for tomorrow: today you built organized data by
+hand, three items, and wrote every rule yourself. Tomorrow you'll watch a
+computer build its OWN understanding from data we feed it, live, in
+real time."
+
+
+--------------------------------------------------------------------------------
+SLIDE 9 -- WATCH: VIDEO 2 -- ROCK PAPER SCISSORS WITH PYTHON
+[Duration: ~5 min video + 2 min talk]
+--------------------------------------------------------------------------------
+
+[Play "Rock Paper Scissors with Python" on the projector. Prime with the
+four "notice the ingredients" bullets before pressing play: list of moves,
+random choice for the computer, input from the player, if/elif game
+rules.]
+
+"Last video before we build this ourselves. This one shows the ENTIRE game
+built in under five minutes, coding starting within the first couple of
+minutes, testing shown right after. As you watch, notice these four
+ingredients on the slide -- and see if you can catch the MOMENT each one
+appears: a list of moves, a random choice for the computer, input from the
+player, and if/elif game rules to decide the winner."
+
+[Play the video, ~5 minutes.]
+
+"Before the video reveals the actual result of a round, I paused you on
+purpose with this question on the slide: how will the program decide who
+wins this round? Turn to a neighbor -- what do you think happens inside the
+code the SECOND both moves are already known?"
+
+[PAUSE -- 30 seconds. Guide toward: it has to COMPARE the two strings --
+player's move and computer's move -- using if/elif/else, checking each
+possible winning combination one at a time, which is exactly what we're
+about to build.]
+
+[KEY IDEA -- bridge directly into the guided build]:
+"Notice the ORDER those four ingredients appeared: list first, then random
+choice, then input, then the if/elif comparisons. That's not random order
+-- you can't compare two moves until you HAVE two moves, and you can't get
+a computer move without a list to choose from. Order matters in code the
+same way it matters in a recipe. We are about to build these same four
+ingredients, in this same order, together."
+
+[SECTION 1 (75 min): drop this slide/video entirely to protect Open Build
+time -- fold the four-ingredient list into one spoken sentence right before
+Step 1 of the guided build instead: "list, random pick, player input,
+if/elif rules -- four ingredients, let's build them in that order."]
+
+
+================================================================================
+                 PART 3 -- GUIDED BUILD (ALL TOGETHER)  [~20 min]
+                  Everyone builds the SAME game, step by step.
+================================================================================
+
+
+--------------------------------------------------------------------------------
+SLIDE 10 -- GUIDED BUILD: BUILD THE GAME, ONE THOUGHT AT A TIME
+[Duration: ~20 minutes -- go slowly, narrate every line, test after Step 4]
+--------------------------------------------------------------------------------
+
+[Students open the Python Playground NOW. Walk the room -- confirm every
+student has playcode.io/python-playground open with a blank editor before
+continuing. Buddy-pair Tier A / Grade 1-2 students. This is the last major
+guided build before Phase 3 begins -- treat it with real weight; every
+student needs this working before Open Build.]
+
+"Screens ON. Everyone open the Python Playground and make sure you're
+looking at a totally blank editor. Thumbs up when you're there. [Wait for
+all thumbs.]"
+
+"Here's what every one of us will have by the end of this guided build: a
+list of three moves, a random computer pick straight from that list, the
+player's own move typed in, and a full set of if/elif/else rules that
+correctly decide win, lose, or tie. Do exactly what I do, step by step, no
+more, no less -- and we will test together right after Step 4, before
+anyone adds a single extra feature."
+
+"STEP 1 -- MAKE THE LIST. Type: moves equals bracket, quote rock quote,
+comma, quote paper quote, comma, quote scissors quote, close bracket.
+[Wait -- check every screen for correct spelling and matching quotes.]"
+
+[PAUSE -- ask: "Why is this better than three separate variables --
+choice_one, choice_two, choice_three?" Let them answer using their own
+words from the warm-up. Guide toward: one name to remember, one thing
+random.choice can search, and it scales to five or ten moves without any
+new variable names.]
+
+"STEP 2 -- IMPORT RANDOM AND PICK FOR THE COMPUTER. At the very top of your
+file, above the list, type: import random. Then, after your moves list,
+type: computer equals random.choice(moves). [Wait -- check every screen;
+this line must come AFTER moves is defined, since random.choice needs the
+list to already exist.]"
+
+[KEY IDEA]:
+"Quick callback to Slide 6: why does 'import random' have to be the very
+first line? Because Python doesn't automatically load every tool it knows
+how to use -- only the small core toolbox. random.choice lives in an extra
+toolbox called random, and 'import random' is literally us asking Python to
+go get that toolbox off the shelf before we try to use anything inside it."
+
+"STEP 3 -- GET THE PLAYER'S MOVE. Type: player equals input(open paren,
+quote Type rock, paper, or scissors: quote, close paren), then dot lower()
+right after the closing parenthesis of input. [Wait -- check every screen.]"
+
+[PAUSE -- ask: "What exact words should the player type for our comparisons
+to work later?" Let them answer -- exactly 'rock', 'paper', or 'scissors,'
+matching the spelling inside our list exactly. -> "Why did we add .lower()
+right after input()?" Let them guess. Guide toward: if a player types
+'Rock' with a capital R, Python sees that as a DIFFERENT string than
+'rock' -- .lower() forces everything to lowercase so a capital letter can
+never accidentally break the game.]
+
+"STEP 4 -- PRINT BOTH CHOICES CLEARLY, THEN TEST. Type: print(quote You
+chose: quote, comma, player). Then on the next line: print(quote Computer
+chose: quote, comma, computer). Now RUN your code. [PAUSE -- wait for every
+screen to actually print both lines before continuing. This is our
+mid-build test -- we are NOT waiting until the very end to check our
+work.]"
+
+[KEY IDEA -- tie back to good coding habits]:
+"Notice what we just did: we printed both choices BEFORE writing any
+win/lose logic. That's not filler -- that's a debugging habit. If something
+goes wrong later in the if/elif chain, you can look at exactly what player
+and computer actually equal, instead of guessing blindly. Good coders test
+in small pieces, constantly, not once at the very end -- that's the same
+lesson Slide 9's video modeled for us."
+
+"STEP 5 -- COMPARE THE TWO MOVES. Start with the tie case first: type if
+player equals equals computer, colon, then indent and type print(quote Tie!
+quote). Then add: elif player equals equals quote rock quote and computer
+equals equals quote scissors quote, colon, indent, print(quote You win!
+quote). Repeat that elif pattern for paper-beats-rock and scissors-beats-
+paper. Finish with a plain else, colon, indent, print(quote Computer wins!
+quote), which catches every remaining losing case. [Wait -- check every
+screen for correct indentation under each condition -- this is the most
+common typo point in the whole build.]"
+
+[PAUSE -- prediction pause from the slide: before anyone runs this, have
+students whisper to a neighbor: "Can this code ever print 'You win!' when
+both choices match?" Let them answer -- no, because the very first if-check
+catches the tie case before Python even looks at any elif branch. -> Now
+have everyone actually run it and try to force a tie on purpose to prove
+it.]
+
+[KEY IDEA -- why order matters in if/elif chains]:
+"This is worth sitting with: Python checks conditions from TOP to BOTTOM
+and stops at the very first one that's true. That's exactly why we put the
+tie check FIRST -- if we'd put it last, a tie could accidentally get
+caught by an earlier elif and print the wrong result. Order in an if/elif
+chain isn't just style, it changes what the program actually does."
+
+"Quick troubleshooting before Open Build -- 'Stuck? Check this first':
+did you spell 'rock', 'paper', and 'scissors' EXACTLY the same way in your
+list, your elif conditions, and when you type your test answer? Is your
+if/elif/else chain indented consistently -- no mixing tabs and spaces? Did
+you actually click Run after your last edit, not just look at the code? At
+least nine times out of ten, a rock-paper-scissors bug traces back to one
+of those three things."
+
+[SECTION 1 (75 min): this guided build is the SAME for all sections --
+protect the full 20 minutes, since it IS the complete, working game. If
+time is tight, compress narration on Steps 1-3 (they're mostly review from
+Sessions 9 and 12), but never skip the Step 5 prediction pause or the
+mid-build test at Step 4.]
+
+
+--------------------------------------------------------------------------------
+SLIDE 11 -- MODEL CODE: READABLE BEGINNER VERSION
+[Duration: ~3 minutes -- use as a reference check, not a re-teach]
+--------------------------------------------------------------------------------
+
+[Display the full model code block -- import random through the final
+else/print. Let students compare it line by line against their own
+screens.]
+
+"Pause your typing for one second and just look at this. This is the exact
+program we just built together, all in one place. Take thirty seconds,
+silently, and compare it to YOUR screen line by line -- not to copy it, but
+to catch any typo or misplaced indent before we move on."
+
+[PAUSE -- 30 seconds of silent comparison. Circulate and spot-check screens
+that look stuck.]
+
+[Run the three "Ask" prompts from the grid below the code, one at a time.]
+
+"Why do we call .lower() on the player input, specifically -- what
+would happen if we left it out and someone typed 'ROCK' in capitals?" 
+
+[PAUSE -- let them answer. Confirm: 'ROCK' would never equal 'rock' in
+Python's eyes, so even a correct answer would silently fail every single
+comparison.]
+
+"Which line uses the list directly -- point to it on your own screen."
+
+[PAUSE -- confirm: random.choice(moves) is the one and only line that
+reaches into the list itself.]
+
+"Which branch catches ALL the remaining lose cases, without us ever having
+to spell them out one by one?"
+
+[PAUSE -- confirm: the final else. -> "Why don't we need three separate
+elif branches for every possible way the player could lose?" Guide toward:
+once we've explicitly checked tie and all three win cases, every path left
+over MUST be a loss -- else sweeps up everything we didn't have to name.]
+
+
+================================================================================
+                   PART 4 -- MOVEMENT / BRAIN BREAK  [~5 min]
+================================================================================
+
+
+--------------------------------------------------------------------------------
+SLIDE 12 -- STAND UP AND BECOME THE PROGRAM
+[Duration: ~5 minutes]
+--------------------------------------------------------------------------------
+
+[Everyone stands. Display the "Human Rock-Paper-Scissors Logic" break card
+-- four IF/ELSE rows mapped to physical hand shapes.]
+
+"Stand up, push your chair in a little, give yourself room. For the next
+five minutes, YOU are the program, and I am the input. Here's your
+if/elif/else chain, but instead of printing text, you're going to move your
+body."
+
+"IF I say 'rock' -- make a rock fist. IF I say 'paper' -- open your hand
+flat. IF I say 'scissors' -- make a V shape with two fingers. ELSE -- if I
+say something that ISN'T one of those three words, like 'banana' -- freeze
+completely still, like a confused computer waiting for a valid input."
+
+[Call out a mixed, quick sequence of "rock," "paper," "scissors," and one
+or two nonsense words like "banana" or "purple," speeding up gradually.
+Watch for students who freeze correctly on the nonsense words -- that IS
+the point of this break, not just wiggling energy out.]
+
+[KEY IDEA -- brief, spoken while everyone's still moving]:
+"Notice what just happened in your body: you experienced the difference
+between a VALID input, which your if/elif chain knows exactly what to do
+with, and an INVALID input, which falls all the way through to else and
+does something different -- in this case, freezing instead of crashing.
+That's exactly what our program needs to do gracefully if a player ever
+types something weird like 'Rock!' with a punctuation mark or 'lizard'
+before we've added that move."
+
+"Nice work, program. Sit back down -- let's go build the rest of this."
+
+
+================================================================================
+              PART 5 -- OPEN BUILD + CHALLENGE CARDS  [~30-40 min]
+                    Students extend their OWN working game.
+================================================================================
+
+
+--------------------------------------------------------------------------------
+SLIDE 13 -- OPEN BUILD: THREE ENTRY POINTS, ONE GAME IDEA
+[Duration: ~30-40 minutes]
+--------------------------------------------------------------------------------
+
+[Display the three tier cards -- Tier A "Get one clean round working," Tier
+B "Add score-keeping," Tier C "Add simple pattern memory" -- plus the
+purple Challenge Card and the "Fast finisher move" note. Circulate
+constantly; this is the longest block of the day.]
+
+"Everyone already has a working game from the guided build -- that's the
+guaranteed win, locked in, no matter what happens next. Now it's time to
+push YOUR version further, and where you push depends on where you're
+starting from. Three paths, same core game."
+
+"TIER A -- Foundations. If you're still getting comfortable, your goal is
+simple: get ONE clean round working, reliably, every time you run it. Focus
+on the list, one random computer choice, and correctly printed win, lose,
+or tie output. That is a complete, real, working program -- there is no
+shame in stopping there today."
+
+"TIER B -- Core. Your goal is score-keeping. Add a variable for player
+score and a variable for computer score, BOTH starting at zero before any
+rounds are played. After each round, add one point to whichever side won,
+and print the updated score. This is Session 6's exact pattern from Scratch
+-- set once, outside any loop, change repeatedly, triggered by an event --
+just now written in Python instead of blocks."
+
+[PAUSE -- ask Tier B students specifically: "Where in your code should
+score equal zero go -- before or after the first round is played? Why?"
+Guide toward: before, so it starts at a known value every single time the
+program runs, the same reasoning as Session 6's green-flag reset.]
+
+"TIER C -- Accelerated. Your stretch goal is pattern memory: keep a LIST of
+the player's past moves, then have the computer look at that list, find the
+player's MOST COMMON move, and deliberately choose whatever beats it. This
+is a genuinely small first taste of how real pattern-based AI works --
+you're not guessing randomly anymore, you're using DATA about a player's
+past behavior to make a smarter decision."
+
+[KEY IDEA -- for Tier C, tie directly back to the AI Moment]:
+"Notice what just changed: on Slide 8, we said today's game is
+'rule-based' -- we wrote every rule ourselves. The pattern-memory version
+you're attempting now is a tiny step CLOSER to how learned AI behaves --
+it's still simple rules underneath, but those rules now respond to DATA
+your program collected while you played, instead of being fixed in
+advance. That's a real preview of tomorrow."
+
+"CHALLENGE CARD -- All Tiers, if you want it: extend the moves list to
+rock-paper-scissors-lizard-spock, five choices instead of three. Ask
+yourself as you go: which part of the code becomes HARDER now? Which part
+stays EASY because the list already existed?"
+
+[PAUSE -- let a few students answer out loud once they've tried it. Guide
+toward: the list itself barely changes -- just two more items -- and
+random.choice() needs zero changes at all. What gets harder is the
+if/elif chain, because five choices means far more possible matchups to
+check by hand.]
+
+"Fast-finisher move, if you've already done all of that: try refactoring
+your repeated win-checking into a helper function, or into a dictionary
+that maps each move to what it beats -- both are real techniques
+professional coders use to avoid repeating the same kind of if/elif logic
+over and over."
+
+[Circulate constantly. Confirm every Tier A student has their one clean
+round working and celebrated before moving them toward anything harder.
+Never let a student sit stuck silently for more than a minute or two --
+this is the block where private, encouraging correction matters most.]
+
+[SECTION 1 (75 min): compress to 25 minutes. Every student should still
+attempt at least their tier's core goal -- Tier A's one clean round, Tier
+B's score-keeping, Tier C's pattern memory attempt, even if unfinished.
+Challenge card and fast-finisher move become take-home stretch goals if
+time runs out.]
+
+
+================================================================================
+                   PART 6 -- SHARE-OUT (OPT-IN, WARM)  [~10 min]
+================================================================================
+
+
+--------------------------------------------------------------------------------
+SLIDE 14 -- SHARE-OUT: WHAT SHOULD STUDENTS BE ABLE TO EXPLAIN?
+[Duration: ~10 minutes]
+--------------------------------------------------------------------------------
+
+[Display the "Show your neighbor" card and the "Teacher listening-for"
+card side by side. Sharing stays opt-in and warm the whole time -- default
+is pair-share, volunteers may show the whole room if they want to.]
+
+"Time to explain, not just show. Turn to a neighbor -- or if you'd rather
+share with the whole room, raise your hand in a minute. Here's what to walk
+your partner through: point to the exact line where your list is created.
+Explain, out loud, how the computer gets ONE move out of that list. And
+name one bug you personally fixed today, even a small one."
+
+[PAUSE -- 3-4 minutes of pair explaining. Circulate and listen specifically
+for the phrases on the "Teacher listening-for" card: 'A list stores
+multiple items,' 'Index means position,' 'random.choice picks from the
+list,' 'The rules are checked with if/elif/else.' Gently prompt toward
+these exact ideas if a student is close but missing the vocabulary word.]
+
+[Invite 2-3 volunteers to show the room, fully opt-in -- never cold-call.]
+
+"Last question on the slide, and I want everyone thinking about it even if
+we don't call on you: if you wanted this SAME game to use ten possible
+moves instead of three, which part of your program would change FIRST, and
+why?"
+
+[PAUSE -- let several answer. Guide toward: the moves list itself changes
+first and most obviously -- you'd just add seven more items inside the
+brackets. random.choice() needs zero changes. The if/elif chain would need
+the most NEW work, because comparing ten things against each other creates
+far more possible matchups than comparing three.]
+
+[KEY IDEA -- the takeaway line, said with real weight]:
+"Here's the pattern I want you to notice about lists in general, not just
+today's game: the part of your code that STORES data -- the list -- barely
+grows no matter how much data you add. The part of your code that COMPARES
+or REASONS about that data is usually where the real complexity lives.
+That single idea -- storage is cheap, reasoning is expensive -- is true in
+your rock-paper-scissors game today, and it is just as true inside real
+AI systems that store millions of examples but spend enormous effort
+learning how to reason about them."
+
+
+================================================================================
+              PART 7 -- WRAP-UP + HOMEWORK  [folded into close]
+================================================================================
+
+
+--------------------------------------------------------------------------------
+SLIDE 15 -- HOMEWORK: TWO STRONG HOMEWORK PATHS
+[Duration: ~3 minutes to assign]
+--------------------------------------------------------------------------------
+
+[Display the two homework path cards -- "Path 1: Score across rounds" and
+"Path 2: Extend the list" -- plus the optional reflection line.]
+
+"Two solid homework paths tonight, about thirty minutes, pick whichever one
+matches what you didn't quite finish in Open Build -- or do both if you're
+feeling ambitious."
+
+"PATH 1 -- score across rounds. Add variables for player score and computer
+score if you haven't already, play several rounds in a row, and print the
+updated score after every single round. This reinforces variables, loops,
+and the habit of testing repeatedly instead of just once."
+
+"PATH 2 -- extend the list. Add lizard and spock as two new moves. Write
+every single extra rule carefully -- lizard beats what, loses to what,
+spock beats what, loses to what -- and test every matchup you can think of,
+on purpose, not just the ones that happen by luck. This reinforces list
+thinking and precise logical reasoning."
+
+"Optional reflection line, if you want to add it: 'One thing lists made
+easier in my program was...' -- finish that sentence in your own words."
+
+
+--------------------------------------------------------------------------------
+SLIDE 16 -- CLOSING: SESSION 14 READY TO TEACH
+[Duration: ~2 minutes]
+--------------------------------------------------------------------------------
+
+[Display the closing slide. Deliver with genuine pride -- this closes out
+Phase 2 (Bridge Scratch to Python) entirely. Session 15 (AI Made Real:
+Teachable Machine) is next class day, and it directly builds on today's
+"list is a tiny dataset" idea.]
+
+"Look at what you built today. You met an entirely new way of storing
+information -- a list -- and used it to power a real, working game against
+the computer, using indexing, random selection, and a full if/elif/else
+decision chain, all in one sitting."
+
+[KEY IDEA -- the final takeaway line]:
+"Remember our AI Moment: your list of three moves was organized data --
+tiny, but structurally the same idea as a dataset. Tomorrow, you're going
+to watch a computer build ITS OWN organized understanding from data,
+live, in front of you, using Google's Teachable Machine. Today you built
+the data by hand and wrote every rule yourself. Tomorrow you'll watch a
+machine start to notice patterns on its own. Same big idea -- organized
+examples power smart decisions -- just a very different way of getting
+there."
+
+"See you next session, coders -- Session 15, AI Made Real. Save your
+rock-paper-scissors game tonight; you'll want to remember exactly what a
+hand-built rule-based game feels like right before you see the alternative."
+
+[Let students save and pack up knowing they wielded a genuinely new tool
+today. End on real pride -- lists unlock nearly everything from here
+forward in the course, and every student leaves with one working in a game
+they can explain.]
+
+
+================================================================================
+APPENDIX A -- COMMON PITFALLS & HOW TO HANDLE THEM
+================================================================================
+
+PITFALL: Student spells "rock", "paper", or "scissors" inconsistently
+across the list, the elif conditions, and their typed test input (extra
+capital letter, trailing space, missing letter).
+  Handle: "This is the #1 bug in today's whole lesson. Have the student
+          read each spelling out loud, letter by letter, comparing the
+          list, the elif lines, and what they physically typed when
+          testing. Remind them: .lower() only fixes CAPITALIZATION, not
+          typos or extra spaces."
+
+PITFALL: The tie check (if player == computer) is placed AFTER the win/lose
+elif branches instead of first, so a tie occasionally gets misreported.
+  Handle: "Slide 10's exact prediction pause. Python checks top to bottom
+          and stops at the first true condition -- move the tie check back
+          to the very first if, before any elif, so it's always checked
+          first."
+
+PITFALL: random.choice(moves) is written BEFORE the moves list is defined,
+causing a NameError.
+  Handle: "Python reads your file top to bottom, one line at a time -- it
+          has to already know what 'moves' is before that line can use it.
+          Move your list definition above the random.choice() line."
+
+PITFALL: Forgetting import random at the top, causing random.choice to
+fail immediately.
+  Handle: "random.choice lives in an extra toolbox Python doesn't load
+          automatically. Add 'import random' as literally the very first
+          line of the file."
+
+PITFALL: Score variables (Tier B) are reset to 0 inside the round loop
+instead of before it, so the score never actually accumulates.
+  Handle: "Same rule as Session 6: SET happens ONCE, before any rounds are
+          played. CHANGE happens repeatedly, inside the loop, triggered by
+          who won that round. If score = 0 is inside the loop, it resets
+          every single time and never remembers anything."
+
+PITFALL: Tier C pattern-memory student's "most common move" logic always
+returns the same move regardless of what the player actually played.
+  Handle: "Have them print the full list of past moves first, and count
+          occurrences out loud before writing the comparison code -- debug
+          the COUNTING step before trusting the DECISION step built on top
+          of it."
+
+PITFALL: Fast Tier-C student finishes score-keeping, pattern memory, AND
+the challenge card early and is bored.
+  Handle: Point them to the "fast finisher move" -- refactor the repeated
+          win-checking into a helper function or a dictionary of rules --
+          or invite them to mentor a neighbor through Steps 4-5 of the
+          guided build.
+
+PITFALL: Young student (Grade 1-2) overwhelmed trying to add score-keeping
+AND extend the list to five moves at once.
+  Handle: Narrow the world. "Today you only need Tier A's goal: one clean
+          round that correctly says win, lose, or tie, every single time
+          you run it. That's a complete, real, working program." Buddy
+          them and celebrate the first correct run loudly.
+
+PITFALL: "Why does a list need square brackets and commas -- why not just
+list three variables next to each other?"
+  Handle: "Ask them what would happen if we wanted a hundred moves instead
+          of three -- would a hundred separate variable names actually be
+          manageable? A list scales to any size with the exact same
+          syntax; separate variables do not."
