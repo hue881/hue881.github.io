@@ -1,1 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Activity Sheet · Session 14 · Python: Lists &amp; Rock-Paper-Scissors</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --color-bg: #f4fbff;
+    --color-surface: rgba(255,255,255,0.97);
+    --color-text: #1f2a37;
+    --color-text-secondary: #374151;
+    --color-text-muted: #5b6b7e;
+    --color-accent-1: #0b63ce;
+    --color-accent-2: #10b981;
+    --color-accent-3: #f59e0b;
+    --color-accent-red: #ef4444;
+    --font-display: 'Fredoka', 'Trebuchet MS', sans-serif;
+    --font-body: 'Nunito', Arial, sans-serif;
+    --font-code: 'Fira Code', Consolas, monospace;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  @media print {
+    body { background: #fff !important; }
+    .no-print { display: none !important; }
+    .page-break { page-break-before: always; }
+    .card { box-shadow: none !important; border: 1.5px solid #d1d5db !important; }
+    .code-block { border: 1.5px solid #cbd5e1 !important; }
+  }
+  body { font-family: var(--font-body); color: var(--color-text); background: var(--color-bg); min-height: 100vh; }
+  .print-bar { background: rgba(255,255,255,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(148,163,184,0.3); padding: 10px 24px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; gap: 12px; flex-wrap: wrap; }
+  .print-bar .bar-title { font-family: var(--font-display); font-size: 1.05rem; font-weight: 700; color: var(--color-accent-1); }
+  .print-bar .bar-sub { font-size: 0.78rem; color: var(--color-text-muted); }
+  .btn-print { background: var(--color-accent-1); color: #fff; border: none; padding: 8px 20px; border-radius: 999px; font-family: var(--font-body); font-size: 0.82rem; font-weight: 800; cursor: pointer; letter-spacing: 0.06em; transition: background 0.2s, transform 0.15s; }
+  .btn-print:hover { background: #0952b0; transform: translateY(-1px); }
+  .page { max-width: 920px; margin: 0 auto; padding: 32px 24px 60px; }
+  .sheet-header { background: linear-gradient(135deg, #7c3aed 0%, #0b63ce 50%, #10b981 100%); border-radius: 20px; padding: 28px 32px 24px; color: #fff; margin-bottom: 28px; position: relative; overflow: hidden; }
+  .sheet-header::before { content: ''; position: absolute; top: -60px; right: -60px; width: 200px; height: 200px; background: rgba(255,255,255,0.08); border-radius: 50%; }
+  .sheet-header::after { content: ''; position: absolute; bottom: -40px; left: -40px; width: 140px; height: 140px; background: rgba(255,255,255,0.06); border-radius: 50%; }
+  .header-emoji { font-size: 2.8rem; margin-bottom: 6px; }
+  .header-day { font-size: 0.75rem; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; opacity: 0.85; margin-bottom: 4px; }
+  .header-title { font-family: var(--font-display); font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 700; line-height: 1.1; margin-bottom: 6px; }
+  .header-sub { font-size: 0.88rem; opacity: 0.85; margin-bottom: 14px; }
+  .header-pills { display: flex; gap: 8px; flex-wrap: wrap; }
+  .header-pill { background: rgba(255,255,255,0.22); border: 1px solid rgba(255,255,255,0.35); border-radius: 999px; padding: 4px 14px; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
+  .student-info { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 28px; }
+  @media (max-width: 600px) { .student-info { grid-template-columns: 1fr; } }
+  .info-field { background: var(--color-surface); border-radius: 12px; padding: 12px 14px; border: 1.5px solid rgba(11,99,206,0.14); box-shadow: 0 2px 8px rgba(15,23,42,0.05); }
+  .info-label { font-size: 0.65rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-accent-1); margin-bottom: 6px; }
+  .info-line { border: none; border-bottom: 1.5px solid #cbd5e1; width: 100%; font-family: var(--font-body); font-size: 0.9rem; color: var(--color-text); background: transparent; outline: none; padding: 2px 0; }
+  .info-line:focus { border-bottom-color: #0b63ce; }
+  .section-label { display: inline-flex; align-items: center; gap: 8px; padding: 5px 16px; border-radius: 999px; border: 1px solid rgba(148,163,184,0.4); background: rgba(255,255,255,0.9); font-size: 0.72rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-accent-1); margin-bottom: 10px; }
+  .section-title { font-family: var(--font-display); font-size: clamp(1.3rem, 2.5vw, 1.8rem); font-weight: 700; margin-bottom: 16px; color: var(--color-text); line-height: 1.2; }
+  .card { background: var(--color-surface); border-radius: 16px; padding: 18px 20px; box-shadow: 0 4px 18px rgba(15,23,42,0.07); border: 1px solid rgba(255,255,255,0.7); margin-bottom: 16px; }
+  .card.accent-blue { border-left: 4px solid var(--color-accent-1); }
+  .card.accent-green { border-left: 4px solid var(--color-accent-2); }
+  .card.accent-amber { border-left: 4px solid var(--color-accent-3); }
+  .card.accent-red { border-left: 4px solid var(--color-accent-red); }
+  .card.accent-purple { border-left: 4px solid #7c3aed; }
+  .card-label { font-size: 0.68rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 8px; }
+  .card-label.blue { color: var(--color-accent-1); }
+  .card-label.green { color: #047857; }
+  .card-label.amber { color: #b45309; }
+  .card-label.red { color: #b91c1c; }
+  .card-label.purple { color: #6d28d9; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  @media (max-width: 680px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+  .code-block { background: #1e293b; color: #e2e8f0; border-radius: 12px; padding: 14px 18px; font-family: var(--font-code); font-size: clamp(0.68rem, 1.1vw, 0.83rem); line-height: 1.6; overflow-x: auto; border: 1px solid rgba(255,255,255,0.06); margin-bottom: 12px; white-space: pre; }
+  .kw { color: #93c5fd; } .nb { color: #fcd34d; } .st { color: #86efac; } .cm { color: #64748b; font-style: italic; } .hl { color: #fcd34d; font-weight: 700; } .bug { color: #f87171; font-weight: 700; }
+  .write-lines { margin: 8px 0; }
+  input.write-line { border: none; border-bottom: 1.5px solid #cbd5e1; width: 100%; margin-bottom: 10px; height: 28px; display: block; background: transparent; font-family: var(--font-body); font-size: 0.88rem; color: var(--color-text); outline: none; padding: 2px 4px; }
+  input.write-line:focus { border-bottom-color: #0b63ce; }
+  input.write-line::placeholder { color: #bdc5d1; font-style: italic; }
+  textarea.write-area { border: 1.5px solid #cbd5e1; border-radius: 8px; width: 100%; min-height: 70px; padding: 8px; font-family: var(--font-body); font-size: 0.85rem; color: var(--color-text); resize: vertical; background: #f8fafc; outline: none; display: block; }
+  textarea.write-area:focus { outline: 2px solid rgba(11,99,206,0.3); }
+  textarea.write-area::placeholder { color: #bdc5d1; font-style: italic; }
+  input.blank-input { display: inline-block; background: rgba(251,191,36,0.18); border: none; border-bottom: 2px solid #f59e0b; min-width: 60px; width: 60px; height: 1.1em; border-radius: 3px; vertical-align: middle; margin: 0 2px; font-family: var(--font-code); font-size: inherit; color: #92400e; text-align: center; outline: none; padding: 0 2px; }
+  input.blank-input:focus { background: rgba(251,191,36,0.32); }
+  input.blank-input.wide { min-width: 110px; width: 110px; }
+  input.blank-input.narrow { min-width: 36px; width: 36px; }
+  .timeline { position: relative; padding-left: 22px; }
+  .timeline::before { content: ''; position: absolute; left: 8px; top: 4px; bottom: 4px; width: 3px; border-radius: 999px; background: linear-gradient(to bottom, #7c3aed, #0b63ce, #10b981); }
+  .timeline-step { position: relative; margin-bottom: 12px; }
+  .timeline-dot { position: absolute; left: -15px; top: 4px; width: 12px; height: 12px; border-radius: 999px; border: 2px solid #f4fbff; background: #0b63ce; box-shadow: 0 0 0 3px rgba(11,99,206,0.2); }
+  .timeline-dot.green { background: #10b981; } .timeline-dot.purple { background: #7c3aed; } .timeline-dot.amber { background: #f59e0b; }
+  .tip-box { border-radius: 10px; padding: 10px 14px; font-size: 0.8rem; line-height: 1.5; margin-top: 10px; }
+  .tip-box.blue { background: rgba(11,99,206,0.07); color: #1e40af; }
+  .tip-box.green { background: rgba(16,185,129,0.07); color: #065f46; }
+  .tip-box.amber { background: rgba(245,158,11,0.07); color: #92400e; }
+  .tip-box.purple { background: rgba(124,58,237,0.07); color: #5b21b6; }
+  .divider { border: none; border-top: 2px dashed #dde6f0; margin: 28px 0; }
+  .check-list { list-style: none; padding: 0; }
+  .check-list li { display: flex; align-items: flex-start; gap: 8px; font-size: 0.85rem; color: var(--color-text-secondary); margin-bottom: 8px; line-height: 1.45; }
+  .check-list li .box { flex-shrink: 0; width: 17px; height: 17px; border: 2px solid #94a3b8; border-radius: 4px; margin-top: 1px; background: #fff; display: inline-block; }
+  .level-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 14px; border-radius: 999px; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 8px; }
+  .level-1 { background: linear-gradient(135deg,#22c55e,#16a34a); color:#fff; }
+  .level-2 { background: linear-gradient(135deg,#3b82f6,#0b63ce); color:#fff; }
+  .level-3 { background: linear-gradient(135deg,#8b5cf6,#7c3aed); color:#fff; }
+  table.rubric { width: 100%; border-collapse: collapse; font-size: 0.82rem; margin-top: 8px; }
+  table.rubric th { background: #1e293b; color: #e2e8f0; padding: 8px 10px; text-align: left; font-weight: 700; letter-spacing: 0.05em; }
+  table.rubric td { padding: 8px 10px; border-bottom: 1px solid #e2e8f0; vertical-align: top; color: var(--color-text-secondary); }
+  table.rubric tr:nth-child(even) td { background: rgba(241,245,249,0.6); }
+  table.rubric td:first-child { font-weight: 700; color: var(--color-text); }
+  table.rubric .pts { font-family: var(--font-code); font-size: 0.75rem; font-weight: 800; color: var(--color-accent-1); white-space: nowrap; }
+  .sheet-footer { margin-top: 40px; padding: 16px 20px; border-radius: 12px; background: rgba(124,58,237,0.05); border: 1px solid rgba(124,58,237,0.12); display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; font-size: 0.76rem; color: var(--color-text-muted); }
+  .sheet-footer strong { color: var(--color-text); }
+  p, li { font-size: 0.88rem; color: var(--color-text-secondary); line-height: 1.55; }
+  strong { color: var(--color-text); }
+  code { background: #e0f2ff; padding: 1px 6px; border-radius: 4px; font-family: var(--font-code); font-size: 0.82em; color: #0b63ce; }
+  .mb-1 { margin-bottom: 6px; } .mb-2 { margin-bottom: 10px; } .mb-3 { margin-bottom: 14px; }
+  .mt-2 { margin-top: 10px; } .mt-3 { margin-top: 14px; }
+  .text-center { text-align: center; }
+  .text-muted { color: var(--color-text-muted); font-size: 0.78rem; }
+  .grad-text { background: linear-gradient(135deg,#7c3aed,#0b63ce,#10b981); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  .score-table { width:100%; border-collapse:collapse; font-size:0.82rem; }
+  .score-table th { background:#1e293b; color:#e2e8f0; padding:7px 10px; text-align:left; }
+  .score-table td { padding:7px 10px; border-bottom:1px solid #e2e8f0; color:var(--color-text-secondary); vertical-align:top; }
+  .score-table tr:nth-child(even) td { background:rgba(241,245,249,0.6); }
+  .score-table td:first-child { font-weight:700; color:var(--color-text); }
+  .dark-code-write { background:#1e293b; border-radius:12px; padding:14px 18px; width:100%; font-family:var(--font-code); font-size:clamp(0.7rem,1.1vw,0.84rem); line-height:1.7; border:1px solid rgba(255,255,255,0.06); resize:vertical; display:block; outline:none; color:#e2e8f0; box-sizing:border-box; }
+  .dark-code-write:focus { outline:2px solid rgba(124,58,237,0.4); }
+  .tier-a,.tier-b,.tier-c { display:inline-flex;align-items:center;padding:3px 10px;border-radius:999px;font-size:.7rem;font-weight:800; }
+  .tier-a{background:#dcfce7;color:#14532d}.tier-b{background:#dbeafe;color:#1e3a8a}.tier-c{background:#ede9fe;color:#4c1d95}
+</style>
+</head>
+<body>
 
+<div class="print-bar no-print">
+  <div>
+    <div class="bar-title">🐍✂️ Session 14 · Activity Sheet</div>
+    <div class="bar-sub">Python: Lists &amp; Rock-Paper-Scissors — Tiered A/B/C · Daily Rhythm Structure</div>
+  </div>
+  <button class="btn-print" onclick="window.print()">🖨️ Print / Save as PDF</button>
+</div>
+
+<div class="page">
+
+<!-- HEADER -->
+<div class="sheet-header">
+  <div class="header-emoji">🐍✂️</div>
+  <div class="header-day">Session 14 · Thurs Jul 23 · Tiered Activity Sheet</div>
+  <div class="header-title">Python Lists &amp; Rock-Paper-Scissors</div>
+  <div class="header-sub">Follows the Daily Rhythm: Warm-Up → Mini-Lesson + 🤖 AI Moment → Guided Build → Brain Break → Open Build → Share-Out</div>
+  <div class="header-pills">
+    <span class="header-pill">⏱ ~100 min</span>
+    <span class="header-pill">🐍 Python (turtle-free)</span>
+    <span class="header-pill">Ages 7–13</span>
+    <span class="header-pill">Tier A · B · C</span>
+    <span class="header-pill">🤖 AI Moment</span>
+  </div>
+</div>
+
+<!-- STUDENT INFO -->
+<div class="student-info">
+  <div class="info-field"><div class="info-label">👤 Your Name</div><input class="info-line" type="text" placeholder="First Last" /></div>
+  <div class="info-field"><div class="info-label">📅 Date</div><input class="info-line" type="text" placeholder="Month Day, Year" /></div>
+  <div class="info-field"><div class="info-label">🎯 My Tier</div><input class="info-line" type="text" placeholder="A / B / C" /></div>
+</div>
+
+<!-- BEFORE YOU BEGIN -->
+<div class="section-label">🎯 Before You Begin</div>
+<div class="section-title">Today's Path Through the Daily Rhythm</div>
+<div class="grid-2 mb-3">
+  <div class="card accent-purple">
+    <div class="card-label purple">🎯 Your Mission</div>
+    <p class="mb-2">Today you turn one variable into a <strong>list</strong> of choices, use <code>random.choice()</code> to let the computer pick, and build a real Rock-Paper-Scissors game — at your tier's on-ramp.</p>
+    <div class="timeline">
+      <div class="timeline-step"><div class="timeline-dot purple"></div><p><strong>Part 1</strong> — Warm-Up: Unplugged Logic Puzzle (10 min)</p></div>
+      <div class="timeline-step"><div class="timeline-dot"></div><p><strong>Part 2</strong> — Mini-Lesson &amp; 🤖 AI Moment: Lists &amp; Indexing (15–20 min)</p></div>
+      <div class="timeline-step"><div class="timeline-dot"></div><p><strong>Part 3</strong> — Guided Build: RPS Together (20 min)</p></div>
+      <div class="timeline-step"><div class="timeline-dot amber"></div><p><strong>Part 4</strong> — Brain Break: Human RPS Logic (5 min)</p></div>
+      <div class="timeline-step"><div class="timeline-dot green"></div><p><strong>Part 5</strong> — Open Build + Challenge Card, choose your tier (30–40 min)</p></div>
+      <div class="timeline-step" style="margin-bottom:0"><div class="timeline-dot"></div><p><strong>Part 6</strong> — Share-Out &amp; Exit Question (10 min)</p></div>
+    </div>
+  </div>
+  <div class="card accent-blue">
+    <div class="card-label blue">🔑 Key Ideas for Today</div>
+    <ul style="list-style:disc;padding-left:18px;line-height:1.9;">
+      <li><strong>List</strong> — one variable holding many items, e.g. <code>["rock","paper","scissors"]</code></li>
+      <li><strong>Index</strong> — the position of an item in a list, starting at 0</li>
+      <li><strong>random.choice()</strong> — picks one item from a list at random</li>
+      <li><strong>if / elif / else</strong> — checks the rules to decide win, lose, or tie</li>
+      <li>🤖 <strong>AI Moment</strong> — a list of options is like a tiny dataset; AI often "chooses" from a list of possible outputs too</li>
+    </ul>
+    <div class="tip-box purple mt-2">💡 <strong>Predict before you run</strong> — guess what the code will print before pressing run.</div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- PART 1 WARM-UP -->
+<div class="section-label">🧮 Part 1 of 6 · Warm-Up (10 min)</div>
+<div class="section-title">Unplugged Logic Puzzle — No Screens</div>
+<div class="card accent-purple mb-2">
+  <div class="card-label purple">🧩 Code of the Day</div>
+  <p class="mb-2">Three friends each picked one move: <strong>rock</strong>, <strong>paper</strong>, or <strong>scissors</strong>. Use the clues to figure out who picked what.</p>
+  <ul style="list-style:disc;padding-left:18px;margin-bottom:10px;">
+    <li>Ana did not pick rock.</li>
+    <li>Ben's move beats Ana's move.</li>
+    <li>Cleo's move loses to Ben's move.</li>
+  </ul>
+  <div class="grid-3">
+    <div><p class="text-muted mb-1">Ana picked:</p><input class="write-line" type="text" placeholder="rock / paper / scissors" /></div>
+    <div><p class="text-muted mb-1">Ben picked:</p><input class="write-line" type="text" placeholder="rock / paper / scissors" /></div>
+    <div><p class="text-muted mb-1">Cleo picked:</p><input class="write-line" type="text" placeholder="rock / paper / scissors" /></div>
+  </div>
+  <div class="tip-box amber mt-2">🧠 <strong>Tier A:</strong> Draw the three moves and cross out the ones the clues rule out. <strong>Tier C:</strong> Explain your reasoning in one sentence like you're proving it.</div>
+</div>
+
+<hr class="divider">
+
+<!-- PART 2 MINI LESSON -->
+<div class="section-label">📖 Part 2 of 6 · Mini-Lesson + 🤖 AI Moment (15–20 min)</div>
+<div class="section-title">How Can One Variable Hold Many Choices?</div>
+<div class="card mb-2">
+  <div class="card-label blue">📋 Fill in the blanks as your teacher demos live</div>
+  <div class="code-block">moves = [<input class="blank-input wide" type="text" placeholder="'rock'" />, <input class="blank-input wide" type="text" placeholder="'paper'" />, <input class="blank-input wide" type="text" placeholder="'scissors'" />]
+<span class="cm"># moves[0] is the first item</span>
+print(moves[<input class="blank-input narrow" type="text" placeholder="0" />])   <span class="cm"># prints 'rock'</span>
+print(moves[<input class="blank-input narrow" type="text" placeholder="2" />])   <span class="cm"># prints 'scissors'</span></div>
+  <p class="mb-2"><strong>Indexing rule:</strong> the first item in a list is at index <input class="blank-input narrow" type="text" placeholder="0" />, not 1.</p>
+  <div class="tip-box green mt-2">🤖 <strong>AI Moment:</strong> A list is like a tiny dataset — it holds every possible option. Many AI systems (like a chatbot picking a reply, or a game AI picking a move) work by choosing one item from a list of possibilities. Write one example of an AI you've seen "choosing" from options: <input class="write-line" type="text" placeholder="Example..." /></div>
+</div>
+<div class="card accent-green mb-2">
+  <div class="card-label green">🎲 random.choice() — letting the computer pick</div>
+  <div class="code-block"><span class="kw">import</span> random
+moves = [<span class="st">'rock'</span>, <span class="st">'paper'</span>, <span class="st">'scissors'</span>]
+computer = random.choice(moves)
+print(computer)</div>
+  <p>What will this print? It could be different every time you run it — why? <input class="write-line" type="text" placeholder="Because random.choice() picks..." /></p>
+</div>
+
+<hr class="divider">
+
+<!-- PART 3 GUIDED BUILD -->
+<div class="section-label">🛠️ Part 3 of 6 · Guided Build (20 min) — Everyone Together</div>
+<div class="section-title">Build One Clean Round of Rock-Paper-Scissors</div>
+<div class="card mb-2">
+  <div class="card-label blue">📋 Type this along with your teacher, step by step</div>
+  <div class="code-block"><span class="kw">import</span> random
+
+moves = [<span class="st">'rock'</span>, <span class="st">'paper'</span>, <span class="st">'scissors'</span>]
+
+player = input(<span class="st">"Pick rock, paper, or scissors: "</span>)
+computer = random.choice(moves)
+
+print(<span class="st">"Computer picked:"</span>, computer)
+
+<span class="kw">if</span> player == computer:
+    print(<span class="st">"Tie!"</span>)
+<span class="kw">elif</span> (player == <span class="st">'rock'</span> <span class="kw">and</span> computer == <span class="st">'scissors'</span>) <span class="kw">or</span> \
+      (player == <span class="st">'paper'</span> <span class="kw">and</span> computer == <span class="st">'rock'</span>) <span class="kw">or</span> \
+      (player == <span class="st">'scissors'</span> <span class="kw">and</span> computer == <span class="st">'paper'</span>):
+    print(<span class="st">"You win!"</span>)
+<span class="kw">else</span>:
+    print(<span class="st">"Computer wins!"</span>)</div>
+  <div class="check-list mt-2">
+    <li><span class="box"></span> My <code>moves</code> list has exactly 3 items</li>
+    <li><span class="box"></span> The computer's move is different most times I run it</li>
+    <li><span class="box"></span> Tie, win, and lose all print the correct message when I test them</li>
+  </ul>
+  <div class="tip-box blue mt-2">💡 <strong>Tier A:</strong> It's OK to just copy this line-by-line and test it. <strong>Tier B/C:</strong> Try running it 3 times and recording what happened below.</div>
+</div>
+<div class="card mb-2">
+  <div class="card-label green">🧪 Test it — run your program 3 times</div>
+  <table class="score-table">
+    <thead><tr><th>Round</th><th>My move</th><th>Computer's move</th><th>Result</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td><input class="write-line" type="text" /></td><td><input class="write-line" type="text" /></td><td><input class="write-line" type="text" /></td></tr>
+      <tr><td>2</td><td><input class="write-line" type="text" /></td><td><input class="write-line" type="text" /></td><td><input class="write-line" type="text" /></td></tr>
+      <tr><td>3</td><td><input class="write-line" type="text" /></td><td><input class="write-line" type="text" /></td><td><input class="write-line" type="text" /></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<hr class="divider page-break">
+
+<!-- PART 4 BRAIN BREAK -->
+<div class="section-label">🤸 Part 4 of 6 · Movement / Brain Break (5 min)</div>
+<div class="section-title">Stand Up and Become the Program</div>
+<div class="card accent-amber mb-3">
+  <p class="mb-2">Act out this logic with your body when your teacher calls it out:</p>
+  <ul style="list-style:disc;padding-left:18px;line-height:1.9;">
+    <li><strong>IF</strong> teacher says "rock," make a rock fist.</li>
+    <li><strong>IF</strong> teacher says "paper," open your hand flat.</li>
+    <li><strong>IF</strong> teacher says "scissors," make a V shape.</li>
+    <li><strong>ELSE</strong> freeze like a confused computer and wait for a valid input.</li>
+  </ul>
+  <div class="tip-box amber mt-2">🎯 Feel the difference between a valid input and an invalid input before you go back to the keyboard.</div>
+</div>
+
+<!-- PART 5 OPEN BUILD TIERED -->
+<div class="section-label">💻 Part 5 of 6 — Choose Your Tier (30–40 min)</div>
+<div class="section-title">Open Build + Challenge Card</div>
+<div class="card accent-blue mb-2">
+  <div class="card-label blue">📋 Instructions — work at your tier</div>
+  <div class="grid-3">
+    <div style="text-align:center;padding:8px;"><div style="font-size:1.8rem;margin-bottom:4px;">🟢</div><span class="level-badge level-1">Tier A — Foundations</span><p style="font-size:0.82rem;color:#374151;margin-top:4px;">Get one clean round working using the starter code</p></div>
+    <div style="text-align:center;padding:8px;"><div style="font-size:1.8rem;margin-bottom:4px;">🔵</div><span class="level-badge level-2">Tier B — Core</span><p style="font-size:0.82rem;color:#374151;margin-top:4px;">Add score-keeping across multiple rounds</p></div>
+    <div style="text-align:center;padding:8px;"><div style="font-size:1.8rem;margin-bottom:4px;">🟣</div><span class="level-badge level-3">Tier C — Accelerated</span><p style="font-size:0.82rem;color:#374151;margin-top:4px;">Add pattern memory that predicts the player's move</p></div>
+  </div>
+  <p style="font-size:0.8rem;color:#374151;margin-top:8px;text-align:center;">Circle your tier: &nbsp; <strong>Tier A</strong> &nbsp;/&nbsp; <strong>Tier B</strong> &nbsp;/&nbsp; <strong>Tier C</strong></p>
+</div>
+
+<!-- TIER A -->
+<div class="card mb-2">
+  <div style="margin-bottom:8px;"><span class="level-badge level-1">🟢 Tier A — Get One Clean Round Working</span></div>
+  <div class="grid-2">
+    <div>
+      <div class="card-label blue">📋 What to do</div>
+      <p class="mb-2">Use the starter code from the Guided Build. Focus on the <code>moves</code> list, one random computer choice, and a correct win/lose/tie message.</p>
+      <ul style="list-style:disc;padding-left:18px;font-size:0.83rem;color:#374151;line-height:1.8;">
+        <li>Make sure the list has exactly 3 items, spelled correctly</li>
+        <li>Ask a buddy to test it with each of the 3 moves</li>
+        <li>Read each line out loud and say what it does in your own words</li>
+      </ul>
+      <div class="check-list mt-2">
+        <li><span class="box"></span> Program runs without an error</li>
+        <li><span class="box"></span> Computer's move changes across runs</li>
+        <li><span class="box"></span> Win, lose, and tie all display correctly</li>
+      </div>
+    </div>
+    <div>
+      <p style="font-size:0.8rem;font-weight:700;color:#166534;margin-bottom:4px;">📝 Your working code:</p>
+      <textarea class="dark-code-write" style="min-height:180px;" spellcheck="false" placeholder="import random&#10;&#10;moves = ['rock', 'paper', 'scissors']&#10;player = input('Pick: ')&#10;computer = random.choice(moves)&#10;..."></textarea>
+    </div>
+  </div>
+  <div class="challenge-card tip-box purple mt-2">★ <strong>Challenge Card (optional):</strong> Change the input prompt so it accepts capital letters too (Hint: try <code>.lower()</code>).</div>
+</div>
+
+<!-- TIER B -->
+<div class="card mb-2">
+  <div style="margin-bottom:8px;"><span class="level-badge level-2">🔵 Tier B — Add Score-Keeping</span></div>
+  <div class="grid-2">
+    <div>
+      <div class="card-label blue">📋 What to do</div>
+      <p class="mb-2">Track the player's score and the computer's score across several rounds. Print the updated score after each round.</p>
+      <ul style="list-style:disc;padding-left:18px;font-size:0.83rem;color:#374151;line-height:1.8;">
+        <li>Create <code>player_score = 0</code> and <code>computer_score = 0</code> before the game starts</li>
+        <li>Add 1 to the right score inside each if/elif branch</li>
+        <li>Use a loop so the game can play multiple rounds</li>
+      </ul>
+      <div class="check-list mt-2">
+        <li><span class="box"></span> Score variables exist and start at 0</li>
+        <li><span class="box"></span> Score updates correctly after every round</li>
+        <li><span class="box"></span> Score prints after each round, not just at the end</li>
+      </div>
+    </div>
+    <div>
+      <p style="font-size:0.8rem;font-weight:700;color:#1e3a8a;margin-bottom:4px;">📝 Your working code:</p>
+      <textarea class="dark-code-write" style="min-height:180px;" spellcheck="false" placeholder="import random&#10;&#10;moves = ['rock', 'paper', 'scissors']&#10;player_score = 0&#10;computer_score = 0&#10;&#10;for round in range(3):&#10;    ..."></textarea>
+    </div>
+  </div>
+  <div class="challenge-card tip-box purple mt-2">★ <strong>Challenge Card:</strong> Extend the list to <strong>rock-paper-scissors-lizard-spock</strong>. Which part of the code becomes harder now? Which part stays easy because the list already existed? <input class="write-line" type="text" placeholder="Answer..." /></div>
+</div>
+
+<!-- TIER C -->
+<div class="card mb-2">
+  <div style="margin-bottom:8px;"><span class="level-badge level-3">🟣 Tier C — Pattern Memory</span></div>
+  <div class="grid-2">
+    <div>
+      <div class="card-label blue">📋 What to do</div>
+      <p class="mb-2">Keep a list of the player's past moves. Have the computer guess the player's most common move, then try to counter it.</p>
+      <ul style="list-style:disc;padding-left:18px;font-size:0.83rem;color:#374151;line-height:1.8;">
+        <li>Create an empty list <code>history = []</code> and append each player move</li>
+        <li>Use <code>history.count(item)</code> to find the most frequent move</li>
+        <li>Pick the move that beats the predicted move</li>
+      </ul>
+      <div class="check-list mt-2">
+        <li><span class="box"></span> History list correctly stores every past move</li>
+        <li><span class="box"></span> Program correctly identifies the most common move</li>
+        <li><span class="box"></span> Computer's counter-move actually beats the prediction</li>
+      </div>
+    </div>
+    <div>
+      <p style="font-size:0.8rem;font-weight:700;color:#5b21b6;margin-bottom:4px;">📝 Your working code:</p>
+      <textarea class="dark-code-write" style="min-height:220px;" spellcheck="false" placeholder="import random&#10;&#10;moves = ['rock', 'paper', 'scissors']&#10;history = []&#10;&#10;def predict(history):&#10;    ...&#10;&#10;def counter(move):&#10;    ..."></textarea>
+    </div>
+  </div>
+  <div class="challenge-card tip-box purple mt-2">★ <strong>Fast finisher move:</strong> Refactor repeated win-checking into a helper function or a dictionary of rules. Optional: peek at file organization if you want to save this as its own <code>.py</code> file.</div>
+</div>
+
+<hr class="divider">
+
+<!-- PART 6 SHARE OUT -->
+<div class="section-label">💬 Part 6 of 6 · Share-Out &amp; Reflection (10 min)</div>
+<div class="section-title">What Should You Be Able to Explain?</div>
+<div class="grid-2 mb-3">
+  <div class="card accent-blue">
+    <div class="card-label blue">🗣️ Show your neighbor (opt-in)</div>
+    <ul style="list-style:disc;padding-left:18px;line-height:1.8;">
+      <li>Point to the line where the list is created.</li>
+      <li>Explain how the computer gets one move from the list.</li>
+      <li>Name one bug you fixed today.</li>
+    </ul>
+  </div>
+  <div class="card accent-green">
+    <div class="card-label green">🌱 Growth Mindset Check</div>
+    <p style="font-size:0.8rem;color:#374151;margin-bottom:8px;">Circle the one that describes you today:</p>
+    <div style="display:flex;flex-direction:column;gap:7px;font-size:0.83rem;color:#374151;">
+      <label style="display:flex;align-items:center;gap:8px;"><input type="radio" name="mood" style="accent-color:#7c3aed;"> 😤 I got stuck but kept trying</label>
+      <label style="display:flex;align-items:center;gap:8px;"><input type="radio" name="mood" style="accent-color:#7c3aed;"> 💡 I figured something out by myself</label>
+      <label style="display:flex;align-items:center;gap:8px;"><input type="radio" name="mood" style="accent-color:#7c3aed;"> 🤝 I helped a classmate understand</label>
+      <label style="display:flex;align-items:center;gap:8px;"><input type="radio" name="mood" style="accent-color:#7c3aed;"> 🚀 I finished early and tackled the challenge!</label>
+    </div>
+  </div>
+</div>
+<div class="card mb-3">
+  <p style="margin:0;font-size:0.86rem;color:#78350f;"><strong>Exit question:</strong> If you wanted this same game to use 10 possible moves instead of 3, which part of the program would change first, and why?</p>
+  <div class="write-lines mt-2"><input class="write-line" type="text" placeholder="Answer..." /><input class="write-line" type="text" placeholder="..." /></div>
+</div>
+
+<!-- RUBRIC -->
+<div class="section-label">📊 Scoring</div>
+<div class="section-title">Rubric &amp; Points</div>
+<div class="card mb-3">
+  <table class="rubric">
+    <thead><tr><th>Section</th><th>What to Look For</th><th>Points</th></tr></thead>
+    <tbody>
+      <tr><td>Part 1 — Warm-Up Puzzle</td><td>All three moves correctly deduced; reasoning attempted</td><td class="pts">3 pts</td></tr>
+      <tr><td>Part 2 — Mini-Lesson</td><td>Blanks filled correctly; AI Moment example given</td><td class="pts">3 pts</td></tr>
+      <tr><td>Part 3 — Guided Build</td><td>Program runs; 3 test rounds recorded with results</td><td class="pts">4 pts</td></tr>
+      <tr><td>Part 5 — Tiered Open Build</td><td>Chosen tier fully completed; working code written and tested</td><td class="pts">7 pts</td></tr>
+      <tr><td>Part 6 — Reflection</td><td>Exit question answered thoughtfully</td><td class="pts">2 pts</td></tr>
+      <tr><td>⭐ Challenge Card (any tier)</td><td>Attempted and explained</td><td class="pts">+2</td></tr>
+    </tbody>
+  </table>
+  <div style="display:flex;justify-content:flex-end;margin-top:10px;gap:24px;font-size:0.82rem;color:#374151;">
+    <span>Total (without bonus): <strong style="font-family:var(--font-code);color:#0b63ce;">____ / 19</strong></span>
+    <span>Total (with bonus): <strong style="font-family:var(--font-code);color:#10b981;">____ / 21</strong></span>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="sheet-footer">
+  <div>
+    <strong>Session 14 · Python: Lists &amp; Rock-Paper-Scissors</strong> · Tiered Activity Sheet<br>
+    <span class="grad-text" style="font-weight:800;">Lists · Indexing · random.choice() · if/elif/else · AI Moment</span>
+  </div>
+  <div style="text-align:right;">
+    Ages 7–13 · Tiers A/B/C<br>
+    <span style="font-size:0.7rem;">🐍 Every list you build today is a tiny dataset!</span>
+  </div>
+</div>
+
+</div>
+</body>
+</html>
