@@ -217,7 +217,7 @@ Final Part 2 Score = (Project Checklist % × 0.70) + (MC Quiz % × 0.30)
 | **Sensitive to criticism** | Corrections are **always private and encouraging** |
 
 
-## 📐 Grading Weight in the Course
+## Grading Weight in the Course
 
 | Component | Weight | Notes |
 |-----------|--------|-------|
