@@ -6,7 +6,7 @@
 Please visit [3-1 Activity](https://hue881.github.io/mcs/2026/summer/midterm/activity) for the activity worksheet for the midterm.   
 Once this is complete, please upload the printed PDF to [Dropbox Transfer](https://www.dropbox.com/request/6ef6fxmcmxaslq2o2gr3) (just attach and submit).
 
-## 📌 At-a-Glance
+## At-a-Glance
 
 | Item | Detail |
 |------|--------|
@@ -20,7 +20,7 @@ Once this is complete, please upload the printed PDF to [Dropbox Transfer](https
 | **Graded on** | Effort & growth — **not** perfection |
 
 
-## 🏗️ Where We Are in the Course
+## Where We Are in the Course
 
 Session 11 sits at the exact midpoint of the **26-session arc**. Students have completed:
 
@@ -30,14 +30,14 @@ Session 11 sits at the exact midpoint of the **26-session arc**. Students have c
 
 The midterm is the **checkpoint** before diving deeper into Python conditionals, functions, lists, and eventually building a rule-based AI chatbot.
 
-## 🧠 What the Midterm Covers (Every Concept So Far)
+## What the Midterm Covers (Every Concept So Far)
 
 ### Part 1 — Concept Check (adaptive, mostly visual)
 
 This is the **knowledge and vocabulary** portion. It is designed to be low-stress with visual matching, predict-the-output puzzles, and open-ended AI explanations.
 
 
-#### 📚 Domain Breakdown (10 Domains, 98+ questions in bank)
+#### Domain Breakdown (10 Domains, 98+ questions in bank)
 
 | Domain | Sessions | Key Concepts Tested |
 |--------|----------|---------------------|
@@ -53,7 +53,7 @@ This is the **knowledge and vocabulary** portion. It is designed to be low-stres
 | **Mixed Skills** | All | Cross-domain combinations — events + loops + variables in one question |
 
 
-#### ✍️ Question Types in Part 1 (CAT — Computer Adaptive Test)
+#### Question Types in Part 1 (CAT — Computer Adaptive Test)
 
 The digital exam uses a **15-question adaptive format**:
 
@@ -63,14 +63,14 @@ The digital exam uses a **15-question adaptive format**:
 - **Ability meter** — a live θ (theta) score from –3 to +3 tracks student level
 - **Scaled score** — converted to 200–800 range (SAT-style); speed on correct answers gives a small bonus
 
-- 💡 **Teacher note:** The adaptive engine starts at difficulty 3 (middle), raises by ~0.28×difficulty step on correct, lowers by ~0.28×difficulty step on wrong. After 15 items, it assigns a **Tier** (A, B, or C) that routes Part 2.
+- **Teacher note:** The adaptive engine starts at difficulty 3 (middle), raises by ~0.28×difficulty step on correct, lowers by ~0.28×difficulty step on wrong. After 15 items, it assigns a **Tier** (A, B, or C) that routes Part 2.
 
 ### Part 2 — Mini-Build (tier-appropriate, 80 min)
 
 This is the **application** portion. Students build something real, matched to their skill level.
 
 
-#### 🔑 Tier Routing (determined by Part 1 score)
+#### Tier Routing (determined by Part 1 score)
 
 | Tier | Part 1 Score | Who | Part 2 Focus |
 |------|-------------|-----|--------------|
@@ -81,7 +81,7 @@ This is the **application** portion. Students build something real, matched to t
 ## 📋 Part 2 Tasks by Tier (Full Detail)
 
 
-### 🟦 Tier A — Foundational Path
+### Tier A — Foundational Path
 *"Shorter, more visual, and Scratch-friendly. Try your best — effort and growth count."*
 
 | Task | Type | What Students Do |
@@ -99,7 +99,7 @@ This is the **application** portion. Students build something real, matched to t
 - [ ] Includes one test and one possible bug fix
 
 
-### 🟨 Tier B — Intermediate Path
+### Tier B — Intermediate Path
 *"Balanced concept check plus a guided mini-build in Scratch or Python."*
 
 | Task | Type | What Students Do |
@@ -117,7 +117,7 @@ This is the **application** portion. Students build something real, matched to t
 - [ ] Includes one test and one possible bug fix
 
 
-### 🟥 Tier C — Advanced Path
+### Tier C — Advanced Path
 *"Python-required mini-build with clear explanations. Keep it friendly and focused."*
 
 | Task | Type | What Students Do |
@@ -205,7 +205,7 @@ Final Part 2 Score = (Project Checklist % × 0.70) + (MC Quiz % × 0.30)
 
 
 
-## 🎯 Differentiation at a Glance
+## Differentiation at a Glance
 
 | Need | What the Midterm Does |
 |------|-----------------------|
@@ -289,7 +289,7 @@ when green flag clicked
 ```
 
 
-## 📝 Vocabulary Master List (All 10 Domains)
+## Vocabulary Master List (All 10 Domains)
 
 | Term | Definition | Domain |
 |------|-----------|--------|
@@ -320,7 +320,7 @@ when green flag clicked
 | **Rule-based AI** | Follows rules written by a human coder | AI Concepts |
 
 
-## 🏅 Success Metrics for Session 11
+## Success Metrics for Session 11
 
 Every student is considered successful if they can:
 
