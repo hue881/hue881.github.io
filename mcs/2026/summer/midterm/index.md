@@ -140,7 +140,7 @@ This is the **application** portion. Students build something real, matched to t
 - [ ] Includes one test case or predicted output
 
 
-## 🤖 AI Integration Thread (Session 11)
+## AI Integration Thread (Session 11)
 
 Every session has an embedded AI moment — the midterm is no exception.
 
