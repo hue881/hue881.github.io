@@ -78,7 +78,7 @@ This is the **application** portion. Students build something real, matched to t
 | **B — Intermediate** | –0.45 ≤ θ ≤ 0.45 | Grades 3–5, some Scratch | Balanced ScratchPython concept check + mini-build |
 | **C — Advanced** | θ > 0.45 | Grades 6–9, Python-curious | Python **required** mini-build with deeper explanations |
 
-## 📋 Part 2 Tasks by Tier (Full Detail)
+## Part 2 Tasks by Tier (Full Detail)
 
 
 ### Tier A — Foundational Path
