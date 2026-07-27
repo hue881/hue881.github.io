@@ -1,1 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Activity Sheet &middot; Session 15 &middot; AI Made Real: Teachable Machine</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f4fbff;--sur:rgba(255,255,255,.97);--tx:#1f2a37;--tx2:#374151;--txm:#5b6b7e;--a1:#2563eb;--a2:#16a34a;--a3:#f59e0b;--ar:#ef4444;--ap:#7c3aed;--fd:'Fredoka','Trebuchet MS',sans-serif;--fb:'Nunito',Arial,sans-serif;--fc:'Fira Code',Consolas,monospace}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+@media print{body{background:#fff!important}.no-print{display:none!important}.pb{page-break-before:always}.card{box-shadow:none!important;border:1.5px solid #d1d5db!important}}
+body{font-family:var(--fb);color:var(--tx);background:var(--bg);min-height:100vh}
+.pbar{background:rgba(255,255,255,.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(148,163,184,.3);padding:10px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;gap:12px;flex-wrap:wrap}
+.pbar-title{font-family:var(--fd);font-size:1.05rem;font-weight:700;color:var(--a1)}
+.pbar-sub{font-size:.78rem;color:var(--txm)}
+.btn-p{background:var(--a1);color:#fff;border:none;padding:8px 20px;border-radius:999px;font-family:var(--fb);font-size:.82rem;font-weight:800;cursor:pointer;letter-spacing:.06em;transition:.2s}
+.btn-p:hover{background:#1d4ed8;transform:translateY(-1px)}
+.page{max-width:920px;margin:0 auto;padding:32px 24px 60px}
+.shdr{background:linear-gradient(135deg,#0b63ce 0%,#10b981 60%,#7c3aed 100%);border-radius:20px;padding:28px 32px 24px;color:#fff;margin-bottom:28px;position:relative;overflow:hidden}
+.shdr::before{content:'';position:absolute;top:-60px;right:-60px;width:200px;height:200px;background:rgba(255,255,255,.08);border-radius:50%}
+.shdr::after{content:'';position:absolute;bottom:-40px;left:-40px;width:140px;height:140px;background:rgba(255,255,255,.06);border-radius:50%}
+.hday{font-size:.75rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;opacity:.85;margin-bottom:4px}
+.htitle{font-family:var(--fd);font-size:clamp(1.6rem,4vw,2.4rem);font-weight:700;line-height:1.1;margin-bottom:6px}
+.hsub{font-size:.88rem;opacity:.85;margin-bottom:14px}
+.hpills{display:flex;gap:8px;flex-wrap:wrap}
+.hpill{background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:4px 14px;font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+.sinfo{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:28px}
+@media(max-width:600px){.sinfo{grid-template-columns:1fr}}
+.ifield{background:var(--sur);border-radius:12px;padding:12px 14px;border:1.5px solid rgba(37,99,235,.14);box-shadow:0 2px 8px rgba(15,23,42,.05)}
+.ilabel{font-size:.65rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--a1);margin-bottom:6px}
+.iline{border:none;border-bottom:1.5px solid #cbd5e1;width:100%;font-family:var(--fb);font-size:.9rem;color:var(--tx);background:transparent;outline:none;padding:2px 0}
+.iline:focus{border-bottom-color:#2563eb}
+.slabel{display:inline-flex;align-items:center;gap:8px;padding:5px 16px;border-radius:999px;border:1px solid rgba(148,163,184,.4);background:rgba(255,255,255,.9);font-size:.72rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--a1);margin-bottom:10px}
+.stitle{font-family:var(--fd);font-size:clamp(1.3rem,2.5vw,1.8rem);font-weight:700;margin-bottom:16px;color:var(--tx);line-height:1.2}
+.card{background:var(--sur);border-radius:16px;padding:18px 20px;box-shadow:0 4px 18px rgba(15,23,42,.07);border:1px solid rgba(255,255,255,.7);margin-bottom:16px}
+.card.ab{border-left:4px solid var(--a1)}.card.ag{border-left:4px solid var(--a2)}.card.aa{border-left:4px solid var(--a3)}.card.ar{border-left:4px solid var(--ar)}.card.ap{border-left:4px solid var(--ap)}
+.clabel{font-size:.68rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;margin-bottom:8px}
+.cl-b{color:var(--a1)}.cl-g{color:#15803d}.cl-a{color:#b45309}.cl-r{color:#b91c1c}.cl-p{color:#6d28d9}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media(max-width:680px){.g2,.g3{grid-template-columns:1fr}}
+.wl{border:none;border-bottom:1.5px solid #cbd5e1;width:100%;margin-bottom:10px;height:28px;display:block;background:transparent;font-family:var(--fb);font-size:.88rem;color:var(--tx);outline:none;padding:2px 4px}
+.wl:focus{border-bottom-color:#2563eb}
+.wl::placeholder{color:#bdc5d1;font-style:italic}
+.wa{border:1.5px solid #cbd5e1;border-radius:8px;width:100%;min-height:70px;padding:8px;font-family:var(--fb);font-size:.85rem;color:var(--tx);resize:vertical;background:#f8fafc;outline:none;display:block}
+.wa:focus{outline:2px solid rgba(37,99,235,.3)}
+.wa::placeholder{color:#bdc5d1;font-style:italic}
+.tip{border-radius:10px;padding:10px 14px;font-size:.8rem;line-height:1.5;margin-top:10px}
+.tip.b{background:rgba(37,99,235,.07);color:#1e40af}.tip.g{background:rgba(22,163,74,.07);color:#14532d}.tip.a{background:rgba(245,158,11,.07);color:#92400e}.tip.p{background:rgba(124,58,237,.07);color:#5b21b6}
+.div{border:none;border-top:2px dashed #dde6f0;margin:28px 0}
+.chk{list-style:none;padding:0}
+.chk li{display:flex;align-items:flex-start;gap:8px;font-size:.85rem;color:var(--tx2);margin-bottom:8px;line-height:1.45}
+.chk li input[type=checkbox]{flex-shrink:0;width:17px;height:17px;margin-top:2px;accent-color:#2563eb;cursor:pointer}
+.sb{display:inline-flex;align-items:center;gap:4px;padding:3px 10px 3px 8px;border-radius:6px;font-family:var(--fc);font-weight:700;font-size:.78rem;cursor:default;user-select:none;vertical-align:middle}
+.sbp{background:#9c27b0;color:#fff}.sbo{background:#ff9800;color:#fff}.sbb{background:#2196f3;color:#fff}.sby{background:#ffc107;color:#333}.sbt{background:#009688;color:#fff}.sbg{background:#4caf50;color:#fff}
+.lvl{display:inline-flex;align-items:center;gap:6px;padding:4px 14px;border-radius:999px;font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px}
+.la{background:linear-gradient(135deg,#2563eb,#60a5fa);color:#fff}
+.lb{background:linear-gradient(135deg,#16a34a,#4ade80);color:#fff}
+.lc{background:linear-gradient(135deg,#7c3aed,#f97066);color:#fff}
+.lx{background:linear-gradient(135deg,#f59e0b,#f97066);color:#fff}
+table.rub{width:100%;border-collapse:collapse;font-size:.82rem;margin-top:8px}
+table.rub th{background:#1e293b;color:#e2e8f0;padding:8px 10px;text-align:left;font-weight:700;letter-spacing:.05em}
+table.rub td{padding:8px 10px;border-bottom:1px solid #e2e8f0;vertical-align:top;color:var(--tx2)}
+table.rub tr:nth-child(even) td{background:rgba(241,245,249,.6)}
+table.rub td:first-child{font-weight:700;color:var(--tx)}
+table.rub .pts{font-family:var(--fc);font-size:.75rem;font-weight:800;color:var(--a1);white-space:nowrap}
+.sfooter{margin-top:40px;padding:16px 20px;border-radius:12px;background:rgba(37,99,235,.05);border:1px solid rgba(37,99,235,.12);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:.76rem;color:var(--txm)}
+.sfooter strong{color:var(--tx)}
+.gtext{background:linear-gradient(135deg,#0b63ce,#10b981,#7c3aed);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.mb1{margin-bottom:6px}.mb2{margin-bottom:10px}.mb3{margin-bottom:14px}.mt2{margin-top:10px}.mt3{margin-top:14px}
+.tmuted{color:var(--txm);font-size:.78rem}
+code{background:#e0f2ff;padding:1px 6px;border-radius:4px;font-family:var(--fc);font-size:.82em;color:#1d4ed8}
+.rbar{display:flex;border-radius:12px;overflow:hidden;margin-bottom:20px;border:2px solid rgba(37,99,235,.15)}
+.rb{flex:1;padding:8px 4px;text-align:center;font-size:.62rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase;line-height:1.3}
+.rw{background:#eff6ff;color:#1d4ed8;border-right:1px solid rgba(37,99,235,.15)}
+.rm{background:#f0fdf4;color:#15803d;border-right:1px solid rgba(22,163,74,.15)}
+.rg{background:#fefce8;color:#a16207;border-right:1px solid rgba(245,158,11,.15)}
+.rk{background:#fdf4ff;color:#7e22ce;border-right:1px solid rgba(124,58,237,.15)}
+.ro{background:#fff1f2;color:#be123c;border-right:1px solid rgba(249,112,102,.15)}
+.rs{background:#ecfdf5;color:#065f46}
+.sc-row{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border-radius:10px;margin-bottom:8px;border:1.5px solid transparent;transition:.2s}
+.sc-row:hover{border-color:#bfdbfe}
+.sc-row input[type=checkbox]{margin-top:2px;accent-color:#16a34a;width:18px;height:18px;flex-shrink:0;cursor:pointer}
+.sc-lbl{font-size:.88rem;color:var(--tx2);line-height:1.4}
+.sc-lbl strong{color:var(--tx)}
+.tl{position:relative;padding-left:22px}
+.tl::before{content:'';position:absolute;left:8px;top:4px;bottom:4px;width:3px;border-radius:999px;background:linear-gradient(to bottom,#0b63ce,#10b981,#7c3aed)}
+.tls{position:relative;margin-bottom:12px}
+.tld{position:absolute;left:-15px;top:4px;width:12px;height:12px;border-radius:999px;border:2px solid #f4fbff;background:#0b63ce;box-shadow:0 0 0 3px rgba(11,99,206,.2)}
+.tld.g{background:#10b981}.tld.p{background:#7c3aed}.tld.a{background:#f59e0b}.tld.r{background:#f97066}
+.confbar{background:#e2e8f0;border-radius:999px;height:10px;overflow:hidden}
+.confbar-fill{height:100%;border-radius:999px}
+</style>
+</head>
+<body>
+<div class="pbar no-print">
+  <div><div class="pbar-title">&#129302; Session 15 &middot; Activity Sheet</div><div class="pbar-sub">AI Made Real: Teachable Machine &mdash; Differentiated &middot; Ages 7&ndash;13</div></div>
+  <button class="btn-p" onclick="window.print()"><svg aria-hidden="true" viewBox="0 0 24 24" width="16" height="16" style="display:inline-block;vertical-align:-3px;margin-right:8px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8" rx="1"/><path d="M6 18h12"/></svg>Print / Save as PDF</button>
+</div>
+<div class="page">
 
+<div class="shdr">
+  <div style="font-size:2.8rem;margin-bottom:6px;">&#129302;&#128248;</div>
+  <div class="hday">Session 15 &middot; Monday, July 27 &middot; Week 5 &middot; Summer 2026 AI &amp; Coding Program</div>
+  <div class="htitle">AI Made Real: Teachable Machine &mdash; Training Day</div>
+  <div class="hsub">Training data &rarr; model &rarr; prediction, made physically obvious in your own hands.</div>
+  <div class="hpills">
+    <span class="hpill">&#129302; AI / Teachable Machine</span><span class="hpill">&#8987; 110 min</span><span class="hpill">Ages 7&ndash;13</span><span class="hpill">3 Tiers</span><span class="hpill">Data &middot; Model &middot; Prediction &middot; Bias</span>
+  </div>
+</div>
+
+<div class="sinfo">
+  <div class="ifield"><div class="ilabel">&#128100; Your Name</div><input class="iline" type="text" placeholder="First Last" /></div>
+  <div class="ifield"><div class="ilabel">&#128197; Date</div><input class="iline" type="text" value="July 27, 2026" /></div>
+  <div class="ifield"><div class="ilabel">&#127979; Section / Period</div><input class="iline" type="text" placeholder="Section 1 / 2 / 3" /></div>
+</div>
+
+<!-- DAILY RHYTHM -->
+<div class="slabel">&#8987; Today&rsquo;s Rhythm</div>
+<div class="stitle">Daily Schedule &mdash; Follow Along!</div>
+<div class="rbar">
+  <div class="rb rw">&#129504;<br>Warm-Up<br>10 min</div>
+  <div class="rb rm">&#128161;<br>Mini-Lesson<br>15&ndash;20 min</div>
+  <div class="rb rg">&#128296;<br>Guided Build<br>20 min</div>
+  <div class="rb rk">&#128131;<br>Move Break<br>5 min</div>
+  <div class="rb ro">&#128736;<br>Open Build<br>30&ndash;40 min</div>
+  <div class="rb rs">&#127908;<br>Share-Out<br>10 min</div>
+</div>
+
+<!-- PART 1: WARM-UP -->
+<div class="slabel">&#129504; Part 1 &middot; Warm-Up (10 min)</div>
+<div class="stitle">Cat or Dog? You Be the &ldquo;Model.&rdquo;</div>
+<div class="card ab mb2">
+  <div class="clabel cl-b">&#128021;&#128054; Two-Pile Sorting Game &mdash; No Screen Needed!</div>
+  <p class="mb2">Your teacher shows one describing word at a time (&ldquo;has whiskers,&rdquo; &ldquo;barks,&rdquo; &ldquo;purrs&rdquo;). Sort each word into Pile A or Pile B before seeing the next clue.</p>
+  <p style="font-size:.83rem;font-weight:700;color:#374151;margin-bottom:6px;">1. After only 1 clue, how confident were you in your sort?</p>
+  <input class="wl" type="text" placeholder="After 1 clue I felt..." />
+  <p style="font-size:.83rem;font-weight:700;color:#374151;margin:10px 0 6px;">2. After 5 clues, how confident were you?</p>
+  <input class="wl" type="text" placeholder="After 5 clues I felt..." />
+  <p style="font-size:.83rem;font-weight:700;color:#374151;margin-bottom:6px;">3. What changed &mdash; the rule, or the amount of evidence?</p>
+  <input class="wl" type="text" placeholder="What changed was..." />
+  <div class="tip b">&#128161; Big Idea: You just did what a machine learning model does &mdash; you started unsure, and got more confident as more <strong>examples</strong> came in. Today the computer does this live, on camera, in front of you.</div>
+</div>
+
+<hr class="div">
+
+<!-- PART 2: MINI-LESSON -->
+<div class="slabel">&#128161; Part 2 &middot; Mini-Lesson (15&ndash;20 min)</div>
+<div class="stitle">Three Words That Explain Almost All of AI</div>
+<div class="card ag mb2">
+  <div class="clabel cl-g">&#128218; Training Data &middot; Model &middot; Prediction</div>
+  <div class="g3 mb2">
+    <div style="background:#eff6ff;border-radius:12px;padding:14px;">
+      <div style="font-weight:800;font-size:.85rem;color:#0b63ce;margin-bottom:4px;">1. Training Data</div>
+      <div style="font-size:.78rem;color:#374151;">The examples you show the computer &mdash; pictures, sounds, or poses, each labeled with a name.</div>
+    </div>
+    <div style="background:#fff7ed;border-radius:12px;padding:14px;">
+      <div style="font-weight:800;font-size:.85rem;color:#b45309;margin-bottom:4px;">2. Model</div>
+      <div style="font-size:.78rem;color:#374151;">The pattern the computer builds by comparing all those examples &mdash; its &ldquo;trained brain&rdquo; for this one task.</div>
+    </div>
+    <div style="background:#f0fdf4;border-radius:12px;padding:14px;">
+      <div style="font-weight:800;font-size:.85rem;color:#0d9488;margin-bottom:4px;">3. Prediction</div>
+      <div style="font-size:.78rem;color:#374151;">The model&rsquo;s best guess on something new, plus how confident it is.</div>
+    </div>
+  </div>
+  <p style="font-size:.83rem;font-weight:700;color:#374151;margin-bottom:6px;">Question to hold onto: if a model was only shown 5 examples, would you trust its prediction as much as one shown 500? Why?</p>
+  <input class="wa" placeholder="I would / wouldn't trust it as much because..."></input>
+</div>
+
+<div class="card ab mb2">
+  <div class="clabel cl-b">&#128421;&#65039; Meet Google Teachable Machine</div>
+  <p class="mb2">Runs right in the browser at <code>teachablemachine.withgoogle.com</code> &mdash; no install, no code. It has three project types: Image, Sound, or Pose. Today we train an <strong>Image</strong> model with two classes, and everything stays on your own computer.</p>
+  <div class="tip b">Nothing you record gets sent anywhere. It&rsquo;s a real neural network, just made visible and touchable.</div>
+</div>
+
+<div class="card aa mb2">
+  <div class="clabel cl-a">&#127909; Video 1 &mdash; Gather Your Data</div>
+  <p class="mb2" style="font-size:.85rem;">Watch <em>&ldquo;Teachable Machine Tutorial 1: Gather&rdquo;</em> (under 2 min). While watching, think about:</p>
+  <div class="chk mb2">
+    <li><input type="checkbox"> What is a &ldquo;class,&rdquo; and why does he need at least two of them?</li>
+    <li><input type="checkbox"> Why does he move around while recording each class?</li>
+    <li><input type="checkbox"> What would happen if he only recorded 3 images per class?</li>
+  </div>
+  <p style="font-size:.8rem;font-weight:700;color:#a16207;margin-bottom:4px;">My answer to one of the above:</p>
+  <input class="wl" type="text" placeholder="I think..." />
+</div>
+
+<div class="card ap mb2">
+  <div class="clabel cl-p">&#129302; AI Moment &mdash; Why Does Confidence Change?</div>
+  <p class="mb2">With only 2 examples per class, a model might guess Thumbs Up 54% / Thumbs Down 46% &mdash; barely sure. With 40 examples per class, that same model can reach 98% / 2% &mdash; very sure.</p>
+  <div class="g2 mb2">
+    <div style="background:#eff6ff;border-radius:10px;padding:10px;">
+      <div style="font-size:.78rem;color:#374151;margin-bottom:4px;">2 examples/class</div>
+      <div style="display:flex;justify-content:space-between;font-size:.75rem;color:#374151;"><span>Thumbs Up</span><span>54%</span></div>
+      <div class="confbar"><div class="confbar-fill" style="width:54%;background:#f59e0b;"></div></div>
+    </div>
+    <div style="background:#f0fdf4;border-radius:10px;padding:10px;">
+      <div style="font-size:.78rem;color:#374151;margin-bottom:4px;">40 examples/class</div>
+      <div style="display:flex;justify-content:space-between;font-size:.75rem;color:#374151;"><span>Thumbs Up</span><span>98%</span></div>
+      <div class="confbar"><div class="confbar-fill" style="width:98%;background:#10b981;"></div></div>
+    </div>
+  </div>
+  <p style="font-size:.83rem;font-weight:700;color:#6d28d9;margin-bottom:4px;">If your model is 98% confident but only ever saw YOUR hand, what happens when a classmate with different skin tone or lighting tries it?</p>
+  <input class="wl" type="text" placeholder="It might..." />
+</div>
+
+<div class="card ar mb3">
+  <div class="clabel cl-r">&#127909; Video 2 &mdash; When Data Goes Wrong</div>
+  <p class="mb2" style="font-size:.85rem;">Watch <em>&ldquo;Data Biases in Machine Learning &mdash; for Kids&rdquo;</em> (under 4 min). While watching, think about:</p>
+  <div class="chk mb2">
+    <li><input type="checkbox"> What does &ldquo;biased data&rdquo; mean, in your own words?</li>
+    <li><input type="checkbox"> Give one real example where limited data could leave someone out.</li>
+    <li><input type="checkbox"> Who is responsible for fixing biased data &mdash; the computer, or the people who trained it?</li>
+  </div>
+  <p style="font-size:.8rem;font-weight:700;color:#b91c1c;margin-bottom:4px;">Biased data means...</p>
+  <input class="wl" type="text" placeholder="Biased data means..." />
+</div>
+
+<hr class="div pb">
+
+<!-- PART 3: GUIDED BUILD -->
+<div class="slabel">&#128296; Part 3 &middot; Guided Build (20 min)</div>
+<div class="stitle">Build: Thumbs-Up vs. Thumbs-Down</div>
+<p style="font-size:.88rem;color:#374151;margin-bottom:14px;">Follow along with your teacher. Check off each step as you complete it.</p>
+<div class="card ab mb3">
+  <div class="clabel cl-b">&#128736; 5-Step Build Checklist</div>
+  <div class="tl">
+    <div class="tls"><div class="tld"></div>
+      <div class="mb1"><strong>Step 1 &mdash; Open Teachable Machine</strong></div>
+      <p style="font-size:.8rem;color:#374151;margin-bottom:4px;">Go to <code>teachablemachine.withgoogle.com</code> &rarr; Get Started &rarr; Image Project &rarr; Standard.</p>
+      <label style="font-size:.8rem;display:flex;align-items:center;gap:6px;"><input type="checkbox" style="accent-color:#0b63ce;"> Done!</label>
+    </div>
+    <div class="tls"><div class="tld g"></div>
+      <div class="mb1"><strong>Step 2 &mdash; Name Two Classes</strong></div>
+      <p style="font-size:.8rem;color:#374151;margin-bottom:4px;">Class 1: &ldquo;Thumbs Up.&rdquo; Class 2: &ldquo;Thumbs Down.&rdquo;</p>
+      <label style="font-size:.8rem;display:flex;align-items:center;gap:6px;"><input type="checkbox" style="accent-color:#10b981;"> Both classes named!</label>
+    </div>
+    <div class="tls"><div class="tld a"></div>
+      <div class="mb1"><strong>Step 3 &mdash; Record Webcam Samples per Class</strong></div>
+      <p style="font-size:.8rem;color:#374151;margin-bottom:4px;">Click the record button on each class and watch the model learn live.</p>
+      <label style="font-size:.8rem;display:flex;align-items:center;gap:6px;"><input type="checkbox" style="accent-color:#f59e0b;"> Samples recorded for both classes!</label>
+    </div>
+    <div class="tls"><div class="tld p"></div>
+      <div class="mb1"><strong>Step 4 &mdash; Click &ldquo;Train Model&rdquo;</strong></div>
+      <p style="font-size:.8rem;color:#374151;margin-bottom:4px;">Stay on the tab! Training happens right on your own computer.</p>
+      <div class="tip p" style="margin-bottom:6px;">Nothing leaves your computer &mdash; the training happens locally in your browser.</div>
+      <label style="font-size:.8rem;display:flex;align-items:center;gap:6px;"><input type="checkbox" style="accent-color:#7c3aed;"> Model trained!</label>
+    </div>
+    <div class="tls"><div class="tld r"></div>
+      <div class="mb1"><strong>Step 5 &mdash; Test It Live &mdash; Watch the Confidence Bars</strong></div>
+      <p style="font-size:.8rem;color:#374151;margin-bottom:4px;">Show a thumbs-up, then thumbs-down. Watch the percentages flip.</p>
+      <label style="font-size:.8rem;display:flex;align-items:center;gap:6px;"><input type="checkbox" style="accent-color:#f97066;"> Confidence bars flipped correctly!</label>
+    </div>
+  </div>
+  <div class="tip g mt2">&#127937; <strong>Try it:</strong> click the record button 15 times for one class and 0 times for the other &mdash; what happens to the bars? Write down what you notice below.</div>
+  <input class="wl mt2" type="text" placeholder="When one class has way more samples..." />
+</div>
+
+<hr class="div">
+
+<!-- PART 4: MOVEMENT BREAK -->
+<div class="slabel">&#128131; Movement Break (5 min)</div>
+<div class="stitle">Stand Up &mdash; Be the Model!</div>
+<div class="card ap mb3">
+  <div class="clabel cl-p">&#128101; Be the Model Activity</div>
+  <p class="mb2">One student is the &ldquo;Model.&rdquo; The class shows one clue-word at a time. The Model guesses out loud after each clue.</p>
+  <div class="chk mb2">
+    <li><input type="checkbox"> After clue 1, the Model guesses out loud &mdash; usually low confidence</li>
+    <li><input type="checkbox"> After clue 3, guess again &mdash; everyone claps if confidence rises</li>
+    <li><input type="checkbox"> After clue 5, final guess &mdash; the class reveals the answer</li>
+  </div>
+  <p style="font-size:.8rem;font-weight:700;color:#6d28d9;margin-top:10px;margin-bottom:4px;">Notice: more clues (more data) almost always beats one lucky guess &mdash; same rule as the computer. What did that feel like being the Model?</p>
+  <input class="wl" type="text" placeholder="Being the Model felt like..." />
+</div>
+
+<!-- PART 5: OPEN BUILD -->
+<div class="slabel">&#128736; Part 5 &middot; Open Build (30&ndash;40 min)</div>
+<div class="stitle">Find Your Tier and Build!</div>
+<p style="font-size:.88rem;color:#374151;margin-bottom:14px;">Find your tier below. Train your own model &mdash; then break it on purpose! Fast finishers: grab the Challenge Card or help a neighbor.</p>
+
+<!-- Tier A -->
+<div class="card mb2" style="border:2px solid #bfdbfe;background:#f8faff;">
+  <div style="margin-bottom:8px;"><span class="lvl la">Tier A &mdash; Foundations &middot; Grades 1&ndash;3</span></div>
+  <div class="clabel cl-b">&#127374; Goal: Train and test the shared model with a buddy</div>
+  <p class="mb2" style="font-size:.85rem;color:#374151;">Train the thumbs-up/thumbs-down model with a buddy. Test it on a grown-up&rsquo;s hand too &mdash; did it still work?</p>
+  <div class="chk mb2">
+    <li><input type="checkbox"> Thumbs-up class trained with my own samples</li>
+    <li><input type="checkbox"> Thumbs-down class trained with my own samples</li>
+    <li><input type="checkbox"> Tested it live on the webcam &mdash; it predicted correctly</li>
+    <li><input type="checkbox"> Tested it on a grown-up&rsquo;s hand</li>
+  </div>
+  <p style="font-size:.8rem;font-weight:700;color:#1d4ed8;margin-bottom:4px;">Did it still work on the grown-up&rsquo;s hand? Why or why not?</p>
+  <input class="wl" type="text" placeholder="It did / didn't work because..." />
+  <div class="tip b">Buddy tip: One person shows the hand, the other watches the confidence bars. Switch after each try!</div>
+</div>
+
+<!-- Tier B -->
+<div class="card mb2" style="border:2px solid #bbf7d0;background:#f8fff9;">
+  <div style="margin-bottom:8px;"><span class="lvl lb">Tier B &mdash; Core &middot; Grades 3&ndash;5</span></div>
+  <div class="clabel cl-g">&#9989; Goal: Train your own two-class model</div>
+  <p class="mb2" style="font-size:.85rem;color:#374151;">Pick your own two classes (glasses vs. no glasses, two objects, two facial expressions). Record 15+ samples each.</p>
+  <div class="g2 mb2">
+    <div>
+      <p style="font-size:.78rem;font-weight:800;color:#15803d;margin-bottom:8px;">Your checklist:</p>
+      <div class="chk">
+        <li><input type="checkbox"> Chose two classes of my own</li>
+        <li><input type="checkbox"> Recorded 15+ samples for Class 1</li>
+        <li><input type="checkbox"> Recorded 15+ samples for Class 2</li>
+        <li><input type="checkbox"> Trained the model</li>
+        <li><input type="checkbox"> Tested it live and it predicted correctly</li>
+      </div>
+    </div>
+    <div style="background:#f0fdf4;border-radius:10px;padding:12px;">
+      <p style="font-size:.78rem;font-weight:800;color:#15803d;margin-bottom:6px;">My two classes:</p>
+      <input class="wl" type="text" placeholder="Class 1: ..." />
+      <input class="wl" type="text" placeholder="Class 2: ..." />
+      <p style="font-size:.78rem;font-weight:800;color:#15803d;margin-bottom:4px;margin-top:6px;">Confidence score when I tested it:</p>
+      <input class="wl" type="text" placeholder="e.g. 95% / 5%" />
+    </div>
+  </div>
+</div>
+
+<!-- Tier C -->
+<div class="card mb2" style="border:2px solid #e9d5ff;background:#fdf9ff;">
+  <div style="margin-bottom:8px;"><span class="lvl lc">Tier C &mdash; Accelerated &middot; Grades 6&ndash;9</span></div>
+  <div class="clabel cl-p">&#128995; Goal: Add a third class and break it on purpose</div>
+  <p class="mb2" style="font-size:.85rem;color:#374151;">Add a <strong>third class</strong> and deliberately train it with only 3 samples. Measure the confidence drop, then fix it.</p>
+  <div class="g2 mb2">
+    <div>
+      <p style="font-size:.78rem;font-weight:800;color:#6d28d9;margin-bottom:8px;">Your checklist:</p>
+      <div class="chk">
+        <li><input type="checkbox"> All Tier B goals complete</li>
+        <li><input type="checkbox"> Added a third class</li>
+        <li><input type="checkbox"> Trained the third class with only 3 samples on purpose</li>
+        <li><input type="checkbox"> Tested it and recorded the low confidence score</li>
+        <li><input type="checkbox"> Added 20 more varied samples (angles, lighting) and retrained</li>
+        <li><input type="checkbox"> Recorded the new, improved confidence score</li>
+      </div>
+    </div>
+    <div>
+      <p style="font-size:.78rem;font-weight:800;color:#6d28d9;margin-bottom:6px;">Measure the change:</p>
+      <p style="font-size:.75rem;color:#374151;margin-bottom:2px;">Confidence with only 3 samples:</p>
+      <input class="wl" type="text" placeholder="e.g. 40%" />
+      <p style="font-size:.75rem;color:#374151;margin-bottom:2px;margin-top:6px;">Confidence after 20 more varied samples:</p>
+      <input class="wl" type="text" placeholder="e.g. 91%" />
+    </div>
+  </div>
+  <div class="tip p">Stretch: Try changing lighting or camera angle mid-test &mdash; does the model still recognize the class? Why might that happen?</div>
+</div>
+
+<!-- Challenge Card -->
+<div class="card mb3" style="border:2px solid #fde68a;background:#fffbeb;">
+  <div style="margin-bottom:8px;"><span class="lvl lx">&#11088; Challenge Card &mdash; All Tiers &middot; Break It, Then Fix It</span></div>
+  <div class="clabel cl-a">&#128295; Measure the Confidence Change</div>
+  <div class="g2">
+    <div>
+      <p style="font-size:.83rem;color:#374151;margin-bottom:6px;">Train a class with only 2&ndash;3 examples. Test it and note the low confidence.</p>
+      <label style="font-size:.8rem;display:flex;align-items:center;gap:6px;cursor:pointer;"><input type="checkbox" style="accent-color:#f59e0b;"> Low-confidence test recorded</label>
+      <p style="font-size:.8rem;font-weight:700;color:#b45309;margin-top:8px;margin-bottom:2px;">Starting confidence:</p>
+      <input class="wl" type="text" placeholder="e.g. 62%" />
+    </div>
+    <div>
+      <p style="font-size:.83rem;color:#374151;margin-bottom:6px;">Add 20 more varied examples (angles, lighting) and retrain.</p>
+      <label style="font-size:.8rem;display:flex;align-items:center;gap:6px;cursor:pointer;"><input type="checkbox" style="accent-color:#f59e0b;"> Retrained with more data</label>
+      <p style="font-size:.8rem;font-weight:700;color:#b45309;margin-top:8px;margin-bottom:2px;">New confidence, and how much it changed:</p>
+      <input class="wl" type="text" placeholder="e.g. 97% — a jump of 35 points" />
+    </div>
+  </div>
+</div>
+
+<hr class="div">
+
+<!-- PART 6: SHARE-OUT -->
+<div class="slabel">&#127908; Part 6 &middot; Share-Out (10 min)</div>
+<div class="stitle">Show Your Neighbor Your Trained Model!</div>
+<div class="card ag mb2">
+  <div class="clabel cl-g">&#128101; Pair-Share Protocol</div>
+  <p class="mb2">Turn to your neighbor. Show your live prediction and let them try to &ldquo;trick&rdquo; your model into being wrong. Then ask each other:</p>
+  <div class="g2 mb2">
+    <div style="background:#eff6ff;border-radius:10px;padding:12px;">
+      <p style="font-size:.78rem;font-weight:800;color:#1d4ed8;margin-bottom:6px;">3 questions to ask your partner:</p>
+      <p style="font-size:.82rem;color:#374151;margin-bottom:4px;">1. What two classes did you train?</p>
+      <p style="font-size:.82rem;color:#374151;margin-bottom:4px;">2. How many samples per class &mdash; and did more samples help?</p>
+      <p style="font-size:.82rem;color:#374151;">3. Could you make it fail on purpose? How?</p>
+    </div>
+    <div style="background:#faf5ff;border-radius:10px;padding:12px;">
+      <p style="font-size:.78rem;font-weight:800;color:#7c3aed;margin-bottom:6px;">Volunteer to show the class?</p>
+      <p style="font-size:.82rem;color:#374151;">Raise your hand &mdash; totally optional! Demo your model live on the projector.</p>
+    </div>
+  </div>
+  <div class="g2">
+    <div><p style="font-size:.8rem;font-weight:700;color:#374151;margin-bottom:4px;">What did your partner build?</p><input class="wl" type="text" placeholder="My partner built..." /></div>
+    <div><p style="font-size:.8rem;font-weight:700;color:#374151;margin-bottom:4px;">Could you trick their model? How?</p><input class="wl" type="text" placeholder="I tricked it by..." /></div>
+  </div>
+</div>
+
+<!-- REFLECTION -->
+<div class="slabel">&#128172; Reflection</div>
+<div class="stitle">Exit Ticket &amp; Growth Check</div>
+<div class="card mb3">
+  <div class="g2">
+    <div>
+      <div class="clabel cl-b">&#129504; Exit Ticket</div>
+      <p style="font-size:.8rem;font-weight:700;color:#374151;margin:8px 0 3px;">1. In your own words, what is training data, a model, and a prediction?</p>
+      <div><input class="wl" type="text" placeholder="Training data is..." /><input class="wl" type="text" placeholder="A model is..." /><input class="wl" type="text" placeholder="A prediction is..." /></div>
+      <p style="font-size:.8rem;font-weight:700;color:#374151;margin:8px 0 3px;">2. Name one place you&rsquo;ve seen a &ldquo;smart&rdquo; machine get something wrong. What data might have been missing?</p>
+      <div><input class="wl" type="text" placeholder="A time it got something wrong was..." /><input class="wl" type="text" placeholder="What might have been missing was..." /></div>
+      <p style="font-size:.8rem;font-weight:700;color:#374151;margin:8px 0 3px;">3. Who is responsible for fixing biased data?</p>
+      <input class="wl" type="text" placeholder="I think..." />
+    </div>
+    <div>
+      <div class="clabel cl-g">&#127807; Growth Mindset Check</div>
+      <p style="font-size:.8rem;color:#374151;margin-bottom:8px;">Circle the one that describes you today:</p>
+      <div style="display:flex;flex-direction:column;gap:7px;font-size:.83rem;color:#374151;">
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;"><input type="radio" name="mood" style="accent-color:#0b63ce;"> I got stuck but kept trying</label>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;"><input type="radio" name="mood" style="accent-color:#10b981;"> I figured something out by myself</label>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;"><input type="radio" name="mood" style="accent-color:#7c3aed;"> I helped a classmate understand</label>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;"><input type="radio" name="mood" style="accent-color:#f59e0b;"> I finished early and tackled the challenge card!</label>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;"><input type="radio" name="mood" style="accent-color:#ef4444;"> I trained a model that actually worked &mdash; and I&rsquo;m proud!</label>
+      </div>
+      <p style="font-size:.8rem;font-weight:700;color:#6d28d9;margin:12px 0 4px;">One thing I still want to learn about AI:</p>
+      <input class="wl" type="text" placeholder="..." />
+      <p style="font-size:.8rem;font-weight:700;color:#15803d;margin:8px 0 4px;">One thing I did really well today:</p>
+      <input class="wl" type="text" placeholder="..." />
+    </div>
+  </div>
+</div>
+
+<!-- RUBRIC -->
+<div class="slabel">&#128202; Scoring</div>
+<div class="stitle">Rubric &amp; Points</div>
+<div class="card mb3">
+  <table class="rub">
+    <thead><tr><th>Section</th><th>What to Look For</th><th>Points</th></tr></thead>
+    <tbody>
+      <tr><td>Part 1 &mdash; Warm-Up</td><td>Sorting reflection answered; confidence-change question answered</td><td class="pts">2 pts</td></tr>
+      <tr><td>Part 2 &mdash; Mini-Lesson</td><td>3 big words question answered; AI Moment + both videos&rsquo; questions answered</td><td class="pts">4 pts</td></tr>
+      <tr><td>Part 3 &mdash; Guided Build</td><td>All 5 steps checked off; &ldquo;try it&rdquo; observation written</td><td class="pts">3 pts</td></tr>
+      <tr><td>Part 4 &mdash; Movement Break</td><td>Reflection on being the Model answered (participation check)</td><td class="pts">1 pt</td></tr>
+      <tr><td>Part 5A &mdash; Tier A Build</td><td>Model trained and tested; grown-up hand test reflection written</td><td class="pts">4 pts</td></tr>
+      <tr><td>Part 5B &mdash; Tier B Build</td><td>Own two classes trained with 15+ samples each; tested successfully</td><td class="pts">5 pts</td></tr>
+      <tr><td>Part 5C &mdash; Tier C Build</td><td>All Tier B goals + third class + confidence-drop and fix measured</td><td class="pts">6 pts</td></tr>
+      <tr><td>Part 6 &mdash; Share-Out &amp; Reflection</td><td>Pair-share recorded; exit ticket complete</td><td class="pts">3 pts</td></tr>
+      <tr><td>&#11088; Challenge Card</td><td>Both confidence scores recorded and change calculated</td><td class="pts">+2</td></tr>
+    </tbody>
+  </table>
+  <div style="display:flex;justify-content:flex-end;margin-top:10px;gap:24px;font-size:.82rem;color:#374151;">
+    <span>Tier A: <strong style="font-family:var(--fc);color:#0b63ce;">____ / 17</strong></span>
+    <span>Tier B: <strong style="font-family:var(--fc);color:#10b981;">____ / 18</strong></span>
+    <span>Tier C: <strong style="font-family:var(--fc);color:#7c3aed;">____ / 19</strong></span>
+  </div>
+</div>
+
+<div class="sfooter">
+  <div><strong>Session 15 &middot; &ldquo;AI Made Real&rdquo; Training Day</strong> &middot; Differentiated Activity Sheet &middot; Mr. Hsiao &ldquo;Hue&rdquo; Weng &middot; Summer 2026<br>
+  <span class="gtext" style="font-weight:800;">Training Data &middot; Model &middot; Prediction &middot; Accuracy &middot; Bias</span></div>
+  <div style="text-align:right;">Ages 7&ndash;13 &middot; Grades 1&ndash;9<br><span style="font-size:.7rem;">&#129302; Every student trains a real model today!</span></div>
+</div>
+
+</div>
+</body>
+</html>
