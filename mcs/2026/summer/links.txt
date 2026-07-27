@@ -17,3 +17,7 @@ The main webpage for the course:
 
 	https://www.dropbox.com/request/6ef6fxmcmxaslq2o2gr3
 
+	Dogs and Cats Data Set:
+
+	https://github.com/hue881/cats-and-dogs
+
