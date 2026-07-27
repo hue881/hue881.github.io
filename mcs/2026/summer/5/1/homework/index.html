@@ -1,1 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Homework &middot; Session 15 &middot; Design a Model</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f4fbff;--sur:rgba(255,255,255,.97);--tx:#1f2a37;--tx2:#374151;--txm:#5b6b7e;--a1:#2563eb;--a2:#16a34a;--a3:#f59e0b;--ar:#ef4444;--ap:#7c3aed;--fd:'Fredoka','Trebuchet MS',sans-serif;--fb:'Nunito',Arial,sans-serif;--fc:'Fira Code',Consolas,monospace}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+@media print{body{background:#fff!important}.no-print{display:none!important}.pb{page-break-before:always}.card{box-shadow:none!important;border:1.5px solid #d1d5db!important}}
+body{font-family:var(--fb);color:var(--tx);background:var(--bg);min-height:100vh}
+.pbar{background:rgba(255,255,255,.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(148,163,184,.3);padding:10px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;gap:12px;flex-wrap:wrap}
+.pbar-title{font-family:var(--fd);font-size:1.05rem;font-weight:700;color:var(--a1)}
+.pbar-sub{font-size:.78rem;color:var(--txm)}
+.btn-p{background:var(--a1);color:#fff;border:none;padding:8px 20px;border-radius:999px;font-family:var(--fb);font-size:.82rem;font-weight:800;cursor:pointer;letter-spacing:.06em;transition:.2s}
+.btn-p:hover{background:#1d4ed8;transform:translateY(-1px)}
+.page{max-width:860px;margin:0 auto;padding:32px 24px 60px}
+.shdr{background:linear-gradient(135deg,#0b63ce 0%,#10b981 60%,#7c3aed 100%);border-radius:20px;padding:28px 32px 24px;color:#fff;margin-bottom:28px;position:relative;overflow:hidden}
+.shdr::before{content:'';position:absolute;top:-60px;right:-60px;width:200px;height:200px;background:rgba(255,255,255,.08);border-radius:50%}
+.shdr::after{content:'';position:absolute;bottom:-40px;left:-40px;width:140px;height:140px;background:rgba(255,255,255,.06);border-radius:50%}
+.hday{font-size:.75rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;opacity:.85;margin-bottom:4px}
+.htitle{font-family:var(--fd);font-size:clamp(1.5rem,3.8vw,2.2rem);font-weight:700;line-height:1.1;margin-bottom:6px}
+.hsub{font-size:.88rem;opacity:.85;margin-bottom:14px}
+.hpills{display:flex;gap:8px;flex-wrap:wrap}
+.hpill{background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:4px 14px;font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+.sinfo{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:28px}
+@media(max-width:600px){.sinfo{grid-template-columns:1fr}}
+.ifield{background:var(--sur);border-radius:12px;padding:12px 14px;border:1.5px solid rgba(37,99,235,.14);box-shadow:0 2px 8px rgba(15,23,42,.05)}
+.ilabel{font-size:.65rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--a1);margin-bottom:6px}
+.iline{border:none;border-bottom:1.5px solid #cbd5e1;width:100%;font-family:var(--fb);font-size:.9rem;color:var(--tx);background:transparent;outline:none;padding:2px 0}
+.iline:focus{border-bottom-color:#2563eb}
+.slabel{display:inline-flex;align-items:center;gap:8px;padding:5px 16px;border-radius:999px;border:1px solid rgba(148,163,184,.4);background:rgba(255,255,255,.9);font-size:.72rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--a1);margin-bottom:10px}
+.stitle{font-family:var(--fd);font-size:clamp(1.2rem,2.3vw,1.6rem);font-weight:700;margin-bottom:16px;color:var(--tx);line-height:1.2}
+.card{background:var(--sur);border-radius:16px;padding:18px 20px;box-shadow:0 4px 18px rgba(15,23,42,.07);border:1px solid rgba(255,255,255,.7);margin-bottom:16px}
+.card.ab{border-left:4px solid var(--a1)}.card.ag{border-left:4px solid var(--a2)}.card.aa{border-left:4px solid var(--a3)}.card.ar{border-left:4px solid var(--ar)}.card.ap{border-left:4px solid var(--ap)}
+.clabel{font-size:.68rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;margin-bottom:8px}
+.cl-b{color:var(--a1)}.cl-g{color:#15803d}.cl-a{color:#b45309}.cl-r{color:#b91c1c}.cl-p{color:#6d28d9}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:680px){.g2{grid-template-columns:1fr}}
+.wl{border:none;border-bottom:1.5px solid #cbd5e1;width:100%;margin-bottom:10px;height:28px;display:block;background:transparent;font-family:var(--fb);font-size:.88rem;color:var(--tx);outline:none;padding:2px 4px}
+.wl:focus{border-bottom-color:#2563eb}
+.wl::placeholder{color:#bdc5d1;font-style:italic}
+.wa{border:1.5px solid #cbd5e1;border-radius:8px;width:100%;min-height:60px;padding:8px;font-family:var(--fb);font-size:.85rem;color:var(--tx);resize:vertical;background:#f8fafc;outline:none;display:block;margin-bottom:10px}
+.wa:focus{outline:2px solid rgba(37,99,235,.3)}
+.wa::placeholder{color:#bdc5d1;font-style:italic}
+.tip{border-radius:10px;padding:10px 14px;font-size:.8rem;line-height:1.5;margin-top:10px}
+.tip.b{background:rgba(37,99,235,.07);color:#1e40af}.tip.g{background:rgba(22,163,74,.07);color:#14532d}.tip.a{background:rgba(245,158,11,.07);color:#92400e}.tip.p{background:rgba(124,58,237,.07);color:#5b21b6}
+.div{border:none;border-top:2px dashed #dde6f0;margin:24px 0}
+.chk{list-style:none;padding:0}
+.chk li{display:flex;align-items:flex-start;gap:8px;font-size:.85rem;color:var(--tx2);margin-bottom:8px;line-height:1.45}
+.chk li input[type=checkbox]{flex-shrink:0;width:17px;height:17px;margin-top:2px;accent-color:#2563eb;cursor:pointer}
+.lvl{display:inline-flex;align-items:center;gap:6px;padding:4px 14px;border-radius:999px;font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px}
+.la{background:linear-gradient(135deg,#2563eb,#60a5fa);color:#fff}
+.lb{background:linear-gradient(135deg,#16a34a,#4ade80);color:#fff}
+.lc{background:linear-gradient(135deg,#7c3aed,#f97066);color:#fff}
+table.rub{width:100%;border-collapse:collapse;font-size:.82rem;margin-top:8px}
+table.rub th{background:#1e293b;color:#e2e8f0;padding:8px 10px;text-align:left;font-weight:700;letter-spacing:.05em}
+table.rub td{padding:8px 10px;border-bottom:1px solid #e2e8f0;vertical-align:top;color:var(--tx2)}
+table.rub tr:nth-child(even) td{background:rgba(241,245,249,.6)}
+table.rub td:first-child{font-weight:700;color:var(--tx)}
+table.rub .pts{font-family:var(--fc);font-size:.75rem;font-weight:800;color:var(--a1);white-space:nowrap}
+.sfooter{margin-top:32px;padding:16px 20px;border-radius:12px;background:rgba(37,99,235,.05);border:1px solid rgba(37,99,235,.12);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:.76rem;color:var(--txm)}
+.sfooter strong{color:var(--tx)}
+.gtext{background:linear-gradient(135deg,#0b63ce,#10b981,#7c3aed);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.mb1{margin-bottom:6px}.mb2{margin-bottom:10px}.mb3{margin-bottom:14px}
+code{background:#e0f2ff;padding:1px 6px;border-radius:4px;font-family:var(--fc);font-size:.82em;color:#1d4ed8}
+.timer{display:flex;align-items:center;gap:10px;background:rgba(11,99,206,.08);border:1px solid rgba(11,99,206,.2);border-radius:12px;padding:10px 16px;margin-bottom:20px;font-size:.85rem;color:#0b63ce;font-weight:700;}
+.exlist{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:6px}
+@media(max-width:680px){.exlist{grid-template-columns:1fr 1fr}}
+.exnum{font-size:.62rem;color:#94a3b8;font-weight:800;margin-bottom:2px;display:block;}
+</style>
+</head>
+<body>
+<div class="pbar no-print">
+  <div><div class="pbar-title">&#127968; Session 15 &middot; Homework</div><div class="pbar-sub">Tonight&rsquo;s Mission: &ldquo;Design a Model&rdquo; &mdash; ~30 min &middot; Ages 7&ndash;13</div></div>
+  <button class="btn-p" onclick="window.print()"><svg aria-hidden="true" viewBox="0 0 24 24" width="16" height="16" style="display:inline-block;vertical-align:-3px;margin-right:8px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8" rx="1"/><path d="M6 18h12"/></svg>Print / Save as PDF</button>
+</div>
+<div class="page">
 
+<div class="shdr">
+  <div style="font-size:2.4rem;margin-bottom:6px;">&#127968;&#129302;</div>
+  <div class="hday">Session 15 Homework &middot; Due Before Session 16 &middot; Summer 2026 AI &amp; Coding Program</div>
+  <div class="htitle">Tonight&rsquo;s Mission: &ldquo;Design a Model&rdquo;</div>
+  <div class="hsub">Pick something you&rsquo;d train an AI to recognize, and list examples you&rsquo;d show it &mdash; no computer needed!</div>
+  <div class="hpills">
+    <span class="hpill">&#129302; AI Design</span><span class="hpill">&#8987; ~30 min</span><span class="hpill">No Screen Required</span><span class="hpill">3 Tiers</span>
+  </div>
+</div>
+
+<div class="sinfo">
+  <div class="ifield"><div class="ilabel">&#128100; Your Name</div><input class="iline" type="text" placeholder="First Last" /></div>
+  <div class="ifield"><div class="ilabel">&#128197; Date</div><input class="iline" type="text" value="July 27, 2026" /></div>
+  <div class="ifield"><div class="ilabel">&#127979; Section / Period</div><input class="iline" type="text" placeholder="Section 1 / 2 / 3" /></div>
+</div>
+
+<div class="timer">&#9202; Total time: about 30 minutes &mdash; work at your own pace, and it&rsquo;s OK to ask a family member for ideas!</div>
+
+<!-- THE TASK -->
+<div class="slabel">&#128221; The Task</div>
+<div class="stitle">Design Your Own AI Model &mdash; On Paper</div>
+<div class="card ab mb3">
+  <div class="clabel cl-b">&#127919; The Mission</div>
+  <p class="mb2">Pick something you&rsquo;d like to train an AI to recognize &mdash; two things that are different but maybe a little tricky to tell apart. You will name the classes, list examples for each, and think about what could go wrong.</p>
+  <p style="font-size:.83rem;font-weight:700;color:#374151;margin-bottom:6px;">Some ideas to get you started (or invent your own!):</p>
+  <div class="chk">
+    <li><input type="checkbox"> Two dog breeds that look similar</li>
+    <li><input type="checkbox"> Happy face vs. sad face</li>
+    <li><input type="checkbox"> Recyclable vs. trash</li>
+    <li><input type="checkbox"> Two kinds of fruit</li>
+    <li><input type="checkbox"> Your own idea: something at home you could actually photograph</li>
+  </div>
+  <p style="font-size:.83rem;font-weight:700;color:#374151;margin:10px 0 6px;">What will your AI recognize?</p>
+  <input class="wl" type="text" placeholder="My AI will learn to tell apart..." />
+</div>
+
+<hr class="div">
+
+<!-- TIER A -->
+<div class="card mb3" style="border:2px solid #bfdbfe;background:#f8faff;">
+  <div style="margin-bottom:8px;"><span class="lvl la">Tier A &mdash; Foundations &middot; Grades 1&ndash;3 &middot; ~20&ndash;25 min</span></div>
+  <div class="clabel cl-b">&#127374; Draw or describe two classes with 3 examples each</div>
+  <p class="mb2" style="font-size:.85rem;color:#374151;">Ask a family member to help you think of your two classes. Draw a picture OR write a sentence for each example &mdash; whichever is easier for you!</p>
+
+  <p style="font-size:.8rem;font-weight:700;color:#1d4ed8;margin-bottom:4px;">Class 1 name:</p>
+  <input class="wl" type="text" placeholder="e.g. Cats" />
+  <p style="font-size:.78rem;color:#374151;margin-bottom:4px;">3 examples of Class 1 (draw in the boxes or describe in words):</p>
+  <div class="exlist mb2">
+    <div><span class="exnum">Example 1</span><div style="border:1.5px dashed #cbd5e1;border-radius:8px;height:60px;background:#f8fafc;"></div></div>
+    <div><span class="exnum">Example 2</span><div style="border:1.5px dashed #cbd5e1;border-radius:8px;height:60px;background:#f8fafc;"></div></div>
+    <div><span class="exnum">Example 3</span><div style="border:1.5px dashed #cbd5e1;border-radius:8px;height:60px;background:#f8fafc;"></div></div>
+  </div>
+
+  <p style="font-size:.8rem;font-weight:700;color:#1d4ed8;margin-bottom:4px;margin-top:14px;">Class 2 name:</p>
+  <input class="wl" type="text" placeholder="e.g. Dogs" />
+  <p style="font-size:.78rem;color:#374151;margin-bottom:4px;">3 examples of Class 2 (draw in the boxes or describe in words):</p>
+  <div class="exlist mb2">
+    <div><span class="exnum">Example 1</span><div style="border:1.5px dashed #cbd5e1;border-radius:8px;height:60px;background:#f8fafc;"></div></div>
+    <div><span class="exnum">Example 2</span><div style="border:1.5px dashed #cbd5e1;border-radius:8px;height:60px;background:#f8fafc;"></div></div>
+    <div><span class="exnum">Example 3</span><div style="border:1.5px dashed #cbd5e1;border-radius:8px;height:60px;background:#f8fafc;"></div></div>
+  </div>
+  <div class="tip b">Ask your family member: &ldquo;Which of these two things is easier to mix up?&rdquo; Write down what they say below.</div>
+  <input class="wl" type="text" placeholder="They said..." />
+</div>
+
+<!-- TIER B -->
+<div class="card mb3" style="border:2px solid #bbf7d0;background:#f8fff9;">
+  <div style="margin-bottom:8px;"><span class="lvl lb">Tier B &mdash; Core &middot; Grades 3&ndash;5 &middot; ~30 min</span></div>
+  <div class="clabel cl-g">&#9989; Full worksheet: 2 classes, 5 examples each, plus a risk sentence</div>
+  <p class="mb2" style="font-size:.85rem;color:#374151;">Name your two classes and write 5 specific examples for each &mdash; be as precise as you can (not just &ldquo;a dog&rdquo; but &ldquo;a golden retriever running in a park&rdquo;).</p>
+
+  <p style="font-size:.8rem;font-weight:700;color:#15803d;margin-bottom:4px;">Class 1 name:</p>
+  <input class="wl" type="text" placeholder="e.g. Recyclable" />
+  <p style="font-size:.78rem;color:#374151;margin-bottom:4px;">5 specific examples of Class 1:</p>
+  <input class="wl" type="text" placeholder="1. ..." /><input class="wl" type="text" placeholder="2. ..." /><input class="wl" type="text" placeholder="3. ..." /><input class="wl" type="text" placeholder="4. ..." /><input class="wl" type="text" placeholder="5. ..." />
+
+  <p style="font-size:.8rem;font-weight:700;color:#15803d;margin-bottom:4px;margin-top:14px;">Class 2 name:</p>
+  <input class="wl" type="text" placeholder="e.g. Trash" />
+  <p style="font-size:.78rem;color:#374151;margin-bottom:4px;">5 specific examples of Class 2:</p>
+  <input class="wl" type="text" placeholder="1. ..." /><input class="wl" type="text" placeholder="2. ..." /><input class="wl" type="text" placeholder="3. ..." /><input class="wl" type="text" placeholder="4. ..." /><input class="wl" type="text" placeholder="5. ..." />
+
+  <p style="font-size:.83rem;font-weight:700;color:#15803d;margin:12px 0 6px;">What could go wrong with too little data? Write one full sentence.</p>
+  <textarea class="wa" placeholder="If the AI only saw a few examples, it might..."></textarea>
+</div>
+
+<!-- TIER C -->
+<div class="card mb3" style="border:2px solid #e9d5ff;background:#fdf9ff;">
+  <div style="margin-bottom:8px;"><span class="lvl lc">Tier C &mdash; Accelerated &middot; Grades 6&ndash;9 &middot; ~30 min</span></div>
+  <div class="clabel cl-p">&#128995; Everything in Tier B, plus a tricky third class</div>
+  <p class="mb2" style="font-size:.85rem;color:#374151;">Complete the same 2-class, 5-examples-each worksheet as Tier B (use the Tier B boxes above), then add a <strong>third class</strong> that is intentionally hard to tell apart from one of your first two.</p>
+
+  <p style="font-size:.8rem;font-weight:700;color:#6d28d9;margin-bottom:4px;">Class 3 name (tricky &mdash; easily confused with Class 1 or 2):</p>
+  <input class="wl" type="text" placeholder="e.g. Compostable (tricky vs. Recyclable)" />
+  <p style="font-size:.78rem;color:#374151;margin-bottom:4px;">5 specific examples of Class 3:</p>
+  <input class="wl" type="text" placeholder="1. ..." /><input class="wl" type="text" placeholder="2. ..." /><input class="wl" type="text" placeholder="3. ..." /><input class="wl" type="text" placeholder="4. ..." /><input class="wl" type="text" placeholder="5. ..." />
+
+  <p style="font-size:.83rem;font-weight:700;color:#6d28d9;margin:12px 0 6px;">Explain exactly WHY Class 3 is tricky to tell apart from another class. What would the AI need to pay close attention to?</p>
+  <textarea class="wa" placeholder="Class 3 is tricky because..."></textarea>
+
+  <div class="tip p">Stretch: If you had to pick just ONE extra piece of information (besides a picture) to help the AI tell Class 3 apart, what would it be &mdash; smell, texture, weight, sound?</div>
+  <input class="wl" type="text" placeholder="I would add..." />
+</div>
+
+<hr class="div">
+
+<!-- RUBRIC -->
+<div class="slabel">&#128202; Scoring</div>
+<div class="stitle">Homework Rubric</div>
+<div class="card mb3">
+  <table class="rub">
+    <thead><tr><th>Section</th><th>What to Look For</th><th>Points</th></tr></thead>
+    <tbody>
+      <tr><td>The Task</td><td>Chose a real, specific thing to recognize</td><td class="pts">1 pt</td></tr>
+      <tr><td>Tier A &mdash; Two Classes</td><td>Both classes named; 3 examples each (drawn or written)</td><td class="pts">6 pts</td></tr>
+      <tr><td>Tier B &mdash; Full Worksheet</td><td>2 classes named; 5 specific examples each; risk sentence complete</td><td class="pts">8 pts</td></tr>
+      <tr><td>Tier C &mdash; Tricky Third Class</td><td>Third class named; 5 examples; clear explanation of why it&rsquo;s tricky</td><td class="pts">4 pts</td></tr>
+    </tbody>
+  </table>
+  <div style="display:flex;justify-content:flex-end;margin-top:10px;gap:24px;font-size:.82rem;color:#374151;">
+    <span>Tier A: <strong style="font-family:var(--fc);color:#0b63ce;">____ / 7</strong></span>
+    <span>Tier B: <strong style="font-family:var(--fc);color:#10b981;">____ / 15</strong></span>
+    <span>Tier C: <strong style="font-family:var(--fc);color:#7c3aed;">____ / 19</strong></span>
+  </div>
+</div>
+
+<div class="card aa mb3">
+  <div class="clabel cl-a">&#128172; Coming Up</div>
+  <p style="font-size:.85rem;color:#374151;">Next session (Monday, July 27) we&rsquo;ll build a rule-based chatbot in Python and contrast it with the pattern-learning AI you trained today. Bring this worksheet back with you!</p>
+</div>
+
+<div class="sfooter">
+  <div><strong>Session 15 Homework &middot; &ldquo;Design a Model&rdquo;</strong> &middot; Mr. Hsiao &ldquo;Hue&rdquo; Weng &middot; Summer 2026<br>
+  <span class="gtext" style="font-weight:800;">Classes &middot; Examples &middot; Training Data &middot; Bias Awareness</span></div>
+  <div style="text-align:right;">Ages 7&ndash;13 &middot; Grades 1&ndash;9<br><span style="font-size:.7rem;">&#127968; ~30 minutes &middot; No computer required</span></div>
+</div>
+
+</div>
+</body>
+</html>
