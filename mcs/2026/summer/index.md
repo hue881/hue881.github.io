@@ -27,6 +27,7 @@
 | **4-3** | [Functions: Reusable Blocks](https://hue881.github.io/mcs/2026/summer/4/3) | [4-3 Activity](https://hue881.github.io/mcs/2026/summer/4/3/activity) | [4-3 Homework](https://hue881.github.io/mcs/2026/summer/4/3/homework) | [4-3 Challenge](https://hue881.github.io/mcs/2026/summer/4/3/challenge) ||
 | **4-4** | [Python: Lists & Rock-Paper-Scissors](https://hue881.github.io/mcs/2026/summer/4/4) | [4-4 Activity](https://hue881.github.io/mcs/2026/summer/4/4/activity) | [4-4 Homework](https://hue881.github.io/mcs/2026/summer/4/4/homework) | [4-4 Challenge](https://hue881.github.io/mcs/2026/summer/4/4/challenge) ||
 | **5-1** | [AI Made Real](https://hue881.github.io/mcs/2026/summer/5/1) | [5-1 Activity](https://hue881.github.io/mcs/2026/summer/5/1/activity) | [5-1 Homework](https://hue881.github.io/mcs/2026/summer/5/1/homework) | -- ||
+| **5-2** | [Build a Rule-Based Chatbot](https://hue881.github.io/mcs/2026/summer/5/2) | [5-2 Activity](https://hue881.github.io/mcs/2026/summer/5/2/activity) | [5-2 Homework](https://hue881.github.io/mcs/2026/summer/5/2/homework) | -- ||
 
 
 
