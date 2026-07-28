@@ -1,1 +1,823 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="slides-format" content="viewport">
+<title>Session 16 · Build a Rule-Based Chatbot in Python</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<style type="text/tailwindcss">
+@theme {
+  --color-bg:#f0f8ff; --color-bg-deep:#e6f2ff; --color-surface:#ffffff;
+  --color-text:#0f2747; --color-text-secondary:#3a5a7a; --color-text-muted:#5b7290;
+  --color-accent-1:#0b63ce; --color-accent-2:#f59e0b; --color-accent-3:#10b981;
+  --color-glass-bg:rgba(11,99,206,0.05); --color-glass-border:rgba(11,99,206,0.14);
+  --color-vignette:rgba(11,99,206,0.08);
+  --font-display:"Fredoka","Trebuchet MS",sans-serif;
+  --font-body:"Nunito",Arial,sans-serif;
+}
+</style>
+<style>
+:root{ --color-bg:#f0f8ff; --color-text:#0f2747; --glow-color-rgb:11,99,206; }
+*,*::before,*::after{box-sizing:border-box;}
+html,body{background:var(--color-bg);margin:0;}
+body{font-family:"Nunito",Arial,sans-serif;color:var(--color-text);overflow:hidden;height:100vh;width:100vw;}
+.deck{width:100vw;height:100vh;position:relative;}
+.slide{position:absolute;top:0;left:0;width:100%;height:100%;background:var(--color-bg);display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;transform:scale(0.96);transition:opacity 0.6s ease,transform 0.6s ease;pointer-events:none;overflow:hidden;}
+.slide.active{opacity:1;transform:scale(1);pointer-events:all;}
+.slide>.content{position:relative;z-index:2;width:100%;max-width:1100px;padding:clamp(1.2rem,3.4vw,3rem);}
+.slide::before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");background-repeat:repeat;background-size:256px 256px;opacity:0.03;mix-blend-mode:overlay;}
+.slide::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:radial-gradient(ellipse at center,transparent 55%,var(--color-vignette) 100%);}
+.gradient-mesh{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none;}
+.blob{position:absolute;border-radius:50%;filter:blur(80px);animation:float-slow 12s ease-in-out infinite;}
+.blob:nth-child(2){animation:float-drift 16s ease-in-out infinite;}
+.blob:nth-child(3){animation:float-slow 20s ease-in-out infinite reverse;}
+@keyframes float-slow{0%{transform:translate(0,0) scale(1);}25%{transform:translate(60px,-50px) scale(1.12);}50%{transform:translate(-40px,40px) scale(0.9);}75%{transform:translate(50px,20px) scale(1.08);}100%{transform:translate(0,0) scale(1);}}
+@keyframes float-drift{0%{transform:translate(0,0) scale(1) rotate(0deg);}33%{transform:translate(-50px,-60px) scale(1.15) rotate(3deg);}66%{transform:translate(40px,30px) scale(0.88) rotate(-2deg);}100%{transform:translate(0,0) scale(1) rotate(0deg);}}
+@keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-14px);}}
+.particle-canvas{position:absolute;inset:0;z-index:1;}
+.reveal{opacity:0;transform:translateY(18px);}
+.nav-controls{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:12px;z-index:100;background:rgba(255,255,255,0.85);backdrop-filter:blur(12px);padding:9px 20px;border-radius:999px;border:1px solid var(--color-glass-border);box-shadow:0 10px 30px rgba(11,99,206,0.18);}
+.nav-btn{width:36px;height:36px;border:none;background:var(--color-glass-bg);color:var(--color-accent-2);border-radius:999px;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 0.2s,transform 0.15s;}
+.nav-btn:hover{background:rgba(11,99,206,0.15);transform:translateY(-1px);}
+.slide-dots{display:flex;gap:5px;flex-wrap:wrap;max-width:420px;}
+.dot{width:8px;height:8px;border-radius:50%;background:rgba(11,99,206,0.25);cursor:pointer;transition:background 0.25s,transform 0.25s;}
+.dot.active{background:var(--color-accent-2);transform:scale(1.4);}
+.dot.warmup{background:rgba(250,204,21,0.4);} .dot.warmup.active{background:#f59e0b;}
+.dot.mini{background:rgba(59,130,246,0.4);} .dot.mini.active{background:#0b63ce;}
+.dot.build{background:rgba(52,211,153,0.4);} .dot.build.active{background:#10b981;}
+.dot.share{background:rgba(167,139,250,0.4);} .dot.share.active{background:#7c3aed;}
+.slide-counter{font-size:0.78rem;color:var(--color-text-muted);min-width:52px;text-align:center;font-weight:700;}
+.card{background:var(--color-surface);border:1px solid var(--color-glass-border);border-radius:16px;padding:14px 18px;box-shadow:0 8px 24px rgba(11,99,206,0.1);backdrop-filter:blur(10px);}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:4px 14px;border-radius:999px;border:1px solid var(--color-glass-border);background:rgba(11,99,206,0.08);font-size:0.76rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#0b63ce;}
+.pill.blue{color:#0b63ce;} .pill.green{color:#0d9488;} .pill.purple{color:#7c3aed;} .pill.red{color:#dc2626;}
+.big-text{font-size:clamp(0.92rem,1.5vw,1.15rem);line-height:1.65;color:var(--color-text-secondary);}
+.code-block{background:#0f2747;color:#e6f2ff;font-family:"Fira Code",Consolas,monospace;border-radius:12px;padding:14px 18px;font-size:clamp(0.78rem,1.2vw,0.95rem);line-height:1.7;overflow-x:auto;border:1px solid var(--color-glass-border);}
+.code-block .kw{color:#f59e0b;font-weight:600;} .code-block .str{color:#65a30d;} .code-block .cmt{color:#5b7290;font-style:italic;} .code-block .num{color:#0284c7;} .code-block .fn{color:#db2777;}
+.think-chip{display:inline-flex;align-items:center;gap:8px;padding:7px 13px;border-radius:999px;background:rgba(59,130,246,0.14);color:#0b63ce;font-size:0.82rem;font-weight:700;}
+.question-chip{display:inline-flex;align-items:center;gap:8px;padding:7px 13px;border-radius:999px;background:rgba(250,204,21,0.14);color:#b45309;font-size:0.82rem;font-weight:700;}
+.grid-cards{display:grid;gap:14px;}
+@media(min-width:700px){.grid-2{grid-template-columns:repeat(2,minmax(0,1fr));}.grid-3{grid-template-columns:repeat(3,minmax(0,1fr));}}
+.grad-text{background:linear-gradient(135deg,#0b63ce 0%,#f59e0b 55%,#10b981 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.media-embed{position:relative;padding-top:56.25%;border-radius:13px;overflow:hidden;background:#000;cursor:pointer;box-shadow:0 10px 30px rgba(11,99,206,0.25);}
+.media-embed img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+.media-embed .play-btn{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;}
+.media-embed .play-btn div{width:58px;height:58px;background:rgba(255,0,0,0.92);border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(0,0,0,0.5);transition:transform 0.2s;}
+.media-embed:hover .play-btn div{transform:scale(1.1);}
+.media-embed iframe{position:absolute;inset:0;width:100%;height:100%;border:0;border-radius:13px;}
+.progress-track{height:6px;background:rgba(11,99,206,0.1);border-radius:999px;overflow:hidden;margin-top:6px;}
+.progress-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,#0b63ce,#10b981);transition:width 0.6s ease;}
+.challenge-card{background:linear-gradient(135deg,rgba(167,139,250,0.14),rgba(59,130,246,0.10));border:2px solid rgba(167,139,250,0.30);border-radius:16px;padding:14px 18px;}
+.break-card{background:linear-gradient(135deg,rgba(250,204,21,0.10),rgba(250,204,21,0.05));border:2px solid rgba(250,204,21,0.28);border-radius:18px;padding:18px 22px;}
+.tier-a{display:inline-flex;align-items:center;padding:3px 10px;border-radius:999px;background:rgba(52,211,153,0.18);color:#0d9488;font-size:0.72rem;font-weight:800;}
+.tier-b{display:inline-flex;align-items:center;padding:3px 10px;border-radius:999px;background:rgba(59,130,246,0.18);color:#0b63ce;font-size:0.72rem;font-weight:800;}
+.tier-c{display:inline-flex;align-items:center;padding:3px 10px;border-radius:999px;background:rgba(167,139,250,0.18);color:#7c3aed;font-size:0.72rem;font-weight:800;}
+.mouse-spotlight{position:fixed;inset:0;z-index:99;pointer-events:none;}
+.step-num{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#0b63ce,#10b981);color:#04101f;font-weight:800;font-size:0.82rem;flex-shrink:0;}
+.ai-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:999px;background:rgba(52,211,153,0.14);border:1px solid rgba(52,211,153,0.3);color:#0d9488;font-size:0.76rem;font-weight:800;}
+.timeline-row{display:flex;align-items:center;gap:12px;padding:8px 0;}
+.timeline-dot{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 3px 10px rgba(11,99,206,0.2);overflow:hidden;background:var(--color-surface);}
+.timeline-line{width:2px;height:16px;background:linear-gradient(180deg,rgba(59,130,246,0.35),rgba(52,211,153,0.15));margin-left:17px;}
+.pyblock{display:inline-block;border-radius:6px;padding:4px 10px;font-family:'Fira Code',Consolas,monospace;font-size:0.8rem;font-weight:700;margin:2px 3px;}
+.pb-blue{background:#0b63ce;color:#04101f;} .pb-gold{background:#f59e0b;color:#1e1400;} .pb-green{background:#10b981;color:#03170f;}
+.vocab-tag{display:inline-flex;align-items:center;padding:4px 12px;border-radius:999px;background:rgba(59,130,246,0.14);font-size:0.84rem;font-weight:800;color:#0b63ce;}
+.hover-lift{transition:transform 0.25s ease,box-shadow 0.25s ease;}
+.hover-lift:hover{transform:translateY(-4px);box-shadow:0 14px 30px rgba(11,99,206,0.2);}
+.chat-bubble{border-radius:14px;padding:8px 14px;font-size:0.85rem;max-width:78%;line-height:1.5;}
+.chat-user{background:#0b63ce;color:#fff;align-self:flex-end;border-bottom-right-radius:4px;}
+.chat-bot{background:#e6f2ff;color:#0f2747;align-self:flex-start;border-bottom-left-radius:4px;border:1px solid var(--color-glass-border);}
+.step-btn{padding:6px 12px;border-radius:999px;border:1px solid var(--color-glass-border);background:rgba(11,99,206,0.06);color:#3a5a7a;font-size:0.75rem;font-weight:700;cursor:pointer;transition:all 0.2s;}
+.step-btn:hover{background:rgba(11,99,206,0.14);}
+.step-btn.active{background:#0b63ce;color:#fff;border-color:#0b63ce;}
+.try-btn{padding:6px 12px;border-radius:999px;border:1px solid rgba(16,185,129,0.3);background:rgba(16,185,129,0.08);color:#0d9488;font-size:0.75rem;font-weight:700;cursor:pointer;transition:all 0.2s;}
+.try-btn:hover{background:rgba(16,185,129,0.2);transform:translateY(-1px);}
+.debug-line{padding:4px 8px;border-radius:6px;cursor:pointer;transition:background 0.2s;}
+.debug-line:hover{background:rgba(220,38,38,0.15);}
+.debug-line.correct{background:rgba(16,185,129,0.25);}
+.debug-line.wrong{background:rgba(220,38,38,0.2);}
+</style>
+</head>
+<body>
+<div class="mouse-spotlight" id="spotlight"></div>
+<div class="deck">
 
+<!-- SLIDE 1 · TITLE -->
+<div class="slide active" data-slide="1" data-type="title">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:500px;height:500px;top:-100px;right:-90px;background:#0b63ce;opacity:.16;"></div>
+    <div class="blob" style="width:320px;height:320px;bottom:-80px;left:-60px;background:#f59e0b;opacity:.10;"></div>
+    <div class="blob" style="width:220px;height:220px;top:38%;left:10%;background:#10b981;opacity:.10;"></div>
+  </div>
+  <canvas class="particle-canvas"></canvas>
+  <div class="content" style="text-align:center;">
+    <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/64035c1a95c36ac6abf2eed4987b16ed69a5a7b7.jpg"
+         alt="Cute cartoon robot assistant waving"
+         style="height:clamp(80px,14vh,130px);object-fit:contain;margin:0 auto 1rem;animation:float 3s ease-in-out infinite;"
+         class="reveal">
+    <p class="pill reveal" style="margin:0 auto 0.8rem;display:inline-flex;">Session 16 · Tue Jul 28 · Week 5</p>
+    <h1 class="font-display grad-text reveal" style="font-size:clamp(2rem,5.5vw,4rem);font-weight:700;line-height:1.1;margin-bottom:0.5rem;">
+      Build a Rule-Based Chatbot
+    </h1>
+    <h2 class="font-display reveal" style="font-size:clamp(1.2rem,2.8vw,2.2rem);font-weight:600;color:#3a5a7a;margin-bottom:0.7rem;">
+      in Python — Give Your Code a Voice
+    </h2>
+    <p class="reveal" style="font-size:clamp(0.9rem,1.5vw,1.2rem);color:#3a5a7a;margin-bottom:1.2rem;">
+      Combining input, conditionals, lists, and functions into a real conversation
+    </p>
+    <div class="reveal" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+      <span class="pill blue">Modern Chinese School</span>
+      <span class="pill green">Ages 7–13</span>
+      <span class="pill" style="color:#dc2626;">Summer 2026</span>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 2 · TODAY'S PLAN (Daily Rhythm) -->
+<div class="slide" data-slide="2" data-type="lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:380px;height:380px;top:-70px;right:-60px;background:#0b63ce;opacity:0.10;"></div>
+    <div class="blob" style="width:230px;height:230px;bottom:-50px;left:-30px;background:#10b981;opacity:0.08;"></div>
+  </div>
+  <div class="content">
+    <p class="pill mb-3 reveal">Today's Plan · Daily Rhythm</p>
+    <h2 class="font-display reveal" style="font-weight:700;margin-bottom:1.1rem;color:#0f2747;">How our time unfolds</h2>
+    <div class="grid-cards reveal" style="gap:6px;">
+      <div class="timeline-row">
+        <div class="timeline-dot" style="background:#f59e0b;color:#1e1400;font-weight:800;font-size:1rem;display:flex;align-items:center;justify-content:center;">1</div>
+        <div><strong style="color:#0f2747;font-size:0.9rem;">10 min · Warm-Up</strong>
+          <div class="big-text">Unplugged logic puzzle: "20 Questions" — can you find the mystery word using only yes/no rules?</div>
+        </div>
+      </div>
+      <div class="timeline-line"></div>
+      <div class="timeline-row">
+        <div class="timeline-dot" style="background:#0b63ce;color:#04101f;font-weight:800;font-size:1rem;display:flex;align-items:center;justify-content:center;">2</div>
+        <div><strong style="color:#0f2747;font-size:0.9rem;">15–20 min · Mini-Lesson + Videos + AI Moment</strong>
+          <div class="big-text">Combining <span class="pyblock pb-blue">input()</span><span class="pyblock pb-gold">if/elif</span><span class="pyblock pb-green">lists</span> and functions into a conversation — plus rule-based vs. learned AI</div>
+        </div>
+      </div>
+      <div class="timeline-line"></div>
+      <div class="timeline-row">
+        <div class="timeline-dot" style="background:#10b981;color:#03170f;font-weight:800;font-size:1rem;display:flex;align-items:center;justify-content:center;">3</div>
+        <div><strong style="color:#0f2747;font-size:0.9rem;">20 min · Guided Build</strong>
+          <div class="big-text">Everyone builds a keyword chatbot together, step by step, in Python Playground</div>
+        </div>
+      </div>
+      <div class="timeline-line"></div>
+      <div class="timeline-row">
+        <div class="timeline-dot" style="background:#f43f5e;color:#1e0509;font-weight:800;font-size:1rem;display:flex;align-items:center;justify-content:center;">4</div>
+        <div><strong style="color:#0f2747;font-size:0.9rem;">5 min · Brain Break</strong>
+          <div class="big-text">Human Chatbot — one student follows only written "rules" to answer a partner's questions</div>
+        </div>
+      </div>
+      <div class="timeline-line"></div>
+      <div class="timeline-row">
+        <div class="timeline-dot" style="background:#7c3aed;color:#140a2b;font-weight:800;font-size:1rem;display:flex;align-items:center;justify-content:center;">5</div>
+        <div><strong style="color:#0f2747;font-size:0.9rem;">30–40 min · Open Build + Challenge Cards</strong>
+          <div class="big-text">Give your chatbot keywords &amp; a personality; Tier C adds <code>random</code> replies and handles "I don't understand"</div>
+        </div>
+      </div>
+      <div class="timeline-line"></div>
+      <div class="timeline-row">
+        <div class="timeline-dot" style="background:#0b63ce;color:#04101f;font-weight:800;font-size:1rem;display:flex;align-items:center;justify-content:center;">6</div>
+        <div><strong style="color:#0f2747;font-size:0.9rem;">10 min · Share-Out</strong>
+          <div class="big-text">Chat with your neighbor's bot — always opt-in, always warm</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 3 · WARM-UP -->
+<div class="slide" data-slide="3" data-type="warmup">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:380px;height:380px;top:-90px;right:-70px;background:#f59e0b;opacity:.10;"></div>
+    <div class="blob" style="width:260px;height:260px;bottom:-60px;left:-50px;background:#0b63ce;opacity:.09;"></div>
+  </div>
+  <div class="content">
+    <p class="pill mb-3 reveal" style="color:#b45309;">Warm-Up · No Screens · 10 min</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.5rem,2.6vw,2.1rem);font-weight:700;margin-bottom:0.8rem;color:#0f2747;">
+      20 Questions: could a "rule follower" win this game?
+    </h2>
+    <div class="grid-cards grid-2 reveal" style="gap:12px;margin-bottom:12px;">
+      <div class="card hover-lift" style="padding:14px 16px;">
+        <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/e352c16e563e6d4963d1426b8abad1588a70d4fb.jpg"
+             alt="Teacher and students playing a guessing game together"
+             style="width:100%;height:100px;object-fit:cover;border-radius:10px;margin-bottom:10px;">
+        <p class="question-chip" style="margin-bottom:8px;display:inline-flex;">Try It — Partner Game</p>
+        <p class="big-text">One partner thinks of an animal. The other asks only <strong>yes/no questions</strong> to guess it in 20 tries or fewer.</p>
+      </div>
+      <div class="card hover-lift" style="padding:14px 16px;">
+        <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/61f6e3a481076fba7ef734125bf9f75b51645130.jpg"
+             alt="Student thinking through a logic puzzle at a computer"
+             style="width:100%;height:100px;object-fit:cover;border-radius:10px;margin-bottom:10px;">
+        <p class="think-chip" style="margin-bottom:8px;display:inline-flex;">Think About It</p>
+        <p class="big-text">What if the guesser could <strong>only</strong> react to specific words like "has fur" or "lives in water"? Would a fixed list of rules be enough?</p>
+      </div>
+    </div>
+    <div class="card reveal" style="background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.22);padding:12px 16px;">
+      <p style="margin:0;font-size:0.88rem;color:#0b63ce;font-weight:700;">
+        Big Idea: A chatbot that only reacts to keywords is playing a version of this exact game — it just checks your words against a list of rules it already knows. That's what we build today.
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 4 · MINI-LESSON PART 1: WHAT IS A CHATBOT -->
+<div class="slide" data-slide="4" data-type="mini-lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:360px;height:360px;top:-80px;right:-60px;background:#0b63ce;opacity:.11;"></div>
+    <div class="blob" style="width:240px;height:240px;bottom:-50px;left:-40px;background:#10b981;opacity:.08;"></div>
+  </div>
+  <div class="content">
+    <p class="pill blue mb-3 reveal">Mini-Lesson — Part 1</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.5rem,2.5vw,2rem);font-weight:700;margin-bottom:0.9rem;color:#0f2747;">What actually makes a chatbot "talk"?</h2>
+    <div class="grid-cards grid-2 reveal" style="gap:14px;margin-bottom:12px;">
+      <div class="card" style="padding:16px 18px;">
+        <p style="font-weight:800;color:#0b63ce;margin:0 0 10px;font-size:0.92rem;">Four ingredients, one conversation</p>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div style="display:flex;align-items:center;gap:8px;font-size:0.85rem;color:#3a5a7a;"><span class="step-num" style="width:22px;height:22px;font-size:0.72rem;">1</span> <code>input()</code> — listen to the human</div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:0.85rem;color:#3a5a7a;"><span class="step-num" style="width:22px;height:22px;font-size:0.72rem;">2</span> <code>if/elif/else</code> — decide what to say</div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:0.85rem;color:#3a5a7a;"><span class="step-num" style="width:22px;height:22px;font-size:0.72rem;">3</span> lists — store keywords &amp; replies</div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:0.85rem;color:#3a5a7a;"><span class="step-num" style="width:22px;height:22px;font-size:0.72rem;">4</span> functions — organize the whole chat</div>
+        </div>
+      </div>
+      <div class="card" style="padding:16px 18px;">
+        <p style="font-weight:800;color:#0b63ce;margin:0 0 10px;font-size:0.92rem;">A tiny live example</p>
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <div class="chat-bubble chat-user">hi there!</div>
+          <div class="chat-bubble chat-bot">Hello! I'm PyBot. Ask me anything!</div>
+          <div class="chat-bubble chat-user">what's your name</div>
+          <div class="chat-bubble chat-bot">I'm PyBot, a simple Python chatbot.</div>
+        </div>
+      </div>
+    </div>
+    <div class="card reveal" style="padding:12px 16px;background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.22);">
+      <p style="margin:0;font-size:0.9rem;color:#0b63ce;">
+        This is a <strong>rule-based</strong> chatbot: it checks your typed words for keywords like "hi" or "name," then picks a pre-written reply. No learning happens — <em>we</em> wrote every rule.
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 5 · MINI-LESSON PART 2: KEYWORD MATCHING -->
+<div class="slide" data-slide="5" data-type="mini-lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:340px;height:340px;top:-70px;right:-50px;background:#10b981;opacity:.10;"></div>
+    <div class="blob" style="width:220px;height:220px;bottom:-40px;left:-30px;background:#0b63ce;opacity:.08;"></div>
+  </div>
+  <div class="content">
+    <p class="pill green mb-3 reveal">Mini-Lesson — Part 2</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.4rem,2.4vw,1.9rem);font-weight:700;margin-bottom:0.9rem;color:#0f2747;">The trick: check for keywords inside a sentence</h2>
+    <div class="grid-cards grid-2 reveal" style="gap:14px;margin-bottom:12px;">
+      <div class="card" style="padding:16px 18px;">
+        <p style="font-weight:800;color:#0b63ce;margin:0 0 8px;font-size:0.9rem;">The <code>in</code> keyword searches text</p>
+        <div class="code-block" style="padding:8px 12px;font-size:0.8rem;">
+"hello" <span class="kw">in</span> "well hello there"<br>
+<span class="cmt"># → True (found it inside!)</span>
+        </div>
+        <p style="font-size:0.83rem;color:#3a5a7a;margin:10px 0 0;">Python doesn't need the <em>exact</em> sentence — just the keyword somewhere inside it.</p>
+      </div>
+      <div class="card" style="padding:16px 18px;">
+        <p style="font-weight:800;color:#0b63ce;margin:0 0 8px;font-size:0.9rem;">Always lowercase first!</p>
+        <div class="code-block" style="padding:8px 12px;font-size:0.8rem;">
+msg = input(<span class="str">"You: "</span>).lower()<br>
+<span class="kw">if</span> <span class="str">"hello"</span> <span class="kw">in</span> msg:
+        </div>
+        <p style="font-size:0.83rem;color:#3a5a7a;margin:10px 0 0;">"HELLO", "Hello", and "hello" should all match — <code>.lower()</code> makes that happen every time.</p>
+      </div>
+    </div>
+    <div class="card reveal" style="padding:12px 16px;background:rgba(250,204,21,0.08);border:1px solid rgba(250,204,21,0.22);">
+      <p style="margin:0;font-size:0.9rem;color:#b45309;">
+        <strong>Question for later:</strong> What happens if a message contains <em>two</em> keywords at once, like "hi, how are you"? Which rule wins?
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 6 · MINI-LESSON PART 3: FUNCTIONS -->
+<div class="slide" data-slide="6" data-type="mini-lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:340px;height:340px;top:-70px;left:-60px;background:#7c3aed;opacity:.10;"></div>
+    <div class="blob" style="width:220px;height:220px;bottom:-50px;right:-40px;background:#0b63ce;opacity:.08;"></div>
+  </div>
+  <div class="content">
+    <p class="pill purple mb-3 reveal">Mini-Lesson — Part 3</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.4rem,2.4vw,1.9rem);font-weight:700;margin-bottom:0.9rem;color:#0f2747;">Functions: wrapping our rules in a box</h2>
+    <div class="grid-cards grid-2 reveal" style="gap:14px;margin-bottom:12px;">
+      <div class="card" style="padding:16px 18px;">
+        <p style="font-weight:800;color:#7c3aed;margin:0 0 8px;font-size:0.9rem;">Without a function — messy</p>
+        <p style="font-size:0.83rem;color:#3a5a7a;margin:0 0 8px;">Every time we want a reply, we'd copy the same <code>if/elif</code> block over and over. Repetitive and easy to break.</p>
+      </div>
+      <div class="card" style="padding:16px 18px;">
+        <p style="font-weight:800;color:#7c3aed;margin:0 0 8px;font-size:0.9rem;">With a function — tidy</p>
+        <div class="code-block" style="padding:8px 12px;font-size:0.78rem;">
+<span class="kw">def</span> get_reply(msg):<br>
+&nbsp;&nbsp;<span class="kw">if</span> <span class="str">"hi"</span> <span class="kw">in</span> msg:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">return</span> <span class="str">"Hello!"</span><br>
+&nbsp;&nbsp;<span class="kw">else</span>:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">return</span> <span class="str">"Hmm?"</span>
+        </div>
+      </div>
+    </div>
+    <div class="card reveal" style="padding:12px 16px;background:rgba(124,58,237,0.08);border:1px solid rgba(124,58,237,0.22);">
+      <p style="margin:0;font-size:0.88rem;color:#7c3aed;">
+        Now we can call <code>get_reply(msg)</code> as many times as we want inside our loop. One box of rules, reused every turn — that's why real programs use functions everywhere.
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 7 · AI MOMENT -->
+<div class="slide" data-slide="7" data-type="mini-lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:360px;height:360px;top:-80px;left:-60px;background:#10b981;opacity:.12;"></div>
+    <div class="blob" style="width:240px;height:240px;bottom:-60px;right:-40px;background:#0b63ce;opacity:.09;"></div>
+  </div>
+  <div class="content">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:0.6rem;">
+      <span class="ai-badge reveal">AI Moment</span>
+      <p class="pill green reveal">Phase 3 · Sessions 15–20</p>
+    </div>
+    <h2 class="font-display reveal" style="font-size:clamp(1.4rem,2.5vw,2rem);font-weight:700;margin-bottom:0.9rem;color:#0f2747;">
+      Rules we wrote vs. patterns a model learned
+    </h2>
+    <div class="grid-cards grid-2 reveal" style="gap:12px;margin-bottom:12px;">
+      <div class="card" style="padding:14px 16px;border-top:3px solid #0b63ce;">
+        <p style="font-weight:800;color:#0b63ce;margin:0 0 8px;font-size:0.9rem;">Our chatbot today</p>
+        <p style="font-size:0.84rem;color:#3a5a7a;margin:0;">Follows <strong>rules WE wrote</strong>: "if 'hello' is in the message, say hi back." Every response is something a human typed in advance. No surprises, fully explainable.</p>
+      </div>
+      <div class="card" style="padding:14px 16px;border-top:3px solid #7c3aed;">
+        <p style="font-weight:800;color:#7c3aed;margin:0 0 8px;font-size:0.9rem;">A real chatbot (LLM)</p>
+        <p style="font-size:0.84rem;color:#3a5a7a;margin:0;">Predicts the <strong>next word</strong> using patterns learned from billions of examples of text. Nobody wrote a rule for every reply — it was trained, not programmed.</p>
+      </div>
+    </div>
+    <div class="card reveal" style="padding:10px 15px;background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.22);">
+      <p style="margin:0;font-size:0.84rem;color:#0b63ce;">
+        <strong>Crisp contrast:</strong> our bot can only say what we told it to say. An LLM can say things nobody ever typed — because it learned the <em>pattern</em> of language, not a fixed list of answers.
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 8 · VIDEO 1 -->
+<div class="slide" data-slide="8" data-type="mini-lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:350px;height:350px;top:-80px;right:-60px;background:#0b63ce;opacity:.10;"></div>
+    <div class="blob" style="width:220px;height:220px;bottom:-50px;left:-30px;background:#10b981;opacity:.07;"></div>
+  </div>
+  <div class="content">
+    <p class="pill mb-3 reveal">Video 1 · Mini-Lesson Boost</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.4rem,2.4vw,1.9rem);font-weight:700;margin-bottom:0.8rem;color:#0f2747;">
+      Let's Create a ChatBot (Code Included)
+    </h2>
+    <div class="grid-cards grid-2 reveal" style="gap:14px;align-items:start;">
+      <div>
+        <div class="media-embed" id="player-erkKF3l-DGU" onclick="playVideo('erkKF3l-DGU')" title="Click to play video">
+          <img src="https://img.youtube.com/vi/erkKF3l-DGU/hqdefault.jpg" alt="Python chatbot tutorial video thumbnail">
+          <div class="play-btn"><div><svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg></div></div>
+        </div>
+        <p style="font-size:0.78rem;color:#5b7290;margin:6px 0 0;text-align:center;">
+          <a href="https://www.youtube.com/watch?v=erkKF3l-DGU" target="_blank" rel="noopener" style="color:#0b63ce;text-decoration:underline;">▶ YouTube · "Python for Beginners #5 — Let's create a ChatBot"</a>
+        </p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div class="card" style="padding:12px 15px;">
+          <p style="font-weight:800;color:#0b63ce;margin:0 0 6px;font-size:0.85rem;">While watching, think about:</p>
+          <ul style="margin:0;padding-left:18px;font-size:0.85rem;color:#3a5a7a;line-height:1.65;">
+            <li>How many <code>elif</code> branches does this bot use?</li>
+            <li>What does the <code>else</code> branch say when nothing matches?</li>
+            <li>Where does the loop keep the chat going until "bye"?</li>
+          </ul>
+        </div>
+        <div class="card" style="padding:10px 14px;background:rgba(250,204,21,0.08);border:1px solid rgba(250,204,21,0.22);">
+          <p style="margin:0;font-size:0.82rem;color:#b45309;"><strong>Duration:</strong> under 5 min &nbsp;|&nbsp; <strong>Level:</strong> Beginner</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 9 · VIDEO 2 -->
+<div class="slide" data-slide="9" data-type="mini-lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:340px;height:340px;top:-70px;right:-50px;background:#0b63ce;opacity:.10;"></div>
+    <div class="blob" style="width:220px;height:220px;bottom:-50px;left:-40px;background:#10b981;opacity:.07;"></div>
+  </div>
+  <div class="content">
+    <p class="pill mb-3 reveal">Video 2 · See It Explained</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.4rem,2.4vw,1.9rem);font-weight:700;margin-bottom:0.8rem;color:#0f2747;">
+      Simple Chatbot with Python — Conditionals in 5 Minutes
+    </h2>
+    <div class="grid-cards grid-2 reveal" style="gap:14px;align-items:start;">
+      <div>
+        <div class="media-embed" id="player-S-Ks1ez62xM" onclick="playVideo('S-Ks1ez62xM')" title="Click to play video">
+          <img src="https://img.youtube.com/vi/S-Ks1ez62xM/hqdefault.jpg" alt="Simple chatbot python conditionals tutorial thumbnail">
+          <div class="play-btn"><div><svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg></div></div>
+        </div>
+        <p style="font-size:0.78rem;color:#5b7290;margin:6px 0 0;text-align:center;">
+          <a href="https://www.youtube.com/watch?v=S-Ks1ez62xM" target="_blank" rel="noopener" style="color:#0b63ce;text-decoration:underline;">▶ YouTube · "Simple Chatbot with Python — Learn Conditionals &amp; Input in 5 Minutes"</a>
+        </p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div class="card" style="padding:12px 15px;">
+          <p style="font-weight:800;color:#0b63ce;margin:0 0 6px;font-size:0.85rem;">This video shows the exact pieces we need:</p>
+          <div style="display:flex;flex-direction:column;gap:4px;">
+            <div style="display:flex;align-items:center;gap:8px;font-size:0.83rem;color:#3a5a7a;"><span class="step-num" style="width:22px;height:22px;font-size:0.72rem;">1</span> <code>input()</code> to take user messages</div>
+            <div style="display:flex;align-items:center;gap:8px;font-size:0.83rem;color:#3a5a7a;"><span class="step-num" style="width:22px;height:22px;font-size:0.72rem;">2</span> <code>if / elif / else</code> for chatbot logic</div>
+            <div style="display:flex;align-items:center;gap:8px;font-size:0.83rem;color:#3a5a7a;"><span class="step-num" style="width:22px;height:22px;font-size:0.72rem;">3</span> a <code>while</code> loop to keep chatting</div>
+            <div style="display:flex;align-items:center;gap:8px;font-size:0.83rem;color:#3a5a7a;"><span class="step-num" style="width:22px;height:22px;font-size:0.72rem;">4</span> enhancing responses with simple logic</div>
+          </div>
+        </div>
+        <div class="card" style="padding:10px 14px;background:rgba(250,204,21,0.08);border:1px solid rgba(250,204,21,0.22);">
+          <p style="margin:0;font-size:0.82rem;color:#b45309;"><strong>Duration:</strong> ~5 min &nbsp;|&nbsp; <strong>Level:</strong> Beginner</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 10 · GUIDED BUILD (INTERACTIVE) -->
+<div class="slide" data-slide="10" data-type="build">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:360px;height:360px;top:-80px;right:-60px;background:#10b981;opacity:.12;"></div>
+    <div class="blob" style="width:240px;height:240px;bottom:-50px;left:-40px;background:#0b63ce;opacity:.09;"></div>
+  </div>
+  <div class="content">
+    <p class="pill green mb-3 reveal">Guided Build — Step by Step (20 min)</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.4rem,2.4vw,1.9rem);font-weight:700;margin-bottom:0.7rem;color:#0f2747;">
+      Build: A Keyword Chatbot
+    </h2>
+    <p class="reveal" style="font-size:0.82rem;color:#5b7290;margin:0 0 0.9rem;">Click each step to reveal the code — then try messages on the right and watch the bot decide which rule fires.</p>
+
+    <div class="grid-cards grid-2 reveal" style="gap:14px;align-items:start;">
+      <div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;" id="build-steps">
+          <button class="step-btn active" data-step="1" onclick="showStep(1)">1 · Greet</button>
+          <button class="step-btn" data-step="2" onclick="showStep(2)">2 · Loop</button>
+          <button class="step-btn" data-step="3" onclick="showStep(3)">3 · Exit</button>
+          <button class="step-btn" data-step="4" onclick="showStep(4)">4 · Rules</button>
+          <button class="step-btn" data-step="5" onclick="showStep(5)">5 · Else</button>
+        </div>
+
+        <div class="card build-step-card" id="step-1" style="padding:13px 16px;">
+          <p style="font-weight:800;color:#0f2747;margin:0 0 6px;font-size:0.86rem;">Step 1 — Greet the human</p>
+          <div class="code-block" style="padding:8px 12px;font-size:0.8rem;">print(<span class="str">"Chatbot: Hi! Type 'bye' to exit."</span>)</div>
+        </div>
+        <div class="card build-step-card" id="step-2" style="padding:13px 16px;display:none;">
+          <p style="font-weight:800;color:#0f2747;margin:0 0 6px;font-size:0.86rem;">Step 2 — Start a loop &amp; get lowercase input</p>
+          <div class="code-block" style="padding:8px 12px;font-size:0.8rem;"><span class="kw">while</span> True:<br>&nbsp;&nbsp;msg = input(<span class="str">"You: "</span>).lower()</div>
+        </div>
+        <div class="card build-step-card" id="step-3" style="padding:13px 16px;display:none;">
+          <p style="font-weight:800;color:#0f2747;margin:0 0 6px;font-size:0.86rem;">Step 3 — Check for the exit word first</p>
+          <div class="code-block" style="padding:8px 12px;font-size:0.8rem;"><span class="kw">if</span> <span class="str">"bye"</span> <span class="kw">in</span> msg:<br>&nbsp;&nbsp;print(<span class="str">"Goodbye!"</span>); break</div>
+        </div>
+        <div class="card build-step-card" id="step-4" style="padding:13px 16px;display:none;">
+          <p style="font-weight:800;color:#0f2747;margin:0 0 6px;font-size:0.86rem;">Step 4 — Add keyword rules with elif</p>
+          <div class="code-block" style="padding:8px 12px;font-size:0.8rem;"><span class="kw">elif</span> <span class="str">"hello"</span> <span class="kw">in</span> msg <span class="kw">or</span> <span class="str">"hi"</span> <span class="kw">in</span> msg:<br>&nbsp;&nbsp;print(<span class="str">"Hi there!"</span>)<br><span class="kw">elif</span> <span class="str">"name"</span> <span class="kw">in</span> msg:<br>&nbsp;&nbsp;print(<span class="str">"I'm PyBot!"</span>)</div>
+        </div>
+        <div class="card build-step-card" id="step-5" style="padding:13px 16px;display:none;">
+          <p style="font-weight:800;color:#0d9488;margin:0 0 6px;font-size:0.86rem;">Step 5 — Catch everything else</p>
+          <div class="code-block" style="padding:8px 12px;font-size:0.8rem;"><span class="kw">else</span>: print(<span class="str">"I don't understand yet."</span>)</div>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div class="card" style="padding:13px 15px;">
+          <p style="font-weight:800;color:#0b63ce;margin:0 0 8px;font-size:0.85rem;">Try it — click a message to run the bot:</p>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;">
+            <button class="try-btn" onclick="runBot('hi there')">hi there</button>
+            <button class="try-btn" onclick="runBot('whats your name')">what's your name</button>
+            <button class="try-btn" onclick="runBot('purple elephants')">purple elephants</button>
+            <button class="try-btn" onclick="runBot('bye')">bye</button>
+          </div>
+          <div id="chat-window" style="display:flex;flex-direction:column;gap:6px;min-height:96px;background:rgba(11,99,206,0.04);border-radius:10px;padding:10px;">
+            <p style="margin:0;font-size:0.78rem;color:#5b7290;">Click a message above to see which rule fires…</p>
+          </div>
+        </div>
+        <div class="card" style="padding:10px 13px;background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.22);">
+          <p style="margin:0;font-size:0.8rem;color:#0b63ce;"><strong>Notice:</strong> Python checks rules top to bottom and stops at the first match — try "bye" last to see it end the chat.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 11 · DEBUG THE BOT (INTERACTIVE) -->
+<div class="slide" data-slide="11" data-type="build">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:340px;height:340px;top:-70px;left:-60px;background:#dc2626;opacity:.09;"></div>
+    <div class="blob" style="width:220px;height:220px;bottom:-50px;right:-40px;background:#0b63ce;opacity:.08;"></div>
+  </div>
+  <div class="content">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:0.6rem;">
+      <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/94d81ebeecd9d8b7b30784d13c9ceb30b24645c6.jpg" alt="Kid detective examining a bug with a magnifying glass" style="width:38px;height:38px;object-fit:contain;border-radius:8px;">
+      <p class="pill red reveal" style="margin:0;">Code Detective · Find the Bug</p>
+    </div>
+    <h2 class="font-display reveal" style="font-size:clamp(1.4rem,2.4vw,1.9rem);font-weight:700;margin-bottom:0.8rem;color:#0f2747;">
+      Click the broken line — can you spot why this bot fails?
+    </h2>
+    <div class="grid-cards grid-2 reveal" style="gap:14px;align-items:start;">
+      <div class="card" style="padding:14px 16px;">
+        <p style="font-weight:800;color:#0f2747;margin:0 0 8px;font-size:0.85rem;">This bot never says hello — why?</p>
+        <div class="code-block" id="debug-code" style="padding:10px 14px;font-size:0.8rem;line-height:1.9;">
+<div class="debug-line" onclick="checkBug(this,false)" data-line="1">msg = input(<span class="str">"You: "</span>)</div>
+<div class="debug-line" onclick="checkBug(this,true)" data-line="2"><span class="kw">if</span> <span class="str">"Hello"</span> <span class="kw">in</span> msg:</div>
+<div class="debug-line" onclick="checkBug(this,false)" data-line="3">&nbsp;&nbsp;print(<span class="str">"Hi there!"</span>)</div>
+<div class="debug-line" onclick="checkBug(this,false)" data-line="4"><span class="kw">else</span>: print(<span class="str">"?"</span>)</div>
+        </div>
+        <p style="font-size:0.76rem;color:#5b7290;margin:8px 0 0;">Click the line you think is the bug.</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div class="card" id="debug-feedback" style="padding:14px 16px;min-height:120px;background:rgba(11,99,206,0.05);">
+          <p style="margin:0;font-size:0.85rem;color:#5b7290;">Waiting for your guess…</p>
+        </div>
+        <div class="card" style="padding:11px 15px;background:rgba(220,38,38,0.06);border:1px solid rgba(220,38,38,0.22);">
+          <p style="margin:0;font-size:0.82rem;color:#dc2626;"><strong>Hint:</strong> We forgot <code>.lower()</code> on line 1 — the user types "hello" but the rule checks for "Hello" with a capital H!</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 12 · BRAIN BREAK -->
+<div class="slide" data-slide="12" data-type="break">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:380px;height:380px;top:-90px;right:-70px;background:#f59e0b;opacity:.12;"></div>
+    <div class="blob" style="width:260px;height:260px;bottom:-60px;left:-50px;background:#10b981;opacity:.10;"></div>
+  </div>
+  <div class="content" style="text-align:center;">
+    <p class="pill mb-3 reveal" style="margin:0 auto 0.8rem;display:inline-flex;color:#b45309;">Movement Break · 5 min</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.6rem,3vw,2.4rem);font-weight:700;margin-bottom:0.5rem;color:#0f2747;">
+      Stand Up — Be the Human Chatbot!
+    </h2>
+    <div class="break-card reveal" style="max-width:680px;margin:0 auto 14px;">
+      <p style="font-size:1rem;font-weight:800;color:#b45309;margin:0 0 12px;">One student is "PyBot" — can only answer using 3 written rules taped on a card</p>
+      <div style="display:flex;flex-direction:column;gap:8px;text-align:left;">
+        <div style="background:rgba(255,255,255,0.06);border-radius:10px;padding:8px 14px;font-size:0.9rem;color:#0f2747;">Rule 1: If asked about <strong>food</strong> → say "I love pizza!" and spin once</div>
+        <div style="background:rgba(255,255,255,0.06);border-radius:10px;padding:8px 14px;font-size:0.9rem;color:#0f2747;">Rule 2: If asked about <strong>weather</strong> → say "I don't have a window!" and clap</div>
+        <div style="background:rgba(255,255,255,0.06);border-radius:10px;padding:8px 14px;font-size:0.9rem;color:#0f2747;">Rule 3: Anything else → say "I don't understand!" and shrug</div>
+      </div>
+    </div>
+    <div class="card reveal" style="max-width:560px;margin:0 auto;padding:12px 16px;background:rgba(52,211,153,0.08);border:1px solid rgba(52,211,153,0.22);">
+      <p style="margin:0;font-size:0.88rem;color:#0d9488;font-weight:700;">
+        Notice: "PyBot" can only follow the 3 rules on the card — exactly like our Python code!
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 13 · OPEN BUILD + CHALLENGE CARDS -->
+<div class="slide" data-slide="13" data-type="build">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:360px;height:360px;top:-80px;right:-60px;background:#10b981;opacity:.11;"></div>
+    <div class="blob" style="width:250px;height:250px;bottom:-60px;left:-40px;background:#0b63ce;opacity:.08;"></div>
+  </div>
+  <div class="content">
+    <p class="pill green mb-3 reveal">Open Build · 30–40 min</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.4rem,2.4vw,1.9rem);font-weight:700;margin-bottom:0.9rem;color:#0f2747;">
+      Give your chatbot a personality
+    </h2>
+    <div class="grid-cards grid-3 reveal" style="gap:12px;margin-bottom:12px;">
+      <div class="card" style="padding:14px 16px;border-top:3px solid #10b981;">
+        <span class="tier-a">TIER A · Foundations</span>
+        <p style="font-weight:800;color:#0f2747;margin:8px 0 6px;font-size:0.87rem;">Grades 1–3</p>
+        <p style="font-size:0.82rem;color:#3a5a7a;margin:0;">Get 3 keyword rules working with a partner's help: greeting, name, and goodbye.</p>
+        <div class="progress-track" style="margin-top:10px;"><div class="progress-fill" style="width:33%;"></div></div>
+      </div>
+      <div class="card" style="padding:14px 16px;border-top:3px solid #0b63ce;">
+        <span class="tier-b">TIER B · Core</span>
+        <p style="font-weight:800;color:#0f2747;margin:8px 0 6px;font-size:0.87rem;">Grades 3–5</p>
+        <p style="font-size:0.82rem;color:#3a5a7a;margin:0;">Add <strong>5 or more</strong> keyword rules and give your bot a fun name and personality.</p>
+        <div class="progress-track" style="margin-top:10px;"><div class="progress-fill" style="width:66%;"></div></div>
+      </div>
+      <div class="card" style="padding:14px 16px;border-top:3px solid #7c3aed;">
+        <span class="tier-c">TIER C · Accelerated</span>
+        <p style="font-weight:800;color:#0f2747;margin:8px 0 6px;font-size:0.87rem;">Grades 6–9</p>
+        <p style="font-size:0.82rem;color:#3a5a7a;margin:0;">Use <code>random.choice()</code> so replies vary each time, and add a friendly "I don't understand" fallback for unmatched input.</p>
+        <div class="progress-track" style="margin-top:10px;"><div class="progress-fill" style="width:100%;"></div></div>
+      </div>
+    </div>
+    <div class="challenge-card reveal" style="display:flex;gap:12px;align-items:flex-start;">
+      <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/5b6e23313380a8301d9860e0267787ca9e4cb16c.jpg" alt="Cute robot icon" style="width:34px;height:34px;object-fit:contain;flex-shrink:0;border-radius:8px;">
+      <div>
+        <p style="font-weight:800;color:#7c3aed;margin:0 0 4px;font-size:0.87rem;">Challenge Card</p>
+        <p style="font-size:0.85rem;color:#3a5a7a;margin:0;">Add <code>import random</code> and a list of 3 replies for one keyword — use <code>random.choice(list)</code> so your bot feels less repetitive.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 14 · RANDOM RESPONSES DEEP DIVE (extra scaffold for Tier C) -->
+<div class="slide" data-slide="14" data-type="build">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:340px;height:340px;top:-70px;left:-60px;background:#7c3aed;opacity:.10;"></div>
+    <div class="blob" style="width:220px;height:220px;bottom:-50px;right:-40px;background:#f59e0b;opacity:.08;"></div>
+  </div>
+  <div class="content">
+    <p class="pill purple mb-3 reveal">Stretch Skill · random Module</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.4rem,2.4vw,1.9rem);font-weight:700;margin-bottom:0.9rem;color:#0f2747;">
+      Make replies feel less repetitive
+    </h2>
+    <div class="grid-cards grid-2 reveal" style="gap:14px;">
+      <div class="card" style="padding:16px 18px;">
+        <p style="font-weight:800;color:#7c3aed;margin:0 0 8px;font-size:0.9rem;">Store several replies in a list</p>
+        <div class="code-block" style="padding:8px 12px;font-size:0.8rem;">
+<span class="kw">import</span> random<br><br>
+greetings = [<span class="str">"Hi!"</span>, <span class="str">"Hey there!"</span>, <span class="str">"Hello, friend!"</span>]
+        </div>
+      </div>
+      <div class="card" style="padding:16px 18px;">
+        <p style="font-weight:800;color:#7c3aed;margin:0 0 8px;font-size:0.9rem;">Pick one at random each time</p>
+        <div class="code-block" style="padding:8px 12px;font-size:0.8rem;">
+<span class="kw">if</span> <span class="str">"hi"</span> <span class="kw">in</span> msg:<br>
+&nbsp;&nbsp;print(random.choice(greetings))
+        </div>
+      </div>
+    </div>
+    <div class="card reveal" style="margin-top:12px;padding:12px 16px;background:rgba(124,58,237,0.08);border:1px solid rgba(124,58,237,0.22);">
+      <p style="margin:0;font-size:0.88rem;color:#7c3aed;">
+        Same rule, different reply each run — the chatbot still isn't "learning," it's just choosing randomly from a list <em>we</em> wrote. Still 100% rule-based.
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 15 · SHARE-OUT -->
+<div class="slide" data-slide="15" data-type="share">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:400px;height:400px;top:-90px;left:-80px;background:#7c3aed;opacity:.13;"></div>
+    <div class="blob" style="width:260px;height:260px;bottom:-60px;right:-50px;background:#0b63ce;opacity:.09;"></div>
+  </div>
+  <div class="content" style="text-align:center;">
+    <p class="pill purple mb-3 reveal" style="margin:0 auto 0.8rem;display:inline-flex;">Share-Out · 10 min</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.6rem,3vw,2.4rem);font-weight:700;margin-bottom:0.8rem;color:#0f2747;">
+      Chat with your neighbor's bot
+    </h2>
+    <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/87aa7a4fe7ff88fe00d8710d472c4ac3db05708d.jpg"
+         alt="Two students at a laptop chatting with an AI assistant"
+         class="reveal"
+         style="max-width:360px;width:80%;border-radius:16px;margin:0 auto 16px;box-shadow:0 12px 30px rgba(11,99,206,0.2);">
+    <div class="grid-cards grid-2 reveal" style="gap:12px;max-width:700px;margin:0 auto;">
+      <div class="card" style="padding:12px 16px;">
+        <p style="margin:0;font-size:0.86rem;color:#0b63ce;font-weight:700;">Trade seats with a partner and try to "break" their bot with tricky input.</p>
+      </div>
+      <div class="card" style="padding:12px 16px;">
+        <p style="margin:0;font-size:0.86rem;color:#0d9488;font-weight:700;">Volunteers demo their bot's personality to the whole class — always opt-in.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 16 · HOMEWORK / RECAP -->
+<div class="slide" data-slide="16" data-type="title">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:460px;height:460px;top:-100px;right:-90px;background:#0b63ce;opacity:.14;"></div>
+    <div class="blob" style="width:300px;height:300px;bottom:-80px;left:-60px;background:#10b981;opacity:.10;"></div>
+    <div class="blob" style="width:200px;height:200px;top:35%;left:8%;background:#f59e0b;opacity:.09;"></div>
+  </div>
+  <canvas class="particle-canvas"></canvas>
+  <div class="content" style="text-align:center;">
+    <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/30d4799475a6effa4aad43d068f40120ad74b63a.jpg"
+         alt="Friendly blue cartoon robot giving a thumbs up"
+         style="height:clamp(70px,12vh,110px);object-fit:contain;margin:0 auto 1rem;animation:float 3s ease-in-out infinite;"
+         class="reveal">
+    <p class="pill mb-3 reveal" style="margin:0 auto 0.8rem;display:inline-flex;">Homework</p>
+    <h2 class="font-display grad-text reveal" style="font-size:clamp(1.6rem,3.6vw,2.6rem);font-weight:700;margin-bottom:0.8rem;">
+      Give your chatbot a personality
+    </h2>
+    <p class="big-text reveal" style="max-width:640px;margin:0 auto 14px;">
+      Make sure your bot can respond to <strong>at least 5 different things</strong> — a name, a greeting, a joke, a goodbye, anything you choose. Bring it to life!
+    </p>
+    <div class="card reveal" style="max-width:600px;margin:0 auto;padding:14px 18px;background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.22);">
+      <p style="margin:0;font-size:0.88rem;color:#0b63ce;font-weight:700;">
+        Coming next: Session 17 asks how real AI learns from data — and why that can make it biased. Rule-based vs. learned AI, revisited.
+      </p>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<div class="nav-controls">
+  <button class="nav-btn" onclick="changeSlide(-1)" aria-label="Previous slide">&#8249;</button>
+  <div class="slide-dots" id="dots"></div>
+  <button class="nav-btn" onclick="changeSlide(1)" aria-label="Next slide">&#8250;</button>
+  <span class="slide-counter" id="counter">1 / 16</span>
+</div>
+
+<script>
+let current = 1;
+const total = document.querySelectorAll('.slide').length;
+const dotTypeMap = {warmup:'warmup',build:'build',share:'share'};
+const dotsContainer = document.getElementById('dots');
+const counter = document.getElementById('counter');
+document.querySelectorAll('.slide').forEach((s,i)=>{
+  const n=i+1;
+  const type = s.getAttribute('data-type')||'lesson';
+  const dot=document.createElement('div');
+  dot.className='dot'+(dotTypeMap[type]?(' '+dotTypeMap[type]):'')+(n===1?' active':'');
+  dot.onclick=()=>goToSlide(n);
+  dotsContainer.appendChild(dot);
+});
+function goToSlide(n){
+  const prev=document.querySelector('.slide.active');
+  const next=document.querySelector(`.slide[data-slide="${n}"]`);
+  if(prev) prev.classList.remove('active');
+  if(next){ next.classList.add('active'); animateSlide(next); }
+  current=n; updateNav();
+}
+function changeSlide(dir){ let next=current+dir; if(next<1) next=total; if(next>total) next=1; goToSlide(next); }
+function updateNav(){ document.querySelectorAll('.dot').forEach((d,i)=>{ d.classList.toggle('active', i+1===current); }); counter.textContent = current+' / '+total; }
+document.addEventListener('keydown',(e)=>{ if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();changeSlide(1);} if(e.key==='ArrowLeft'){e.preventDefault();changeSlide(-1);} });
+let touchStartX=0;
+document.addEventListener('touchstart',(e)=>{ touchStartX=e.touches[0].clientX; });
+document.addEventListener('touchend',(e)=>{ const diff=touchStartX-e.changedTouches[0].clientX; if(Math.abs(diff)>50) changeSlide(diff>0?1:-1); });
+
+function animateSlide(slide){
+  slide.querySelectorAll('.reveal').forEach((el,i)=>{
+    el.style.transition='none'; el.style.opacity='0'; el.style.transform='translateY(18px)';
+    el.offsetHeight;
+    const delay=i*0.07;
+    el.style.transition=`opacity 0.4s ease ${delay}s, transform 0.4s ease ${delay}s`;
+    el.style.opacity='1'; el.style.transform='translateY(0)';
+  });
+}
+
+document.addEventListener('mousemove',(e)=>{
+  const spotlight=document.getElementById('spotlight');
+  if(spotlight){ spotlight.style.background=`radial-gradient(600px circle at ${e.clientX}px ${e.clientY}px, rgba(11,99,206,0.06), transparent 40%)`; }
+});
+
+window.initParticles=function(canvas){
+  if(!canvas) return;
+  const ctx=canvas.getContext('2d');
+  canvas.width=canvas.offsetWidth; canvas.height=canvas.offsetHeight;
+  const particles=Array.from({length:40},()=>({x:Math.random()*canvas.width,y:Math.random()*canvas.height,vx:(Math.random()-0.5)*0.3,vy:(Math.random()-0.5)*0.3,size:Math.random()*2.2+0.8,alpha:Math.random()*0.3+0.1}));
+  (function animate(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    particles.forEach(p=>{
+      p.x+=p.vx; p.y+=p.vy;
+      if(p.x<0)p.x=canvas.width; if(p.x>canvas.width)p.x=0;
+      if(p.y<0)p.y=canvas.height; if(p.y>canvas.height)p.y=0;
+      ctx.beginPath(); ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
+      ctx.fillStyle=`rgba(11,99,206,${p.alpha})`; ctx.fill();
+    });
+    requestAnimationFrame(animate);
+  })();
+};
+document.querySelectorAll('.particle-canvas').forEach(c=>window.initParticles(c));
+
+function checkBug(el,isCorrect){
+  document.querySelectorAll('.debug-line').forEach(l=>l.classList.remove('correct','wrong'));
+  const fb = document.getElementById('debug-feedback');
+  if(isCorrect){
+    el.classList.add('correct');
+    fb.style.background='rgba(16,185,129,0.08)';
+    fb.innerHTML = '<p style="margin:0;font-size:0.85rem;color:#0d9488;font-weight:700;">Great detective work! Line 2 checks for "Hello" (capital H), but msg was never lowered — so typed "hello" never matches.</p>';
+  } else {
+    el.classList.add('wrong');
+    fb.style.background='rgba(220,38,38,0.06)';
+    fb.innerHTML = '<p style="margin:0;font-size:0.85rem;color:#dc2626;font-weight:700;">Not quite — that line runs fine on its own. Look at how the input is captured before any checking happens.</p>';
+  }
+}
+
+function showStep(n){
+  document.querySelectorAll('.build-step-card').forEach(c=>c.style.display='none');
+  const target=document.getElementById('step-'+n);
+  if(target) target.style.display='block';
+  document.querySelectorAll('.step-btn').forEach(b=>b.classList.toggle('active', b.dataset.step===String(n)));
+}
+
+function runBot(msg){
+  const lower = msg.toLowerCase();
+  let reply, ruleLabel;
+  if(lower.includes('bye')){
+    reply = "Goodbye!"; ruleLabel = 'Rule matched: "bye" in msg';
+  } else if(lower.includes('hello') || lower.includes('hi')){
+    reply = "Hi there!"; ruleLabel = 'Rule matched: "hello"/"hi" in msg';
+  } else if(lower.includes('name')){
+    reply = "I'm PyBot!"; ruleLabel = 'Rule matched: "name" in msg';
+  } else {
+    reply = "I don't understand yet."; ruleLabel = 'No keyword matched → else branch';
+  }
+  const win = document.getElementById('chat-window');
+  win.innerHTML = `
+    <div class="chat-bubble chat-user" style="align-self:flex-end;">${msg}</div>
+    <div class="chat-bubble chat-bot" style="align-self:flex-start;">${reply}</div>
+    <p style="margin:4px 0 0;font-size:0.72rem;color:#0d9488;font-weight:700;">${ruleLabel}</p>
+  `;
+}
+
+function playVideo(videoId){
+  const container = document.getElementById('player-'+videoId);
+  if(!container) return;
+  container.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+}
+
+try { animateSlide(document.querySelector('.slide.active')); } catch(e) { console.warn('init animation error', e); }
+</script>
+</body>
+</html>
