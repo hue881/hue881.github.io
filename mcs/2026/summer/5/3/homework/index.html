@@ -1,1 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Homework Sheet · Session 18 · 30-Min Capstone Planning</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f4f7ff;--paper:#ffffff;--ink:#1f2937;--muted:#5b6b7e;--blue:#4f6df5;--blue-soft:#dfe6ff;--green:#2bb673;--green-soft:#dcf8eb;--gold:#f3b63f;--gold-soft:#fff2d6;--coral:#f37f7a;--coral-soft:#ffe1de;--purple:#8a63f6;--purple-soft:#ece5ff;--teal:#39b8c8;--teal-soft:#def8fb;--fd:'Fredoka','Trebuchet MS',sans-serif;--fb:'Nunito',Arial,sans-serif;--fc:'Fira Code',Consolas,monospace;--tr:180ms cubic-bezier(.2,.8,.2,1)}*{box-sizing:border-box;margin:0;padding:0}body{font-family:var(--fb);background:radial-gradient(circle at top left,#e6efff 0%,#f4f7ff 35%,#fbfcff 100%);color:var(--ink)}@media print{body{background:#fff!important}.no-print{display:none!important}.sheet,.card,.tier,.sketch-pad,.promptbox{box-shadow:none!important}.page{max-width:none!important;padding:0!important}.progress-wrap{display:none!important}}
+.pbar{position:sticky;top:0;z-index:20;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:12px 22px;background:rgba(255,255,255,.82);backdrop-filter:blur(12px);border-bottom:1px solid rgba(148,163,184,.22)}.pbar-title{font-family:var(--fd);font-weight:700;color:var(--blue);font-size:1.08rem}.pbar-sub{font-size:.8rem;color:var(--muted)}.btns{display:flex;gap:10px;flex-wrap:wrap}.btn{border:none;border-radius:999px;padding:10px 18px;background:linear-gradient(135deg,var(--blue),var(--purple));color:#fff;font-weight:800;font-size:.8rem;cursor:pointer;transition:transform var(--tr),box-shadow var(--tr)}.btn.alt{background:#fff;color:var(--blue);border:1.5px solid #d7e2f0}.btn:hover{transform:translateY(-1px);box-shadow:0 8px 20px rgba(79,109,245,.18)}
+.page{max-width:1020px;margin:0 auto;padding:28px 18px 54px}.sheet{background:linear-gradient(180deg,rgba(255,255,255,.98),rgba(251,252,255,.99));border:1px solid rgba(255,255,255,.9);border-radius:30px;box-shadow:0 16px 38px rgba(79,109,245,.12);overflow:hidden}.hero{position:relative;padding:34px 30px 24px;background:linear-gradient(135deg,var(--blue) 0%,var(--teal) 34%,var(--green) 62%,var(--coral) 100%);color:#fff;overflow:hidden}.hero:before,.hero:after{content:'';position:absolute;border-radius:50%;background:rgba(255,255,255,.10)}.hero:before{width:220px;height:220px;right:-60px;top:-50px}.hero:after{width:150px;height:150px;left:-30px;bottom:-40px}.eyebrow{font-size:.75rem;letter-spacing:.18em;text-transform:uppercase;font-weight:800;opacity:.88;margin-bottom:6px}.hero h1{font-family:var(--fd);font-size:clamp(1.9rem,4vw,2.8rem);line-height:1.05;margin-bottom:8px}.hero p{max-width:60ch;font-size:.95rem;opacity:.94}.hero-pills{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}.pill{padding:6px 12px;border-radius:999px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);font-size:.72rem;font-weight:800;letter-spacing:.07em;text-transform:uppercase}
+.body{padding:24px 24px 32px}.meta{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px}.field{background:#fff;border:1.5px solid #dbe8f7;border-radius:16px;padding:12px 14px}.field label{display:block;font-size:.65rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);margin-bottom:6px}.line{width:100%;border:none;border-bottom:1.5px solid #cbd5e1;padding:4px 0;background:transparent;font:inherit;color:var(--ink)}.progress-wrap{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;margin-bottom:22px;padding:12px 14px;background:linear-gradient(135deg,#f8faff,#ffffff);border:1.5px solid #e0e8f5;border-radius:18px}.progress-track{height:12px;border-radius:999px;background:#ecf1fa;overflow:hidden}.progress-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--blue),var(--teal),var(--green),var(--coral));transition:width 220ms ease}.progress-text{font-size:.8rem;font-weight:800;color:var(--blue)}
+.section-tag{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:999px;background:#fff;border:1px solid #d8e4f4;color:var(--blue);font-size:.72rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px}.title{font-family:var(--fd);font-size:clamp(1.35rem,2.6vw,1.9rem);line-height:1.12;margin-bottom:14px}
+@media(max-width:760px){.meta,.timebar,.two,.tier-grid,.reflect-grid{grid-template-columns:1fr!important}}
+.timebar{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:24px}.time{padding:14px 10px;border-radius:18px;text-align:center;font-weight:900}.t1{background:var(--blue-soft)}.t2{background:var(--green-soft)}.t3{background:var(--gold-soft)}.time span{display:block;font-size:.68rem;text-transform:uppercase;color:#475569;margin-top:5px}
+.card{background:#fff;border:1.5px solid #e4edf8;border-radius:22px;padding:18px;box-shadow:0 10px 24px rgba(15,23,42,.04);margin-bottom:18px}.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}.prompt{font-size:.83rem;font-weight:800;color:#334155;margin:10px 0 6px}.write,.bigwrite{width:100%;border:1.5px solid #d7e2f0;border-radius:12px;padding:10px 12px;background:#fbfdff;font:inherit;color:var(--ink);transition:border-color var(--tr),box-shadow var(--tr),background var(--tr)}.write:focus,.bigwrite:focus,.line:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 4px rgba(79,109,245,.12);background:#fff}.write{min-height:42px}.bigwrite{min-height:92px;resize:vertical}.sketch-pad{min-height:220px;border:2px dashed #bfd6f8;border-radius:22px;background:linear-gradient(180deg,#fcfdff,#f3f8ff);padding:16px;position:relative}.sketch-pad:before{content:'Sketch zone';position:absolute;top:12px;right:14px;font-size:.72rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#93a9c6}
+.tier-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.tier{border-radius:24px;padding:18px;background:#fff;border:2px solid #e7edf8;cursor:pointer;transition:transform var(--tr),box-shadow var(--tr),border-color var(--tr)}.tier:hover,.tier.active{transform:translateY(-3px);box-shadow:0 12px 26px rgba(79,109,245,.12)}.tier.a.active{border-color:var(--blue)}.tier.b.active{border-color:var(--green)}.tier.c.active{border-color:var(--purple)}.badge{display:inline-flex;padding:5px 12px;border-radius:999px;color:#fff;font-size:.7rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px}.ba{background:linear-gradient(135deg,var(--blue),#7ea1ff)}.bb{background:linear-gradient(135deg,var(--green),#62d8a3)}.bc{background:linear-gradient(135deg,var(--purple),var(--coral))}.check{list-style:none;padding:0}.check li{display:flex;gap:8px;align-items:flex-start;margin-bottom:8px;font-size:.84rem;color:#334155}.box{width:16px;height:16px;border:2px solid #94a3b8;border-radius:4px;flex:0 0 16px;margin-top:2px;background:#fff}.promptbox{border-radius:18px;padding:16px;background:linear-gradient(135deg,#f8fbff,#fffefd);border:1.5px solid #dbe8f7}.reflect-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.chip-row{display:flex;gap:10px;flex-wrap:wrap}.chip{padding:8px 12px;border-radius:999px;background:#fff;border:1.5px solid #dbe4f2;font-weight:800;font-size:.77rem;cursor:pointer;transition:all var(--tr)}.chip.active{background:linear-gradient(135deg,var(--purple-soft),#fff);border-color:var(--purple);color:var(--purple)}table{width:100%;border-collapse:collapse;font-size:.82rem}th{background:#344154;color:#eaf1ff;padding:8px 10px;text-align:left}td{padding:8px 10px;border-bottom:1px solid #e2e8f0;vertical-align:top}tr:nth-child(even) td{background:#f8fbff}.pts{font-family:var(--fc);font-weight:800;color:var(--blue);white-space:nowrap}.footer{margin-top:24px;padding:16px 18px;border-radius:18px;background:linear-gradient(135deg,#f8fbff,#fffefd);border:1.5px solid #dce8f7;font-size:.78rem;color:#64748b;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}.footer strong{color:#1f2937}
 
+.option-chip{display:inline-flex;align-items:center;gap:8px;cursor:pointer}
+.option-chip input{accent-color:var(--blue)}
+.option-chip.active{background:linear-gradient(135deg,var(--blue-soft),#fff);border-color:var(--blue);color:var(--blue)}
+.check-input{appearance:auto;width:16px;height:16px;margin-top:2px;border:none;background:transparent}
+.check-input:focus{outline:2px solid rgba(79,109,245,.35);outline-offset:2px}
+
+
+.sketch-tools{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:10px 0 12px}
+.sketch-tools .mini-btn{border:none;border-radius:999px;padding:8px 12px;font-size:.74rem;font-weight:800;cursor:pointer;background:#fff;border:1.5px solid #d7e2f0;color:var(--ink)}
+.sketch-tools .mini-btn.active{background:linear-gradient(135deg,var(--blue-soft),#fff);border-color:var(--blue);color:var(--blue)}
+.sketch-tools input[type=color]{width:42px;height:36px;padding:0;border:none;background:transparent;cursor:pointer}
+.sketch-board{width:100%;height:240px;border:2px dashed #bfd6f8;border-radius:18px;background:#fff;touch-action:none;display:block}
+.sketch-wrap{position:relative}
+.sketch-hint{font-size:.76rem;color:var(--muted);margin-top:8px}
+
+.color-palette{display:flex;align-items:center;gap:8px;padding:4px 2px}
+.swatch{width:26px;height:26px;border-radius:999px;border:2px solid rgba(255,255,255,.95);background:var(--sw);box-shadow:0 0 0 1px #d7e2f0;cursor:pointer;transition:transform 160ms ease,box-shadow 160ms ease,border-color 160ms ease;padding:0}
+.swatch:hover{transform:translateY(-1px)}
+.swatch.active{box-shadow:0 0 0 3px rgba(79,109,245,.18),0 0 0 1px #9db5ff;border-color:#fff}
+
+
+</style>
+</head>
+<body>
+<div class="pbar no-print"><div><div class="pbar-title">🏠 Session 18 Homework</div><div class="pbar-sub">30-minute capstone planning · colorful + interactive</div></div><div class="btns"><button class="btn alt" id="clearHighlights">Reset highlights</button><button class="btn" onclick="window.print()">&#128424; Print / Save as PDF</button></div></div>
+<div class="page"><div class="sheet">
+<div class="hero"><div class="eyebrow">Session 18 Homework · 30 minutes</div><h1>Capstone Planning at Home</h1><p>Tonight is about making tomorrow easier: sketch the idea, clarify the AI piece, and break the project into parts you can actually build.</p><div class="hero-pills"><span class="pill">Sketch</span><span class="pill">3 Main Parts</span><span class="pill">Tiered</span><span class="pill">Planning</span></div></div>
+<div class="body">
+<div class="meta"><div class="field"><label>👤 Your Name</label><input class="line track-progress"></div><div class="field"><label>📅 Date</label><input class="line track-progress" value="July 30, 2026"></div><div class="field"><label>🏫 Section / Period</label><input class="line track-progress" placeholder="Section 1 / 2 / 3"></div></div>
+<div class="progress-wrap no-print"><div class="progress-track"><div class="progress-fill" id="progressFill"></div></div><div class="progress-text"><span id="progressText">0%</span> filled</div></div>
+<div class="section-tag">⏱ Tonight’s 30 Minutes</div><div class="title">Simple home workflow</div><div class="timebar"><div class="time t1">🧠<span>Recall · 5 min</span></div><div class="time t2">✏️<span>Sketch + Plan · 20 min</span></div><div class="time t3">💭<span>Reflect · 5 min</span></div></div>
+
+<div class="section-tag">🧠 Recall</div><div class="title">Reconnect to your project idea</div><div class="card"><div class="two"><div><div class="prompt">Which track did you choose?</div><input class="write track-progress" placeholder="Game / AI mini-app / Story"><div class="chip-row" style="margin-top:8px"><label class="chip option-chip"><input type="radio" name="home-track" value="Game"> <span>Game</span></label><label class="chip option-chip"><input type="radio" name="home-track" value="AI mini-app"> <span>AI mini-app</span></label><label class="chip option-chip"><input type="radio" name="home-track" value="Story"> <span>Story</span></label></div><div class="prompt">What is your project supposed to do?</div><textarea class="bigwrite track-progress" placeholder="My project will..."></textarea></div><div><div class="prompt">What is the AI idea in your project?</div><textarea class="bigwrite track-progress" placeholder="The AI part is..."></textarea><div class="prompt">One feature I am most excited about:</div><input class="write track-progress" placeholder="..." /></div></div></div>
+
+<div class="section-tag">✏️ Sketch + Plan</div><div class="title">Build the idea on paper first</div><div class="two"><div class="sketch-pad"><div class="prompt" style="margin-top:20px;">Use this space to sketch your screen, scene, chatbot flow, or title page.</div><div class="sketch-wrap"><div class="sketch-tools no-print"><button type="button" class="mini-btn tool-pen active">Pen</button><button type="button" class="mini-btn tool-erase">Erase</button><button type="button" class="mini-btn tool-clear">Clear</button><div class="color-palette" role="group" aria-label="Sketch colors"><button type="button" class="swatch active" data-color="#4f6df5" style="--sw:#4f6df5" aria-label="Blue"></button><button type="button" class="swatch" data-color="#39b8c8" style="--sw:#39b8c8" aria-label="Teal"></button><button type="button" class="swatch" data-color="#2bb673" style="--sw:#2bb673" aria-label="Green"></button><button type="button" class="swatch" data-color="#f37f7a" style="--sw:#f37f7a" aria-label="Coral"></button><button type="button" class="swatch" data-color="#8a63f6" style="--sw:#8a63f6" aria-label="Purple"></button><button type="button" class="swatch" data-color="#1f2937" style="--sw:#1f2937" aria-label="Charcoal"></button></div></div><canvas class="sketch-board"></canvas><div class="sketch-hint">Sketch directly here with your mouse, trackpad, or finger.</div></div><textarea class="bigwrite track-progress" placeholder="If you are not drawing here, describe what your sketch includes..." style="min-height:130px;background:rgba(255,255,255,.75)"></textarea></div><div class="promptbox"><div class="prompt" style="margin-top:0;">All tiers — 3 main parts</div><textarea class="bigwrite track-progress" placeholder="1. ...&#10;2. ...&#10;3. ..."></textarea><div class="prompt">What should work first?</div><input class="write track-progress" placeholder="The first thing I should get working is..."><div class="prompt">Why start there?</div><textarea class="bigwrite track-progress" placeholder="Because..."></textarea></div></div>
+
+<div class="tier-grid"><div class="tier a selectable"><div class="badge ba">Tier A · Foundations</div><ul class="check"><li><input class="box check-input" type="checkbox">Sketch one main screen or scene.</li><li><input class="box check-input" type="checkbox">Label one character or object.</li><li><input class="box check-input" type="checkbox">Write your 3 main parts.</li></ul><div class="prompt">Describe your sketch:</div><textarea class="bigwrite track-progress" placeholder="I drew..."></textarea></div><div class="tier b selectable"><div class="badge bb">Tier B · Core</div><ul class="check"><li><input class="box check-input" type="checkbox">Sketch a title screen or opening view.</li><li><input class="box check-input" type="checkbox">List 3 main parts clearly.</li><li><input class="box check-input" type="checkbox">Explain one AI feature.</li></ul><div class="prompt">How will the AI part show up?</div><textarea class="bigwrite track-progress" placeholder="..."></textarea></div><div class="tier c selectable"><div class="badge bc">Tier C · Accelerated</div><ul class="check"><li><input class="box check-input" type="checkbox">Break the 3 parts into smaller coding tasks.</li><li><input class="box check-input" type="checkbox">Put tasks in smart build order.</li><li><input class="box check-input" type="checkbox">Choose a tiny first win.</li></ul><div class="prompt">Small build tasks:</div><textarea class="bigwrite track-progress" placeholder="Part 1 → ...&#10;Part 2 → ...&#10;Part 3 → ..."></textarea></div></div>
+
+<div class="section-tag">💭 Reflect</div><div class="title">Finish with a clearer mind</div><div class="reflect-grid"><div class="card"><div class="prompt" style="margin-top:0;">Which part feels most exciting?</div><textarea class="bigwrite track-progress" placeholder="..."></textarea><div class="prompt">Which part might be hardest?</div><textarea class="bigwrite track-progress" placeholder="..."></textarea></div><div class="card"><div class="prompt" style="margin-top:0;">What is one thing you want help with next class?</div><textarea class="bigwrite track-progress" placeholder="..."></textarea><div class="prompt">One sentence promise to tomorrow-you:</div><textarea class="bigwrite track-progress" placeholder="Tomorrow I will start by..."></textarea></div></div>
+
+<div class="section-tag">📊 Scoring</div><div class="title">Homework rubric</div><div class="card"><table><thead><tr><th>Section</th><th>What to Look For</th><th>Points</th></tr></thead><tbody><tr><td>Recall</td><td>Track, purpose, and AI idea identified</td><td class="pts">1 pt</td></tr><tr><td>Tier A</td><td>One screen sketched + 3 parts listed</td><td class="pts">2 pts</td></tr><tr><td>Tier B</td><td>Opening view/title plan + 3 parts explained</td><td class="pts">3 pts</td></tr><tr><td>Tier C</td><td>3 parts broken into ordered tasks</td><td class="pts">4 pts</td></tr><tr><td>Reflection</td><td>Exit responses completed thoughtfully</td><td class="pts">1 pt</td></tr></tbody></table></div>
+<div class="footer"><div><strong>Session 18 Homework · Capstone Planning</strong><br>sketch · 3 parts · AI feature · task order</div><div>Tomorrow’s coding gets easier when tonight’s plan is clearer.</div></div>
+</div></div></div>
+<script>
+(function(){
+  const fields=[...document.querySelectorAll('.track-progress')];
+  const fill=document.getElementById('progressFill');
+  const text=document.getElementById('progressText');
+  function updateProgress(){
+    const done=fields.filter(el=>el.value && el.value.trim().length>0).length;
+    const pct=Math.round((done/fields.length)*100);
+    fill.style.width=pct+'%';
+    text.textContent=pct+'%';
+  }
+  fields.forEach(el=>el.addEventListener('input',updateProgress));
+  updateProgress();
+
+  document.querySelectorAll('.selectable').forEach(card=>{
+    card.addEventListener('click',e=>{
+      if(['TEXTAREA','INPUT','BUTTON','LABEL'].includes(e.target.tagName)) return;
+      document.querySelectorAll('.selectable').forEach(c=>c.classList.remove('active'));
+      card.classList.add('active');
+    });
+  });
+
+  document.querySelectorAll('input[name="home-track"]').forEach(r=>{
+    r.addEventListener('change',()=>{
+      document.querySelectorAll('label.option-chip').forEach(l=>{ if(l.querySelector('input[name="home-track"]')) l.classList.remove('active'); });
+      r.closest('label').classList.add('active');
+      const input=document.querySelector('input.write.track-progress');
+      input.value=r.value;
+      updateProgress();
+    });
+  });
+
+  document.getElementById('clearHighlights').addEventListener('click',()=>{
+    document.querySelectorAll('.active').forEach(el=>el.classList.remove('active'));
+    document.querySelectorAll('input[type=radio]').forEach(r=>r.checked=false);
+  });
+})();
+
+(function(){
+  function setupSketchWrap(wrap){
+    const canvas=wrap.querySelector('.sketch-board');
+    if(!canvas) return;
+    const ctx=canvas.getContext('2d');
+    const penBtn=wrap.querySelector('.tool-pen');
+    const eraseBtn=wrap.querySelector('.tool-erase');
+    const clearBtn=wrap.querySelector('.tool-clear');
+    const swatches=[...wrap.querySelectorAll('.swatch')];
+    let drawing=false;
+    let mode='pen';
+    let color=swatches[0] ? swatches[0].dataset.color : '#4f6df5';
+
+    function resizeCanvas(){
+      const rect=canvas.getBoundingClientRect();
+      const ratio=window.devicePixelRatio || 1;
+      const old=document.createElement('canvas');
+      old.width=canvas.width; old.height=canvas.height;
+      const oldCtx=old.getContext('2d');
+      oldCtx.drawImage(canvas,0,0);
+      canvas.width=rect.width*ratio;
+      canvas.height=240*ratio;
+      canvas.style.height='240px';
+      ctx.setTransform(ratio,0,0,ratio,0,0);
+      ctx.lineCap='round';
+      ctx.lineJoin='round';
+      if(old.width && old.height){ ctx.drawImage(old,0,0,rect.width,240); }
+    }
+
+    function point(e){
+      const r=canvas.getBoundingClientRect();
+      const t=e.touches && e.touches[0] ? e.touches[0] : e;
+      return {x:t.clientX-r.left,y:t.clientY-r.top};
+    }
+
+    function start(e){ drawing=true; const p=point(e); ctx.beginPath(); ctx.moveTo(p.x,p.y); e.preventDefault(); }
+    function move(e){ if(!drawing) return; const p=point(e); ctx.strokeStyle = mode==='erase' ? '#ffffff' : color; ctx.lineWidth = mode==='erase' ? 16 : 3; ctx.lineTo(p.x,p.y); ctx.stroke(); e.preventDefault(); }
+    function end(){ drawing=false; ctx.beginPath(); }
+
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+    canvas.addEventListener('mousedown', start);
+    canvas.addEventListener('mousemove', move);
+    window.addEventListener('mouseup', end);
+    canvas.addEventListener('touchstart', start, {passive:false});
+    canvas.addEventListener('touchmove', move, {passive:false});
+    window.addEventListener('touchend', end);
+
+    penBtn && penBtn.addEventListener('click',()=>{mode='pen'; penBtn.classList.add('active'); eraseBtn && eraseBtn.classList.remove('active');});
+    eraseBtn && eraseBtn.addEventListener('click',()=>{mode='erase'; eraseBtn.classList.add('active'); penBtn && penBtn.classList.remove('active');});
+    clearBtn && clearBtn.addEventListener('click',()=>{ctx.clearRect(0,0,canvas.width,canvas.height);});
+    swatches.forEach(btn=>btn.addEventListener('click',()=>{swatches.forEach(s=>s.classList.remove('active')); btn.classList.add('active'); color=btn.dataset.color; if(mode!=='pen'){ mode='pen'; penBtn && penBtn.classList.add('active'); eraseBtn && eraseBtn.classList.remove('active'); }}));
+  }
+  document.querySelectorAll('.sketch-wrap').forEach(setupSketchWrap);
+})();
+
+</script>
+</body></html>
