@@ -1,157 +1,193 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Homework Sheet · Session 18 · 30-Min Capstone Planning</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Homework &middot; Session 17 &middot; Fair or Unfair?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#f4f7ff;--paper:#ffffff;--ink:#1f2937;--muted:#5b6b7e;--blue:#4f6df5;--blue-soft:#dfe6ff;--green:#2bb673;--green-soft:#dcf8eb;--gold:#f3b63f;--gold-soft:#fff2d6;--coral:#f37f7a;--coral-soft:#ffe1de;--purple:#8a63f6;--purple-soft:#ece5ff;--teal:#39b8c8;--teal-soft:#def8fb;--fd:'Fredoka','Trebuchet MS',sans-serif;--fb:'Nunito',Arial,sans-serif;--fc:'Fira Code',Consolas,monospace;--tr:180ms cubic-bezier(.2,.8,.2,1)}*{box-sizing:border-box;margin:0;padding:0}body{font-family:var(--fb);background:radial-gradient(circle at top left,#e6efff 0%,#f4f7ff 35%,#fbfcff 100%);color:var(--ink)}@media print{body{background:#fff!important}.no-print{display:none!important}.sheet,.card,.tier,.sketch-pad,.promptbox{box-shadow:none!important}.page{max-width:none!important;padding:0!important}.progress-wrap{display:none!important}}
-.pbar{position:sticky;top:0;z-index:20;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:12px 22px;background:rgba(255,255,255,.82);backdrop-filter:blur(12px);border-bottom:1px solid rgba(148,163,184,.22)}.pbar-title{font-family:var(--fd);font-weight:700;color:var(--blue);font-size:1.08rem}.pbar-sub{font-size:.8rem;color:var(--muted)}.btns{display:flex;gap:10px;flex-wrap:wrap}.btn{border:none;border-radius:999px;padding:10px 18px;background:linear-gradient(135deg,var(--blue),var(--purple));color:#fff;font-weight:800;font-size:.8rem;cursor:pointer;transition:transform var(--tr),box-shadow var(--tr)}.btn.alt{background:#fff;color:var(--blue);border:1.5px solid #d7e2f0}.btn:hover{transform:translateY(-1px);box-shadow:0 8px 20px rgba(79,109,245,.18)}
-.page{max-width:1020px;margin:0 auto;padding:28px 18px 54px}.sheet{background:linear-gradient(180deg,rgba(255,255,255,.98),rgba(251,252,255,.99));border:1px solid rgba(255,255,255,.9);border-radius:30px;box-shadow:0 16px 38px rgba(79,109,245,.12);overflow:hidden}.hero{position:relative;padding:34px 30px 24px;background:linear-gradient(135deg,var(--blue) 0%,var(--teal) 34%,var(--green) 62%,var(--coral) 100%);color:#fff;overflow:hidden}.hero:before,.hero:after{content:'';position:absolute;border-radius:50%;background:rgba(255,255,255,.10)}.hero:before{width:220px;height:220px;right:-60px;top:-50px}.hero:after{width:150px;height:150px;left:-30px;bottom:-40px}.eyebrow{font-size:.75rem;letter-spacing:.18em;text-transform:uppercase;font-weight:800;opacity:.88;margin-bottom:6px}.hero h1{font-family:var(--fd);font-size:clamp(1.9rem,4vw,2.8rem);line-height:1.05;margin-bottom:8px}.hero p{max-width:60ch;font-size:.95rem;opacity:.94}.hero-pills{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}.pill{padding:6px 12px;border-radius:999px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);font-size:.72rem;font-weight:800;letter-spacing:.07em;text-transform:uppercase}
-.body{padding:24px 24px 32px}.meta{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px}.field{background:#fff;border:1.5px solid #dbe8f7;border-radius:16px;padding:12px 14px}.field label{display:block;font-size:.65rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);margin-bottom:6px}.line{width:100%;border:none;border-bottom:1.5px solid #cbd5e1;padding:4px 0;background:transparent;font:inherit;color:var(--ink)}.progress-wrap{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;margin-bottom:22px;padding:12px 14px;background:linear-gradient(135deg,#f8faff,#ffffff);border:1.5px solid #e0e8f5;border-radius:18px}.progress-track{height:12px;border-radius:999px;background:#ecf1fa;overflow:hidden}.progress-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--blue),var(--teal),var(--green),var(--coral));transition:width 220ms ease}.progress-text{font-size:.8rem;font-weight:800;color:var(--blue)}
-.section-tag{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:999px;background:#fff;border:1px solid #d8e4f4;color:var(--blue);font-size:.72rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px}.title{font-family:var(--fd);font-size:clamp(1.35rem,2.6vw,1.9rem);line-height:1.12;margin-bottom:14px}
-@media(max-width:760px){.meta,.timebar,.two,.tier-grid,.reflect-grid{grid-template-columns:1fr!important}}
-.timebar{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:24px}.time{padding:14px 10px;border-radius:18px;text-align:center;font-weight:900}.t1{background:var(--blue-soft)}.t2{background:var(--green-soft)}.t3{background:var(--gold-soft)}.time span{display:block;font-size:.68rem;text-transform:uppercase;color:#475569;margin-top:5px}
-.card{background:#fff;border:1.5px solid #e4edf8;border-radius:22px;padding:18px;box-shadow:0 10px 24px rgba(15,23,42,.04);margin-bottom:18px}.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}.prompt{font-size:.83rem;font-weight:800;color:#334155;margin:10px 0 6px}.write,.bigwrite{width:100%;border:1.5px solid #d7e2f0;border-radius:12px;padding:10px 12px;background:#fbfdff;font:inherit;color:var(--ink);transition:border-color var(--tr),box-shadow var(--tr),background var(--tr)}.write:focus,.bigwrite:focus,.line:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 4px rgba(79,109,245,.12);background:#fff}.write{min-height:42px}.bigwrite{min-height:92px;resize:vertical}.sketch-pad{min-height:220px;border:2px dashed #bfd6f8;border-radius:22px;background:linear-gradient(180deg,#fcfdff,#f3f8ff);padding:16px;position:relative}.sketch-pad:before{content:'Sketch zone';position:absolute;top:12px;right:14px;font-size:.72rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#93a9c6}
-.tier-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.tier{border-radius:24px;padding:18px;background:#fff;border:2px solid #e7edf8;cursor:pointer;transition:transform var(--tr),box-shadow var(--tr),border-color var(--tr)}.tier:hover,.tier.active{transform:translateY(-3px);box-shadow:0 12px 26px rgba(79,109,245,.12)}.tier.a.active{border-color:var(--blue)}.tier.b.active{border-color:var(--green)}.tier.c.active{border-color:var(--purple)}.badge{display:inline-flex;padding:5px 12px;border-radius:999px;color:#fff;font-size:.7rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px}.ba{background:linear-gradient(135deg,var(--blue),#7ea1ff)}.bb{background:linear-gradient(135deg,var(--green),#62d8a3)}.bc{background:linear-gradient(135deg,var(--purple),var(--coral))}.check{list-style:none;padding:0}.check li{display:flex;gap:8px;align-items:flex-start;margin-bottom:8px;font-size:.84rem;color:#334155}.box{width:16px;height:16px;border:2px solid #94a3b8;border-radius:4px;flex:0 0 16px;margin-top:2px;background:#fff}.promptbox{border-radius:18px;padding:16px;background:linear-gradient(135deg,#f8fbff,#fffefd);border:1.5px solid #dbe8f7}.reflect-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.chip-row{display:flex;gap:10px;flex-wrap:wrap}.chip{padding:8px 12px;border-radius:999px;background:#fff;border:1.5px solid #dbe4f2;font-weight:800;font-size:.77rem;cursor:pointer;transition:all var(--tr)}.chip.active{background:linear-gradient(135deg,var(--purple-soft),#fff);border-color:var(--purple);color:var(--purple)}table{width:100%;border-collapse:collapse;font-size:.82rem}th{background:#344154;color:#eaf1ff;padding:8px 10px;text-align:left}td{padding:8px 10px;border-bottom:1px solid #e2e8f0;vertical-align:top}tr:nth-child(even) td{background:#f8fbff}.pts{font-family:var(--fc);font-weight:800;color:var(--blue);white-space:nowrap}.footer{margin-top:24px;padding:16px 18px;border-radius:18px;background:linear-gradient(135deg,#f8fbff,#fffefd);border:1.5px solid #dce8f7;font-size:.78rem;color:#64748b;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}.footer strong{color:#1f2937}
-
-.option-chip{display:inline-flex;align-items:center;gap:8px;cursor:pointer}
-.option-chip input{accent-color:var(--blue)}
-.option-chip.active{background:linear-gradient(135deg,var(--blue-soft),#fff);border-color:var(--blue);color:var(--blue)}
-.check-input{appearance:auto;width:16px;height:16px;margin-top:2px;border:none;background:transparent}
-.check-input:focus{outline:2px solid rgba(79,109,245,.35);outline-offset:2px}
-
-
-.sketch-tools{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:10px 0 12px}
-.sketch-tools .mini-btn{border:none;border-radius:999px;padding:8px 12px;font-size:.74rem;font-weight:800;cursor:pointer;background:#fff;border:1.5px solid #d7e2f0;color:var(--ink)}
-.sketch-tools .mini-btn.active{background:linear-gradient(135deg,var(--blue-soft),#fff);border-color:var(--blue);color:var(--blue)}
-.sketch-tools input[type=color]{width:42px;height:36px;padding:0;border:none;background:transparent;cursor:pointer}
-.sketch-board{width:100%;height:240px;border:2px dashed #bfd6f8;border-radius:18px;background:#fff;touch-action:none;display:block}
-.sketch-wrap{position:relative}
-.sketch-hint{font-size:.76rem;color:var(--muted);margin-top:8px}
-
-.color-palette{display:flex;align-items:center;gap:8px;padding:4px 2px}
-.swatch{width:26px;height:26px;border-radius:999px;border:2px solid rgba(255,255,255,.95);background:var(--sw);box-shadow:0 0 0 1px #d7e2f0;cursor:pointer;transition:transform 160ms ease,box-shadow 160ms ease,border-color 160ms ease;padding:0}
-.swatch:hover{transform:translateY(-1px)}
-.swatch.active{box-shadow:0 0 0 3px rgba(79,109,245,.18),0 0 0 1px #9db5ff;border-color:#fff}
-
-
+:root{--bg:#f0f8ff;--sur:rgba(255,255,255,.97);--tx:#0f2747;--tx2:#1e3a5f;--txm:#4a6380;--a1:#0b63ce;--a2:#10b981;--a3:#f59e0b;--ar:#ef4444;--ap:#7c3aed;--fd:'Fredoka','Trebuchet MS',sans-serif;--fb:'Nunito',Arial,sans-serif;--fc:'Fira Code',Consolas,monospace}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+@media print{body{background:#fff!important}.no-print{display:none!important}.card{box-shadow:none!important;border:1.5px solid #d1d5db!important}}
+body{font-family:var(--fb);color:var(--tx);background:var(--bg);min-height:100vh}
+.pbar{background:rgba(255,255,255,.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(148,163,184,.3);padding:10px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;gap:12px;flex-wrap:wrap}
+.pbar-title{font-family:var(--fd);font-size:1.05rem;font-weight:700;color:var(--a1)}
+.pbar-sub{font-size:.78rem;color:var(--txm)}
+.btn-p{background:var(--a1);color:#fff;border:none;padding:8px 20px;border-radius:999px;font-family:var(--fb);font-size:.82rem;font-weight:800;cursor:pointer;letter-spacing:.06em;transition:.2s}
+.btn-p:hover{background:#084ea3;transform:translateY(-1px)}
+.page{max-width:820px;margin:0 auto;padding:32px 24px 60px}
+.shdr{background:linear-gradient(135deg,#0b63ce 0%,#f59e0b 60%,#ef4444 100%);border-radius:20px;padding:26px 30px 22px;color:#fff;margin-bottom:26px;position:relative;overflow:hidden}
+.shdr::before{content:'';position:absolute;top:-60px;right:-60px;width:200px;height:200px;background:rgba(255,255,255,.08);border-radius:50%}
+.shdr::after{content:'';position:absolute;bottom:-40px;left:-40px;width:140px;height:140px;background:rgba(255,255,255,.06);border-radius:50%}
+.hday{font-size:.75rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;opacity:.85;margin-bottom:4px}
+.htitle{font-family:var(--fd);font-size:clamp(1.5rem,3.8vw,2.2rem);font-weight:700;line-height:1.1;margin-bottom:6px}
+.hsub{font-size:.88rem;opacity:.9;margin-bottom:14px}
+.hpills{display:flex;gap:8px;flex-wrap:wrap}
+.hpill{background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:4px 14px;font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+.sinfo{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:26px}
+@media(max-width:600px){.sinfo{grid-template-columns:1fr}}
+.ifield{background:var(--sur);border-radius:12px;padding:12px 14px;border:1.5px solid rgba(11,99,206,.14);box-shadow:0 2px 8px rgba(15,23,42,.05)}
+.ilabel{font-size:.65rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--a1);margin-bottom:6px}
+.iline{border:none;border-bottom:1.5px solid #cbd5e1;width:100%;font-family:var(--fb);font-size:.9rem;color:var(--tx);background:transparent;outline:none;padding:2px 0}
+.slabel{display:inline-flex;align-items:center;gap:8px;padding:5px 16px;border-radius:999px;border:1px solid rgba(148,163,184,.4);background:rgba(255,255,255,.9);font-size:.72rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--a1);margin-bottom:10px}
+.stitle{font-family:var(--fd);font-size:clamp(1.25rem,2.4vw,1.7rem);font-weight:700;margin-bottom:14px;color:var(--tx);line-height:1.2}
+.card{background:var(--sur);border-radius:16px;padding:18px 20px;box-shadow:0 4px 18px rgba(15,23,42,.07);border:1px solid rgba(255,255,255,.7);margin-bottom:16px}
+.card.ab{border-left:4px solid var(--a1)}.card.ag{border-left:4px solid var(--a2)}.card.aa{border-left:4px solid var(--a3)}.card.ar{border-left:4px solid var(--ar)}.card.ap{border-left:4px solid var(--ap)}
+.clabel{font-size:.68rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;margin-bottom:8px}
+.cl-b{color:var(--a1)}.cl-g{color:#15803d}.cl-a{color:#b45309}.cl-r{color:#b91c1c}.cl-p{color:#6d28d9}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:680px){.g2{grid-template-columns:1fr}}
+.wl{border:none;border-bottom:1.5px solid #cbd5e1;width:100%;margin-bottom:10px;height:28px;display:block;background:transparent;font-family:var(--fb);font-size:.88rem;color:var(--tx);outline:none;padding:2px 4px}
+.wl:focus{border-bottom-color:#0b63ce}
+.wl::placeholder{color:#a9b8c9;font-style:italic}
+.wa{border:1.5px solid #cbd5e1;border-radius:8px;width:100%;min-height:70px;padding:8px;font-family:var(--fb);font-size:.85rem;color:var(--tx);resize:vertical;background:#f8fafc;outline:none;display:block}
+.wa:focus{outline:2px solid rgba(11,99,206,.3)}
+.wa::placeholder{color:#a9b8c9;font-style:italic}
+.tip{border-radius:10px;padding:10px 14px;font-size:.8rem;line-height:1.5;margin-top:10px}
+.tip.b{background:rgba(11,99,206,.07);color:#0b63ce}.tip.g{background:rgba(16,185,129,.09);color:#065f46}.tip.a{background:rgba(245,158,11,.09);color:#92400e}.tip.r{background:rgba(239,68,68,.08);color:#991b1b}
+.div{border:none;border-top:2px dashed #d3e5f5;margin:24px 0}
+.lvl{display:inline-flex;align-items:center;gap:6px;padding:4px 14px;border-radius:999px;font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px}
+.la{background:linear-gradient(135deg,#0b63ce,#60a5fa);color:#fff}
+.lb{background:linear-gradient(135deg,#10b981,#4ade80);color:#fff}
+.lc{background:linear-gradient(135deg,#7c3aed,#f59e0b);color:#fff}
+.lx{background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff}
+.timebar{display:flex;border-radius:12px;overflow:hidden;margin-bottom:20px;border:2px solid rgba(11,99,206,.15);flex-wrap:wrap}
+.tb{flex:1;min-width:90px;padding:8px 4px;text-align:center;font-size:.62rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase;line-height:1.3}
+.tb1{background:#eff6ff;color:#0b63ce;border-right:1px solid rgba(11,99,206,.15)}
+.tb2{background:#fff7ed;color:#c2410c;border-right:1px solid rgba(232,98,44,.15)}
+.tb3{background:#fdf4ff;color:#7e22ce}
+.scenario{background:#fff;border-radius:14px;padding:16px 18px;margin-bottom:14px;border:1.5px solid #e2e8f0;box-shadow:0 2px 10px rgba(15,23,42,.05)}
+.scen-num{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:#0b63ce;color:#fff;font-family:var(--fc);font-weight:800;font-size:.85rem;margin-right:8px;}
+.verdict-row{display:flex;gap:16px;margin:10px 0;flex-wrap:wrap}
+.verdict-opt{display:flex;align-items:center;gap:6px;font-size:.85rem;font-weight:700;color:#374151;cursor:pointer}
+.verdict-opt input{accent-color:#0b63ce;width:18px;height:18px;}
+.sfooter{margin-top:36px;padding:16px 20px;border-radius:12px;background:rgba(11,99,206,.05);border:1px solid rgba(11,99,206,.12);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:.76rem;color:var(--txm)}
+.sfooter strong{color:var(--tx)}
+.gtext{background:linear-gradient(135deg,#0b63ce,#f59e0b,#ef4444);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.timer-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 14px;border-radius:999px;background:rgba(11,99,206,.10);color:#0b63ce;font-size:.78rem;font-weight:800;margin-bottom:8px}
 </style>
 </head>
 <body>
-<div class="pbar no-print"><div><div class="pbar-title">🏠 Session 18 Homework</div><div class="pbar-sub">30-minute capstone planning · colorful + interactive</div></div><div class="btns"><button class="btn alt" id="clearHighlights">Reset highlights</button><button class="btn" onclick="window.print()">&#128424; Print / Save as PDF</button></div></div>
-<div class="page"><div class="sheet">
-<div class="hero"><div class="eyebrow">Session 18 Homework · 30 minutes</div><h1>Capstone Planning at Home</h1><p>Tonight is about making tomorrow easier: sketch the idea, clarify the AI piece, and break the project into parts you can actually build.</p><div class="hero-pills"><span class="pill">Sketch</span><span class="pill">3 Main Parts</span><span class="pill">Tiered</span><span class="pill">Planning</span></div></div>
-<div class="body">
-<div class="meta"><div class="field"><label>👤 Your Name</label><input class="line track-progress"></div><div class="field"><label>📅 Date</label><input class="line track-progress" value="July 30, 2026"></div><div class="field"><label>🏫 Section / Period</label><input class="line track-progress" placeholder="Section 1 / 2 / 3"></div></div>
-<div class="progress-wrap no-print"><div class="progress-track"><div class="progress-fill" id="progressFill"></div></div><div class="progress-text"><span id="progressText">0%</span> filled</div></div>
-<div class="section-tag">⏱ Tonight’s 30 Minutes</div><div class="title">Simple home workflow</div><div class="timebar"><div class="time t1">🧠<span>Recall · 5 min</span></div><div class="time t2">✏️<span>Sketch + Plan · 20 min</span></div><div class="time t3">💭<span>Reflect · 5 min</span></div></div>
+<div class="pbar no-print">
+  <div><div class="pbar-title">&#128220; Session 17 &middot; Homework</div><div class="pbar-sub">"Fair or Unfair?" &mdash; 30 Minutes &middot; Differentiated &middot; Ages 7&ndash;13</div></div>
+  <button class="btn-p" onclick="window.print()">&#128438; Print / Save as PDF</button>
+</div>
+<div class="page">
 
-<div class="section-tag">🧠 Recall</div><div class="title">Reconnect to your project idea</div><div class="card"><div class="two"><div><div class="prompt">Which track did you choose?</div><input class="write track-progress" placeholder="Game / AI mini-app / Story"><div class="chip-row" style="margin-top:8px"><label class="chip option-chip"><input type="radio" name="home-track" value="Game"> <span>Game</span></label><label class="chip option-chip"><input type="radio" name="home-track" value="AI mini-app"> <span>AI mini-app</span></label><label class="chip option-chip"><input type="radio" name="home-track" value="Story"> <span>Story</span></label></div><div class="prompt">What is your project supposed to do?</div><textarea class="bigwrite track-progress" placeholder="My project will..."></textarea></div><div><div class="prompt">What is the AI idea in your project?</div><textarea class="bigwrite track-progress" placeholder="The AI part is..."></textarea><div class="prompt">One feature I am most excited about:</div><input class="write track-progress" placeholder="..." /></div></div></div>
+<div class="shdr">
+  <div style="font-size:2.6rem;margin-bottom:6px;">&#9878;&#65039;&#129302;</div>
+  <div class="hday">Session 17 Homework &middot; Due Wednesday, July 29 &middot; Week 5 &middot; Summer 2026 AI &amp; Coding Program</div>
+  <div class="htitle">&ldquo;Fair or Unfair?&rdquo;</div>
+  <div class="hsub">Read 3 short scenarios and decide: was the AI fair or unfair? Bring your answers tomorrow &mdash; we'll use them to kick off Capstone planning!</div>
+  <div class="hpills">
+    <span class="hpill">&#8987; ~30 min</span><span class="hpill">3 Tiers</span><span class="hpill">Bias &middot; Fairness</span><span class="hpill">No outside AI chatbots</span>
+  </div>
+</div>
 
-<div class="section-tag">✏️ Sketch + Plan</div><div class="title">Build the idea on paper first</div><div class="two"><div class="sketch-pad"><div class="prompt" style="margin-top:20px;">Use this space to sketch your screen, scene, chatbot flow, or title page.</div><div class="sketch-wrap"><div class="sketch-tools no-print"><button type="button" class="mini-btn tool-pen active">Pen</button><button type="button" class="mini-btn tool-erase">Erase</button><button type="button" class="mini-btn tool-clear">Clear</button><div class="color-palette" role="group" aria-label="Sketch colors"><button type="button" class="swatch active" data-color="#4f6df5" style="--sw:#4f6df5" aria-label="Blue"></button><button type="button" class="swatch" data-color="#39b8c8" style="--sw:#39b8c8" aria-label="Teal"></button><button type="button" class="swatch" data-color="#2bb673" style="--sw:#2bb673" aria-label="Green"></button><button type="button" class="swatch" data-color="#f37f7a" style="--sw:#f37f7a" aria-label="Coral"></button><button type="button" class="swatch" data-color="#8a63f6" style="--sw:#8a63f6" aria-label="Purple"></button><button type="button" class="swatch" data-color="#1f2937" style="--sw:#1f2937" aria-label="Charcoal"></button></div></div><canvas class="sketch-board"></canvas><div class="sketch-hint">Sketch directly here with your mouse, trackpad, or finger.</div></div><textarea class="bigwrite track-progress" placeholder="If you are not drawing here, describe what your sketch includes..." style="min-height:130px;background:rgba(255,255,255,.75)"></textarea></div><div class="promptbox"><div class="prompt" style="margin-top:0;">All tiers — 3 main parts</div><textarea class="bigwrite track-progress" placeholder="1. ...&#10;2. ...&#10;3. ..."></textarea><div class="prompt">What should work first?</div><input class="write track-progress" placeholder="The first thing I should get working is..."><div class="prompt">Why start there?</div><textarea class="bigwrite track-progress" placeholder="Because..."></textarea></div></div>
+<div class="sinfo">
+  <div class="ifield"><div class="ilabel">&#128100; Your Name</div><input class="iline" type="text" placeholder="First Last" /></div>
+  <div class="ifield"><div class="ilabel">&#128197; Date</div><input class="iline" type="text" placeholder="July 28, 2026" /></div>
+  <div class="ifield"><div class="ilabel">&#127979; Section / Period</div><input class="iline" type="text" placeholder="Section 1 / 2 / 3" /></div>
+</div>
 
-<div class="tier-grid"><div class="tier a selectable"><div class="badge ba">Tier A · Foundations</div><ul class="check"><li><input class="box check-input" type="checkbox">Sketch one main screen or scene.</li><li><input class="box check-input" type="checkbox">Label one character or object.</li><li><input class="box check-input" type="checkbox">Write your 3 main parts.</li></ul><div class="prompt">Describe your sketch:</div><textarea class="bigwrite track-progress" placeholder="I drew..."></textarea></div><div class="tier b selectable"><div class="badge bb">Tier B · Core</div><ul class="check"><li><input class="box check-input" type="checkbox">Sketch a title screen or opening view.</li><li><input class="box check-input" type="checkbox">List 3 main parts clearly.</li><li><input class="box check-input" type="checkbox">Explain one AI feature.</li></ul><div class="prompt">How will the AI part show up?</div><textarea class="bigwrite track-progress" placeholder="..."></textarea></div><div class="tier c selectable"><div class="badge bc">Tier C · Accelerated</div><ul class="check"><li><input class="box check-input" type="checkbox">Break the 3 parts into smaller coding tasks.</li><li><input class="box check-input" type="checkbox">Put tasks in smart build order.</li><li><input class="box check-input" type="checkbox">Choose a tiny first win.</li></ul><div class="prompt">Small build tasks:</div><textarea class="bigwrite track-progress" placeholder="Part 1 → ...&#10;Part 2 → ...&#10;Part 3 → ..."></textarea></div></div>
+<div class="timebar">
+  <div class="tb tb1">&#128218;<br>Read the 3<br>scenarios &middot; ~10 min</div>
+  <div class="tb tb2">&#9878;&#65039;<br>Decide fair or<br>unfair &middot; ~10 min</div>
+  <div class="tb tb3">&#9997;&#65039;<br>Write your reasons<br>+ stretch &middot; ~10 min</div>
+</div>
 
-<div class="section-tag">💭 Reflect</div><div class="title">Finish with a clearer mind</div><div class="reflect-grid"><div class="card"><div class="prompt" style="margin-top:0;">Which part feels most exciting?</div><textarea class="bigwrite track-progress" placeholder="..."></textarea><div class="prompt">Which part might be hardest?</div><textarea class="bigwrite track-progress" placeholder="..."></textarea></div><div class="card"><div class="prompt" style="margin-top:0;">What is one thing you want help with next class?</div><textarea class="bigwrite track-progress" placeholder="..."></textarea><div class="prompt">One sentence promise to tomorrow-you:</div><textarea class="bigwrite track-progress" placeholder="Tomorrow I will start by..."></textarea></div></div>
+<div class="tip b no-print" style="margin-bottom:20px;">&#129302; Remember: don't use outside AI chatbots to do this for you &mdash; the goal is to practice thinking like the person who has to decide, not to have it decided for you.</div>
 
-<div class="section-tag">📊 Scoring</div><div class="title">Homework rubric</div><div class="card"><table><thead><tr><th>Section</th><th>What to Look For</th><th>Points</th></tr></thead><tbody><tr><td>Recall</td><td>Track, purpose, and AI idea identified</td><td class="pts">1 pt</td></tr><tr><td>Tier A</td><td>One screen sketched + 3 parts listed</td><td class="pts">2 pts</td></tr><tr><td>Tier B</td><td>Opening view/title plan + 3 parts explained</td><td class="pts">3 pts</td></tr><tr><td>Tier C</td><td>3 parts broken into ordered tasks</td><td class="pts">4 pts</td></tr><tr><td>Reflection</td><td>Exit responses completed thoughtfully</td><td class="pts">1 pt</td></tr></tbody></table></div>
-<div class="footer"><div><strong>Session 18 Homework · Capstone Planning</strong><br>sketch · 3 parts · AI feature · task order</div><div>Tomorrow’s coding gets easier when tonight’s plan is clearer.</div></div>
-</div></div></div>
-<script>
-(function(){
-  const fields=[...document.querySelectorAll('.track-progress')];
-  const fill=document.getElementById('progressFill');
-  const text=document.getElementById('progressText');
-  function updateProgress(){
-    const done=fields.filter(el=>el.value && el.value.trim().length>0).length;
-    const pct=Math.round((done/fields.length)*100);
-    fill.style.width=pct+'%';
-    text.textContent=pct+'%';
-  }
-  fields.forEach(el=>el.addEventListener('input',updateProgress));
-  updateProgress();
+<!-- SCENARIOS -->
+<div class="slabel">&#128218; The 3 Scenarios</div>
+<div class="stitle">Read Each One, Then Decide</div>
 
-  document.querySelectorAll('.selectable').forEach(card=>{
-    card.addEventListener('click',e=>{
-      if(['TEXTAREA','INPUT','BUTTON','LABEL'].includes(e.target.tagName)) return;
-      document.querySelectorAll('.selectable').forEach(c=>c.classList.remove('active'));
-      card.classList.add('active');
-    });
-  });
+<div class="scenario">
+  <p style="font-size:.92rem;color:#1e3a5f;line-height:1.6;"><span class="scen-num">1</span><strong>The Homework Helper.</strong> A school uses an AI app to recommend which students need extra reading help. The app was trained mostly on data from students who had access to home internet and tutors. Some students without internet at home were never included in the training data, and the app now rarely flags them for help &mdash; even when they need it.</p>
+  <p style="font-size:.83rem;font-weight:700;color:#374151;margin:12px 0 6px;">Was this AI fair or unfair?</p>
+  <div class="verdict-row">
+    <label class="verdict-opt"><input type="radio" name="s1"> Fair</label>
+    <label class="verdict-opt"><input type="radio" name="s1"> Unfair</label>
+  </div>
+  <p style="font-size:.8rem;font-weight:700;color:#374151;margin-bottom:4px;">One sentence why:</p>
+  <input class="wl" type="text" placeholder="I think this is fair/unfair because..." />
+</div>
 
-  document.querySelectorAll('input[name="home-track"]').forEach(r=>{
-    r.addEventListener('change',()=>{
-      document.querySelectorAll('label.option-chip').forEach(l=>{ if(l.querySelector('input[name="home-track"]')) l.classList.remove('active'); });
-      r.closest('label').classList.add('active');
-      const input=document.querySelector('input.write.track-progress');
-      input.value=r.value;
-      updateProgress();
-    });
-  });
+<div class="scenario">
+  <p style="font-size:.92rem;color:#1e3a5f;line-height:1.6;"><span class="scen-num">2</span><strong>The Photo Sorter.</strong> A photo app automatically sorts pictures into folders like "family," "food," and "pets." It was trained on millions of photos from all kinds of families, pets, and meals around the world, and it correctly sorts nearly everyone's photos, including yours.</p>
+  <p style="font-size:.83rem;font-weight:700;color:#374151;margin:12px 0 6px;">Was this AI fair or unfair?</p>
+  <div class="verdict-row">
+    <label class="verdict-opt"><input type="radio" name="s2"> Fair</label>
+    <label class="verdict-opt"><input type="radio" name="s2"> Unfair</label>
+  </div>
+  <p style="font-size:.8rem;font-weight:700;color:#374151;margin-bottom:4px;">One sentence why:</p>
+  <input class="wl" type="text" placeholder="I think this is fair/unfair because..." />
+</div>
 
-  document.getElementById('clearHighlights').addEventListener('click',()=>{
-    document.querySelectorAll('.active').forEach(el=>el.classList.remove('active'));
-    document.querySelectorAll('input[type=radio]').forEach(r=>r.checked=false);
-  });
-})();
+<div class="scenario">
+  <p style="font-size:.92rem;color:#1e3a5f;line-height:1.6;"><span class="scen-num">3</span><strong>The Voice Assistant.</strong> A smart speaker was trained mostly on adult voices speaking clearly and slowly. It often fails to understand kids' voices, and it almost never understands anyone speaking with an accent different from the voices it was trained on.</p>
+  <p style="font-size:.83rem;font-weight:700;color:#374151;margin:12px 0 6px;">Was this AI fair or unfair?</p>
+  <div class="verdict-row">
+    <label class="verdict-opt"><input type="radio" name="s3"> Fair</label>
+    <label class="verdict-opt"><input type="radio" name="s3"> Unfair</label>
+  </div>
+  <p style="font-size:.8rem;font-weight:700;color:#374151;margin-bottom:4px;">One sentence why:</p>
+  <input class="wl" type="text" placeholder="I think this is fair/unfair because..." />
+</div>
 
-(function(){
-  function setupSketchWrap(wrap){
-    const canvas=wrap.querySelector('.sketch-board');
-    if(!canvas) return;
-    const ctx=canvas.getContext('2d');
-    const penBtn=wrap.querySelector('.tool-pen');
-    const eraseBtn=wrap.querySelector('.tool-erase');
-    const clearBtn=wrap.querySelector('.tool-clear');
-    const swatches=[...wrap.querySelectorAll('.swatch')];
-    let drawing=false;
-    let mode='pen';
-    let color=swatches[0] ? swatches[0].dataset.color : '#4f6df5';
+<hr class="div">
 
-    function resizeCanvas(){
-      const rect=canvas.getBoundingClientRect();
-      const ratio=window.devicePixelRatio || 1;
-      const old=document.createElement('canvas');
-      old.width=canvas.width; old.height=canvas.height;
-      const oldCtx=old.getContext('2d');
-      oldCtx.drawImage(canvas,0,0);
-      canvas.width=rect.width*ratio;
-      canvas.height=240*ratio;
-      canvas.style.height='240px';
-      ctx.setTransform(ratio,0,0,ratio,0,0);
-      ctx.lineCap='round';
-      ctx.lineJoin='round';
-      if(old.width && old.height){ ctx.drawImage(old,0,0,rect.width,240); }
-    }
+<!-- TIERED SECTION -->
+<div class="slabel">&#127919; Find Your Tier</div>
+<div class="stitle">Choose Your Path Below</div>
+<p style="font-size:.88rem;color:#374151;margin-bottom:14px;">Everyone reads all 3 scenarios above. Then complete the section that matches your tier.</p>
 
-    function point(e){
-      const r=canvas.getBoundingClientRect();
-      const t=e.touches && e.touches[0] ? e.touches[0] : e;
-      return {x:t.clientX-r.left,y:t.clientY-r.top};
-    }
+<!-- Tier A -->
+<div class="card mb2" style="border:2px solid #bfdbfe;background:#f8faff;">
+  <div style="margin-bottom:8px;"><span class="lvl la">Tier A &mdash; Foundations &middot; Grades 1&ndash;3</span></div>
+  <div class="clabel cl-b">&#127374; One Sentence Each, Plus a Picture</div>
+  <p class="mb2" style="font-size:.85rem;color:#374151;">You've already written one sentence for each scenario above &mdash; great work! Now pick your FAVORITE scenario and draw a picture of what happened.</p>
+  <p style="font-size:.8rem;font-weight:700;color:#0b63ce;margin-bottom:6px;">Which scenario number did you pick?</p>
+  <input class="wl" type="text" placeholder="Scenario #..." />
+  <div style="border:2px dashed #bfdbfe;border-radius:12px;height:140px;margin-top:10px;background:#fff;"></div>
+  <div class="tip b">Draw box: sketch the AI, what it got wrong (or right), and who it affected.</div>
+</div>
 
-    function start(e){ drawing=true; const p=point(e); ctx.beginPath(); ctx.moveTo(p.x,p.y); e.preventDefault(); }
-    function move(e){ if(!drawing) return; const p=point(e); ctx.strokeStyle = mode==='erase' ? '#ffffff' : color; ctx.lineWidth = mode==='erase' ? 16 : 3; ctx.lineTo(p.x,p.y); ctx.stroke(); e.preventDefault(); }
-    function end(){ drawing=false; ctx.beginPath(); }
+<!-- Tier B -->
+<div class="card mb2" style="border:2px solid #bbf7d0;background:#f8fff9;">
+  <div style="margin-bottom:8px;"><span class="lvl lb">Tier B &mdash; Core &middot; Grades 3&ndash;5</span></div>
+  <div class="clabel cl-g">&#9989; Compare Two Scenarios</div>
+  <p class="mb2" style="font-size:.85rem;color:#374151;">You've written a verdict + reason for all 3 scenarios above. Now compare two of them.</p>
+  <p style="font-size:.8rem;font-weight:700;color:#15803d;margin-bottom:4px;">Which two scenarios are you comparing?</p>
+  <input class="wl" type="text" placeholder="Scenario # and Scenario #" />
+  <p style="font-size:.8rem;font-weight:700;color:#15803d;margin-bottom:4px;margin-top:8px;">What is the same about why they are fair/unfair?</p>
+  <input class="wl" type="text" placeholder="Both are similar because..." />
+  <p style="font-size:.8rem;font-weight:700;color:#15803d;margin-bottom:4px;margin-top:8px;">What is different?</p>
+  <input class="wl" type="text" placeholder="They are different because..." />
+</div>
 
-    resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
-    canvas.addEventListener('mousedown', start);
-    canvas.addEventListener('mousemove', move);
-    window.addEventListener('mouseup', end);
-    canvas.addEventListener('touchstart', start, {passive:false});
-    canvas.addEventListener('touchmove', move, {passive:false});
-    window.addEventListener('touchend', end);
+<!-- Tier C -->
+<div class="card mb3" style="border:2px solid #e9d5ff;background:#fdf9ff;">
+  <div style="margin-bottom:8px;"><span class="lvl lc">Tier C &mdash; Accelerated &middot; Grades 6&ndash;9</span></div>
+  <div class="clabel cl-p">&#11088; Stretch: Propose a Specific Fix</div>
+  <p class="mb2" style="font-size:.85rem;color:#374151;">For ONE scenario above, propose a specific fix to the training data &mdash; not just "get more data," but exactly what kind, from whom.</p>
+  <p style="font-size:.8rem;font-weight:700;color:#6d28d9;margin-bottom:4px;">Which scenario are you fixing?</p>
+  <input class="wl" type="text" placeholder="Scenario #..." />
+  <p style="font-size:.8rem;font-weight:700;color:#6d28d9;margin-bottom:4px;margin-top:8px;">Exactly what new data would you add, and from whom?</p>
+  <textarea class="wa" placeholder="I would collect data from... specifically because..."></textarea>
+  <p style="font-size:.8rem;font-weight:700;color:#6d28d9;margin-bottom:4px;margin-top:10px;">How would you know your fix worked? (What would you measure?)</p>
+  <input class="wl" type="text" placeholder="I would measure..." />
+  <div class="tip a">No credit for "just add more data" alone &mdash; be specific about who, what kind, and how you'd test it.</div>
+</div>
 
-    penBtn && penBtn.addEventListener('click',()=>{mode='pen'; penBtn.classList.add('active'); eraseBtn && eraseBtn.classList.remove('active');});
-    eraseBtn && eraseBtn.addEventListener('click',()=>{mode='erase'; eraseBtn.classList.add('active'); penBtn && penBtn.classList.remove('active');});
-    clearBtn && clearBtn.addEventListener('click',()=>{ctx.clearRect(0,0,canvas.width,canvas.height);});
-    swatches.forEach(btn=>btn.addEventListener('click',()=>{swatches.forEach(s=>s.classList.remove('active')); btn.classList.add('active'); color=btn.dataset.color; if(mode!=='pen'){ mode='pen'; penBtn && penBtn.classList.add('active'); eraseBtn && eraseBtn.classList.remove('active'); }}));
-  }
-  document.querySelectorAll('.sketch-wrap').forEach(setupSketchWrap);
-})();
+<div class="sfooter">
+  <div><strong>Session 17 Homework &middot; &ldquo;Fair or Unfair?&rdquo;</strong> &middot; Differentiated &middot; Mr. Hsiao &ldquo;Hue&rdquo; Weng &middot; Summer 2026<br>
+  <span class="gtext" style="font-weight:800;">Bias &middot; Fairness &middot; Training Data</span></div>
+  <div style="text-align:right;">Ages 7&ndash;13 &middot; Grades 1&ndash;9<br><span style="font-size:.7rem;">&#128203; Bring this back tomorrow for Capstone Kickoff!</span></div>
+</div>
 
-</script>
-</body></html>
+</div>
+</body>
+</html>
