@@ -1,1 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="slides-format" content="viewport">
+<title>Session 17 · How Real AI Works + Bias & Ethics</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<style type="text/tailwindcss">
+@theme {
+  --color-bg:#f0f8ff; --color-bg-deep:#dceefb; --color-surface:rgba(255,255,255,0.96);
+  --color-text:#0f2747; --color-text-secondary:#1e3a5f; --color-text-muted:#4a6380;
+  --color-accent-1:#0b63ce; --color-accent-2:#10b981; --color-accent-3:#f59e0b;
+  --color-glass-bg:rgba(255,255,255,0.88); --color-glass-border:rgba(11,99,206,0.16);
+  --color-vignette:rgba(15,23,42,0.06);
+  --font-display:"Fredoka","Trebuchet MS",sans-serif;
+  --font-body:"Nunito",Arial,sans-serif;
+}
+</style>
+<style>
+:root{ --color-bg:#f0f8ff; --color-text:#0f2747; --glow-color-rgb:11,99,206; --a1:#0b63ce; --a2:#10b981; --a3:#f59e0b; --ar:#ef4444; }
+*,*::before,*::after{box-sizing:border-box;}
+html,body{background:var(--color-bg);margin:0;}
+body{font-family:"Nunito",Arial,sans-serif;color:var(--color-text);overflow:hidden;height:100vh;width:100vw;}
+.deck{width:100vw;height:100vh;position:relative;}
 
+.slide{position:absolute;top:0;left:0;width:100%;height:100%;
+  background:radial-gradient(circle at top left,rgba(56,189,248,0.14),transparent 40%),
+             radial-gradient(circle at bottom right,rgba(16,185,129,0.10),transparent 40%),
+             var(--color-bg);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  opacity:0;transform:scale(0.96);transition:opacity 0.55s ease,transform 0.55s ease;
+  pointer-events:none;overflow:hidden;}
+.slide.active{opacity:1;transform:scale(1);pointer-events:all;}
+.slide>.content{position:relative;z-index:2;width:100%;max-width:1080px;padding:clamp(1rem,3vw,2.6rem);max-height:92vh;overflow:hidden;}
+
+.slide::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:radial-gradient(ellipse at center,transparent 55%,var(--color-vignette) 100%);}
+
+.nav-controls{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:12px;z-index:100;background:rgba(255,255,255,0.92);backdrop-filter:blur(12px);padding:8px 20px;border-radius:999px;border:1px solid rgba(148,163,184,0.4);box-shadow:0 8px 28px rgba(15,23,42,0.13);}
+.nav-btn{width:34px;height:34px;border:none;background:rgba(15,23,42,0.06);color:#0b63ce;border-radius:999px;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 0.2s,transform 0.15s;}
+.nav-btn:hover{background:rgba(15,23,42,0.12);transform:translateY(-1px);}
+.slide-dots{display:flex;gap:5px;flex-wrap:wrap;max-width:460px;}
+.dot{width:8px;height:8px;border-radius:50%;background:rgba(148,163,184,0.6);cursor:pointer;transition:background 0.25s,transform 0.25s;}
+.dot.active{background:#0b63ce;transform:scale(1.4);}
+.dot.warmup{background:rgba(245,158,11,0.6);}
+.dot.warmup.active{background:#f59e0b;}
+.dot.mini{background:rgba(11,99,206,0.45);}
+.dot.mini.active{background:#e8622c;}
+.dot.build{background:rgba(16,185,129,0.55);}
+.dot.build.active{background:#10b981;}
+.dot.share{background:rgba(139,92,246,0.55);}
+.dot.share.active{background:#8b5cf6;}
+.slide-counter{font-size:0.78rem;color:#64748b;min-width:52px;text-align:center;font-weight:700;}
+
+.reveal{opacity:0;transform:translateY(16px);}
+@keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-12px);}}
+@keyframes float-slow{0%{transform:translate(0,0) scale(1);}25%{transform:translate(50px,-40px) scale(1.1);}50%{transform:translate(-30px,35px) scale(0.92);}75%{transform:translate(45px,18px) scale(1.07);}100%{transform:translate(0,0) scale(1);}}
+@keyframes float-drift{0%{transform:translate(0,0) scale(1);}33%{transform:translate(-45px,-55px) scale(1.13);}66%{transform:translate(38px,28px) scale(0.9);}100%{transform:translate(0,0) scale(1);}}
+.gradient-mesh{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none;}
+.blob{position:absolute;border-radius:50%;filter:blur(72px);animation:float-slow 12s ease-in-out infinite;}
+.blob:nth-child(2){animation:float-drift 16s ease-in-out infinite;}
+.blob:nth-child(3){animation:float-slow 20s ease-in-out infinite reverse;}
+.particle-canvas{position:absolute;inset:0;width:100%;height:100%;z-index:1;}
+
+.card{background:var(--color-surface);border-radius:16px;padding:14px 18px;box-shadow:0 8px 24px rgba(15,23,42,0.07);border:1px solid rgba(255,255,255,0.7);}
+.accent-card-orange{background:#eaf2fd;border:1px solid rgba(11,99,206,0.22);}
+.accent-card-green{background:#e6f7f0;border:1px solid rgba(5,150,105,0.22);}
+.accent-card-blue{background:#fdf4e3;border:1px solid rgba(245,158,11,0.28);}
+.accent-card-purple{background:#f3eefc;border:1px solid rgba(139,92,246,0.26);}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:4px 14px;border-radius:999px;border:1px solid rgba(148,163,184,0.5);background:rgba(255,255,255,0.9);font-size:0.75rem;font-weight:800;letter-spacing:0.06em;text-transform:uppercase;color:#0b63ce;}
+.pill.green{color:#047857;}
+.pill.blue{color:#1e3a8a;}
+.pill.purple{color:#6d28d9;}
+.big-text{font-size:clamp(0.95rem,1.6vw,1.2rem);line-height:1.6;}
+.code-block{background:#0f172a;color:#e2e8f0;font-family:"Fira Code",Consolas,monospace;border-radius:12px;padding:14px 18px;font-size:clamp(0.78rem,1.25vw,0.98rem);line-height:1.65;overflow-x:auto;}
+.code-block .kw{color:#f59e0b;font-weight:600;}
+.code-block .str{color:#a3e635;}
+.code-block .cmt{color:#64748b;font-style:italic;}
+.code-block .num{color:#38bdf8;}
+.code-block .fn{color:#f59e0b;}
+.vocab-tag{display:inline-flex;align-items:center;padding:4px 12px;border-radius:999px;background:rgba(232,98,44,0.10);font-size:0.82rem;font-weight:800;color:#0b63ce;}
+.grid-cards{display:grid;gap:14px;}
+@media(min-width:700px){.grid-2{grid-template-columns:repeat(2,minmax(0,1fr));}.grid-3{grid-template-columns:repeat(3,minmax(0,1fr));}}
+.grad-text{background:linear-gradient(135deg,#0b63ce 0%,#10b981 55%,#f59e0b 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+
+.media-embed{position:relative;padding-top:56.25%;border-radius:13px;overflow:hidden;background:#1e293b;cursor:pointer;}
+.media-embed img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+.media-embed .play-btn{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;}
+.media-embed .play-btn div{width:54px;height:54px;background:rgba(255,0,0,0.90);border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 18px rgba(0,0,0,0.35);transition:transform 0.2s;}
+.media-embed:hover .play-btn div{transform:scale(1.1);}
+.media-embed iframe{position:absolute;inset:0;width:100%;height:100%;border:0;border-radius:13px;}
+
+.timer-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 14px;border-radius:999px;background:rgba(11,99,206,0.10);color:#1e40af;font-size:0.82rem;font-weight:800;}
+.break-card{background:linear-gradient(135deg,#fdf4e3,#fff7e6);border:2px solid rgba(245,158,11,0.30);border-radius:18px;padding:18px 22px;}
+.challenge-card{background:linear-gradient(135deg,rgba(139,92,246,0.10),rgba(232,98,44,0.06));border:2px solid rgba(139,92,246,0.28);border-radius:16px;padding:14px 18px;}
+.tier-a{display:inline-flex;align-items:center;padding:3px 10px;border-radius:999px;background:#dcfce7;color:#14532d;font-size:0.72rem;font-weight:800;}
+.tier-c{display:inline-flex;align-items:center;padding:3px 10px;border-radius:999px;background:#ede9fe;color:#6d28d9;font-size:0.72rem;font-weight:800;}
+
+.machine-box{background:#fff;border:3px solid #e8622c;border-radius:16px;padding:16px 22px;text-align:center;box-shadow:0 8px 22px rgba(232,98,44,0.15);}
+.arrow-flow{display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;}
+.arrow-flow .arrow{font-size:1.8rem;color:#64748b;}
+
+
+.flip-card{perspective:1200px;height:150px;cursor:pointer;}
+.flip-inner{position:relative;width:100%;height:100%;transition:transform 0.6s;transform-style:preserve-3d;}
+.flip-card.flipped .flip-inner{transform:rotateY(180deg);}
+.flip-front,.flip-back{position:absolute;inset:0;backface-visibility:hidden;border-radius:16px;padding:14px 16px;display:flex;flex-direction:column;justify-content:center;}
+.flip-back{transform:rotateY(180deg);}
+.flip-hint{position:absolute;bottom:6px;right:10px;font-size:0.65rem;color:#94a3b8;font-weight:700;letter-spacing:0.04em;}
+
+.tab-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;}
+.tab-btn{padding:7px 16px;border-radius:999px;border:2px solid rgba(11,99,206,0.25);background:#fff;font-weight:800;font-size:0.82rem;color:#0b63ce;cursor:pointer;transition:all 0.2s;}
+.tab-btn.active{background:#0b63ce;color:#fff;border-color:#0b63ce;transform:scale(1.05);}
+.tab-panel{display:none;}
+.tab-panel.active{display:block;animation:fadeInUp 0.35s ease;}
+@keyframes fadeInUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+
+.toggle-wrap{display:flex;align-items:center;gap:12px;justify-content:center;margin:10px 0;}
+.toggle-switch{width:64px;height:32px;border-radius:999px;background:#cbd5e1;position:relative;cursor:pointer;transition:background 0.3s;flex-shrink:0;}
+.toggle-switch.on{background:#10b981;}
+.toggle-switch.off{background:#ef4444;}
+.toggle-knob{position:absolute;top:3px;left:3px;width:26px;height:26px;border-radius:50%;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,0.25);transition:transform 0.3s;}
+.toggle-switch.on .toggle-knob{transform:translateX(32px);}
+.toggle-label{font-weight:800;font-size:0.9rem;}
+.toggle-panel{display:none;}
+.toggle-panel.show{display:block;animation:fadeInUp 0.35s ease;}
+
+.click-reveal{cursor:pointer;position:relative;}
+.click-reveal .hidden-answer{max-height:0;overflow:hidden;transition:max-height 0.4s ease,opacity 0.3s ease;opacity:0;}
+.click-reveal.open .hidden-answer{max-height:200px;opacity:1;}
+.click-reveal .reveal-icon{display:inline-block;transition:transform 0.3s;}
+.click-reveal.open .reveal-icon{transform:rotate(180deg);}
+
+.drag-chip{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:12px;background:#fff;border:2px solid rgba(11,99,206,0.3);font-weight:800;font-size:0.85rem;cursor:grab;box-shadow:0 4px 10px rgba(15,23,42,0.08);user-select:none;transition:transform 0.15s,box-shadow 0.15s;}
+.drag-chip:active{cursor:grabbing;transform:scale(1.05);}
+.drop-zone{min-height:90px;border:3px dashed rgba(148,163,184,0.5);border-radius:16px;padding:12px;display:flex;flex-wrap:wrap;gap:8px;align-items:flex-start;transition:border-color 0.2s,background 0.2s;}
+.drop-zone.drag-over{border-color:#0b63ce;background:rgba(11,99,206,0.06);}
+.drop-zone .zone-label{width:100%;font-size:0.72rem;font-weight:800;color:#64748b;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px;}
+
+.hover-lift{transition:transform 0.25s ease,box-shadow 0.25s ease;}
+.hover-lift:hover{transform:translateY(-6px);box-shadow:0 16px 32px rgba(15,23,42,0.15);}
+
+.magnetic-card{transition:transform 0.4s cubic-bezier(0.25,0.46,0.45,0.94);}
+
+.stepper-track{display:flex;align-items:center;justify-content:center;gap:6px;margin-bottom:16px;flex-wrap:wrap;}
+.step-dot{width:34px;height:34px;border-radius:50%;background:#e2e8f0;color:#64748b;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.85rem;cursor:pointer;transition:all 0.25s;border:2px solid transparent;}
+.step-dot.active{background:#0b63ce;color:#fff;transform:scale(1.15);box-shadow:0 4px 12px rgba(11,99,206,0.35);}
+.step-dot.done{background:#10b981;color:#fff;}
+.step-line{width:24px;height:2px;background:#e2e8f0;}
+.step-panel{display:none;}
+.step-panel.active{display:block;animation:fadeInUp 0.35s ease;}
+.rhythm-timeline{position:relative;display:flex;flex-direction:column;gap:10px;max-height:62vh;overflow:visible;}
+.rt-line{position:absolute;left:17px;top:6px;bottom:6px;width:2px;background:linear-gradient(180deg,#0b63ce,#e8622c,#10b981,#f59e0b,#8b5cf6,#047857);opacity:0.35;}
+.rt-item{position:relative;display:flex;align-items:flex-start;gap:14px;padding-left:2px;}
+.rt-dot{position:relative;z-index:2;flex-shrink:0;width:36px;height:36px;border-radius:50%;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.85rem;}
+.rt-card{flex:1;border-radius:12px;padding:8px 14px;}
+.rt-title{font-weight:800;margin:2px 0 2px;font-size:0.92rem;}
+.rt-desc{font-size:0.78rem;color:#374151;line-height:1.35;margin:0;}
+
+
+.quiz-option{display:block;width:100%;text-align:left;padding:12px 16px;border-radius:12px;border:2px solid rgba(148,163,184,0.35);background:#fff;font-weight:700;font-size:0.88rem;color:#374151;cursor:pointer;margin-bottom:8px;transition:all 0.2s;}
+.quiz-option:hover{border-color:#0b63ce;background:rgba(11,99,206,0.04);}
+.quiz-option.correct{border-color:#10b981;background:#e6f7f0;color:#047857;}
+.quiz-option.wrong{border-color:#ef4444;background:#fef2f2;color:#b91c1c;}
+.quiz-feedback{margin-top:10px;font-weight:800;font-size:0.85rem;display:none;}
+.quiz-feedback.show{display:block;animation:fadeInUp 0.3s ease;}
+
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:0.01ms !important;transition-duration:0.2s !important;}}
+</style>
+</head>
+<body>
+<div id="spotlight" style="position:fixed;inset:0;z-index:99;pointer-events:none;"></div>
+<div class="deck">
+
+<!-- SLIDE 1: TITLE -->
+<div class="slide active" data-slide="1" data-type="title">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:460px;height:460px;top:-100px;right:-100px;background:#e8622c;opacity:0.16;"></div>
+    <div class="blob" style="width:320px;height:320px;bottom:-80px;left:-60px;background:#10b981;opacity:0.14;"></div>
+    <div class="blob" style="width:220px;height:220px;top:42%;left:12%;background:#f59e0b;opacity:0.12;"></div>
+  </div>
+  <canvas class="particle-canvas"></canvas>
+  <div class="content text-center">
+    <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/94e4f52cf1177ac9475659e6e30e61e2bb8315ca.jpg" alt="Friendly robot teacher in a bright classroom with students" style="height:130px;object-fit:cover;border-radius:20px;margin:0 auto 14px;box-shadow:0 12px 30px rgba(58,42,26,0.2);animation:float 3s ease-in-out infinite;">
+    <p class="pill reveal" style="margin-bottom:10px;">Session 17 · Wednesday, July 29</p>
+    <h1 class="font-display reveal grad-text" style="font-size:clamp(2rem,4.6vw,3.4rem);font-weight:800;line-height:1.1;margin-bottom:10px;">How Real AI Works — Through Stories</h1>
+    <p class="reveal" style="font-size:clamp(0.85rem,1.3vw,1.05rem);color:#374151;letter-spacing:2px;text-transform:uppercase;font-weight:600;">Data, Patterns &amp; Fairness · Phase 3, Week 5</p>
+  </div>
+</div>
+
+<!-- SLIDE 2: DAILY RHYTHM AGENDA -->
+<div class="slide" data-slide="2" data-type="lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:340px;height:340px;top:-70px;right:-70px;background:#f59e0b;opacity:0.08;"></div>
+    <div class="blob" style="width:260px;height:260px;bottom:-60px;left:-40px;background:#10b981;opacity:0.07;"></div>
+  </div>
+  <div class="content">
+    <p class="pill blue reveal mb-2">Today's Daily Rhythm</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.5rem,2.8vw,2.1rem);font-weight:700;margin-bottom:16px;">How our 110 minutes will flow</h2>
+    <div class="rhythm-timeline reveal">
+      <div class="rt-line"></div>
+      <div class="rt-item">
+        <div class="rt-dot" style="background:#0b63ce;box-shadow:0 0 0 4px rgba(11,99,206,0.15);">1</div>
+        <div class="rt-card accent-card-blue"><span class="timer-badge">⏱ 10 min</span><p class="rt-title">Warm-Up</p><p class="rt-desc">A no-screen sorting puzzle — could YOU write a perfect rule?</p></div>
+      </div>
+      <div class="rt-item">
+        <div class="rt-dot" style="background:#e8622c;box-shadow:0 0 0 4px rgba(232,98,44,0.15);">2</div>
+        <div class="rt-card accent-card-orange"><span class="timer-badge" style="background:rgba(232,98,44,0.10);color:#0b63ce;">⏱ 15–20 min</span><p class="rt-title">Mini-Lesson + 🤖 AI Moment</p><p class="rt-desc">How real AI learns from data, patterns &amp; why it can be biased.</p></div>
+      </div>
+      <div class="rt-item">
+        <div class="rt-dot" style="background:#10b981;box-shadow:0 0 0 4px rgba(16,185,129,0.15);">3</div>
+        <div class="rt-card accent-card-green"><span class="timer-badge" style="background:rgba(47,158,110,0.10);color:#047857;">⏱ 20 min</span><p class="rt-title">Guided Build</p><p class="rt-desc">Everyone retrains a Teachable Machine classifier — together.</p></div>
+      </div>
+      <div class="rt-item">
+        <div class="rt-dot" style="background:#f59e0b;box-shadow:0 0 0 4px rgba(245,158,11,0.15);">4</div>
+        <div class="rt-card" style="background:#fdf1e0;border:1px solid rgba(232,98,44,0.2);"><span class="timer-badge" style="background:rgba(232,98,44,0.1);color:#0b63ce;">⏱ 5 min</span><p class="rt-title">Movement Break</p><p class="rt-desc">Stretch it out before open build.</p></div>
+      </div>
+      <div class="rt-item">
+        <div class="rt-dot" style="background:#8b5cf6;box-shadow:0 0 0 4px rgba(139,92,246,0.15);">5</div>
+        <div class="rt-card accent-card-blue"><span class="timer-badge">⏱ 30–40 min</span><p class="rt-title">Open Build + Challenge Cards</p><p class="rt-desc">Break your own classifier on purpose, then try to fix it.</p></div>
+      </div>
+      <div class="rt-item">
+        <div class="rt-dot" style="background:#047857;box-shadow:0 0 0 4px rgba(47,158,110,0.15);">6</div>
+        <div class="rt-card accent-card-green"><span class="timer-badge" style="background:rgba(47,158,110,0.10);color:#047857;">⏱ 10 min</span><p class="rt-title">Share-Out</p><p class="rt-desc">Show your neighbor what confused your AI — and why.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 3: WARM-UP -->
+<div class="slide" data-slide="3" data-type="warmup">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:300px;height:300px;top:-60px;left:-60px;background:#f59e0b;opacity:0.10;"></div>
+    <div class="blob" style="width:240px;height:240px;bottom:-60px;right:-40px;background:#e8622c;opacity:0.08;"></div>
+  </div>
+  <div class="content">
+    <p class="pill blue reveal mb-2">🧩 Warm-Up · No Screens · Drag to Sort</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.3rem,2.4vw,1.9rem);font-weight:700;margin-bottom:10px;">Drag each card into "Cat" or "Dog"</h2>
+    <div class="reveal" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:10px;">
+      <div class="drop-zone" id="zoneCat" ondragover="event.preventDefault();this.classList.add('drag-over')" ondragleave="this.classList.remove('drag-over')" ondrop="dropChip(event,'zoneCat')">
+        <span class="zone-label">🐱 Cat pile</span>
+      </div>
+      <div class="drop-zone" id="zoneDog" ondragover="event.preventDefault();this.classList.add('drag-over')" ondragleave="this.classList.remove('drag-over')" ondrop="dropChip(event,'zoneDog')">
+        <span class="zone-label">🐶 Dog pile</span>
+      </div>
+    </div>
+    <div class="card accent-card-blue reveal" style="padding:12px 16px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;" id="chipTray">
+      <span class="drag-chip" draggable="true" ondragstart="dragChip(event)">🐈 White fluffy (12 lbs)</span>
+      <span class="drag-chip" draggable="true" ondragstart="dragChip(event)">🐕 Brown floppy-ear (12 lbs)</span>
+      <span class="drag-chip" draggable="true" ondragstart="dragChip(event)">🐩 White curly-fur, barks</span>
+      <span class="drag-chip" draggable="true" ondragstart="dragChip(event)">🦊 Small pointy-eared, brown, meows</span>
+      <span class="drag-chip" draggable="true" ondragstart="dragChip(event)">🐈‍⬛ Hairless, wrinkly, no fur at all</span>
+      <span class="drag-chip" draggable="true" ondragstart="dragChip(event)">🐕‍🦺 Giant, 90 lbs, grey, no tail</span>
+    </div>
+    <p class="reveal" style="margin-top:10px;font-size:0.85rem;color:#64748b;"><strong>Notice:</strong> weight, color, and sound all fail as a single rule at some point. <strong>Harder question:</strong> if a real AI needs to combine 5+ features (not just 1) to be accurate, what happens to its training-data needs as you add more features?</p>
+  </div>
+</div>
+
+<!-- SLIDE 4: WHAT AI REALLY IS -->
+<div class="slide" data-slide="4" data-type="mini-lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:340px;height:340px;top:-80px;right:-60px;background:#e8622c;opacity:0.09;"></div>
+    <div class="blob" style="width:240px;height:240px;bottom:-50px;left:-40px;background:#10b981;opacity:0.07;"></div>
+  </div>
+  <div class="content">
+    <p class="pill reveal mb-2">💡 Mini-Lesson · Click each step</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.4rem,2.6vw,2rem);font-weight:700;margin-bottom:12px;">Real AI isn't magic — it's a loop</h2>
+    <div class="stepper-track reveal">
+      <div class="step-dot active" data-step="1" onclick="goStep(this,1)">1</div>
+      <div class="step-line"></div>
+      <div class="step-dot" data-step="2" onclick="goStep(this,2)">2</div>
+      <div class="step-line"></div>
+      <div class="step-dot" data-step="3" onclick="goStep(this,3)">3</div>
+    </div>
+    <div class="grid-cards grid-2 reveal">
+      <div class="machine-box" style="min-height:150px;">
+        <div class="step-panel active" data-panel="1">
+          <p style="font-size:2rem;">📸</p>
+          <p style="font-weight:800;color:#0b63ce;">Step 1 — Features &amp; Labels</p>
+          <p style="font-size:0.85rem;color:#64748b;">Every example is broken into <strong>features</strong> (measurable clues — ear shape, pixel brightness, whisker length) paired with a <strong>label</strong> (the correct answer, like "cat"). A model with 10,000 labeled photos might track thousands of tiny features at once.</p>
+        </div>
+        <div class="step-panel" data-panel="2">
+          <p style="font-size:2rem;">🔍</p>
+          <p style="font-weight:800;color:#0b63ce;">Step 2 — Weights</p>
+          <p style="font-size:0.85rem;color:#64748b;">The model assigns a numeric <strong>weight</strong> to each feature — how much it should count. Pointy ears might get weight +0.8 toward "cat," floppy ears -0.6. Training is really just adjusting millions of these numbers.</p>
+        </div>
+        <div class="step-panel" data-panel="3">
+          <p style="font-size:2rem;">🎯</p>
+          <p style="font-weight:800;color:#0b63ce;">Step 3 — Confidence Score</p>
+          <p style="font-size:0.85rem;color:#64748b;">The model doesn't just say "cat" — it outputs a <strong>confidence</strong> (e.g. 87% cat, 13% dog). Anything below a threshold can be flagged "uncertain" instead of guessed.</p>
+        </div>
+      </div>
+      <div class="card accent-card-orange" style="padding:14px 18px;">
+        <p style="font-weight:800;color:#0b63ce;margin-bottom:8px;">The training loop, more precisely:</p>
+        <ul style="margin:0;padding-left:18px;font-size:0.88rem;color:#374151;line-height:1.65;">
+          <li><strong>Predict</strong> — run the current weights on a training example</li>
+          <li><strong>Measure error</strong> — compare the guess to the true label (this gap is called <em>loss</em>)</li>
+          <li><strong>Adjust weights</strong> — nudge weights to shrink that error, repeat across the whole dataset dozens of times (each full pass is an <em>epoch</em>)</li>
+        </ul>
+        <p style="margin-top:8px;font-size:0.78rem;color:#94a3b8;">👆 Click the numbered dots above to walk through each step. Ask: what happens if the model memorizes training photos instead of learning general patterns? (That's called <strong>overfitting</strong>.)</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 5: THE 🤖 AI MOMENT — BIAS SETUP -->
+<div class="slide" data-slide="5" data-type="mini-lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:320px;height:320px;top:-70px;left:-60px;background:#ef4444;opacity:0.08;"></div>
+    <div class="blob" style="width:220px;height:220px;bottom:-50px;right:-40px;background:#f59e0b;opacity:0.08;"></div>
+  </div>
+  <div class="content">
+    <p class="pill reveal mb-2" style="color:#b91c1c;">🤖 AI Moment · The Catch</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.4rem,2.6vw,2rem);font-weight:700;margin-bottom:12px;">What if the training data is unfair?</h2>
+    <div class="grid-cards grid-2 reveal">
+      <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/d5a6f38c88c012d883b6636a737d27fa8a66e505.jpg" alt="Toy balance scale representing fairness" style="width:100%;border-radius:16px;box-shadow:0 10px 26px rgba(58,42,26,0.15);object-fit:cover;max-height:210px;">
+      <div class="card accent-card-blue click-reveal" style="padding:14px 18px;" onclick="this.classList.toggle('open')">
+        <p class="big-text">Remember the warm-up puzzle — cats were only white and dogs were only brown?</p>
+        <p style="margin-top:8px;font-weight:800;color:#1e3a8a;">👉 Click here to reveal what the AI would wrongly learn <span class="reveal-icon">▾</span></p>
+        <div class="hidden-answer">
+          <p style="margin-top:8px;font-size:0.9rem;color:#374151;">The AI would think <strong>every white animal is a cat</strong>! This is called <span class="vocab-tag">bias</span>: when a model makes unfair or wrong guesses because the data it learned from didn't show the whole picture.</p>
+        </div>
+      </div>
+    </div>
+    <div class="card click-reveal reveal" style="margin-top:12px;padding:14px 18px;background:#fef2f2;border:1px solid rgba(239,68,68,0.25);" onclick="this.classList.toggle('open')">
+      <p style="font-weight:800;color:#b91c1c;">🌍 Harder: a real-world case <span class="reveal-icon">▾</span></p>
+      <p style="font-size:0.85rem;color:#64748b;margin-top:4px;">Click to reveal a true story about facial-recognition AI.</p>
+      <div class="hidden-answer">
+        <p style="margin-top:8px;font-size:0.88rem;color:#374151;line-height:1.6;">Real facial-recognition systems trained mostly on lighter-skinned faces were measured to make far more errors on darker-skinned faces — in one study, error rates were <strong>over 30x higher</strong> for darker-skinned women than for lighter-skinned men. <strong>Discuss:</strong> if this system is used for security or hiring, who is put at risk, and whose responsibility is it to fix — the coder, the company, or the data collectors?</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 6: VOCAB -->
+<div class="slide" data-slide="6" data-type="mini-lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:300px;height:300px;top:-60px;right:-60px;background:#10b981;opacity:0.08;"></div>
+    <div class="blob" style="width:240px;height:240px;bottom:-60px;left:-50px;background:#f59e0b;opacity:0.07;"></div>
+  </div>
+  <div class="content">
+    <p class="pill reveal mb-2">📖 New Vocabulary · Click a card to flip it</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.3rem,2.4vw,1.85rem);font-weight:700;margin-bottom:12px;">Six words we need today</h2>
+    <div class="grid-cards grid-3 reveal">
+      <div class="flip-card" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+        <div class="flip-front card"><span class="vocab-tag">training data</span><p style="margin-top:8px;font-size:0.78rem;color:#94a3b8;">Click →</p></div>
+        <div class="flip-back card accent-card-orange"><p style="font-size:0.82rem;color:#374151;">Labeled examples (features + correct answer) an AI studies to learn patterns.</p></div>
+      </div></div>
+      <div class="flip-card" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+        <div class="flip-front card"><span class="vocab-tag">weight</span><p style="margin-top:8px;font-size:0.78rem;color:#94a3b8;">Click →</p></div>
+        <div class="flip-back card accent-card-green"><p style="font-size:0.82rem;color:#374151;">A number showing how much one feature should influence the model's guess.</p></div>
+      </div></div>
+      <div class="flip-card" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+        <div class="flip-front card"><span class="vocab-tag">confidence</span><p style="margin-top:8px;font-size:0.78rem;color:#94a3b8;">Click →</p></div>
+        <div class="flip-back card accent-card-purple"><p style="font-size:0.82rem;color:#374151;">The model's own estimate (e.g. 87%) of how sure it is about a prediction.</p></div>
+      </div></div>
+      <div class="flip-card" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+        <div class="flip-front card"><span class="vocab-tag">overfitting</span><p style="margin-top:8px;font-size:0.78rem;color:#94a3b8;">Click →</p></div>
+        <div class="flip-back card" style="background:#eff6ff;border:1px solid rgba(11,99,206,0.2);"><p style="font-size:0.82rem;color:#374151;">Memorizing training examples instead of learning general patterns — fails on new data.</p></div>
+      </div></div>
+      <div class="flip-card" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+        <div class="flip-front card"><span class="vocab-tag">bias</span><p style="margin-top:8px;font-size:0.78rem;color:#94a3b8;">Click →</p></div>
+        <div class="flip-back card" style="background:#fef2f2;border:1px solid rgba(239,68,68,0.25);"><p style="font-size:0.82rem;color:#374151;">Systematic, unfair errors caused by data that isn't complete or balanced across groups.</p></div>
+      </div></div>
+      <div class="flip-card" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+        <div class="flip-front card"><span class="vocab-tag">fairness</span><p style="margin-top:8px;font-size:0.78rem;color:#94a3b8;">Click →</p></div>
+        <div class="flip-back card accent-card-blue"><p style="font-size:0.82rem;color:#374151;">Designing and auditing a system so error rates are similar across different groups of people.</p></div>
+      </div></div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 7: VIDEOS TABBED -->
+<div class="slide" data-slide="7" data-type="mini-lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:300px;height:300px;top:-60px;left:-60px;background:#e8622c;opacity:0.08;"></div>
+    <div class="blob" style="width:240px;height:240px;bottom:-60px;right:-40px;background:#10b981;opacity:0.07;"></div>
+  </div>
+  <div class="content">
+    <p class="pill mb-2 reveal">▶ Watch &amp; Learn · Pick a video below</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.25rem,2.2vw,1.7rem);font-weight:700;margin-bottom:10px;">How AI works — and how it can go wrong</h2>
+    <div class="tab-row reveal">
+      <button class="tab-btn active" onclick="showTab(this,'vid1')">🧠 Video 1 · How AI Learns (2:00)</button>
+      <button class="tab-btn" onclick="showTab(this,'vid2')">⚖️ Video 2 · AI Ethics &amp; Bias (2:30)</button>
+    </div>
+    <div class="tab-panel active reveal" data-tab="vid1">
+      <div class="grid-cards grid-2" style="gap:14px;align-items:start;">
+        <div>
+          <div class="media-embed" id="player-zXxuxJvRddU" onclick="playVideo('zXxuxJvRddU')" title="Click to play video">
+            <img src="https://img.youtube.com/vi/zXxuxJvRddU/hqdefault.jpg" alt="How AI Learns Explained for Kids video thumbnail">
+            <div class="play-btn"><div><svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg></div></div>
+          </div>
+          <p style="font-size:0.76rem;color:#64748b;margin:6px 0 0;text-align:center;">
+            <a href="https://www.youtube.com/watch?v=zXxuxJvRddU" target="_blank" rel="noopener" style="color:#0b63ce;text-decoration:underline;">▶ YouTube — "How AI Learns Explained for Kids | What is Machine Learning?"</a>
+          </p>
+        </div>
+        <div class="card accent-card-orange" style="padding:14px 18px;">
+          <p style="font-weight:800;color:#0b63ce;margin:0 0 8px;font-size:0.85rem;">While watching, look for:</p>
+          <ul style="margin:0;padding-left:18px;font-size:0.85rem;color:#374151;line-height:1.65;">
+            <li>What everyday activity do they compare AI learning to?</li>
+            <li>What are the three steps AI repeats over and over?</li>
+            <li>What word do they use for "examples the AI studies"?</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="tab-panel" data-tab="vid2">
+      <div class="grid-cards grid-2" style="gap:14px;align-items:start;">
+        <div>
+          <div class="media-embed" id="player-3ynklAFQIfA" onclick="playVideo('3ynklAFQIfA')" title="Click to play video">
+            <img src="https://img.youtube.com/vi/3ynklAFQIfA/hqdefault.jpg" alt="Is AI Good or Bad AI Ethics video thumbnail">
+            <div class="play-btn"><div><svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg></div></div>
+          </div>
+          <p style="font-size:0.76rem;color:#64748b;margin:6px 0 0;text-align:center;">
+            <a href="https://www.youtube.com/watch?v=3ynklAFQIfA" target="_blank" rel="noopener" style="color:#0b63ce;text-decoration:underline;">▶ YouTube · TenderIntellects — "Is AI Good or Bad? AI Ethics, Algorithmic Bias, Safety &amp; Privacy Explained for Kids"</a>
+          </p>
+        </div>
+        <div class="card accent-card-blue" style="padding:14px 18px;">
+          <p style="font-weight:800;color:#1e3a8a;margin:0 0 8px;font-size:0.85rem;">While watching, think about:</p>
+          <ul style="margin:0;padding-left:18px;font-size:0.85rem;color:#374151;line-height:1.65;">
+            <li>What does "bad stuff in, bad stuff out" mean for AI?</li>
+            <li>Why do they call it "the hungry learner"?</li>
+            <li>What does "human-in-the-loop" mean for keeping AI safe?</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 9: GUIDED BUILD INTRO -->
+<div class="slide" data-slide="8" data-type="build">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:340px;height:340px;top:-70px;left:-70px;background:#10b981;opacity:0.10;"></div>
+    <div class="blob" style="width:240px;height:240px;bottom:-60px;right:-50px;background:#0b63ce;opacity:0.08;"></div>
+  </div>
+  <div class="content">
+    <p class="pill green mb-2 reveal">🛠 Guided Build · 20 min</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.5rem,2.8vw,2.1rem);font-weight:700;margin-bottom:10px;">Let's break our own classifier — on purpose</h2>
+    <div class="grid-cards grid-2 reveal" style="align-items:center;">
+      <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/9fcd90674507e3ab6a37470333f451c6d45459f1.jpg" alt="Student using laptop with Teachable Machine training a model" style="width:100%;border-radius:16px;box-shadow:0 10px 26px rgba(58,42,26,0.15);object-fit:cover;max-height:240px;">
+      <div class="card accent-card-green hover-lift" style="padding:14px 18px;">
+        <p style="font-weight:800;color:#047857;margin-bottom:8px;">Step by step, together:</p>
+        <ol style="margin:0;padding-left:18px;font-size:0.9rem;color:#374151;line-height:1.75;">
+          <li>Open Teachable Machine's Image Project.</li>
+          <li>Train Class A with only <strong>your own hand</strong> in one pose, lighting, background.</li>
+          <li>Train Class B the same limited way.</li>
+          <li>Test it with a <strong>different</strong> student's hand or a new background.</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 10: GUIDED BUILD - THE DISCOVERY -->
+<div class="slide" data-slide="9" data-type="build">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:320px;height:320px;top:-60px;right:-60px;background:#ef4444;opacity:0.08;"></div>
+    <div class="blob" style="width:240px;height:240px;bottom:-60px;left:-40px;background:#10b981;opacity:0.08;"></div>
+  </div>
+  <div class="content">
+    <p class="pill mb-2 reveal" style="color:#b91c1c;">🛠 What we should see</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.5rem,2.8vw,2.1rem);font-weight:700;margin-bottom:12px;">Watch it misclassify — that's the whole point</h2>
+    <div class="grid-cards grid-2 reveal">
+      <div class="card accent-card-orange" style="padding:16px 20px;">
+        <p class="big-text">Because we only trained on <strong>one person's hand</strong>, the model overfit to narrow features (this exact skin tone, lighting, background) instead of learning what makes a hand a hand in general.</p>
+        <p style="margin-top:8px;font-size:0.82rem;color:#94a3b8;">This gap between accuracy on training data vs. new data is called the <strong>generalization gap</strong> — the smaller it is, the more trustworthy the model.</p>
+      </div>
+      <div class="card accent-card-blue" style="padding:16px 20px;">
+        <p style="font-weight:800;color:#1e3a8a;margin-bottom:8px;">Debate with your table — no easy answers:</p>
+        <ul style="margin:0;padding-left:18px;font-size:0.88rem;color:#374151;line-height:1.7;">
+          <li>Was the model "broken," or did it do exactly what its data taught it?</li>
+          <li>If a company only has data from 10 volunteers, is it ethical to ship the product anyway? Why or why not?</li>
+          <li>Could you ever collect training data with ZERO bias? Defend your answer.</li>
+          <li>Estimate: if 1 person's hand ≈ 20 photos, how many photos might you need from 15 different people to fairly cover the class?</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 11: BREAK -->
+<div class="slide" data-slide="10" data-type="break">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:300px;height:300px;top:-50px;left:-50px;background:#f59e0b;opacity:0.12;"></div>
+    <div class="blob" style="width:240px;height:240px;bottom:-50px;right:-50px;background:#e8622c;opacity:0.10;"></div>
+  </div>
+  <div class="content text-center">
+    <div class="break-card reveal" style="display:inline-block;max-width:520px;">
+      <p style="font-size:2.4rem;margin-bottom:6px;">🤸</p>
+      <h2 class="font-display" style="font-size:clamp(1.4rem,2.6vw,1.9rem);font-weight:700;margin-bottom:8px;">Movement Break — 5 min</h2>
+      <p class="big-text">Stand up! Everyone strike a pose — now the class "votes" by pointing to guess what pose comes next. That's a prediction, just like AI!</p>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 12: OPEN BUILD + CHALLENGE -->
+<div class="slide" data-slide="11" data-type="build">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:340px;height:340px;top:-80px;right:-60px;background:#8b5cf6;opacity:0.08;"></div>
+    <div class="blob" style="width:240px;height:240px;bottom:-50px;left:-40px;background:#10b981;opacity:0.07;"></div>
+  </div>
+  <div class="content">
+    <p class="pill purple mb-2 reveal">🚀 Open Build + Challenge Cards · 30–40 min</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.5rem,2.8vw,2.1rem);font-weight:700;margin-bottom:10px;">Now retrain it to be more fair</h2>
+    <div class="grid-cards grid-2 reveal">
+      <div class="card accent-card-green hover-lift magnetic-card" style="padding:16px 20px;">
+        <p style="font-weight:800;color:#047857;margin-bottom:8px;">Everyone:</p>
+        <ul style="margin:0;padding-left:18px;font-size:0.88rem;color:#374151;line-height:1.7;">
+          <li>Add examples from 2–3 different classmates.</li>
+          <li>Vary lighting, background, and angle.</li>
+          <li>Retrain and re-test — is it more accurate now?</li>
+        </ul>
+      </div>
+      <div class="challenge-card hover-lift magnetic-card">
+        <p style="font-weight:800;color:#6d28d9;margin-bottom:8px;">⭐⭐ Double-Star Challenge</p>
+        <p style="font-size:0.88rem;color:#374151;line-height:1.7;">1) Deliberately train a classifier with a <strong>sneaky bias</strong> (e.g., only smiling faces = "happy"). Test it on a neutral face.<br>2) Now design a fix: what THREE specific categories of new data would you add, and in what order, to reduce the bias fastest?<br>3) Explain why order might matter.</p>
+        <span class="tier-c" style="margin-top:8px;">Tier C stretch — no partial credit for "add more data" alone</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 13: DISCUSSION -->
+<div class="slide" data-slide="12" data-type="share">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:320px;height:320px;top:-70px;left:-60px;background:#0b63ce;opacity:0.09;"></div>
+    <div class="blob" style="width:240px;height:240px;bottom:-60px;right:-40px;background:#f59e0b;opacity:0.08;"></div>
+  </div>
+  <div class="content">
+    <p class="pill mb-2 reveal">💬 Discussion</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.5rem,2.8vw,2.1rem);font-weight:700;margin-bottom:12px;">When should we NOT trust AI?</h2>
+    <div class="grid-cards grid-2 reveal">
+      <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/0e0588e29693c0ee72b980d937ae5233d0b31d95.jpg" alt="Cartoon justice scales representing AI fairness" style="width:100%;border-radius:16px;box-shadow:0 10px 26px rgba(58,42,26,0.15);object-fit:cover;max-height:220px;">
+      <div class="card accent-card-blue hover-lift" style="padding:16px 20px;">
+        <p style="font-weight:800;color:#1e3a8a;margin-bottom:8px;">Talk through together:</p>
+        <ul style="margin:0;padding-left:18px;font-size:0.9rem;color:#374151;line-height:1.75;">
+          <li>Who does the AI's training data leave out?</li>
+          <li>Could a biased AI make a decision about a real person's life? (School, hiring, healthcare.)</li>
+          <li>What's one question you could ask before trusting an AI's answer?</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 13: QUIZ CHECK -->
+<div class="slide" data-slide="13" data-type="share">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:320px;height:320px;top:-60px;left:-60px;background:#0b63ce;opacity:0.09;"></div>
+    <div class="blob" style="width:240px;height:240px;bottom:-60px;right:-40px;background:#10b981;opacity:0.08;"></div>
+  </div>
+  <div class="content">
+    <p class="pill mb-2 reveal">🧠 Challenge Round · Two tricky scenarios</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.2rem,2.2vw,1.6rem);font-weight:700;margin-bottom:12px;">Which classifier has the BIGGER bias problem?</h2>
+    <div class="quiz-group reveal" style="max-width:700px;">
+      <button class="quiz-option" onclick="checkQuiz(this,false)">A. Trained on 500 photos of only left hands, tested on left hands.</button>
+      <button class="quiz-option" onclick="checkQuiz(this,true)">B. Trained on 500 photos of only left hands, tested on right hands, and used to unlock a real classroom door.</button>
+      <button class="quiz-option" onclick="checkQuiz(this,false)">C. Trained on 50 photos of both hands, slightly lower accuracy but tested fairly.</button>
+      <p class="quiz-feedback"></p>
+    </div>
+    <div class="click-reveal reveal" style="margin-top:14px;cursor:pointer;" onclick="this.classList.toggle('open')">
+      <p style="font-weight:800;color:#6d28d9;font-size:0.85rem;">🔥 Bonus (open response) — click for the twist <span class="reveal-icon">▾</span></p>
+      <div class="hidden-answer">
+        <p style="font-size:0.85rem;color:#374151;margin-top:6px;">Option C had LESS data and LOWER accuracy than A — but might actually be the more responsible AI. Why does "highest accuracy" not always mean "best" or "safest" system? Write your answer for homework discussion.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 14: SHARE-OUT -->
+<div class="slide" data-slide="14" data-type="share">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:300px;height:300px;top:-60px;right:-60px;background:#8b5cf6;opacity:0.09;"></div>
+    <div class="blob" style="width:240px;height:240px;bottom:-60px;left:-50px;background:#0b63ce;opacity:0.07;"></div>
+  </div>
+  <div class="content text-center">
+    <p class="pill purple mb-2 reveal">🙋 Share-Out · 10 min</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.5rem,2.8vw,2.1rem);font-weight:700;margin-bottom:14px;">Show your neighbor</h2>
+    <div class="card accent-card-purple reveal" style="display:inline-block;max-width:600px;padding:18px 24px;">
+      <p class="big-text">In pairs: show one thing your classifier got wrong, and explain <em>why</em> in terms of its training data — not "it's broken," but "it never saw ___."</p>
+      <p style="margin-top:10px;font-size:0.85rem;color:#6d28d9;font-weight:700;">Volunteers welcome to share with the whole class — always optional!</p>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 15: HOMEWORK -->
+<div class="slide" data-slide="15" data-type="lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:320px;height:320px;top:-60px;left:-60px;background:#f59e0b;opacity:0.10;"></div>
+    <div class="blob" style="width:240px;height:240px;bottom:-60px;right:-40px;background:#10b981;opacity:0.08;"></div>
+  </div>
+  <div class="content">
+    <p class="pill mb-2 reveal">📝 Homework · 30 min</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.5rem,2.8vw,2.1rem);font-weight:700;margin-bottom:12px;">"Fair or unfair?"</h2>
+    <div class="card accent-card-orange reveal" style="padding:18px 22px;">
+      <p class="big-text">Read the 3 short scenarios on your bilingual handout. For each one, decide: was the AI fair or unfair — and write <strong>one sentence why</strong>.</p>
+      <p style="margin-top:10px;font-size:0.85rem;color:#b91c1c;font-weight:700;">⭐ Stretch (optional): for one scenario, propose a specific fix to the training data — not just "get more data," but exactly what kind, from whom.</p>
+      <p style="margin-top:10px;font-size:0.85rem;color:#64748b;">Bring your answers tomorrow — we'll use them to kick off Capstone planning!</p>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 16: CLOSING -->
+<div class="slide" data-slide="16" data-type="close">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:440px;height:440px;top:-100px;left:-100px;background:#e8622c;opacity:0.16;"></div>
+    <div class="blob" style="width:320px;height:320px;bottom:-90px;right:-70px;background:#10b981;opacity:0.14;"></div>
+    <div class="blob" style="width:220px;height:220px;top:40%;right:15%;background:#f59e0b;opacity:0.11;"></div>
+  </div>
+  <canvas class="particle-canvas"></canvas>
+  <div class="content text-center">
+    <p class="pill reveal" style="margin-bottom:10px;">See you Wednesday — Capstone Kickoff &amp; Planning!</p>
+    <h2 class="font-display reveal grad-text" style="font-size:clamp(1.8rem,4vw,2.8rem);font-weight:800;margin-bottom:10px;">Great thinking, AI detectives!</h2>
+    <p class="reveal big-text" style="max-width:580px;margin:0 auto;">Real AI isn't magic — it's data plus patterns. And now you know: fair data builds fair AI.</p>
+  </div>
+</div>
+
+</div><!-- /deck -->
+
+<div class="nav-controls">
+  <button class="nav-btn" onclick="changeSlide(-1)">&#8249;</button>
+  <div class="slide-dots" id="dots"></div>
+  <button class="nav-btn" onclick="changeSlide(1)">&#8250;</button>
+  <span class="slide-counter" id="counter">1 / 16</span>
+</div>
+
+<script>
+let current = 1;
+const total = document.querySelectorAll('.slide').length;
+const dotsContainer = document.getElementById('dots');
+const counter = document.getElementById('counter');
+const dotTypes = ['','','warmup','mini','mini','mini','mini','mini','build','build','','build','share','share','mini',''];
+for (let i = 1; i <= total; i++) {
+  const dot = document.createElement('div');
+  const t = dotTypes[i] || '';
+  dot.className = 'dot' + (t ? ' ' + t : '') + (i === 1 ? ' active' : '');
+  dot.onclick = () => goToSlide(i);
+  dotsContainer.appendChild(dot);
+}
+function goToSlide(n) {
+  const prev = document.querySelector('.slide.active');
+  const next = document.querySelector('.slide[data-slide="' + n + '"]');
+  if (prev) prev.classList.remove('active');
+  if (next) { next.classList.add('active'); animateSlide(next); }
+  current = n; updateNav();
+}
+function changeSlide(dir) { let n = current + dir; if (n < 1) n = total; if (n > total) n = 1; goToSlide(n); }
+function updateNav() {
+  document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i + 1 === current));
+  counter.textContent = current + ' / ' + total;
+}
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); changeSlide(1); }
+  if (e.key === 'ArrowLeft') { e.preventDefault(); changeSlide(-1); }
+});
+let tx = 0;
+document.addEventListener('touchstart', e => { tx = e.touches[0].clientX; });
+document.addEventListener('touchend', e => { const dx = tx - e.changedTouches[0].clientX; if (Math.abs(dx) > 60) changeSlide(dx > 0 ? 1 : -1); });
+
+function animateSlide(slide) {
+  slide.querySelectorAll('.reveal').forEach((el, i) => {
+    el.style.transition = 'none'; el.style.opacity = '0'; el.style.transform = 'translateY(16px)';
+    el.offsetHeight;
+    const d = i * 0.06;
+    el.style.transition = 'opacity 0.32s ease ' + d + 's, transform 0.32s ease ' + d + 's';
+    el.style.opacity = '1'; el.style.transform = 'translateY(0)';
+  });
+}
+
+
+function dragChip(ev){ev.dataTransfer.setData('text/plain',ev.target.outerHTML);ev.dataTransfer.effectAllowed='move';window._draggedChip=ev.target;}
+function dropChip(ev,zoneId){
+  ev.preventDefault();
+  const zone=document.getElementById(zoneId);
+  zone.classList.remove('drag-over');
+  if(window._draggedChip){zone.appendChild(window._draggedChip);window._draggedChip=null;}
+}
+function showTab(btn,tabName){
+  const row=btn.parentElement;
+  row.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const container=row.parentElement;
+  container.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  container.querySelector('.tab-panel[data-tab="'+tabName+'"]').classList.add('active');
+}
+function goStep(dot,n){
+  const track=dot.parentElement;
+  track.querySelectorAll('.step-dot').forEach(d=>{
+    const dn=parseInt(d.dataset.step);
+    d.classList.remove('active','done');
+    if(dn<n)d.classList.add('done');
+    if(dn===n)d.classList.add('active');
+  });
+  const panelHost=track.parentElement;
+  panelHost.querySelectorAll('.step-panel').forEach(p=>p.classList.toggle('active',parseInt(p.dataset.panel)===n));
+}
+function flipPredict(el){
+  const isOn=el.classList.toggle('on');
+  el.classList.toggle('off',!isOn);
+  const txt=document.getElementById('predictText');
+  if(txt){
+    txt.textContent = isOn ? 'Will it work on a new hand? — YES, with varied data!' : 'Will it work on a new hand? — NO';
+    txt.style.color = isOn ? '#047857' : '#b91c1c';
+  }
+}
+function checkQuiz(el,correct){
+  const group=el.closest('.quiz-group');
+  group.querySelectorAll('.quiz-option').forEach(o=>o.classList.remove('correct','wrong'));
+  el.classList.add(correct?'correct':'wrong');
+  const fb=group.querySelector('.quiz-feedback');
+  if(fb){
+    fb.textContent = correct ? '✅ Exactly — more varied data teaches a fairer model!' : '❌ Not quite — think about who the training data included.';
+    fb.style.color = correct ? '#047857' : '#b91c1c';
+    fb.classList.add('show');
+  }
+}
+
+function playVideo(videoId) {
+  const container = document.getElementById('player-' + videoId);
+  if (!container) return;
+  container.onclick = null; container.style.cursor = 'default';
+  container.innerHTML = '<iframe src="https://www.youtube.com/embed/' + videoId + '?autoplay=1&rel=0" allowfullscreen allow="autoplay; encrypted-media" style="position:absolute;inset:0;width:100%;height:100%;border:0;border-radius:13px;"></iframe>';
+}
+
+document.addEventListener('mousemove', e => {
+  const s = document.getElementById('spotlight');
+  if (s) s.style.background = 'radial-gradient(600px circle at ' + e.clientX + 'px ' + e.clientY + 'px, rgba(11,99,206,0.05), transparent 40%)';
+});
+
+window.initParticles = function(canvas) {
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight;
+  const particles = Array.from({length:40}, () => ({x:Math.random()*canvas.width,y:Math.random()*canvas.height,vx:(Math.random()-0.5)*0.3,vy:(Math.random()-0.5)*0.3,size:Math.random()*2+0.8,alpha:Math.random()*0.3+0.08}));
+  (function animate(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    particles.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.x<0)p.x=canvas.width;if(p.x>canvas.width)p.x=0;if(p.y<0)p.y=canvas.height;if(p.y>canvas.height)p.y=0;
+      ctx.beginPath();ctx.arc(p.x,p.y,p.size,0,Math.PI*2);ctx.fillStyle='rgba(11,99,206,'+p.alpha+')';ctx.fill();});
+    requestAnimationFrame(animate);
+  })();
+};
+document.querySelectorAll('.particle-canvas').forEach(c => window.initParticles(c));
+document.querySelectorAll('.magnetic-card').forEach(card => {
+  card.addEventListener('mousemove', (e) => {
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left - rect.width / 2;
+    const y = e.clientY - rect.top - rect.height / 2;
+    card.style.transform = `translate(${x * 0.06}px, ${y * 0.06}px)`;
+  });
+  card.addEventListener('mouseleave', () => { card.style.transform = 'translate(0,0)'; });
+});
+
+
+try { animateSlide(document.querySelector('.slide.active')); } catch(e) {}
+</script>
+</body>
+</html>
