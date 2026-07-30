@@ -1,1 +1,812 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="slides-format" content="viewport">
+<title>Session 18 · Capstone Kickoff & Planning</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4">
+function pickTrack(card){
+  const parent = card.parentElement;
+  parent.querySelectorAll('.track-card').forEach(c=>c.classList.remove('selected'));
+  card.classList.add('selected');
+}
+const trackNames=['Game','AI Mini-App','Story / Creative World'];
+function rollTrack(e){
+  e.stopPropagation();
+  const out=document.getElementById('rollOutput');
+  let i=0; const spins=14;
+  const timer=setInterval(()=>{
+    out.textContent='🎲 '+trackNames[i%trackNames.length];
+    i++;
+    if(i>spins){
+      clearInterval(timer);
+      const pick=trackNames[Math.floor(Math.random()*trackNames.length)];
+      out.textContent='✨ Try: '+pick+'!';
+      const cards=document.querySelectorAll('.track-card');
+      cards.forEach(c=>{ c.classList.toggle('selected', c.dataset.track===pick); });
+    }
+  },90);
+}
+function pickTier(card){
+  const parent=card.parentElement;
+  parent.querySelectorAll('.tier-pick').forEach(c=>c.classList.remove('picked'));
+  card.classList.add('picked');
+}
+function lockInPlan(e){
+  const btn=e.currentTarget;
+  btn.classList.add('locked');
+  btn.textContent='✅ Plan Locked In!';
+  fireConfetti();
+}
+function fireConfetti(){
+  const canvas=document.getElementById('confettiCanvas');
+  if(!canvas) return;
+  canvas.width=window.innerWidth; canvas.height=window.innerHeight;
+  const ctx=canvas.getContext('2d');
+  const colors=['#0b63ce','#f59e0b','#10b981','#7c3aed','#f43f5e'];
+  const pieces=Array.from({length:140},()=>({
+    x:Math.random()*canvas.width, y:-20-Math.random()*canvas.height*0.3,
+    vx:(Math.random()-0.5)*4, vy:2+Math.random()*4,
+    size:4+Math.random()*5, color:colors[Math.floor(Math.random()*colors.length)],
+    rot:Math.random()*360, vr:(Math.random()-0.5)*10
+  }));
+  let frame=0;
+  (function animate(){
+    frame++;
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    pieces.forEach(p=>{
+      p.x+=p.vx; p.y+=p.vy; p.vy+=0.05; p.rot+=p.vr;
+      ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rot*Math.PI/180);
+      ctx.fillStyle=p.color; ctx.fillRect(-p.size/2,-p.size/2,p.size,p.size*0.6);
+      ctx.restore();
+    });
+    if(frame<180) requestAnimationFrame(animate);
+    else ctx.clearRect(0,0,canvas.width,canvas.height);
+  })();
+}
+</script>
+<style type="text/tailwindcss">
+@theme {
+  --color-bg:#f0f8ff; --color-bg-deep:#e6f2ff; --color-surface:#ffffff;
+  --color-text:#0f2747; --color-text-secondary:#3a5a7a; --color-text-muted:#5b7290;
+  --color-accent-1:#0b63ce; --color-accent-2:#f59e0b; --color-accent-3:#10b981;
+  --color-glass-bg:rgba(11,99,206,0.05); --color-glass-border:rgba(11,99,206,0.14);
+  --color-vignette:rgba(11,99,206,0.08);
+  --font-display:"Fredoka","Trebuchet MS",sans-serif;
+  --font-body:"Nunito",Arial,sans-serif;
+}
+</style>
+<style>
+:root{ --color-bg:#f0f8ff; --color-text:#0f2747; --glow-color-rgb:11,99,206; }
+*,*::before,*::after{box-sizing:border-box;}
+html,body{background:var(--color-bg);margin:0;}
+body{font-family:"Nunito",Arial,sans-serif;color:var(--color-text);overflow:hidden;height:100vh;width:100vw;}
+.deck{width:100vw;height:100vh;position:relative;}
+.slide{position:absolute;top:0;left:0;width:100%;height:100%;background:var(--color-bg);display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;transform:scale(0.96);transition:opacity 0.6s ease,transform 0.6s ease;pointer-events:none;overflow:hidden;}
+.slide.active{opacity:1;transform:scale(1);pointer-events:all;}
+.slide>.content{position:relative;z-index:2;width:100%;max-width:1100px;padding:clamp(1.2rem,3.4vw,3rem);}
+.slide::before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");background-repeat:repeat;background-size:256px 256px;opacity:0.03;mix-blend-mode:overlay;}
+.slide::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:radial-gradient(ellipse at center,transparent 55%,var(--color-vignette) 100%);}
+.gradient-mesh{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none;}
+.blob{position:absolute;border-radius:50%;filter:blur(80px);animation:float-slow 12s ease-in-out infinite;}
+.blob:nth-child(2){animation:float-drift 16s ease-in-out infinite;}
+.blob:nth-child(3){animation:float-slow 20s ease-in-out infinite reverse;}
+@keyframes float-slow{0%{transform:translate(0,0) scale(1);}25%{transform:translate(60px,-50px) scale(1.12);}50%{transform:translate(-40px,40px) scale(0.9);}75%{transform:translate(50px,20px) scale(1.08);}100%{transform:translate(0,0) scale(1);}}
+@keyframes float-drift{0%{transform:translate(0,0) scale(1) rotate(0deg);}33%{transform:translate(-50px,-60px) scale(1.15) rotate(3deg);}66%{transform:translate(40px,30px) scale(0.88) rotate(-2deg);}100%{transform:translate(0,0) scale(1) rotate(0deg);}}
+@keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-14px);}}
+.particle-canvas{position:absolute;inset:0;z-index:1;}
+.reveal{opacity:0;transform:translateY(18px);}
+.nav-controls{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:12px;z-index:100;background:rgba(255,255,255,0.85);backdrop-filter:blur(12px);padding:9px 20px;border-radius:999px;border:1px solid var(--color-glass-border);box-shadow:0 10px 30px rgba(11,99,206,0.18);}
+.nav-btn{width:36px;height:36px;border:none;background:var(--color-glass-bg);color:var(--color-accent-2);border-radius:999px;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 0.2s,transform 0.15s;}
+.nav-btn:hover{background:rgba(11,99,206,0.15);transform:translateY(-1px);}
+.slide-dots{display:flex;gap:5px;flex-wrap:wrap;max-width:420px;}
+.dot{width:8px;height:8px;border-radius:50%;background:rgba(11,99,206,0.25);cursor:pointer;transition:background 0.25s,transform 0.25s;}
+.dot.active{background:var(--color-accent-2);transform:scale(1.4);}
+.dot.warmup{background:rgba(250,204,21,0.4);} .dot.warmup.active{background:#f59e0b;}
+.dot.mini{background:rgba(59,130,246,0.4);} .dot.mini.active{background:#0b63ce;}
+.dot.build{background:rgba(52,211,153,0.4);} .dot.build.active{background:#10b981;}
+.dot.share{background:rgba(167,139,250,0.4);} .dot.share.active{background:#7c3aed;}
+.slide-counter{font-size:0.78rem;color:var(--color-text-muted);min-width:52px;text-align:center;font-weight:700;}
+.card{background:var(--color-surface);border:1px solid var(--color-glass-border);border-radius:16px;padding:14px 18px;box-shadow:0 8px 24px rgba(11,99,206,0.1);backdrop-filter:blur(10px);}
+.hover-lift{transition:transform 0.25s ease, box-shadow 0.25s ease;}
+.hover-lift:hover{transform:translateY(-4px);box-shadow:0 14px 34px rgba(11,99,206,0.18);}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:4px 14px;border-radius:999px;border:1px solid var(--color-glass-border);background:rgba(11,99,206,0.08);font-size:0.76rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#0b63ce;}
+.pill.blue{color:#0b63ce;} .pill.green{color:#0d9488;} .pill.purple{color:#7c3aed;} .pill.red{color:#dc2626;}
+.big-text{font-size:clamp(0.92rem,1.5vw,1.15rem);line-height:1.65;color:var(--color-text-secondary);}
+.code-block{background:#0f2747;color:#e6f2ff;font-family:"Fira Code",Consolas,monospace;border-radius:12px;padding:14px 18px;font-size:clamp(0.78rem,1.2vw,0.95rem);line-height:1.7;overflow-x:auto;border:1px solid var(--color-glass-border);}
+.code-block .kw{color:#f59e0b;font-weight:600;} .code-block .str{color:#65a30d;} .code-block .cmt{color:#5b7290;font-style:italic;} .code-block .num{color:#0284c7;} .code-block .fn{color:#db2777;}
+.think-chip{display:inline-flex;align-items:center;gap:8px;padding:7px 13px;border-radius:999px;background:rgba(59,130,246,0.14);color:#0b63ce;font-size:0.82rem;font-weight:700;}
+.question-chip{display:inline-flex;align-items:center;gap:8px;padding:7px 13px;border-radius:999px;background:rgba(250,204,21,0.14);color:#b45309;font-size:0.82rem;font-weight:700;}
+.grid-cards{display:grid;gap:14px;}
+@media(min-width:700px){.grid-2{grid-template-columns:repeat(2,minmax(0,1fr));}.grid-3{grid-template-columns:repeat(3,minmax(0,1fr));}}
+.grad-text{background:linear-gradient(135deg,#0b63ce 0%,#f59e0b 55%,#10b981 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.media-embed{position:relative;padding-top:56.25%;border-radius:13px;overflow:hidden;background:#000;cursor:pointer;box-shadow:0 10px 30px rgba(11,99,206,0.25);}
+.media-embed img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+.media-embed .play-btn{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;}
+.media-embed .play-btn div{width:58px;height:58px;background:rgba(255,0,0,0.92);border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(0,0,0,0.5);transition:transform 0.2s;}
+.media-embed:hover .play-btn div{transform:scale(1.1);}
+.media-embed iframe{position:absolute;inset:0;width:100%;height:100%;border:0;border-radius:13px;}
+.timeline-row{display:flex;align-items:flex-start;gap:12px;}
+.timeline-dot{width:30px;height:30px;border-radius:50%;flex-shrink:0;}
+.timeline-line{width:2px;height:10px;background:rgba(11,99,206,0.18);margin-left:14px;}
+.progress-track{height:6px;background:rgba(11,99,206,0.1);border-radius:999px;overflow:hidden;margin-top:6px;}
+.progress-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,#0b63ce,#10b981);transition:width 0.6s ease;}
+.challenge-card{background:linear-gradient(135deg,rgba(167,139,250,0.14),rgba(59,130,246,0.10));border:2px solid rgba(167,139,250,0.30);border-radius:16px;padding:14px 18px;}
+.break-card{background:linear-gradient(135deg,rgba(250,204,21,0.10),rgba(250,204,21,0.05));border:2px solid rgba(250,204,21,0.28);border-radius:18px;padding:18px 22px;}
+.tier-a{display:inline-flex;align-items:center;padding:3px 10px;border-radius:999px;background:rgba(52,211,153,0.18);color:#0d9488;font-size:0.72rem;font-weight:800;}
+.tier-b{display:inline-flex;align-items:center;padding:3px 10px;border-radius:999px;background:rgba(59,130,246,0.18);color:#0b63ce;font-size:0.72rem;font-weight:800;}
+.tier-c{display:inline-flex;align-items:center;padding:3px 10px;border-radius:999px;background:rgba(167,139,250,0.18);color:#7c3aed;font-size:0.72rem;font-weight:800;}
+.mouse-spotlight{position:fixed;inset:0;z-index:99;pointer-events:none;}
+.step-num{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#0b63ce,#10b981);color:#04101f;font-weight:800;font-size:0.82rem;flex-shrink:0;}
+.ai-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:999px;background:rgba(52,211,153,0.14);border:1px solid rgba(52,211,153,0.3);color:#0d9488;font-size:0.76rem;font-weight:800;}
+.track-card{border-radius:18px;padding:16px 18px;border:2px solid;position:relative;overflow:hidden;}
 
+.flip-card{perspective:1200px;cursor:pointer;}
+.flip-inner{position:relative;transition:transform 0.6s cubic-bezier(.4,.2,.2,1);transform-style:preserve-3d;min-height:100%;}
+.flip-card.flipped .flip-inner{transform:rotateY(180deg);}
+.flip-front,.flip-back{backface-visibility:hidden;}
+.flip-back{position:absolute;inset:0;transform:rotateY(180deg);display:flex;flex-direction:column;justify-content:center;}
+.flip-hint{font-size:0.68rem;color:#5b7290;text-align:center;margin-top:6px;opacity:0.8;}
+.track-card.selected{outline:3px solid currentColor;box-shadow:0 0 0 4px rgba(11,99,206,0.15),0 14px 34px rgba(11,99,206,0.22);transform:translateY(-4px);}
+.track-card{cursor:pointer;}
+.vote-badge{position:absolute;top:8px;right:8px;background:rgba(255,255,255,0.9);border-radius:999px;padding:2px 9px;font-size:0.68rem;font-weight:800;opacity:0;transition:opacity 0.25s;}
+.track-card.selected .vote-badge{opacity:1;}
+.ai-example-card{cursor:pointer;position:relative;}
+.ai-example-card .reveal-answer{max-height:0;overflow:hidden;transition:max-height 0.4s ease,opacity 0.3s ease;opacity:0;font-size:0.76rem;color:#0d9488;font-weight:700;margin-top:0;}
+.ai-example-card.opened .reveal-answer{max-height:80px;opacity:1;margin-top:8px;}
+.ai-example-card::after{content:"tap to check ✓";position:absolute;bottom:8px;right:10px;font-size:0.62rem;color:#94a3b8;font-weight:700;}
+.ai-example-card.opened::after{content:"";}
+.checklist-item{cursor:pointer;user-select:none;transition:background 0.25s;}
+.checklist-item.done{background:rgba(16,185,129,0.10)!important;border-color:rgba(16,185,129,0.35)!important;}
+.checklist-item.done .step-num{background:linear-gradient(135deg,#10b981,#0d9488);}
+.checklist-item .check-mark{opacity:0;transition:opacity 0.2s;color:#10b981;font-weight:900;}
+.checklist-item.done .check-mark{opacity:1;}
+.roll-btn{border:none;cursor:pointer;font-family:inherit;font-weight:800;border-radius:999px;padding:9px 18px;font-size:0.82rem;background:linear-gradient(135deg,#0b63ce,#10b981);color:#fff;box-shadow:0 8px 20px rgba(11,99,206,0.25);transition:transform 0.15s,box-shadow 0.15s;}
+.roll-btn:hover{transform:translateY(-2px) scale(1.03);box-shadow:0 12px 26px rgba(11,99,206,0.35);}
+.roll-btn:active{transform:translateY(0) scale(0.98);}
+.roll-output{min-height:1.4em;font-weight:800;color:#7c3aed;font-size:0.95rem;transition:opacity 0.2s;}
+.tier-pick{cursor:pointer;transition:transform 0.2s,box-shadow 0.2s;}
+.tier-pick.picked{transform:translateY(-6px) scale(1.02);box-shadow:0 16px 36px rgba(11,99,206,0.25);}
+.confetti-canvas{position:fixed;inset:0;z-index:200;pointer-events:none;}
+.lockin-btn{border:none;cursor:pointer;font-family:inherit;font-weight:800;border-radius:999px;padding:12px 26px;font-size:0.95rem;background:linear-gradient(135deg,#0b63ce,#f59e0b,#10b981);color:#fff;box-shadow:0 10px 26px rgba(11,99,206,0.3);transition:transform 0.15s;}
+.lockin-btn:hover{transform:translateY(-2px) scale(1.04);}
+.lockin-btn:active{transform:scale(0.97);}
+.lockin-btn.locked{background:linear-gradient(135deg,#10b981,#0d9488);}
+.quiz-choice{cursor:pointer;transition:background 0.2s,border-color 0.2s;}
+.quiz-choice.correct{background:rgba(16,185,129,0.16)!important;border-color:#10b981!important;}
+.quiz-choice.wrong{background:rgba(220,38,38,0.12)!important;border-color:#dc2626!important;}
+.wheel-wrap{position:relative;width:150px;height:150px;margin:0 auto;}
+.wheel{width:100%;height:100%;border-radius:50%;transition:transform 3.5s cubic-bezier(.17,.67,.16,.99);background:conic-gradient(#0b63ce 0deg 120deg,#10b981 120deg 240deg,#7c3aed 240deg 360deg);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(11,99,206,0.25);}
+.wheel-pointer{position:absolute;top:-10px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:9px solid transparent;border-right:9px solid transparent;border-top:14px solid #0f2747;z-index:2;}
+</style>
+</head>
+<body>
+<div class="mouse-spotlight" id="spotlight"></div>
+<div class="deck">
+
+<!-- SLIDE 1 · TITLE -->
+<div class="slide active" data-slide="1" data-type="title">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:500px;height:500px;top:-100px;right:-90px;background:#0b63ce;opacity:.16;"></div>
+    <div class="blob" style="width:320px;height:320px;bottom:-80px;left:-60px;background:#f59e0b;opacity:.10;"></div>
+    <div class="blob" style="width:220px;height:220px;top:38%;left:10%;background:#10b981;opacity:.10;"></div>
+  </div>
+  <canvas class="particle-canvas"></canvas>
+  <div class="content" style="text-align:center;">
+    <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/5eaa49f5e96799ace7d125c0063d5d336231e843.jpg"
+         alt="Student planning a coding project outdoors on a laptop"
+         style="height:clamp(80px,14vh,130px);object-fit:cover;border-radius:16px;margin:0 auto 1rem;animation:float 3s ease-in-out infinite;box-shadow:0 12px 36px rgba(59,130,246,0.30);"
+         class="reveal">
+    <p class="pill reveal" style="margin:0 auto 0.8rem;display:inline-flex;">Session 18 · Thu Jul 30 · Week 5</p>
+    <h1 class="font-display grad-text reveal" style="font-size:clamp(2rem,5.5vw,4rem);font-weight:700;line-height:1.1;margin-bottom:0.5rem;">
+      Capstone Kickoff
+    </h1>
+    <h2 class="font-display reveal" style="font-size:clamp(1.2rem,2.8vw,2.2rem);font-weight:600;color:#3a5a7a;margin-bottom:0.7rem;">
+      Choosing &amp; Planning YOUR Big Project
+    </h2>
+    <p class="reveal" style="font-size:clamp(0.9rem,1.5vw,1.2rem);color:#3a5a7a;margin-bottom:1.2rem;">
+      Every great build starts with a plan — today you become the architect of your own project
+    </p>
+    <div class="reveal" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+      <span class="pill blue">Modern Chinese School</span>
+      <span class="pill green">Ages 7–13</span>
+      <span class="pill" style="color:#dc2626;">Summer 2026</span>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 2 · TODAY'S PLAN (DAILY RHYTHM) -->
+<div class="slide" data-slide="2" data-type="lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:380px;height:380px;top:-70px;right:-60px;background:#0b63ce;opacity:0.10;"></div>
+    <div class="blob" style="width:230px;height:230px;bottom:-50px;left:-30px;background:#10b981;opacity:0.08;"></div>
+  </div>
+  <div class="content">
+    <p class="pill mb-3 reveal">Today's Plan · Daily Rhythm</p>
+    <h2 class="font-display reveal" style="font-weight:700;margin-bottom:1.1rem;color:#0f2747;">How our time together unfolds</h2>
+    <div class="grid-cards reveal" style="gap:8px;">
+
+      <div class="timeline-row">
+        <div class="timeline-dot" style="background:#f59e0b;color:#1e1400;font-weight:800;font-size:1rem;display:flex;align-items:center;justify-content:center;">1</div>
+        <div><strong style="color:#0f2747;font-size:0.9rem;">10 min · Warm-Up</strong>
+          <div class="big-text">No screens — a "would you rather build" idea storm to wake up your inner project designer</div>
+        </div>
+      </div>
+      <div class="timeline-line"></div>
+
+      <div class="timeline-row">
+        <div class="timeline-dot" style="background:#0b63ce;color:#04101f;font-weight:800;font-size:1rem;display:flex;align-items:center;justify-content:center;">2</div>
+        <div><strong style="color:#0f2747;font-size:0.9rem;">15–20 min · Mini-Lesson + Videos + AI Moment</strong>
+          <div class="big-text">Meet the three capstone tracks, watch two short videos on AI ideas you could build, and see what "one AI idea" means for your project</div>
+        </div>
+      </div>
+      <div class="timeline-line"></div>
+
+      <div class="timeline-row">
+        <div class="timeline-dot" style="background:#10b981;color:#03170f;font-weight:800;font-size:1rem;display:flex;align-items:center;justify-content:center;">3</div>
+        <div><strong style="color:#0f2747;font-size:0.9rem;">20 min · Guided Build</strong>
+          <div class="big-text">Everyone fills out the same one-page project plan together, section by section</div>
+        </div>
+      </div>
+      <div class="timeline-line"></div>
+
+      <div class="timeline-row">
+        <div class="timeline-dot" style="background:#f43f5e;color:#1e0509;font-weight:800;font-size:1rem;display:flex;align-items:center;justify-content:center;">4</div>
+        <div><strong style="color:#0f2747;font-size:0.9rem;">5 min · Brain Break</strong>
+          <div class="big-text">Silent Charades — act out your project idea, classmates guess the track</div>
+        </div>
+      </div>
+      <div class="timeline-line"></div>
+
+      <div class="timeline-row">
+        <div class="timeline-dot" style="background:#7c3aed;color:#140a2b;font-weight:800;font-size:1rem;display:flex;align-items:center;justify-content:center;">5</div>
+        <div><strong style="color:#0f2747;font-size:0.9rem;">30–40 min · Open Build + Challenge Cards</strong>
+          <div class="big-text">Finish your plan in detail, sketch your first screen, and stretch further with a challenge card</div>
+        </div>
+      </div>
+      <div class="timeline-line"></div>
+
+      <div class="timeline-row">
+        <div class="timeline-dot" style="background:#0b63ce;color:#04101f;font-weight:800;font-size:1rem;display:flex;align-items:center;justify-content:center;">6</div>
+        <div><strong style="color:#0f2747;font-size:0.9rem;">10 min · Share-Out</strong>
+          <div class="big-text">Show your neighbor your plan or volunteer to pitch it to the class — always opt-in, always warm</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 3 · WARM-UP -->
+<div class="slide" data-slide="3" data-type="warmup">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:380px;height:380px;top:-90px;right:-70px;background:#f59e0b;opacity:.10;"></div>
+    <div class="blob" style="width:260px;height:260px;bottom:-60px;left:-50px;background:#0b63ce;opacity:.09;"></div>
+  </div>
+  <div class="content">
+    <p class="pill mb-3 reveal" style="color:#b45309;">Warm-Up · No Screens · 10 min</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.5rem,2.6vw,2.1rem);font-weight:700;margin-bottom:0.8rem;color:#0f2747;">
+      If you could build ANYTHING this week...
+    </h2>
+
+    <div class="grid-cards grid-2 reveal" style="gap:12px;margin-bottom:12px;">
+      <div class="card hover-lift ai-example-card" style="padding:14px 16px;" onclick="this.classList.toggle('opened')">
+        <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/86e171494e614d24fea31172050b1d0d4ea541b8.jpg"
+             alt="Child imagining a magical story world"
+             style="width:100%;height:100px;object-fit:cover;border-radius:10px;margin-bottom:10px;">
+        <p class="question-chip" style="margin-bottom:8px;display:inline-flex;">Turn &amp; Talk — Partners</p>
+        <p class="big-text">Tell your partner one thing you'd love to build: a game, a smart AI helper, or a story world. No wrong answers — just dream big for 60 seconds each.</p>
+        <div class="reveal-answer">Bonus: now ask your partner WHY that idea excites them.</div>
+      </div>
+      <div class="card hover-lift ai-example-card" style="padding:14px 16px;" onclick="this.classList.toggle('opened')">
+        <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/402ceed381d9d27baffb23f287a9dbcbf6672b4d.jpg"
+             alt="Child sketching a game design idea"
+             style="width:100%;height:100px;object-fit:cover;border-radius:10px;margin-bottom:10px;">
+        <p class="think-chip" style="margin-bottom:8px;display:inline-flex;">Think About It</p>
+        <p class="big-text">What's ONE thing from this whole summer — Scratch, Python, chatbots, Teachable Machine — that you're most proud you can do now?</p>
+        <div class="reveal-answer">That skill could become part of your capstone!</div>
+      </div>
+    </div>
+
+    <div class="card reveal" style="background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.22);padding:12px 16px;">
+      <p style="margin:0;font-size:0.88rem;color:#0b63ce;font-weight:700;">
+        Big Idea: A capstone isn't a test — it's a chance to combine everything you've learned into something that's truly YOURS. Today we choose the track and sketch the plan.
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 4 · MEET THE THREE TRACKS -->
+<div class="slide" data-slide="4" data-type="mini-lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:360px;height:360px;top:-80px;right:-60px;background:#0b63ce;opacity:.11;"></div>
+    <div class="blob" style="width:240px;height:240px;bottom:-50px;left:-40px;background:#10b981;opacity:.08;"></div>
+  </div>
+  <div class="content">
+    <p class="pill blue mb-3 reveal">Mini-Lesson — Part 1</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.5rem,2.5vw,2rem);font-weight:700;margin-bottom:0.4rem;color:#0f2747;">Three tracks. One question first:</h2>
+    <p class="big-text reveal" style="margin-bottom:1rem;"><strong>Which track pulls you in the most</strong> — before we even look at features? Trust your gut.</p>
+
+    <div class="grid-cards grid-3 reveal" style="gap:14px;">
+      <div class="track-card hover-lift" data-track="Game" style="border-color:rgba(11,99,206,0.35);background:rgba(11,99,206,0.06);color:#0b63ce;" onclick="pickTrack(this)">
+        <span class="vote-badge">MY PICK ✓</span>
+        <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/7c4242e1bede2614f70a2e37dc3b2aff1f95e5e4.jpg" alt="Kid building a game on a laptop" style="width:100%;height:100px;object-fit:cover;border-radius:10px;margin-bottom:8px;">
+        <p style="font-weight:800;color:#0b63ce;margin:0 0 4px;font-size:0.92rem;">Game</p>
+        <p style="font-size:0.82rem;color:#3a5a7a;margin:0;">Scratch or Python. Levels, scoring, a character who reacts to you.</p>
+      </div>
+      <div class="track-card hover-lift" data-track="AI Mini-App" style="border-color:rgba(16,185,129,0.35);background:rgba(16,185,129,0.06);color:#0d9488;" onclick="pickTrack(this)">
+        <span class="vote-badge">MY PICK ✓</span>
+        <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/a77c8ec368ef4599f1366340f0559f8773a2ccb9.jpg" alt="Robot representing an AI mini-app" style="width:100%;height:100px;object-fit:cover;border-radius:10px;margin-bottom:8px;">
+        <p style="font-weight:800;color:#0d9488;margin:0 0 4px;font-size:0.92rem;">AI Mini-App</p>
+        <p style="font-size:0.82rem;color:#3a5a7a;margin:0;">A Teachable Machine classifier or a rule-based Python chatbot.</p>
+      </div>
+      <div class="track-card hover-lift" data-track="Story" style="border-color:rgba(124,58,237,0.35);background:rgba(124,58,237,0.06);color:#7c3aed;" onclick="pickTrack(this)">
+        <span class="vote-badge">MY PICK ✓</span>
+        <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/bb82be2691a563a8896ce23cff486b75f7415d36.jpg" alt="Kids reading and imagining a story world" style="width:100%;height:100px;object-fit:cover;border-radius:10px;margin-bottom:8px;">
+        <p style="font-weight:800;color:#7c3aed;margin:0 0 4px;font-size:0.92rem;">Story / Creative World</p>
+        <p style="font-size:0.82rem;color:#3a5a7a;margin:0;">Scratch or Python. An interactive story, character, or explorable world.</p>
+      </div>
+    </div>
+    <p class="reveal" style="text-align:center;font-size:0.76rem;color:#5b7290;margin:6px 0 0;">Tap a card to mark it as your gut pick — you can change your mind anytime.</p>
+
+    <div class="card reveal" style="margin-top:12px;padding:12px 16px;background:rgba(250,204,21,0.08);border:1px solid rgba(250,204,21,0.22);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+      <p style="margin:0;font-size:0.86rem;color:#b45309;font-weight:700;">Question to sit with: could a Game secretly contain a Story? Could a Story secretly need an AI character? These tracks blend more than you think.</p>
+      <button class="roll-btn" onclick="rollTrack(event)">🎲 Still stuck? Randomize!</button>
+    </div>
+    <p class="roll-output reveal" id="rollOutput" style="text-align:center;margin-top:8px;"></p>
+  </div>
+</div>
+
+<!-- SLIDE 5 · THE ONE RULE -->
+<div class="slide" data-slide="5" data-type="mini-lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:360px;height:360px;top:-80px;left:-60px;background:#10b981;opacity:.11;"></div>
+    <div class="blob" style="width:240px;height:240px;bottom:-50px;right:-40px;background:#0b63ce;opacity:.08;"></div>
+  </div>
+  <div class="content">
+    <p class="pill blue mb-3 reveal">Mini-Lesson — Part 2</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.4rem,2.4vw,1.9rem);font-weight:700;margin-bottom:0.9rem;color:#0f2747;">The one rule every track must follow</h2>
+
+    <div class="card reveal" style="padding:18px 20px;margin-bottom:14px;background:rgba(52,211,153,0.08);border:2px solid rgba(52,211,153,0.28);">
+      <span class="ai-badge" style="margin-bottom:8px;">AI Moment</span>
+      <p style="font-size:1rem;color:#0f2747;font-weight:800;margin:8px 0 6px;">Every capstone must include or explain ONE AI idea.</p>
+      <p class="big-text" style="margin:0;">That could be a trained classifier, a keyword chatbot, or even an "AI character" in your game whose replies change based on rules — as long as you can point to it and explain <em>why it counts as AI</em>.</p>
+    </div>
+
+    <div class="grid-cards grid-3 reveal" style="gap:12px;">
+      <div class="card hover-lift ai-example-card" style="padding:12px 14px;" onclick="this.classList.toggle('opened')">
+        <p style="font-weight:800;color:#0b63ce;font-size:0.85rem;margin:0 0 6px;">Game example</p>
+        <p style="font-size:0.8rem;color:#3a5a7a;margin:0;">An enemy that "decides" what to do based on your score — a simple decision tree.</p>
+        <div class="reveal-answer">Counts as AI: it reads data (your score) and picks a rule-based response.</div>
+      </div>
+      <div class="card hover-lift ai-example-card" style="padding:12px 14px;" onclick="this.classList.toggle('opened')">
+        <p style="font-weight:800;color:#0d9488;font-size:0.85rem;margin:0 0 6px;">AI app example</p>
+        <p style="font-size:0.8rem;color:#3a5a7a;margin:0;">A model trained to tell two hand signs apart, or a chatbot that answers 5+ questions.</p>
+        <div class="reveal-answer">Counts as AI: it's literally trained on data or matches keyword patterns.</div>
+      </div>
+      <div class="card hover-lift ai-example-card" style="padding:12px 14px;" onclick="this.classList.toggle('opened')">
+        <p style="font-weight:800;color:#7c3aed;font-size:0.85rem;margin:0 0 6px;">Story example</p>
+        <p style="font-size:0.8rem;color:#3a5a7a;margin:0;">A character that reacts differently depending on choices you type in — rules that "read" you.</p>
+        <div class="reveal-answer">Counts as AI: it interprets your input and branches its behavior.</div>
+      </div>
+    </div>
+
+    <p class="question-chip reveal" style="margin-top:12px;">Think about it: which of your ideas from Session 15–17 could become this AI piece?</p>
+  </div>
+</div>
+
+<!-- SLIDE 6 · VIDEO 1: WHAT ARE AI CHATBOTS -->
+<div class="slide" data-slide="6" data-type="mini-lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:350px;height:350px;top:-80px;right:-60px;background:#0b63ce;opacity:.10;"></div>
+    <div class="blob" style="width:220px;height:220px;bottom:-50px;left:-30px;background:#10b981;opacity:.07;"></div>
+  </div>
+  <div class="content">
+    <p class="pill mb-3 reveal">Video 1 · AI Mini-App Idea Spark</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.4rem,2.4vw,1.9rem);font-weight:700;margin-bottom:0.8rem;color:#0f2747;">
+      What Are AI Chatbots?
+    </h2>
+
+    <div class="grid-cards grid-2 reveal" style="gap:14px;align-items:start;">
+      <div>
+        <div class="media-embed" id="player-gmUHEvrpYoU" onclick="playVideo('gmUHEvrpYoU')" title="Click to play video">
+          <img src="https://img.youtube.com/vi/gmUHEvrpYoU/hqdefault.jpg" alt="What are AI Chatbots video thumbnail">
+          <div class="play-btn"><div><svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg></div></div>
+        </div>
+        <p style="font-size:0.78rem;color:#5b7290;margin:6px 0 0;text-align:center;">
+          <a href="https://www.youtube.com/watch?v=gmUHEvrpYoU" target="_blank" rel="noopener" style="color:#0b63ce;text-decoration:underline;">▶ YouTube · Common Sense Education — "What are AI Chatbots?"</a>
+        </p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div class="card" style="padding:12px 15px;">
+          <p style="font-weight:800;color:#0b63ce;margin:0 0 6px;font-size:0.85rem;">While watching, think about:</p>
+          <ul style="margin:0;padding-left:18px;font-size:0.85rem;color:#3a5a7a;line-height:1.65;">
+            <li>How is OUR chatbot (rules we write) different from the ones in this video?</li>
+            <li>Why can a chatbot "sound" human but still get facts wrong?</li>
+            <li>Could YOUR capstone chatbot have a personality like this?</li>
+          </ul>
+        </div>
+        <div class="card" style="padding:10px 14px;background:rgba(250,204,21,0.08);border:1px solid rgba(250,204,21,0.22);">
+          <p style="margin:0;font-size:0.82rem;color:#b45309;"><strong>Duration:</strong> 3:21 &nbsp;|&nbsp; <strong>Level:</strong> Beginner-friendly</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 7 · VIDEO 2: TEACHABLE MACHINE GATHER -->
+<div class="slide" data-slide="7" data-type="mini-lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:360px;height:360px;top:-80px;left:-60px;background:#10b981;opacity:.12;"></div>
+    <div class="blob" style="width:240px;height:240px;bottom:-60px;right:-40px;background:#0b63ce;opacity:.09;"></div>
+  </div>
+  <div class="content">
+    <p class="pill green mb-3 reveal">Video 2 · AI Mini-App Idea Spark</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.4rem,2.4vw,1.9rem);font-weight:700;margin-bottom:0.8rem;color:#0f2747;">
+      Teachable Machine: Gathering Data
+    </h2>
+
+    <div class="grid-cards grid-2 reveal" style="gap:14px;align-items:start;">
+      <div>
+        <div class="media-embed" id="player-DFBbSTvtpy4" onclick="playVideo('DFBbSTvtpy4')" title="Click to play video">
+          <img src="https://img.youtube.com/vi/DFBbSTvtpy4/hqdefault.jpg" alt="Teachable Machine Tutorial Gather video thumbnail">
+          <div class="play-btn"><div><svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg></div></div>
+        </div>
+        <p style="font-size:0.78rem;color:#5b7290;margin:6px 0 0;text-align:center;">
+          <a href="https://www.youtube.com/watch?v=DFBbSTvtpy4" target="_blank" rel="noopener" style="color:#0b63ce;text-decoration:underline;">▶ YouTube · Google Creative Lab — "Teachable Machine Tutorial 1: Gather"</a>
+        </p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div class="card" style="padding:12px 15px;">
+          <p style="font-weight:800;color:#0d9488;margin:0 0 6px;font-size:0.85rem;">While watching, think about:</p>
+          <ul style="margin:0;padding-left:18px;font-size:0.85rem;color:#3a5a7a;line-height:1.65;">
+            <li>What two "classes" could YOU train a model to tell apart?</li>
+            <li>Why does the video say to add variety while collecting webcam data?</li>
+            <li>Remember Session 15 &amp; 17 — what happened with too little data?</li>
+          </ul>
+        </div>
+        <div class="card" style="padding:10px 14px;background:rgba(250,204,21,0.08);border:1px solid rgba(250,204,21,0.22);">
+          <p style="margin:0;font-size:0.82rem;color:#b45309;"><strong>Duration:</strong> 2:16 &nbsp;|&nbsp; <strong>Level:</strong> Beginner-friendly</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 8 · GUIDED BUILD -->
+<div class="slide" data-slide="8" data-type="build">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:360px;height:360px;top:-80px;right:-60px;background:#10b981;opacity:.11;"></div>
+    <div class="blob" style="width:250px;height:250px;bottom:-60px;left:-40px;background:#0b63ce;opacity:.08;"></div>
+  </div>
+  <div class="content">
+    <p class="pill green mb-3 reveal">Guided Build · 20 min</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.4rem,2.4vw,1.9rem);font-weight:700;margin-bottom:0.9rem;color:#0f2747;">
+      Let's fill out the plan together
+    </h2>
+
+    <div class="grid-cards grid-2 reveal" style="gap:14px;margin-bottom:12px;">
+      <div>
+        <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/9f5e84947efa8b507a0ffff9594660d327140cb3.jpg" alt="Project planning worksheet" style="width:100%;height:150px;object-fit:cover;border-radius:12px;margin-bottom:10px;">
+        <p style="font-size:0.82rem;color:#3a5a7a;">Everyone gets the same bilingual one-page project plan sheet. We fill in Section 1 as a class, using MY example project as the model.</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div class="card checklist-item" style="padding:10px 14px;display:flex;gap:10px;align-items:flex-start;" onclick="this.classList.toggle('done')"><span class="step-num">1</span><p style="margin:0;font-size:0.85rem;color:#0f2747;flex:1;"><strong>What does it do?</strong> One sentence, plain and simple.</p><span class="check-mark">✓</span></div>
+        <div class="card checklist-item" style="padding:10px 14px;display:flex;gap:10px;align-items:flex-start;" onclick="this.classList.toggle('done')"><span class="step-num">2</span><p style="margin:0;font-size:0.85rem;color:#0f2747;flex:1;"><strong>Who is it for?</strong> A sibling? A friend? Yourself?</p><span class="check-mark">✓</span></div>
+        <div class="card checklist-item" style="padding:10px 14px;display:flex;gap:10px;align-items:flex-start;" onclick="this.classList.toggle('done')"><span class="step-num">3</span><p style="margin:0;font-size:0.85rem;color:#0f2747;flex:1;"><strong>Which concepts will it use?</strong> Loops, conditionals, lists, functions, a trained model...</p><span class="check-mark">✓</span></div>
+        <div class="card checklist-item" style="padding:10px 14px;display:flex;gap:10px;align-items:flex-start;" onclick="this.classList.toggle('done')"><span class="step-num">4</span><p style="margin:0;font-size:0.85rem;color:#0f2747;flex:1;"><strong>What does "done" look like?</strong> Be specific — what will you show at the showcase?</p><span class="check-mark">✓</span></div>
+      </div>
+    </div>
+
+    <div class="card reveal" style="padding:12px 16px;background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.22);">
+      <p style="margin:0;font-size:0.86rem;color:#0b63ce;font-weight:700;">Try it with me: I'll model a Game example on the board, then you fill in your OWN sheet with your own track and idea.</p>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 9 · MOVEMENT BREAK -->
+<div class="slide" data-slide="9" data-type="break">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:380px;height:380px;top:-90px;right:-70px;background:#f59e0b;opacity:.12;"></div>
+    <div class="blob" style="width:260px;height:260px;bottom:-60px;left:-50px;background:#10b981;opacity:.10;"></div>
+  </div>
+  <div class="content" style="text-align:center;">
+    <p class="pill mb-3 reveal" style="margin:0 auto 0.8rem;display:inline-flex;color:#b45309;">Movement Break · 5 min</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.6rem,3vw,2.4rem);font-weight:700;margin-bottom:0.5rem;color:#0f2747;">
+      Stand Up — Silent Charades!
+    </h2>
+
+    <div class="break-card reveal" style="max-width:680px;margin:0 auto 14px;">
+      <p style="font-size:1rem;font-weight:800;color:#b45309;margin:0 0 12px;">One student silently acts out their project idea — no talking!</p>
+      <div style="display:flex;flex-direction:column;gap:8px;text-align:left;">
+        <div style="background:rgba(255,255,255,0.06);border-radius:10px;padding:8px 14px;font-size:0.9rem;color:#0f2747;">Classmates shout out guesses: "Game?" "AI app?" "Story?"</div>
+        <div style="background:rgba(255,255,255,0.06);border-radius:10px;padding:8px 14px;font-size:0.9rem;color:#0f2747;">First correct guesser is next to act</div>
+        <div style="background:rgba(255,255,255,0.06);border-radius:10px;padding:8px 14px;font-size:0.9rem;color:#0f2747;">Everyone gets a turn who wants one — always opt-in!</div>
+      </div>
+    </div>
+
+    <div class="card reveal" style="max-width:520px;margin:0 auto;padding:12px 16px;background:rgba(52,211,153,0.08);border:1px solid rgba(52,211,153,0.22);">
+      <p style="margin:0;font-size:0.88rem;color:#0d9488;font-weight:700;">
+        Shake it out — then back to your plans with fresh energy!
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 10 · OPEN BUILD + CHALLENGE CARDS -->
+<div class="slide" data-slide="10" data-type="build">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:360px;height:360px;top:-80px;right:-60px;background:#10b981;opacity:.11;"></div>
+    <div class="blob" style="width:250px;height:250px;bottom:-60px;left:-40px;background:#0b63ce;opacity:.08;"></div>
+  </div>
+  <div class="content">
+    <p class="pill green mb-3 reveal">Open Build · 30–40 min</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.4rem,2.4vw,1.9rem);font-weight:700;margin-bottom:0.9rem;color:#0f2747;">
+      Finish your plan — then sketch it
+    </h2>
+
+    <div class="grid-cards grid-3 reveal" style="gap:12px;margin-bottom:12px;">
+      <div class="card tier-pick" style="padding:14px 16px;border-top:3px solid #10b981;" onclick="pickTier(this)">
+        <span class="tier-a">TIER A · Foundations</span>
+        <p style="font-weight:800;color:#0f2747;margin:8px 0 6px;font-size:0.87rem;">Grades 1–3</p>
+        <p style="font-size:0.82rem;color:#3a5a7a;margin:0;">Pick ONE track with a buddy's help. Fill the plan with pictures and short phrases — full sentences optional.</p>
+        <div class="progress-track" style="margin-top:10px;"><div class="progress-fill" style="width:33%;"></div></div>
+      </div>
+      <div class="card tier-pick" style="padding:14px 16px;border-top:3px solid #0b63ce;" onclick="pickTier(this)">
+        <span class="tier-b">TIER B · Core</span>
+        <p style="font-weight:800;color:#0f2747;margin:8px 0 6px;font-size:0.87rem;">Grades 3–5</p>
+        <p style="font-size:0.82rem;color:#3a5a7a;margin:0;">Complete all four plan sections in full sentences, and sketch what your title screen will look like.</p>
+        <div class="progress-track" style="margin-top:10px;"><div class="progress-fill" style="width:66%;"></div></div>
+      </div>
+      <div class="card tier-pick" style="padding:14px 16px;border-top:3px solid #7c3aed;" onclick="pickTier(this)">
+        <span class="tier-c">TIER C · Accelerated</span>
+        <p style="font-weight:800;color:#0f2747;margin:8px 0 6px;font-size:0.87rem;">Grades 6–9</p>
+        <p style="font-size:0.82rem;color:#3a5a7a;margin:0;">Break your project into a mini to-do list of 5+ small coding tasks in the order you'll build them.</p>
+        <div class="progress-track" style="margin-top:10px;"><div class="progress-fill" style="width:100%;"></div></div>
+      </div>
+    </div>
+
+    <div class="challenge-card reveal" style="display:flex;gap:12px;align-items:flex-start;">
+      <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/bb17ca76d74dda598d4960acd1b7b9ec938aa3be.jpg" alt="Design planning worksheet templates" style="width:64px;height:64px;object-fit:cover;border-radius:10px;flex-shrink:0;">
+      <div>
+        <p style="font-weight:800;color:#7c3aed;margin:0 0 4px;font-size:0.88rem;">Challenge Card · Any Tier — Risk Check</p>
+        <p style="font-size:0.84rem;color:#3a5a7a;margin:0;">Write down the ONE part of your project you think will be hardest. What's your backup plan if you get stuck on it?</p>
+      </div>
+    </div>
+
+    <div class="card reveal" style="margin-top:10px;padding:10px 15px;background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.22);">
+      <p style="margin:0;font-size:0.84rem;color:#0b63ce;">
+        <strong>Fast finisher?</strong> Walk a neighbor through your plan out loud — explaining it often reveals a gap you missed.
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 11 · SHARE-OUT -->
+<div class="slide" data-slide="11" data-type="share">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:340px;height:340px;top:-70px;right:-50px;background:#7c3aed;opacity:.11;"></div>
+    <div class="blob" style="width:230px;height:230px;bottom:-50px;left:-40px;background:#0b63ce;opacity:.08;"></div>
+  </div>
+  <div class="content">
+    <p class="pill purple mb-3 reveal">Share-Out · 10 min</p>
+    <h2 class="font-display reveal" style="font-size:clamp(1.4rem,2.4vw,1.9rem);font-weight:700;margin-bottom:0.9rem;color:#0f2747;">
+      Show your neighbor — or the class
+    </h2>
+
+    <div class="grid-cards grid-2 reveal" style="gap:14px;">
+      <div class="card hover-lift" style="padding:14px 16px;">
+        <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/0c77794173674a40099a9b0ec1dc738bbae4f956.jpg" alt="Two students giving a high five" style="width:100%;height:110px;object-fit:cover;border-radius:10px;margin-bottom:10px;">
+        <p class="think-chip" style="margin-bottom:8px;display:inline-flex;">Default — Pair Share</p>
+        <p class="big-text">Trade plans with a neighbor. Read theirs, then ask one question that would make their project even clearer.</p>
+      </div>
+      <div class="card hover-lift" style="padding:14px 16px;">
+        <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/1dad88f7005e394ddfa78115a8e3d0ef55878246.jpg" alt="Teacher and student reviewing computer work together" style="width:100%;height:110px;object-fit:cover;border-radius:10px;margin-bottom:10px;">
+        <p class="question-chip" style="margin-bottom:8px;display:inline-flex;">Optional — Volunteer</p>
+        <p class="big-text">1–2 volunteers pitch their idea to the whole class in 30 seconds: track, one AI idea, and what "done" looks like.</p>
+      </div>
+    </div>
+
+    <div class="card reveal" style="margin-top:12px;padding:12px 16px;background:rgba(124,58,237,0.08);border:1px solid rgba(124,58,237,0.22);">
+      <p style="margin:0;font-size:0.86rem;color:#7c3aed;font-weight:700;">No one is ever forced to present. Sharing your plan out loud — even to just one person — is what makes it real.</p>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 12 · CLOSING -->
+<div class="slide" data-slide="12" data-type="close">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:500px;height:500px;top:-120px;right:-100px;background:#0b63ce;opacity:.16;"></div>
+    <div class="blob" style="width:340px;height:340px;bottom:-90px;left:-70px;background:#10b981;opacity:.12;"></div>
+    <div class="blob" style="width:220px;height:220px;top:35%;left:8%;background:#f59e0b;opacity:.10;"></div>
+  </div>
+  <canvas class="particle-canvas"></canvas>
+  <div class="content" style="text-align:center;">
+    <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/d78197cf3121db6f6f72518432ff4bc9d4e2861b.jpg"
+         alt="Teacher and students celebrating with a high five"
+         style="height:clamp(70px,11vh,110px);object-fit:cover;border-radius:14px;margin:0 auto 1rem;animation:float 3s ease-in-out infinite;box-shadow:0 10px 30px rgba(59,130,246,0.25);"
+         class="reveal">
+    <h1 class="font-display grad-text reveal" style="font-size:clamp(2rem,5vw,3.8rem);font-weight:700;margin-bottom:0.4rem;">
+      You have a plan!
+    </h1>
+    <p class="reveal" style="font-size:clamp(1rem,1.8vw,1.35rem);color:#3a5a7a;margin-bottom:1rem;">
+      Every big project starts with a small, clear plan — you just wrote yours.
+    </p>
+
+    <div class="grid-cards grid-3 reveal" style="gap:10px;margin-bottom:1rem;max-width:860px;margin-left:auto;margin-right:auto;">
+      <div class="card" style="padding:12px 14px;text-align:left;">
+        <p style="font-weight:800;color:#0b63ce;margin:0 0 5px;font-size:0.84rem;">Today you decided:</p>
+        <ul style="margin:0;padding-left:16px;font-size:0.81rem;color:#3a5a7a;line-height:1.6;">
+          <li>Your capstone track: Game, AI app, or Story</li>
+          <li>Your one AI idea</li>
+          <li>What "done" looks like</li>
+        </ul>
+      </div>
+      <div class="card" style="padding:12px 14px;text-align:left;">
+        <p style="font-weight:800;color:#0d9488;margin:0 0 5px;font-size:0.84rem;">Tonight:</p>
+        <p style="font-size:0.81rem;color:#3a5a7a;margin:0;">Sketch your project on paper and list the 3 main parts you'll build.</p>
+      </div>
+      <div class="card" style="padding:12px 14px;text-align:left;">
+        <p style="font-weight:800;color:#b45309;margin:0 0 5px;font-size:0.84rem;">Next session (Jul 30):</p>
+        <p style="font-size:0.81rem;color:#3a5a7a;margin:0;">Capstone Build Day 1 — get one part of your project actually running.</p>
+      </div>
+    </div>
+
+    <div class="reveal" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:14px;">
+      <span class="pill">Session 18 of 26</span>
+      <span class="pill green">Phase 4 — Capstone</span>
+    </div>
+    <button class="lockin-btn reveal" id="lockinBtn" onclick="lockInPlan(event)">🔒 Lock In My Plan!</button>
+  </div>
+</div>
+
+</div>
+<canvas class="confetti-canvas" id="confettiCanvas"></canvas>
+
+<div class="nav-controls">
+  <button class="nav-btn" onclick="changeSlide(-1)" aria-label="Previous slide">&#8249;</button>
+  <div class="slide-dots" id="dots"></div>
+  <button class="nav-btn" onclick="changeSlide(1)" aria-label="Next slide">&#8250;</button>
+  <span class="slide-counter" id="counter">1 / 12</span>
+</div>
+
+<script>
+let current = 1;
+const total = document.querySelectorAll('.slide').length;
+const dotTypeMap = {warmup:'warmup',build:'build',share:'share'};
+const dotsContainer = document.getElementById('dots');
+const counter = document.getElementById('counter');
+document.querySelectorAll('.slide').forEach((s,i)=>{
+  const n=i+1;
+  const type = s.getAttribute('data-type')||'lesson';
+  const dot=document.createElement('div');
+  dot.className='dot'+(dotTypeMap[type]?(' '+dotTypeMap[type]):'')+(n===1?' active':'');
+  dot.onclick=()=>goToSlide(n);
+  dotsContainer.appendChild(dot);
+});
+function goToSlide(n){
+  const prev=document.querySelector('.slide.active');
+  const next=document.querySelector(`.slide[data-slide="${n}"]`);
+  if(prev) prev.classList.remove('active');
+  if(next){ next.classList.add('active'); animateSlide(next); }
+  current=n; updateNav();
+}
+function changeSlide(dir){ let next=current+dir; if(next<1) next=total; if(next>total) next=1; goToSlide(next); }
+function updateNav(){ document.querySelectorAll('.dot').forEach((d,i)=>{ d.classList.toggle('active', i+1===current); }); counter.textContent=current+' / '+total; }
+document.addEventListener('keydown',(e)=>{ if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();changeSlide(1);} if(e.key==='ArrowLeft'){e.preventDefault();changeSlide(-1);} });
+let touchStartX=0;
+document.addEventListener('touchstart',(e)=>{ touchStartX=e.touches[0].clientX; });
+document.addEventListener('touchend',(e)=>{ const diff=touchStartX-e.changedTouches[0].clientX; if(Math.abs(diff)>50) changeSlide(diff>0?1:-1); });
+
+function animateSlide(slide){
+  slide.querySelectorAll('.reveal').forEach((el,i)=>{
+    el.style.transition='none'; el.style.opacity='0'; el.style.transform='translateY(18px)';
+    el.offsetHeight;
+    const delay=i*0.07;
+    el.style.transition=`opacity 0.35s ease ${delay}s, transform 0.35s ease ${delay}s`;
+    el.style.opacity='1'; el.style.transform='translateY(0px)';
+  });
+}
+
+document.addEventListener('mousemove',(e)=>{
+  const spot=document.getElementById('spotlight');
+  if(spot) spot.style.background=`radial-gradient(600px circle at ${e.clientX}px ${e.clientY}px, rgba(59,130,246,0.06), transparent 40%)`;
+});
+
+window.initParticles = function(canvas){
+  if(!canvas) return;
+  const ctx=canvas.getContext('2d');
+  canvas.width=canvas.offsetWidth; canvas.height=canvas.offsetHeight;
+  const count=50; let mx=-1000,my=-1000;
+  const particles=Array.from({length:count},()=>({x:Math.random()*canvas.width,y:Math.random()*canvas.height,vx:(Math.random()-0.5)*0.3,vy:(Math.random()-0.5)*0.3,size:Math.random()*2.5+0.8,alpha:Math.random()*0.35+0.1}));
+  canvas.addEventListener('mousemove',(e)=>{ const r=canvas.getBoundingClientRect(); mx=e.clientX-r.left; my=e.clientY-r.top; });
+  canvas.addEventListener('mouseleave',()=>{ mx=-1000; my=-1000; });
+  (function animate(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    particles.forEach(p=>{
+      const dx=p.x-mx, dy=p.y-my, dist=Math.sqrt(dx*dx+dy*dy);
+      if(dist<120){ const f=(120-dist)/120*2; p.vx+=(dx/dist)*f*0.1; p.vy+=(dy/dist)*f*0.1; }
+      p.vx*=0.98; p.vy*=0.98; p.x+=p.vx; p.y+=p.vy;
+      if(p.x<0)p.x=canvas.width; if(p.x>canvas.width)p.x=0;
+      if(p.y<0)p.y=canvas.height; if(p.y>canvas.height)p.y=0;
+      ctx.beginPath(); ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
+      ctx.fillStyle=`rgba(59,130,246,${p.alpha})`; ctx.fill();
+    });
+    requestAnimationFrame(animate);
+  })();
+};
+document.querySelectorAll('.particle-canvas').forEach(c=>window.initParticles(c));
+
+function playVideo(videoId){
+  const container = document.getElementById('player-'+videoId);
+  if(!container) return;
+  container.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+}
+
+try { animateSlide(document.querySelector('.slide.active')); } catch(e) { console.warn('init animation error', e); }
+
+function pickTrack(card){
+  const parent = card.parentElement;
+  parent.querySelectorAll('.track-card').forEach(c=>c.classList.remove('selected'));
+  card.classList.add('selected');
+}
+const trackNames=['Game','AI Mini-App','Story / Creative World'];
+function rollTrack(e){
+  e.stopPropagation();
+  const out=document.getElementById('rollOutput');
+  let i=0; const spins=14;
+  const timer=setInterval(()=>{
+    out.textContent='🎲 '+trackNames[i%trackNames.length];
+    i++;
+    if(i>spins){
+      clearInterval(timer);
+      const pick=trackNames[Math.floor(Math.random()*trackNames.length)];
+      out.textContent='✨ Try: '+pick+'!';
+      const cards=document.querySelectorAll('.track-card');
+      cards.forEach(c=>{ c.classList.toggle('selected', c.dataset.track===pick); });
+    }
+  },90);
+}
+function pickTier(card){
+  const parent=card.parentElement;
+  parent.querySelectorAll('.tier-pick').forEach(c=>c.classList.remove('picked'));
+  card.classList.add('picked');
+}
+function lockInPlan(e){
+  const btn=e.currentTarget;
+  btn.classList.add('locked');
+  btn.textContent='✅ Plan Locked In!';
+  fireConfetti();
+}
+function fireConfetti(){
+  const canvas=document.getElementById('confettiCanvas');
+  if(!canvas) return;
+  canvas.width=window.innerWidth; canvas.height=window.innerHeight;
+  const ctx=canvas.getContext('2d');
+  const colors=['#0b63ce','#f59e0b','#10b981','#7c3aed','#f43f5e'];
+  const pieces=Array.from({length:140},()=>({
+    x:Math.random()*canvas.width, y:-20-Math.random()*canvas.height*0.3,
+    vx:(Math.random()-0.5)*4, vy:2+Math.random()*4,
+    size:4+Math.random()*5, color:colors[Math.floor(Math.random()*colors.length)],
+    rot:Math.random()*360, vr:(Math.random()-0.5)*10
+  }));
+  let frame=0;
+  (function animate(){
+    frame++;
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    pieces.forEach(p=>{
+      p.x+=p.vx; p.y+=p.vy; p.vy+=0.05; p.rot+=p.vr;
+      ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rot*Math.PI/180);
+      ctx.fillStyle=p.color; ctx.fillRect(-p.size/2,-p.size/2,p.size,p.size*0.6);
+      ctx.restore();
+    });
+    if(frame<180) requestAnimationFrame(animate);
+    else ctx.clearRect(0,0,canvas.width,canvas.height);
+  })();
+}
+</script>
+</body>
+</html>
