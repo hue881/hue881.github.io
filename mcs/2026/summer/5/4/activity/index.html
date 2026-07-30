@@ -1,1 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Activity Sheet · Session 18 · Capstone Kickoff</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --color-bg: #f4fbff; --color-surface: rgba(255,255,255,0.97);
+  --color-text: #1f2a37; --color-text-secondary: #374151; --color-text-muted: #5b6b7e;
+  --color-accent-1: #0b63ce; --color-accent-2: #10b981; --color-accent-3: #f59e0b;
+  --color-accent-red: #ef4444; --color-accent-purple: #7c3aed;
+  --font-display: 'Fredoka', 'Trebuchet MS', sans-serif;
+  --font-body: 'Nunito', Arial, sans-serif; --font-code: 'Fira Code', Consolas, monospace;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+@media print {
+  body { background: #fff !important; } .no-print { display: none !important; }
+  .page-break { page-break-before: always; }
+  .card { box-shadow: none !important; border: 1.5px solid #d1d5db !important; }
+  .code-block { border: 1.5px solid #cbd5e1 !important; }
+}
+body { font-family: var(--font-body); color: var(--color-text); background: var(--color-bg); min-height: 100vh; }
+.print-bar { background: rgba(255,255,255,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(148,163,184,0.3); padding: 10px 24px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; gap: 12px; flex-wrap: wrap; }
+.print-bar .bar-title { font-family: var(--font-display); font-size: 1.05rem; font-weight: 700; color: var(--color-accent-1); }
+.print-bar .bar-sub { font-size: 0.78rem; color: var(--color-text-muted); }
+.btn-print { background: var(--color-accent-1); color: #fff; border: none; padding: 8px 20px; border-radius: 999px; font-family: var(--font-body); font-size: 0.82rem; font-weight: 800; cursor: pointer; letter-spacing: 0.06em; transition: background 0.2s, transform 0.15s; }
+.btn-print:hover { background: #0952b0; transform: translateY(-1px); }
+.page { max-width: 920px; margin: 0 auto; padding: 32px 24px 60px; }
+.sheet-header { background: linear-gradient(135deg, #7c3aed 0%, #0b63ce 50%, #10b981 100%); border-radius: 20px; padding: 28px 32px 24px; color: #fff; margin-bottom: 28px; position: relative; overflow: hidden; }
+.sheet-header::before { content: ''; position: absolute; top: -60px; right: -60px; width: 200px; height: 200px; background: rgba(255,255,255,0.08); border-radius: 50%; }
+.sheet-header::after { content: ''; position: absolute; bottom: -40px; left: -40px; width: 140px; height: 140px; background: rgba(255,255,255,0.06); border-radius: 50%; }
+.header-emoji { font-size: 2.8rem; margin-bottom: 6px; }
+.header-day { font-size: 0.75rem; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; opacity: 0.85; margin-bottom: 4px; }
+.header-title { font-family: var(--font-display); font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 700; line-height: 1.1; margin-bottom: 6px; }
+.header-sub { font-size: 0.88rem; opacity: 0.85; margin-bottom: 14px; }
+.header-pills { display: flex; gap: 8px; flex-wrap: wrap; }
+.header-pill { background: rgba(255,255,255,0.22); border: 1px solid rgba(255,255,255,0.35); border-radius: 999px; padding: 4px 14px; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
+.student-info { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 28px; }
+@media (max-width: 600px) { .student-info { grid-template-columns: 1fr; } }
+.info-field { background: var(--color-surface); border-radius: 12px; padding: 12px 14px; border: 1.5px solid rgba(11,99,206,0.14); box-shadow: 0 2px 8px rgba(15,23,42,0.05); }
+.info-label { font-size: 0.65rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-accent-1); margin-bottom: 6px; }
+.info-line { border: none; border-bottom: 1.5px solid #cbd5e1; width: 100%; font-family: var(--font-body); font-size: 0.9rem; color: var(--color-text); background: transparent; outline: none; padding: 2px 0; }
+.info-line:focus { border-bottom-color: #0b63ce; }
+.section-label { display: inline-flex; align-items: center; gap: 8px; padding: 5px 16px; border-radius: 999px; border: 1px solid rgba(148,163,184,0.4); background: rgba(255,255,255,0.9); font-size: 0.72rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-accent-1); margin-bottom: 10px; }
+.section-title { font-family: var(--font-display); font-size: clamp(1.3rem, 2.5vw, 1.8rem); font-weight: 700; margin-bottom: 16px; color: var(--color-text); line-height: 1.2; }
+.card { background: var(--color-surface); border-radius: 16px; padding: 18px 20px; box-shadow: 0 4px 18px rgba(15,23,42,0.07); border: 1px solid rgba(255,255,255,0.7); margin-bottom: 16px; }
+.card.accent-blue { border-left: 4px solid var(--color-accent-1); }
+.card.accent-green { border-left: 4px solid var(--color-accent-2); }
+.card.accent-amber { border-left: 4px solid var(--color-accent-3); }
+.card.accent-red { border-left: 4px solid var(--color-accent-red); }
+.card.accent-purple { border-left: 4px solid var(--color-accent-purple); }
+.card-label { font-size: 0.68rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 8px; }
+.card-label.blue { color: var(--color-accent-1); } .card-label.green { color: #047857; } .card-label.amber { color: #b45309; } .card-label.red { color: #b91c1c; } .card-label.purple { color: #6d28d9; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+@media (max-width: 680px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+.code-block { background: #1e293b; color: #e2e8f0; border-radius: 12px; padding: 14px 18px; font-family: var(--font-code); font-size: clamp(0.68rem, 1.1vw, 0.83rem); line-height: 1.6; overflow-x: auto; border: 1px solid rgba(255,255,255,0.06); margin-bottom: 12px; white-space: pre; }
+.kw { color: #93c5fd; } .st { color: #86efac; } .cm { color: #64748b; font-style: italic; } .var { color: #f0abfc; } .fn { color: #60a5fa; }
+.write-lines { margin: 8px 0; }
+input.write-line { border: none; border-bottom: 1.5px solid #cbd5e1; width: 100%; margin-bottom: 10px; height: 28px; display: block; background: transparent; font-family: var(--font-body); font-size: 0.88rem; color: var(--color-text); outline: none; padding: 2px 4px; }
+input.write-line:focus { border-bottom-color: #0b63ce; }
+input.write-line::placeholder { color: #bdc5d1; font-style: italic; }
+textarea.write-area { border: 1.5px solid #cbd5e1; border-radius: 8px; width: 100%; min-height: 70px; padding: 8px; font-family: var(--font-body); font-size: 0.85rem; color: var(--color-text); resize: vertical; background: #f8fafc; outline: none; display: block; }
+textarea.write-area:focus { outline: 2px solid rgba(11,99,206,0.3); }
+textarea.write-area::placeholder { color: #bdc5d1; font-style: italic; }
+.level-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 14px; border-radius: 999px; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 8px; }
+.level-a { background: linear-gradient(135deg, #10b981, #059669); color: #fff; }
+.level-b { background: linear-gradient(135deg, #0b63ce, #2563eb); color: #fff; }
+.level-c { background: linear-gradient(135deg, #7c3aed, #ef4444); color: #fff; }
+.rhythm-warmup { background: linear-gradient(135deg,#f59e0b,#d97706); color: #fff; display:inline-flex;align-items:center;gap:6px;padding:4px 14px;border-radius:999px;font-size:0.72rem;font-weight:800;letter-spacing:0.08em;text-transform:uppercase; }
+.rhythm-mini { background: linear-gradient(135deg,#0b63ce,#2563eb); color: #fff; display:inline-flex;align-items:center;gap:6px;padding:4px 14px;border-radius:999px;font-size:0.72rem;font-weight:800;letter-spacing:0.08em;text-transform:uppercase; }
+.rhythm-build { background: linear-gradient(135deg,#10b981,#059669); color: #fff; display:inline-flex;align-items:center;gap:6px;padding:4px 14px;border-radius:999px;font-size:0.72rem;font-weight:800;letter-spacing:0.08em;text-transform:uppercase; }
+.rhythm-break { background: linear-gradient(135deg,#ef4444,#dc2626); color: #fff; display:inline-flex;align-items:center;gap:6px;padding:4px 14px;border-radius:999px;font-size:0.72rem;font-weight:800;letter-spacing:0.08em;text-transform:uppercase; }
+.rhythm-open { background: linear-gradient(135deg,#7c3aed,#6d28d9); color: #fff; display:inline-flex;align-items:center;gap:6px;padding:4px 14px;border-radius:999px;font-size:0.72rem;font-weight:800;letter-spacing:0.08em;text-transform:uppercase; }
+.rhythm-share { background: linear-gradient(135deg,#0b63ce,#10b981); color: #fff; display:inline-flex;align-items:center;gap:6px;padding:4px 14px;border-radius:999px;font-size:0.72rem;font-weight:800;letter-spacing:0.08em;text-transform:uppercase; }
+.check-list { list-style: none; padding: 0; }
+.check-list li { display: flex; align-items: flex-start; gap: 8px; font-size: 0.85rem; color: var(--color-text-secondary); margin-bottom: 8px; line-height: 1.45; }
+.check-list li .box { flex-shrink: 0; width: 17px; height: 17px; border: 2px solid #94a3b8; border-radius: 4px; margin-top: 1px; background: #fff; display: inline-block; }
+table.rubric { width: 100%; border-collapse: collapse; font-size: 0.82rem; margin-top: 8px; }
+table.rubric th { background: #1e293b; color: #e2e8f0; padding: 8px 10px; text-align: left; font-weight: 700; letter-spacing: 0.05em; }
+table.rubric td { padding: 8px 10px; border-bottom: 1px solid #e2e8f0; vertical-align: top; color: var(--color-text-secondary); }
+table.rubric tr:nth-child(even) td { background: rgba(241,245,249,0.6); }
+table.rubric td:first-child { font-weight: 700; color: var(--color-text); }
+table.rubric .pts { font-family: var(--font-code); font-size: 0.75rem; font-weight: 800; color: var(--color-accent-1); white-space: nowrap; }
+.timeline { position: relative; padding-left: 22px; }
+.timeline::before { content: ''; position: absolute; left: 8px; top: 4px; bottom: 4px; width: 3px; border-radius: 999px; background: linear-gradient(to bottom, #0b63ce, #10b981); }
+.timeline-step { position: relative; margin-bottom: 12px; }
+.timeline-dot { position: absolute; left: -15px; top: 4px; width: 12px; height: 12px; border-radius: 999px; border: 2px solid #f4fbff; background: #0b63ce; box-shadow: 0 0 0 3px rgba(11,99,206,0.2); }
+.timeline-dot.green { background: #10b981; } .timeline-dot.amber { background: #f59e0b; }
+.timeline-dot.red { background: #ef4444; } .timeline-dot.purple { background: #7c3aed; }
+.tip-box { border-radius: 10px; padding: 10px 14px; font-size: 0.8rem; line-height: 1.5; margin-top: 10px; }
+.tip-box.blue { background: rgba(11,99,206,0.07); color: #1e40af; }
+.tip-box.green { background: rgba(16,185,129,0.07); color: #065f46; }
+.tip-box.amber { background: rgba(245,158,11,0.07); color: #92400e; }
+.tip-box.purple { background: rgba(124,58,237,0.07); color: #5b21b6; }
+.break-card { background: linear-gradient(135deg, #fdf4e3, #fff7e6); border: 2px dashed rgba(245,158,11,0.4); border-radius: 18px; padding: 18px 22px; }
+.divider { border: none; border-top: 2px dashed #dde6f0; margin: 28px 0; }
+.grad-text { background: linear-gradient(135deg,#7c3aed,#0b63ce,#10b981); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.sheet-footer { margin-top: 40px; padding: 16px 20px; border-radius: 12px; background: rgba(11,99,206,0.05); border: 1px solid rgba(11,99,206,0.12); display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; font-size: 0.76rem; color: var(--color-text-muted); }
+.sheet-footer strong { color: var(--color-text); }
+p, li { font-size: 0.88rem; color: var(--color-text-secondary); line-height: 1.55; }
+strong { color: var(--color-text); }
+code { background: #e0f2ff; padding: 1px 6px; border-radius: 4px; font-family: var(--font-code); font-size: 0.82em; color: #0b63ce; }
+.mb-1 { margin-bottom: 6px; } .mb-2 { margin-bottom: 10px; } .mb-3 { margin-bottom: 14px; }
+.mt-2 { margin-top: 10px; } .mt-3 { margin-top: 14px; }
+.text-muted { color: var(--color-text-muted); font-size: 0.78rem; }
+.track-card { border: 2px solid; border-radius: 14px; padding: 14px 16px; text-align: center; }
+.track-game { border-color: #10b981; background: #e6f7f0; }
+.track-ai { border-color: #7c3aed; background: #ede9fe; }
+.track-story { border-color: #f59e0b; background: #fdf4e3; }
 
+.track-card { cursor: pointer; transition: transform 0.15s, box-shadow 0.15s, border-width 0.15s; position: relative; user-select: none; }
+.track-card:hover { transform: translateY(-3px); box-shadow: 0 6px 16px rgba(15,23,42,0.12); }
+.track-card:focus-visible { outline: 2px solid #0b63ce; outline-offset: 2px; }
+.track-card::after { content: ''; position: absolute; top: 8px; right: 8px; width: 20px; height: 20px; border-radius: 50%; border: 2px solid rgba(0,0,0,0.15); background: rgba(255,255,255,0.7); transition: all 0.15s; }
+.track-card.selected { border-width: 3px; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(15,23,42,0.16); }
+.track-card.selected::after { content: '✓'; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 12px; font-weight: 900; }
+.track-game.selected::after { background: #10b981; border-color: #10b981; }
+.track-ai.selected::after { background: #7c3aed; border-color: #7c3aed; }
+.track-story.selected::after { background: #f59e0b; border-color: #f59e0b; }
+.track-pick-result { font-size: 0.83rem; font-weight: 700; color: #374151; margin-top: 10px; text-align: center; min-height: 1.2em; transition: color 0.2s; }
+.track-pick-result.chosen { color: #059669; }
+
+.check-list li .box { cursor: pointer; position: relative; transition: transform 0.12s, background 0.15s, border-color 0.15s; }
+.check-list li .box:hover { border-color: #0b63ce; transform: scale(1.08); }
+.check-list li .box.checked { background: linear-gradient(135deg,#10b981,#059669); border-color: #059669; }
+.check-list li .box.checked::after { content: '✓'; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-56%); color: #fff; font-size: 12px; font-weight: 900; }
+.check-list li.done-text { color: #059669; text-decoration: line-through; text-decoration-thickness: 1.5px; opacity: 0.75; }
+.check-list li .box:focus-visible { outline: 2px solid #0b63ce; outline-offset: 2px; }
+
+.draw-wrap { position: relative; min-height: 130px; overflow: hidden; touch-action: none; }
+.draw-wrap canvas { display: block; width: 100%; height: 130px; cursor: crosshair; }
+.draw-wrap .draw-hint { position: absolute; bottom: 6px; right: 8px; font-size: 0.62rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: rgba(55,65,81,0.35); pointer-events: none; user-select: none; }
+.draw-wrap .draw-clear { position: absolute; top: 6px; right: 6px; background: rgba(255,255,255,0.85); border: 1px solid rgba(148,163,184,0.5); border-radius: 999px; font-size: 0.62rem; font-weight: 800; padding: 3px 9px; cursor: pointer; color: #374151; z-index: 5; opacity: 0; transition: opacity 0.15s; }
+.draw-wrap:hover .draw-clear { opacity: 1; }
+
+.draw-toolbar { position: fixed; bottom: 18px; right: 18px; z-index: 200; background: rgba(255,255,255,0.96); backdrop-filter: blur(10px); border: 1px solid rgba(148,163,184,0.35); border-radius: 16px; box-shadow: 0 8px 28px rgba(15,23,42,0.18); padding: 10px 12px; display: flex; flex-direction: column; gap: 8px; align-items: center; width: 58px; transition: width 0.25s ease, padding 0.25s ease; overflow: hidden; }
+.draw-toolbar.expanded { width: 190px; align-items: stretch; }
+.draw-toolbar .dt-toggle { width: 38px; height: 38px; border-radius: 50%; border: none; background: linear-gradient(135deg,#7c3aed,#0b63ce); color: #fff; font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; align-self: center; flex-shrink: 0; box-shadow: 0 3px 10px rgba(11,99,206,0.35); transition: transform 0.2s; }
+.draw-toolbar .dt-toggle:hover { transform: scale(1.08); }
+.draw-toolbar .dt-body { display: none; flex-direction: column; gap: 10px; }
+.draw-toolbar.expanded .dt-body { display: flex; }
+.draw-toolbar .dt-label { font-size: 0.62rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: #5b6b7e; margin-top: 2px; }
+.draw-toolbar .dt-row { display: flex; gap: 6px; flex-wrap: wrap; }
+.draw-toolbar .dt-swatch { width: 22px; height: 22px; border-radius: 50%; border: 2px solid rgba(0,0,0,0.08); cursor: pointer; flex-shrink: 0; transition: transform 0.12s; }
+.draw-toolbar .dt-swatch.active { border-color: #1f2a37; transform: scale(1.15); }
+.draw-toolbar .dt-sizes { display: flex; gap: 6px; }
+.draw-toolbar .dt-size-btn { flex: 1; border: 1.5px solid #cbd5e1; background: #f8fafc; border-radius: 8px; padding: 4px 0; cursor: pointer; font-size: 0.7rem; font-weight: 700; color: #374151; }
+.draw-toolbar .dt-size-btn.active { background: #0b63ce; color: #fff; border-color: #0b63ce; }
+.draw-toolbar .dt-mode-btn { border: 1.5px solid #cbd5e1; background: #f8fafc; border-radius: 8px; padding: 6px 0; cursor: pointer; font-size: 0.72rem; font-weight: 700; color: #374151; }
+.draw-toolbar .dt-mode-btn.active { background: linear-gradient(135deg,#7c3aed,#0b63ce); color: #fff; border-color: transparent; }
+.draw-toolbar .dt-clearall { border: none; background: #ef4444; color: #fff; border-radius: 8px; padding: 6px 0; cursor: pointer; font-size: 0.72rem; font-weight: 800; }
+@media print { .draw-toolbar { display: none !important; } .draw-wrap .draw-clear { display: none !important; } }
+
+.track-game.selected::after { background: #10b981; border-color: #10b981; }
+.track-ai.selected::after { background: #7c3aed; border-color: #7c3aed; }
+.track-story.selected::after { background: #f59e0b; border-color: #f59e0b; }
+.track-pick-result { font-size: 0.83rem; font-weight: 700; color: #374151; margin-top: 10px; text-align: center; min-height: 1.2em; transition: color 0.2s; }
+.track-pick-result.chosen { color: #059669; }
+</style>
+</head>
+<body>
+
+<div class="print-bar no-print">
+  <div>
+    <div class="bar-title">Session 18 · In-Class Activity Sheet</div>
+    <div class="bar-sub">Capstone Kickoff — Choosing &amp; Planning Your Big Project · Tiered · Ages 7–13</div>
+  </div>
+  <button class="btn-print" onclick="window.print()">🖨 Print / Save as PDF</button>
+</div>
+
+<div class="page">
+
+  <div class="sheet-header">
+    <div class="header-emoji">🏗️</div>
+    <div class="header-day">Session 18 · Thu Jul 30 · Week 5 · In-Class Activity Sheet</div>
+    <div class="header-title">Capstone Kickoff</div>
+    <div class="header-sub">Choosing &amp; planning YOUR big project — follow the Daily Rhythm, block by block</div>
+    <div class="header-pills">
+      <span class="header-pill">75–110 min</span>
+      <span class="header-pill">Game · AI App · Story</span>
+      <span class="header-pill">Ages 7–13</span>
+      <span class="header-pill">3 Tiers</span>
+      <span class="header-pill">🤖 AI Moment</span>
+    </div>
+  </div>
+
+  <div class="student-info">
+    <div class="info-field"><div class="info-label">Your Name</div><input class="info-line" type="text" placeholder="First Last"></div>
+    <div class="info-field"><div class="info-label">Date</div><input class="info-line" type="text" placeholder="July 30, 2026"></div>
+    <div class="info-field"><div class="info-label">Section / Period</div><input class="info-line" type="text" placeholder="Section 1 / 2 / 3"></div>
+  </div>
+
+  <div class="section-label">Before You Begin</div>
+  <div class="section-title">Today's Daily Rhythm</div>
+  <div class="grid-2 mb-3">
+    <div class="card accent-blue">
+      <div class="card-label blue">Your Mission</div>
+      <p class="mb-2">A capstone isn't a test — it's a chance to combine everything you've learned into something that's truly YOURS. Today you choose your track and sketch the plan.</p>
+      <div class="timeline">
+        <div class="timeline-step"><div class="timeline-dot amber"></div><p><strong>Block 1</strong> — Warm-Up (10 min, no screen)</p></div>
+        <div class="timeline-step"><div class="timeline-dot"></div><p><strong>Block 2</strong> — Mini-Lesson: Pick a Track (15–20 min)</p></div>
+        <div class="timeline-step"><div class="timeline-dot green"></div><p><strong>Block 3</strong> — Guided Build: Project Plan (20 min)</p></div>
+        <div class="timeline-step"><div class="timeline-dot red"></div><p><strong>Block 4</strong> — Movement Break (5 min)</p></div>
+        <div class="timeline-step"><div class="timeline-dot purple"></div><p><strong>Block 5</strong> — Open Build · Tiered (30–40 min)</p></div>
+        <div class="timeline-step" style="margin-bottom:0"><div class="timeline-dot" style="background:#8b5cf6"></div><p><strong>Block 6</strong> — Share-Out (10 min)</p></div>
+      </div>
+    </div>
+    <div class="card accent-blue">
+      <div class="card-label blue">Key Ideas for Today</div>
+      <ul style="list-style:disc;padding-left:18px;line-height:1.9">
+        <li><strong>Capstone</strong> — your own final project combining everything you've learned</li>
+        <li><strong>Track</strong> — Game, AI Mini-App, or Story/Creative World</li>
+        <li><strong>AI idea</strong> — every capstone must include or explain one AI concept</li>
+        <li><strong>Project plan</strong> — what it does, who it's for, what concepts it uses, what "done" looks like</li>
+        <li><strong>Risk check</strong> — naming the hardest part in advance</li>
+      </ul>
+      <div class="tip-box purple mt-2"><strong>🤖 AI connection:</strong> your AI piece can be a trained classifier, a keyword chatbot, or even an "AI character" whose replies change based on rules!</div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="section-label"><span class="rhythm-warmup">⏱ Block 1</span></div>
+  <div class="section-title">Warm-Up — No Screens · 10 min</div>
+
+  <div class="card accent-amber mb-2">
+    <div class="card-label amber">Turn &amp; Talk — Dream Big</div>
+    <p class="mb-2">Tell your partner one thing you'd love to build — a game, a smart AI helper, or a story world. No wrong answers, just dream big for 60 seconds each!</p>
+    <p style="font-size:0.83rem;font-weight:700;color:#b45309;margin-bottom:6px">Write down your one-sentence dream project:</p>
+    <input class="write-line" type="text" placeholder="I want to build a...">
+    <p style="font-size:0.83rem;font-weight:700;color:#b45309;margin:8px 0 6px">What did your partner dream up?</p>
+    <input class="write-line" type="text" placeholder="My partner wants to build...">
+  </div>
+
+  <div class="card accent-blue mb-3">
+    <div class="card-label blue">Think About It — Your Proudest Skill</div>
+    <p class="mb-2">What's ONE thing from this whole summer — Scratch, Python, chatbots, Teachable Machine — that you're most proud you can do now?</p>
+    <textarea class="write-area" style="min-height:70px" placeholder="I'm most proud that I can now..."></textarea>
+    <div class="tip-box blue mt-2"><strong>Big Idea:</strong> A capstone isn't a test — it's a chance to combine everything you've learned into something that's truly YOURS.</div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="section-label"><span class="rhythm-mini">📺 Block 2</span></div>
+  <div class="section-title">Mini-Lesson — Pick Your Track · 15–20 min</div>
+
+  <div class="card accent-purple mb-2">
+    <div class="card-label purple">Part 1 — Which Track Pulls You In?</div>
+    <p class="mb-2">Trust your gut. Read all three tracks, then circle your first-instinct pick — you can always change your mind later.</p>
+    <div class="grid-3">
+      <div class="track-card track-game" data-track="🎮 Game" onclick="pickTrack(this)" role="button" tabindex="0" onkeydown="if(event.key===' '||event.key==='Enter'){event.preventDefault();pickTrack(this)}">
+        <div style="font-size:1.6rem;margin-bottom:4px">🎮</div>
+        <p style="font-weight:800;color:#047857;font-size:0.88rem">Game</p>
+        <p style="font-size:0.78rem;color:#374151;margin-top:4px">Scratch or Python. Levels, scoring, a character who reacts to you.</p>
+      </div>
+      <div class="track-card track-ai" data-track="🤖 AI Mini-App" onclick="pickTrack(this)" role="button" tabindex="0" onkeydown="if(event.key===' '||event.key==='Enter'){event.preventDefault();pickTrack(this)}">
+        <div style="font-size:1.6rem;margin-bottom:4px">🤖</div>
+        <p style="font-weight:800;color:#6d28d9;font-size:0.88rem">AI Mini-App</p>
+        <p style="font-size:0.78rem;color:#374151;margin-top:4px">A Teachable Machine classifier or a rule-based Python chatbot.</p>
+      </div>
+      <div class="track-card track-story" data-track="📖 Story" onclick="pickTrack(this)" role="button" tabindex="0" onkeydown="if(event.key===' '||event.key==='Enter'){event.preventDefault();pickTrack(this)}">
+        <div style="font-size:1.6rem;margin-bottom:4px">📖</div>
+        <p style="font-weight:800;color:#b45309;font-size:0.88rem">Story / Creative World</p>
+        <p style="font-size:0.78rem;color:#374151;margin-top:4px">Scratch or Python. An interactive story, character, or explorable world.</p>
+      </div>
+    </div>
+    <p class="track-pick-result" id="trackPickResult">Tap a track above to make your gut pick →</p>
+    <div class="tip-box purple mt-2">Question to sit with: could a Game secretly contain a Story? Could a Story secretly need an AI character? These tracks blend more than you think!</div>
+  </div>
+
+  <div class="card accent-green mb-3">
+    <div class="card-label green">Part 2 — Every Capstone Needs ONE AI Idea</div>
+    <p class="mb-2">That could be a trained classifier, a keyword chatbot, or an "AI character" whose replies change based on rules — as long as you can explain <em>why it counts as AI</em>.</p>
+    <div class="grid-3">
+      <div class="card" style="padding:12px 14px">
+        <p style="font-weight:700;color:#047857;font-size:0.83rem;margin-bottom:4px">🎮 Game example</p>
+        <p style="font-size:0.78rem;color:#374151">An enemy that "decides" what to do based on your score — a simple decision tree.</p>
+      </div>
+      <div class="card" style="padding:12px 14px">
+        <p style="font-weight:700;color:#6d28d9;font-size:0.83rem;margin-bottom:4px">🤖 AI app example</p>
+        <p style="font-size:0.78rem;color:#374151">A model trained to tell two hand signs apart, or a chatbot that answers 5+ questions.</p>
+      </div>
+      <div class="card" style="padding:12px 14px">
+        <p style="font-weight:700;color:#b45309;font-size:0.83rem;margin-bottom:4px">📖 Story example</p>
+        <p style="font-size:0.78rem;color:#374151">A character that reacts differently depending on choices you type in — rules that "read" you.</p>
+      </div>
+    </div>
+    <p style="font-size:0.83rem;font-weight:700;color:#374151;margin-top:10px;margin-bottom:4px">Which of your ideas from Session 15–17 could become this AI piece?</p>
+    <input class="write-line" type="text" placeholder="My AI piece could be...">
+  </div>
+
+  <hr class="divider">
+
+  <div class="section-label"><span class="rhythm-build">🔨 Block 3</span></div>
+  <div class="section-title">Guided Build — Your Project Plan · 20 min</div>
+
+  <div class="card mb-3">
+    <div class="card-label blue">Fill In as We Go — Follow the Teacher's Example</div>
+    <p class="mb-2">Everyone gets the same one-page project plan. We fill in Section 1 together, using the teacher's example project as the model — then you'll write your OWN.</p>
+    <div class="timeline">
+      <div class="timeline-step"><div class="timeline-dot amber"></div>
+        <p><strong>✓ What does it do?</strong> One sentence, plain and simple.</p>
+        <input class="write-line" type="text" placeholder="My project...">
+      </div>
+      <div class="timeline-step"><div class="timeline-dot"></div>
+        <p><strong>✓ Who is it for?</strong> A sibling? A friend? Yourself?</p>
+        <input class="write-line" type="text" placeholder="It's for...">
+      </div>
+      <div class="timeline-step"><div class="timeline-dot green"></div>
+        <p><strong>✓ Which concepts will it use?</strong> Loops, conditionals, lists, functions, a trained model...</p>
+        <input class="write-line" type="text" placeholder="It will use...">
+      </div>
+      <div class="timeline-step" style="margin-bottom:0"><div class="timeline-dot purple"></div>
+        <p><strong>✓ What does "done" look like?</strong> Be specific — what will you show at the showcase?</p>
+        <textarea class="write-area" style="min-height:60px" placeholder="Done means I can show..."></textarea>
+      </div>
+    </div>
+    <div class="tip-box blue mt-2">Try it with me: the teacher models a Game example on the board, then you fill in your OWN sheet with your own track and idea.</div>
+  </div>
+
+  <hr class="divider page-break">
+
+  <div class="section-label"><span class="rhythm-break">💃 Block 4</span></div>
+  <div class="section-title">Movement Break — Silent Charades · 5 min</div>
+
+  <div class="break-card mb-3">
+    <p style="font-size:1rem;font-weight:800;color:#78350f;margin-bottom:12px">🎭 One student silently acts out their project idea — no talking!</p>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div style="background:rgba(255,255,255,0.7);border-radius:10px;padding:8px 14px;font-size:0.9rem;color:#374151"><strong>Round 1:</strong> A volunteer acts out their game, AI app, or story idea using only gestures.</div>
+      <div style="background:rgba(255,255,255,0.7);border-radius:10px;padding:8px 14px;font-size:0.9rem;color:#374151"><strong>Round 2:</strong> Classmates guess the track (Game / AI App / Story) out loud.</div>
+      <div style="background:rgba(255,255,255,0.7);border-radius:10px;padding:8px 14px;font-size:0.9rem;color:#374151"><strong>Shake it out</strong> — then back to your plans with fresh energy!</div>
+    </div>
+    <p style="font-size:0.83rem;color:#374151;margin-top:10px;font-weight:700">If you volunteered or guessed correctly, write what you acted out or guessed:</p>
+    <input class="write-line" type="text" placeholder="I acted out / guessed...">
+  </div>
+
+  <hr class="divider">
+
+  <div class="section-label"><span class="rhythm-open">🚀 Block 5</span></div>
+  <div class="section-title">Open Build — Choose Your Tier · 30–40 min</div>
+
+  <div class="card accent-blue mb-2">
+    <div class="card-label blue">Instructions — Pick Your Tier</div>
+    <div class="grid-3">
+      <div style="text-align:center;padding:8px">
+        <div style="font-size:1.8rem;margin-bottom:4px">🌱</div>
+        <span class="level-badge level-a">Tier A — Foundations</span>
+        <p style="font-size:0.82rem;color:#374151;margin-top:4px">Grades 1–3</p>
+      </div>
+      <div style="text-align:center;padding:8px">
+        <div style="font-size:1.8rem;margin-bottom:4px">⭐</div>
+        <span class="level-badge level-b">Tier B — Core</span>
+        <p style="font-size:0.82rem;color:#374151;margin-top:4px">Grades 3–5</p>
+      </div>
+      <div style="text-align:center;padding:8px">
+        <div style="font-size:1.8rem;margin-bottom:4px">🚀</div>
+        <span class="level-badge level-c">Tier C — Accelerated</span>
+        <p style="font-size:0.82rem;color:#374151;margin-top:4px">Grades 6–9</p>
+      </div>
+    </div>
+    <p style="font-size:0.8rem;color:#374151;margin-top:8px;text-align:center">Circle your tier: &nbsp; <strong>Tier A</strong> &nbsp;&nbsp; <strong>Tier B</strong> &nbsp;&nbsp; <strong>Tier C</strong></p>
+  </div>
+
+  <div class="card mb-2" style="border-top:4px solid #10b981">
+    <div style="margin-bottom:8px"><span class="level-badge level-a">🌱 Tier A — Picture Plan with a Buddy</span></div>
+    <div class="grid-2">
+      <div>
+        <div class="card-label green">What to do</div>
+        <p class="mb-2">Pick <strong>ONE track</strong> with a buddy's help. Fill the plan with <strong>pictures and short phrases</strong> — full sentences optional.</p>
+        <ul class="check-list mt-2">
+          <li><span class="box" onclick="toggleBox(this)" role="checkbox" aria-checked="false" tabindex="0" onkeydown="if(event.key===' '||event.key==='Enter'){event.preventDefault();toggleBox(this)}"></span>Circled one track (Game / AI App / Story)</li>
+          <li><span class="box" onclick="toggleBox(this)" role="checkbox" aria-checked="false" tabindex="0" onkeydown="if(event.key===' '||event.key==='Enter'){event.preventDefault();toggleBox(this)}"></span>Drew a picture of my project idea</li>
+          <li><span class="box" onclick="toggleBox(this)" role="checkbox" aria-checked="false" tabindex="0" onkeydown="if(event.key===' '||event.key==='Enter'){event.preventDefault();toggleBox(this)}"></span>Wrote or drew who it's for</li>
+          <li><span class="box" onclick="toggleBox(this)" role="checkbox" aria-checked="false" tabindex="0" onkeydown="if(event.key===' '||event.key==='Enter'){event.preventDefault();toggleBox(this)}"></span>Talked it through with my buddy</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card-label green">Draw your project idea here</div>
+        <div class="draw-wrap" style="border:2px dashed #6ee7b7;border-radius:10px;background:#f0fdf4" data-color="#059669"></div>
+        <p style="font-size:0.8rem;color:#374151;margin-top:8px;font-weight:700">In a few words, what is it?</p>
+        <input class="write-line" type="text" placeholder="My project is a...">
+      </div>
+    </div>
+  </div>
+
+  <div class="card mb-2" style="border-top:4px solid #0b63ce">
+    <div style="margin-bottom:8px"><span class="level-badge level-b">⭐ Tier B — Full Plan + Title Screen Sketch</span></div>
+    <div class="grid-2">
+      <div>
+        <div class="card-label blue">What to do</div>
+        <p class="mb-2">Complete <strong>all four plan sections</strong> in full sentences, and <strong>sketch what your title screen will look like</strong>.</p>
+        <ul class="check-list mt-2">
+          <li><span class="box" onclick="toggleBox(this)" role="checkbox" aria-checked="false" tabindex="0" onkeydown="if(event.key===' '||event.key==='Enter'){event.preventDefault();toggleBox(this)}"></span>What it does — 1 complete sentence</li>
+          <li><span class="box" onclick="toggleBox(this)" role="checkbox" aria-checked="false" tabindex="0" onkeydown="if(event.key===' '||event.key==='Enter'){event.preventDefault();toggleBox(this)}"></span>Who it's for — 1 complete sentence</li>
+          <li><span class="box" onclick="toggleBox(this)" role="checkbox" aria-checked="false" tabindex="0" onkeydown="if(event.key===' '||event.key==='Enter'){event.preventDefault();toggleBox(this)}"></span>Concepts used — named specifically</li>
+          <li><span class="box" onclick="toggleBox(this)" role="checkbox" aria-checked="false" tabindex="0" onkeydown="if(event.key===' '||event.key==='Enter'){event.preventDefault();toggleBox(this)}"></span>What "done" looks like — specific &amp; concrete</li>
+          <li><span class="box" onclick="toggleBox(this)" role="checkbox" aria-checked="false" tabindex="0" onkeydown="if(event.key===' '||event.key==='Enter'){event.preventDefault();toggleBox(this)}"></span>Title screen sketch completed</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card-label blue">Sketch your title screen</div>
+        <div class="draw-wrap" style="border:2px dashed #93c5fd;border-radius:10px;background:#eff6ff" data-color="#2563eb"></div>
+        <p style="font-size:0.8rem;color:#374151;margin-top:8px;font-weight:700">What's the title of your project?</p>
+        <input class="write-line" type="text" placeholder="My project is called...">
+      </div>
+    </div>
+  </div>
+
+  <div class="card accent-purple mb-3" style="border-top:4px solid #7c3aed">
+    <div style="margin-bottom:8px"><span class="level-badge level-c">🚀 Tier C — Build Order To-Do List</span></div>
+    <div class="grid-2">
+      <div>
+        <div class="card-label purple">What to do</div>
+        <p class="mb-2">Break your project into a <strong>mini to-do list of 5+ small coding tasks</strong>, in the order you'll build them.</p>
+        <ul class="check-list mt-2">
+          <li><span class="box" onclick="toggleBox(this)" role="checkbox" aria-checked="false" tabindex="0" onkeydown="if(event.key===' '||event.key==='Enter'){event.preventDefault();toggleBox(this)}"></span>At least 5 discrete coding tasks listed</li>
+          <li><span class="box" onclick="toggleBox(this)" role="checkbox" aria-checked="false" tabindex="0" onkeydown="if(event.key===' '||event.key==='Enter'){event.preventDefault();toggleBox(this)}"></span>Tasks are in a logical build order</li>
+          <li><span class="box" onclick="toggleBox(this)" role="checkbox" aria-checked="false" tabindex="0" onkeydown="if(event.key===' '||event.key==='Enter'){event.preventDefault();toggleBox(this)}"></span>AI piece is called out as its own task</li>
+          <li><span class="box" onclick="toggleBox(this)" role="checkbox" aria-checked="false" tabindex="0" onkeydown="if(event.key===' '||event.key==='Enter'){event.preventDefault();toggleBox(this)}"></span>Riskiest task is flagged</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card-label purple">Your build order (numbered)</div>
+        <div class="write-lines">
+          <input class="write-line" type="text" placeholder="1. First I will...">
+          <input class="write-line" type="text" placeholder="2. Then...">
+          <input class="write-line" type="text" placeholder="3. Then...">
+          <input class="write-line" type="text" placeholder="4. Then...">
+          <input class="write-line" type="text" placeholder="5. Then...">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card accent-amber mb-3">
+    <div class="card-label amber">⭐ Challenge Card — Any Tier: Risk Check</div>
+    <p class="mb-2">Write down the ONE part of your project you think will be hardest. What's your backup plan if you get stuck on it?</p>
+    <div class="grid-2">
+      <div>
+        <p style="font-size:0.83rem;font-weight:700;color:#b45309;margin-bottom:4px">Hardest part:</p>
+        <input class="write-line" type="text" placeholder="The trickiest part will be...">
+      </div>
+      <div>
+        <p style="font-size:0.83rem;font-weight:700;color:#b45309;margin-bottom:4px">Backup plan if I get stuck:</p>
+        <input class="write-line" type="text" placeholder="If I get stuck I will...">
+      </div>
+    </div>
+    <div class="tip-box amber mt-2">✅ <strong>Fast finisher?</strong> Walk a neighbor through your plan out loud — explaining it often reveals a gap you missed!</div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="section-label"><span class="rhythm-share">💬 Block 6</span></div>
+  <div class="section-title">Share-Out — Trade Plans · 10 min</div>
+
+  <div class="card mb-3">
+    <div class="card-label blue">Default — Pair Share</div>
+    <div class="grid-2">
+      <div>
+        <p class="mb-2">Trade plans with a neighbor. Read theirs, then ask <strong>one question</strong> that would make their project even clearer.</p>
+        <p style="font-size:0.83rem;font-weight:700;color:#374151;margin-bottom:6px">Question I asked my partner:</p>
+        <input class="write-line" type="text" placeholder="I asked: what happens if...">
+      </div>
+      <div>
+        <p style="font-size:0.83rem;font-weight:700;color:#0b63ce;margin-bottom:6px">One question my partner asked me — and how I'd answer it now:</p>
+        <textarea class="write-area" style="min-height:70px" placeholder="My partner asked... I would answer..."></textarea>
+      </div>
+    </div>
+    <div class="tip-box blue mt-2">No one is ever forced to present. Sharing your plan out loud — even to just one person — is what makes it real. Optional: 1–2 volunteers pitch their idea to the whole class in 30 seconds!</div>
+  </div>
+
+  <hr class="divider">
+  <div class="section-label">Reflect</div>
+  <div class="section-title">Exit Ticket &amp; Growth Check</div>
+
+  <div class="card mb-3">
+    <div class="grid-2">
+      <div>
+        <div class="card-label blue">Exit Ticket</div>
+        <p style="font-size:0.8rem;font-weight:700;color:#374151;margin:8px 0 3px">Today you decided:</p>
+        <div class="write-lines"><input class="write-line" type="text" placeholder="My track is..."><input class="write-line" type="text" placeholder="My AI idea is..."></div>
+        <p style="font-size:0.8rem;font-weight:700;color:#374151;margin:8px 0 3px">Tonight's homework:</p>
+        <p style="font-size:0.8rem;color:#374151">Sketch your project on paper and list the 3 main parts you'll build.</p>
+        <p style="font-size:0.8rem;font-weight:700;color:#374151;margin:8px 0 3px">Next session (Jul 30): Capstone Build Day 1 — get one part of your project actually running!</p>
+      </div>
+      <div>
+        <div class="card-label green">Growth Mindset Check</div>
+        <p style="font-size:0.8rem;color:#374151;margin-bottom:8px">Circle the one that describes you today:</p>
+        <div style="display:flex;flex-direction:column;gap:7px;font-size:0.83rem;color:#374151">
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="radio" name="mood" style="accent-color:#0b63ce"> I found my track right away</label>
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="radio" name="mood" style="accent-color:#0b63ce"> I changed my mind and that's okay</label>
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="radio" name="mood" style="accent-color:#0b63ce"> I found my AI idea by myself</label>
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="radio" name="mood" style="accent-color:#0b63ce"> I helped a classmate plan theirs</label>
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="radio" name="mood" style="accent-color:#0b63ce"> I finished early and tried the challenge card</label>
+        </div>
+        <p style="font-size:0.8rem;font-weight:700;color:#6d28d9;margin:12px 0 4px">One thing I'm nervous about:</p>
+        <input class="write-line" type="text" placeholder="...">
+        <p style="font-size:0.8rem;font-weight:700;color:#047857;margin:8px 0 4px">One thing I'm excited about:</p>
+        <input class="write-line" type="text" placeholder="...">
+      </div>
+    </div>
+  </div>
+
+  <div class="section-label">Scoring</div>
+  <div class="section-title">Rubric &amp; Points</div>
+  <div class="card mb-3">
+    <table class="rubric">
+      <thead><tr><th>Block</th><th>What to Look For</th><th>Points</th></tr></thead>
+      <tbody>
+        <tr><td>Block 1 — Warm-Up</td><td>Dream project written; partner's idea recorded; proudest skill named</td><td class="pts">3 pts</td></tr>
+        <tr><td>Block 2 — Mini-Lesson</td><td>Track circled; AI idea identified and connected to prior sessions</td><td class="pts">3 pts</td></tr>
+        <tr><td>Block 3 — Guided Build</td><td>All 4 plan sections attempted, following teacher's model</td><td class="pts">4 pts</td></tr>
+        <tr><td>Block 5 — Open Build</td><td>Chosen tier fully completed; plan is specific and concrete</td><td class="pts">7 pts</td></tr>
+        <tr><td>Block 6 — Share-Out</td><td>Partner question recorded; own answer thoughtfully written</td><td class="pts">2 pts</td></tr>
+        <tr><td>Exit Ticket</td><td>Track + AI idea named; homework understood</td><td class="pts">3 pts</td></tr>
+        <tr><td>⭐ Risk-Check Bonus</td><td>Hardest part named with a real backup plan</td><td class="pts">+2</td></tr>
+      </tbody>
+    </table>
+    <div style="display:flex;justify-content:flex-end;margin-top:10px;gap:24px;font-size:0.82rem;color:#374151">
+      <span>Total (without bonus) <strong style="font-family:var(--font-code);color:#0b63ce">/ 22</strong></span>
+      <span>Total (with bonus) <strong style="font-family:var(--font-code);color:#10b981">/ 24</strong></span>
+    </div>
+  </div>
+
+  <div class="sheet-footer">
+    <div><strong>Session 18 · Capstone Kickoff</strong> · In-Class Activity Sheet · Modern Chinese School Summer 2026<br>
+    <span class="grad-text" style="font-weight:800">Track selection · Project planning · AI idea · Risk check</span></div>
+    <div style="text-align:right">Ages 7–13 · Grades 1–9<br><span style="font-size:0.7rem">Every big project starts with a small, clear plan!</span></div>
+  </div>
+
+</div>
+
+<div class="draw-toolbar no-print" id="drawToolbar">
+  <button class="dt-toggle" id="dtToggle" title="Drawing tools">✏️</button>
+  <div class="dt-body">
+    <div class="dt-label">Mode</div>
+    <div class="dt-row" style="width:100%">
+      <button class="dt-mode-btn active" data-mode="pen" style="flex:1">✏️ Pen</button>
+      <button class="dt-mode-btn" data-mode="eraser" style="flex:1">🧹 Eraser</button>
+    </div>
+    <div class="dt-label">Color</div>
+    <div class="dt-row">
+      <span class="dt-swatch active" style="background:#1f2a37" data-color="#1f2a37"></span>
+      <span class="dt-swatch" style="background:#0b63ce" data-color="#0b63ce"></span>
+      <span class="dt-swatch" style="background:#10b981" data-color="#10b981"></span>
+      <span class="dt-swatch" style="background:#f59e0b" data-color="#f59e0b"></span>
+      <span class="dt-swatch" style="background:#ef4444" data-color="#ef4444"></span>
+      <span class="dt-swatch" style="background:#7c3aed" data-color="#7c3aed"></span>
+    </div>
+    <div class="dt-label">Brush size</div>
+    <div class="dt-sizes">
+      <button class="dt-size-btn active" data-size="2">S</button>
+      <button class="dt-size-btn" data-size="4">M</button>
+      <button class="dt-size-btn" data-size="8">L</button>
+    </div>
+    <button class="dt-clearall" id="dtClearAll">Clear all drawings</button>
+  </div>
+</div>
+
+<script>
+function toggleBox(el){
+  el.classList.toggle('checked');
+  el.setAttribute('aria-checked', el.classList.contains('checked') ? 'true' : 'false');
+  var li = el.closest('li');
+  if(li) li.classList.toggle('done-text', el.classList.contains('checked'));
+}
+
+function pickTrack(el){
+  document.querySelectorAll('.track-card').forEach(function(c){ c.classList.remove('selected'); });
+  el.classList.add('selected');
+  var result = document.getElementById('trackPickResult');
+  if(result){
+    result.textContent = 'Your gut pick: ' + el.dataset.track + ' — you can still change your mind!';
+    result.classList.add('chosen');
+  }
+}
+
+(function(){
+  var state = { mode: 'pen', color: '#1f2a37', size: 2 };
+  var canvases = [];
+
+  function setupCanvas(wrap){
+    var canvas = document.createElement('canvas');
+    var hint = document.createElement('div');
+    hint.className = 'draw-hint';
+    hint.textContent = '✏️ draw here';
+    var clearBtn = document.createElement('button');
+    clearBtn.className = 'draw-clear no-print';
+    clearBtn.textContent = 'Clear';
+    wrap.appendChild(canvas);
+    wrap.appendChild(hint);
+    wrap.appendChild(clearBtn);
+
+    var ctx = canvas.getContext('2d');
+    function resize(){
+      var rect = wrap.getBoundingClientRect();
+      var dpr = window.devicePixelRatio || 1;
+      var prevData = null;
+      if(canvas.width > 0){ prevData = canvas.toDataURL(); }
+      canvas.width = rect.width * dpr;
+      canvas.height = 130 * dpr;
+      canvas.style.width = rect.width + 'px';
+      canvas.style.height = '130px';
+      ctx.setTransform(dpr,0,0,dpr,0,0);
+      if(prevData){
+        var img = new Image();
+        img.onload = function(){ ctx.drawImage(img, 0, 0, rect.width, 130); };
+        img.src = prevData;
+      }
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    var drawing = false, lastX = 0, lastY = 0;
+    function pos(e){
+      var rect = canvas.getBoundingClientRect();
+      var cx = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+      var cy = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
+      return {x: cx, y: cy};
+    }
+    function start(e){
+      e.preventDefault();
+      drawing = true;
+      var p = pos(e);
+      lastX = p.x; lastY = p.y;
+      hint.style.display = 'none';
+    }
+    function move(e){
+      if(!drawing) return;
+      e.preventDefault();
+      var p = pos(e);
+      ctx.beginPath();
+      ctx.moveTo(lastX, lastY);
+      ctx.lineTo(p.x, p.y);
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      if(state.mode === 'eraser'){
+        ctx.globalCompositeOperation = 'destination-out';
+        ctx.lineWidth = state.size * 4;
+      } else {
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.strokeStyle = state.color;
+        ctx.lineWidth = state.size;
+      }
+      ctx.stroke();
+      lastX = p.x; lastY = p.y;
+    }
+    function end(){ drawing = false; }
+
+    canvas.addEventListener('mousedown', start);
+    canvas.addEventListener('mousemove', move);
+    canvas.addEventListener('mouseup', end);
+    canvas.addEventListener('mouseleave', end);
+    canvas.addEventListener('touchstart', start, {passive:false});
+    canvas.addEventListener('touchmove', move, {passive:false});
+    canvas.addEventListener('touchend', end);
+
+    clearBtn.addEventListener('click', function(){
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      hint.style.display = 'block';
+    });
+
+    canvases.push({canvas: canvas, ctx: ctx, hint: hint});
+  }
+
+  document.querySelectorAll('.draw-wrap').forEach(setupCanvas);
+
+  var toolbar = document.getElementById('drawToolbar');
+  var toggle = document.getElementById('dtToggle');
+  toggle.addEventListener('click', function(){
+    toolbar.classList.toggle('expanded');
+  });
+
+  document.querySelectorAll('.dt-mode-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      document.querySelectorAll('.dt-mode-btn').forEach(function(b){ b.classList.remove('active'); });
+      btn.classList.add('active');
+      state.mode = btn.dataset.mode;
+    });
+  });
+
+  document.querySelectorAll('.dt-swatch').forEach(function(sw){
+    sw.addEventListener('click', function(){
+      document.querySelectorAll('.dt-swatch').forEach(function(s){ s.classList.remove('active'); });
+      sw.classList.add('active');
+      state.color = sw.dataset.color;
+      document.querySelectorAll('.dt-mode-btn').forEach(function(b){ b.classList.remove('active'); });
+      document.querySelector('.dt-mode-btn[data-mode="pen"]').classList.add('active');
+      state.mode = 'pen';
+    });
+  });
+
+  document.querySelectorAll('.dt-size-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      document.querySelectorAll('.dt-size-btn').forEach(function(b){ b.classList.remove('active'); });
+      btn.classList.add('active');
+      state.size = parseInt(btn.dataset.size, 10);
+    });
+  });
+
+  document.getElementById('dtClearAll').addEventListener('click', function(){
+    if(!confirm('Clear all drawings on this sheet?')) return;
+    canvases.forEach(function(c){
+      c.ctx.clearRect(0,0,c.canvas.width,c.canvas.height);
+      c.hint.style.display = 'block';
+    });
+  });
+})();
+</script>
+</body>
+</html>
