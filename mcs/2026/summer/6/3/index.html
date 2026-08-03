@@ -1,1 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="slides-format" content="viewport" />
+  <title>Session 19 · Thu Jul 30 — Capstone Build Day 1</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <style type="text/tailwindcss">
+    @theme {
+      --color-bg: #f0f8ff;
+      --color-bg-deep: #e6f2ff;
+      --color-surface: #ffffff;
+      --color-text: #0f2747;
+      --color-text-secondary: #3a5a7a;
+      --color-text-muted: #5b7290;
+      --color-accent-1: #0b63ce;
+      --color-accent-2: #f59e0b;
+      --color-accent-3: #10b981;
+      --color-glass-bg: rgba(11,99,206,0.05);
+      --color-glass-border: rgba(11,99,206,0.14);
+      --color-vignette: rgba(11,99,206,0.08);
+      --font-display: 'Fredoka', 'Trebuchet MS', sans-serif;
+      --font-body: 'Nunito', Arial, sans-serif;
+    }
+  </style>
+  <style>
+    :root { --color-bg: #f0f8ff; --color-text: #0f2747; --glow-color-rgb: 11,99,206; }
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { background: var(--color-bg); margin: 0; }
+    body { font-family: 'Nunito', Arial, sans-serif; color: var(--color-text); overflow: hidden; height: 100vh; width: 100vw; }
+    .deck { width: 100vw; height: 100vh; position: relative; }
+    .slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--color-bg); display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; transform: scale(0.96); transition: opacity 0.6s ease, transform 0.6s ease; pointer-events: none; overflow: hidden; }
+    .slide.active { opacity: 1; transform: scale(1); pointer-events: all; }
+    .slide > .content { position: relative; z-index: 2; width: 100%; max-width: 1100px; padding: clamp(1.2rem, 3.4vw, 3rem); }
+    .slide::before { content:''; position:absolute; inset:0; z-index:1; pointer-events:none; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E"); background-repeat:repeat; background-size:256px 256px; opacity:0.03; mix-blend-mode:overlay; }
+    .slide::after { content:''; position:absolute; inset:0; z-index:1; pointer-events:none; background:radial-gradient(ellipse at center, transparent 55%, var(--color-vignette) 100%); }
+    .gradient-mesh { position:absolute; inset:0; z-index:0; overflow:hidden; pointer-events:none; }
+    .blob { position:absolute; border-radius:50%; filter:blur(80px); animation: float-slow 12s ease-in-out infinite; }
+    .blob:nth-child(2) { animation: float-drift 16s ease-in-out infinite; }
+    .blob:nth-child(3) { animation: float-slow 20s ease-in-out infinite reverse; }
+    .particle-canvas,.particle-canvas-ambient { position:absolute; inset:0; z-index:1; }
+    .reveal { opacity:0; transform:translateY(18px); }
+    .nav-controls { position:fixed; bottom:22px; left:50%; transform:translateX(-50%); display:flex; align-items:center; gap:12px; z-index:100; background:rgba(255,255,255,0.85); backdrop-filter:blur(12px); padding:9px 20px; border-radius:999px; border:1px solid rgba(11,99,206,0.14); box-shadow:0 10px 30px rgba(11,99,206,0.18); }
+    .nav-btn { width:36px; height:36px; border:none; background:rgba(11,99,206,0.05); color:#f59e0b; border-radius:999px; font-size:1.1rem; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:background .2s, transform .15s; }
+    .nav-btn:hover { background:rgba(11,99,206,0.15); transform:translateY(-1px); }
+    .slide-dots { display:flex; gap:5px; flex-wrap:wrap; max-width:420px; }
+    .dot { width:8px; height:8px; border-radius:50%; background:rgba(11,99,206,0.25); cursor:pointer; transition:background .25s, transform .25s; }
+    .dot.active { background:#f59e0b; transform:scale(1.4); }
+    .slide-counter { font-size:.78rem; color:#5b7290; min-width:52px; text-align:center; font-weight:700; }
+    .card { background:#fff; border:1px solid rgba(11,99,206,0.14); border-radius:16px; padding:14px 18px; box-shadow:0 8px 24px rgba(11,99,206,0.1); backdrop-filter:blur(10px); }
+    .pill { display:inline-flex; align-items:center; gap:6px; padding:4px 14px; border-radius:999px; border:1px solid rgba(11,99,206,0.14); background:rgba(11,99,206,0.08); font-size:.76rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:#0b63ce; }
+    .big-text { font-size:clamp(.92rem,1.45vw,1.1rem); line-height:1.62; color:#3a5a7a; }
+    .grid-cards { display:grid; gap:14px; }
+    @media (min-width:700px){ .grid-2 { grid-template-columns:repeat(2,minmax(0,1fr)); } .grid-3 { grid-template-columns:repeat(3,minmax(0,1fr)); } }
+    .grad-text { background:linear-gradient(135deg,#0b63ce 0%,#f59e0b 55%,#10b981 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+    .media-embed { position:relative; padding-top:56.25%; border-radius:13px; overflow:hidden; background:#000; cursor:pointer; box-shadow:0 10px 30px rgba(11,99,206,0.25); }
+    .media-embed img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+    .media-embed .play-btn { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; }
+    .media-embed .play-btn div { width:58px; height:58px; background:rgba(255,0,0,0.92); border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 20px rgba(0,0,0,0.5); transition:transform .2s; }
+    .media-embed:hover .play-btn div { transform:scale(1.1); }
+    .media-embed iframe { position:absolute; inset:0; width:100%; height:100%; border:0; border-radius:13px; }
+    .step-num { display:inline-flex; align-items:center; justify-content:center; width:28px; height:28px; border-radius:50%; background:linear-gradient(135deg,#0b63ce,#10b981); color:#04101f; font-weight:800; font-size:.82rem; flex-shrink:0; }
+    .code-block { background:#0f2747; color:#e6f2ff; font-family:'Fira Code',Consolas,monospace; border-radius:12px; padding:14px 18px; font-size:clamp(.76rem,1.1vw,.9rem); line-height:1.65; overflow-x:auto; border:1px solid rgba(11,99,206,0.14); }
+    .timeline-row { display:flex; align-items:flex-start; gap:12px; padding:6px 0; }
+    .timeline-dot { width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; box-shadow:0 3px 10px rgba(11,99,206,0.2); overflow:hidden; background:#fff; font-weight:800; }
+    .checklist li { margin:0 0 8px 0; }
+    .hover-lift { transition:transform .25s ease, box-shadow .25s ease, border-color .25s ease; transform-style:preserve-3d; will-change:transform; }
+    .hover-lift:hover { transform:translateY(-6px) scale(1.01); box-shadow:0 18px 34px rgba(11,99,206,0.22); border-color:rgba(11,99,206,0.28); }
+    .interactive-card { position:relative; overflow:hidden; cursor:pointer; }
+    .interactive-card::after { content:''; position:absolute; inset:auto -20% -65% auto; width:180px; height:180px; background:radial-gradient(circle, rgba(245,158,11,.18), rgba(245,158,11,0)); transition:transform .35s ease, opacity .35s ease; transform:scale(.7); opacity:.6; pointer-events:none; }
+    .interactive-card:hover::after, .interactive-card.active::after { transform:scale(1.12); opacity:1; }
+    .interactive-card.active { border-color:rgba(16,185,129,.4); box-shadow:0 18px 36px rgba(16,185,129,.18); }
+    .flip-chip-row { display:flex; flex-wrap:wrap; gap:10px; margin-top:10px; }
+    .flip-chip { border:none; border-radius:999px; padding:8px 14px; background:rgba(11,99,206,.09); color:#0b63ce; font:800 .8rem 'Nunito', Arial, sans-serif; letter-spacing:.03em; cursor:pointer; transition:transform .18s ease, background .25s ease, color .25s ease, box-shadow .25s ease; }
+    .flip-chip:hover, .flip-chip.active { background:linear-gradient(135deg, rgba(11,99,206,.92), rgba(16,185,129,.9)); color:#fff; transform:translateY(-2px); box-shadow:0 10px 22px rgba(11,99,206,.2); }
+    .flip-panel { min-height:92px; transition:opacity .25s ease, transform .25s ease; }
+    .meter { height:10px; border-radius:999px; background:rgba(11,99,206,.1); overflow:hidden; margin-top:10px; }
+    .meter-fill { height:100%; width:0%; border-radius:999px; background:linear-gradient(90deg,#0b63ce,#10b981); transition:width .8s cubic-bezier(.16,1,.3,1); }
+    .choice-grid { display:grid; gap:12px; }
+    .choice-btn { border:1px solid rgba(11,99,206,.14); background:#fff; border-radius:16px; padding:14px 16px; text-align:left; font:800 .92rem 'Nunito', Arial, sans-serif; color:#0f2747; box-shadow:0 8px 24px rgba(11,99,206,.08); cursor:pointer; transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease, background .2s ease; }
+    .choice-btn:hover { transform:translateY(-3px); box-shadow:0 14px 28px rgba(11,99,206,.16); }
+    .choice-btn.correct { border-color:rgba(16,185,129,.42); background:rgba(16,185,129,.1); }
+    .choice-btn.incorrect { border-color:rgba(239,68,68,.32); background:rgba(239,68,68,.08); }
+    .feedback-box { margin-top:10px; min-height:44px; border-radius:14px; padding:10px 14px; background:rgba(11,99,206,.07); color:#3a5a7a; font-size:.88rem; font-weight:700; }
+    .pulse-note { animation:pulse-note 2.2s ease-in-out infinite; }
+    .tilt-wrap { perspective:1200px; }
+    .mouse-spotlight { position:fixed; inset:0; z-index:99; pointer-events:none; }
+    @keyframes float-slow { 0%{transform:translate(0,0) scale(1)} 25%{transform:translate(60px,-50px) scale(1.12)} 50%{transform:translate(-40px,40px) scale(.9)} 75%{transform:translate(50px,20px) scale(1.08)} 100%{transform:translate(0,0) scale(1)} }
+    @keyframes float-drift { 0%{transform:translate(0,0) scale(1) rotate(0deg)} 33%{transform:translate(-50px,-60px) scale(1.15) rotate(3deg)} 66%{transform:translate(40px,30px) scale(.88) rotate(-2deg)} 100%{transform:translate(0,0) scale(1) rotate(0deg)} }
+    @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-14px)} }
+    @keyframes pulse-note { 0%,100%{box-shadow:0 0 0 rgba(245,158,11,0)} 50%{box-shadow:0 0 0 10px rgba(245,158,11,.08)} }
+    @media (prefers-reduced-motion: reduce) { *,*::before,*::after { animation-duration:.01ms !important; transition-duration:.2s !important; } }
+  </style>
+</head>
+<body>
+<div class="mouse-spotlight" id="spotlight"></div>
+<div class="deck">
+  <div class="slide active" data-slide="1">
+    <div class="gradient-mesh">
+      <div class="blob" style="width:500px;height:500px;top:-100px;right:-90px;background:#0b63ce;opacity:.16"></div>
+      <div class="blob" style="width:320px;height:320px;bottom:-80px;left:-60px;background:#f59e0b;opacity:.10"></div>
+      <div class="blob" style="width:220px;height:220px;top:38%;left:10%;background:#10b981;opacity:.10"></div>
+    </div>
+    <canvas class="particle-canvas"></canvas>
+    <div class="content" style="text-align:center">
+      <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=900&q=80" alt="Students building projects on laptops" style="height:clamp(86px,15vh,136px);object-fit:cover;border-radius:16px;margin:0 auto 1rem;animation:float 3s ease-in-out infinite;box-shadow:0 12px 36px rgba(59,130,246,.30)" class="reveal">
+      <p class="pill reveal" style="margin:0 auto .8rem;display:inline-flex">Session 20 · Wed Aug 5 · Week 6</p>
+      <h1 class="font-display grad-text reveal" style="font-size:clamp(2rem,5vw,3.8rem);font-weight:700;line-height:1.08;margin-bottom:.45rem">Capstone Build Day 1</h1>
+      <h2 class="font-display reveal" style="font-size:clamp(1.15rem,2.4vw,2rem);font-weight:600;color:#3a5a7a;margin-bottom:.7rem">Get a first working slice running early</h2>
+      <p class="reveal" style="font-size:clamp(.92rem,1.4vw,1.12rem);color:#3a5a7a;max-width:760px;margin:0 auto 1rem">Today students build the smallest real version of their capstone, conference with the teacher, and check where the AI, data, or decision logic lives in the project.</p>
+      <div class="reveal" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+        <span class="pill">Fredoka titles</span>
+        <span class="pill">Nunito body</span>
+        <span class="pill">Interactive lesson</span>
+      </div>
+    </div>
+  </div>
 
+  <div class="slide" data-slide="2">
+    <div class="gradient-mesh"><div class="blob" style="width:380px;height:380px;top:-70px;right:-60px;background:#0b63ce;opacity:.10"></div><div class="blob" style="width:230px;height:230px;bottom:-50px;left:-30px;background:#10b981;opacity:.08"></div></div>
+    <div class="content">
+      <p class="pill mb-3 reveal">Today’s Plan</p>
+      <h2 class="font-display reveal" style="font-weight:700;margin-bottom:1rem;color:#0f2747;font-size:clamp(1.5rem,2.5vw,2.1rem)">How build day flows</h2>
+      <div class="grid-cards grid-2 reveal">
+        <div class="card hover-lift interactive-card tilt-card" tabindex="0"><div class="timeline-row"><div class="timeline-dot" style="background:#f59e0b;color:#1e1400">1</div><div><strong>Warm start</strong><div class="big-text">Reopen project plan, name the smallest thing that can work today, and start quickly.</div><div class="meter"><div class="meter-fill" data-width="55"></div></div></div></div></div>
+        <div class="card hover-lift interactive-card tilt-card" tabindex="0"><div class="timeline-row"><div class="timeline-dot" style="background:#0b63ce;color:#04101f">2</div><div><strong>Build sprint</strong><div class="big-text">Students code first, not perfect first: title screen, one scene, one rule, one response, or one trained model.</div><div class="meter"><div class="meter-fill" data-width="92"></div></div></div></div></div>
+        <div class="card hover-lift interactive-card tilt-card" tabindex="0"><div class="timeline-row"><div class="timeline-dot" style="background:#10b981;color:#03170f">3</div><div><strong>Teacher conferences</strong><div class="big-text">Each student gets a quick check-in: what works, what is stuck, and what the next move should be.</div><div class="meter"><div class="meter-fill" data-width="78"></div></div></div></div></div>
+        <div class="card hover-lift interactive-card tilt-card" tabindex="0"><div class="timeline-row"><div class="timeline-dot" style="background:#7c3aed;color:#140a2b">4</div><div><strong>Mid-build AI check</strong><div class="big-text">Students explain where the AI, data, or decision-making idea appears in their project.</div><div class="meter"><div class="meter-fill" data-width="66"></div></div></div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide" data-slide="3">
+    <div class="gradient-mesh"><div class="blob" style="width:360px;height:360px;top:-80px;right:-60px;background:#10b981;opacity:.10"></div><div class="blob" style="width:240px;height:240px;bottom:-50px;left:-40px;background:#0b63ce;opacity:.08"></div></div>
+    <div class="content">
+      <p class="pill reveal">Build Strategy</p>
+      <h2 class="font-display reveal" style="font-size:clamp(1.45rem,2.5vw,2rem);font-weight:700;margin-bottom:.9rem;color:#0f2747">What counts as a first working slice?</h2>
+      <div class="grid-cards grid-3 reveal">
+        <div class="card hover-lift interactive-card tilt-card" tabindex="0"><img src="https://images.unsplash.com/photo-1515879218367-8466d910aaa4?auto=format&fit=crop&w=700&q=80" alt="Student coding a game" style="width:100%;height:115px;object-fit:cover;border-radius:10px;margin-bottom:10px"><p style="font-weight:800;color:#0f2747;margin:0 0 6px">Game track</p><p class="big-text">One playable loop: start, move, click, score, or win/lose rule.</p></div>
+        <div class="card hover-lift interactive-card tilt-card" tabindex="0"><img src="https://images.unsplash.com/photo-1526379095098-d400fd0bf935?auto=format&fit=crop&w=700&q=80" alt="Student building chatbot or AI app" style="width:100%;height:115px;object-fit:cover;border-radius:10px;margin-bottom:10px"><p style="font-weight:800;color:#0f2747;margin:0 0 6px">AI mini-app</p><p class="big-text">One real response path: classify two things, answer one keyword, or make one prediction.</p></div>
+        <div class="card hover-lift interactive-card tilt-card" tabindex="0"><img src="https://images.unsplash.com/photo-1511452885600-a3d2c9148a31?auto=format&fit=crop&w=700&q=80" alt="Student designing story project" style="width:100%;height:115px;object-fit:cover;border-radius:10px;margin-bottom:10px"><p style="font-weight:800;color:#0f2747;margin:0 0 6px">Story track</p><p class="big-text">One scene that runs: character appears, dialogue works, and one choice changes what happens.</p></div>
+      </div>
+      <div class="card reveal pulse-note" style="margin-top:12px;background:rgba(59,130,246,.08)"><p style="margin:0;font-size:.9rem;color:#0b63ce"><strong>Teacher prompt:</strong> “If your project were only 20 seconds long today, what would we still be able to test?”</p></div>
+      <div class="card reveal" style="margin-top:12px">
+        <p style="font-weight:800;color:#7c3aed;margin:0 0 8px">Tap a build lens</p>
+        <div class="flip-chip-row">
+          <button class="flip-chip active" data-flip-target="slice-panel" data-flip-content="Start with one thing the class can test without explanation.">Testable</button>
+          <button class="flip-chip" data-flip-target="slice-panel" data-flip-content="Cut menus, polish, and extras until the core action works.">Smaller</button>
+          <button class="flip-chip" data-flip-target="slice-panel" data-flip-content="Choose the version that gives the fastest useful feedback from the computer.">Faster</button>
+        </div>
+        <div class="feedback-box flip-panel" id="slice-panel">Start with one thing the class can test without explanation.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide" data-slide="4">
+    <div class="gradient-mesh"><div class="blob" style="width:350px;height:350px;top:-80px;right:-60px;background:#0b63ce;opacity:.10"></div><div class="blob" style="width:220px;height:220px;bottom:-50px;left:-30px;background:#f59e0b;opacity:.08"></div></div>
+    <canvas class="particle-canvas-ambient"></canvas>
+    <div class="content">
+      <p class="pill reveal">Conference Moves</p>
+      <h2 class="font-display reveal" style="font-size:clamp(1.45rem,2.4vw,1.95rem);font-weight:700;margin-bottom:.85rem;color:#0f2747">Short questions that move projects forward</h2>
+      <div class="grid-cards grid-2 reveal">
+        <div class="card interactive-card tilt-card" tabindex="0"><p style="font-weight:800;color:#0b63ce;margin:0 0 8px">Ask first</p><ul class="big-text checklist" style="padding-left:18px;margin:0"><li>What already works on your screen?</li><li>What part is almost working?</li><li>What is the one bug or blocker?</li></ul></div>
+        <div class="card interactive-card tilt-card" tabindex="0"><p style="font-weight:800;color:#10b981;margin:0 0 8px">Then narrow it</p><ul class="big-text checklist" style="padding-left:18px;margin:0"><li>What is the next tiny test?</li><li>Can we fake a simpler version first?</li><li>What can wait until Build Day 2?</li></ul></div>
+      </div>
+      <div class="card reveal" style="margin-top:12px">
+        <p style="font-weight:800;color:#0b63ce;margin:0 0 10px">Quick conference check</p>
+        <div class="choice-grid">
+          <button class="choice-btn" data-feedback-target="conference-feedback" data-feedback="Yes. Start with the working part, then ask what the next tiny test is.">A student says, "Nothing works yet." Do you ask for the biggest goal first?</button>
+          <button class="choice-btn" data-feedback-target="conference-feedback" data-feedback="Better move: ask them to show the smallest thing that already runs, even if it is only one click or one line.">A student can only show a title screen. Is that enough to conference from?</button>
+        </div>
+        <div class="feedback-box" id="conference-feedback">Click a conference question to reveal the teaching move.</div>
+      </div>
+      <div class="card reveal" style="margin-top:12px"><p style="margin:0 0 8px;font-weight:800;color:#7c3aed">Conference script</p><div class="code-block">1. Show me the working part<br>2. Name the stuck part<br>3. Pick one next step<br>4. Build for 5 more minutes before changing the plan</div></div>
+    </div>
+  </div>
+
+  <div class="slide" data-slide="5">
+    <div class="gradient-mesh"><div class="blob" style="width:360px;height:360px;top:-80px;left:-60px;background:#10b981;opacity:.12"></div><div class="blob" style="width:240px;height:240px;bottom:-60px;right:-40px;background:#0b63ce;opacity:.09"></div></div>
+    <div class="content">
+      <p class="pill reveal">AI Check</p>
+      <h2 class="font-display reveal" style="font-size:clamp(1.45rem,2.5vw,2rem);font-weight:700;margin-bottom:.85rem;color:#0f2747">Where is the AI, data, or decision?</h2>
+      <div class="grid-cards grid-3 reveal">
+        <div class="card hover-lift interactive-card tilt-card" tabindex="0"><p style="font-weight:800;color:#0d9488;margin:0 0 6px">Decision logic</p><p class="big-text">If the player touches lava, lose a life. If the guess is too high, say “too high.”</p></div>
+        <div class="card hover-lift interactive-card tilt-card" tabindex="0"><p style="font-weight:800;color:#0b63ce;margin:0 0 6px">Data</p><p class="big-text">A list of words for a chatbot, examples for Teachable Machine, or saved score values.</p></div>
+        <div class="card hover-lift interactive-card tilt-card" tabindex="0"><p style="font-weight:800;color:#b45309;margin:0 0 6px">AI element</p><p class="big-text">A classifier, chatbot behavior, prediction, confidence score, or an explainable “smart” choice.</p></div>
+      </div>
+      <div class="card reveal" style="margin-top:12px">
+        <p style="font-weight:800;color:#7c3aed;margin:0 0 10px">Mini check-in</p>
+        <div class="choice-grid">
+          <button class="choice-btn" data-quiz-correct="true" data-feedback-target="ai-feedback" data-feedback="Yes. That is decision logic, and it is easy for a student to explain clearly.">If my sprite says something different when it touches water, is that an AI-style decision?</button>
+          <button class="choice-btn" data-quiz-correct="false" data-feedback-target="ai-feedback" data-feedback="Not by itself. A pretty background is design, but it does not show AI, data, or a decision process.">If I add a cool background image, does that count as the AI part?</button>
+          <button class="choice-btn" data-quiz-correct="true" data-feedback-target="ai-feedback" data-feedback="Yes. Training examples are data, and the model uses them to make predictions.">If I show examples to Teachable Machine, is that data in my project?</button>
+        </div>
+        <div class="feedback-box" id="ai-feedback">Choose a statement to check whether it counts as AI, data, or decision logic.</div>
+      </div>
+      <div class="card reveal" style="margin-top:12px;background:rgba(16,185,129,.08);border-color:rgba(16,185,129,.24)">
+        <p style="margin:0;font-size:.9rem;color:#0d9488"><strong>Student sentence stem:</strong> “My project uses AI or AI-style logic when it ________ using ________.”</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide" data-slide="6">
+    <div class="gradient-mesh"><div class="blob" style="width:350px;height:350px;top:-80px;right:-60px;background:#0b63ce;opacity:.10"></div><div class="blob" style="width:230px;height:230px;bottom:-50px;left:-30px;background:#10b981;opacity:.07"></div></div>
+    <div class="content">
+      <p class="pill reveal">Video 1</p>
+      <h2 class="font-display reveal" style="font-size:clamp(1.4rem,2.4vw,1.95rem);font-weight:700;margin-bottom:.8rem;color:#0f2747">Think like a programmer: build a tiny version first</h2>
+      <div class="grid-cards grid-2 reveal" style="align-items:start">
+        <div>
+          <div class="media-embed" id="player-N7ZmPYaXoic" onclick="playVideo('N7ZmPYaXoic', this)" title="Click to play video">
+            <img src="https://img.youtube.com/vi/N7ZmPYaXoic/hqdefault.jpg" alt="How to think like a programmer video thumbnail">
+            <div class="play-btn"><div><svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"></path></svg></div></div>
+          </div>
+          <p style="font-size:.78rem;color:#5b7290;margin:6px 0 0;text-align:center"><a href="https://www.youtube.com/watch?v=N7ZmPYaXoic" target="_blank" rel="noopener noreferrer" style="color:#0b63ce;text-decoration:underline">YouTube source</a></p>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div class="card"><p style="font-weight:800;color:#0b63ce;margin:0 0 6px">Watch for</p><ul class="big-text" style="margin:0;padding-left:18px"><li>Start simple before adding extras.</li><li>Test one piece at a time.</li><li>Let the working version teach you what to add next.</li></ul></div>
+          <div class="card" style="background:rgba(250,204,21,.08);border-color:rgba(250,204,21,.22)"><p style="margin:0;font-size:.84rem;color:#b45309"><strong>Use in class:</strong> pause after 2–3 minutes and ask, “What is the capstone version of a tiny working program?”</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide" data-slide="7">
+    <div class="gradient-mesh"><div class="blob" style="width:340px;height:340px;top:-70px;right:-50px;background:#f59e0b;opacity:.10"></div><div class="blob" style="width:220px;height:220px;bottom:-50px;left:-40px;background:#0b63ce;opacity:.08"></div></div>
+    <div class="content" style="text-align:center">
+      <p class="pill reveal" style="margin:0 auto .8rem;display:inline-flex;color:#b45309">Movement Break</p>
+      <h2 class="font-display reveal" style="font-size:clamp(1.6rem,3vw,2.35rem);font-weight:700;margin-bottom:.6rem;color:#0f2747">Stand, point, decide</h2>
+      <div class="card reveal pulse-note" style="max-width:760px;margin:0 auto 12px;background:linear-gradient(135deg,rgba(250,204,21,.10),rgba(250,204,21,.05));border:2px solid rgba(250,204,21,.28)">
+        <div class="grid-cards grid-3">
+          <div><p style="font-weight:800;color:#b45309;margin:0 0 6px">Left wall</p><p class="big-text">“I already have something working.”</p></div>
+          <div><p style="font-weight:800;color:#b45309;margin:0 0 6px">Middle</p><p class="big-text">“One piece works, one piece is stuck.”</p></div>
+          <div><p style="font-weight:800;color:#b45309;margin:0 0 6px">Right wall</p><p class="big-text">“I need help choosing my next tiny step.”</p></div>
+        </div>
+      </div>
+      <div class="card reveal" style="max-width:620px;margin:0 auto"><p style="margin:0;font-size:.88rem;color:#0d9488"><strong>Teacher move:</strong> use where students stand to decide conference order fast.</p></div>
+    </div>
+  </div>
+
+  <div class="slide" data-slide="8">
+    <div class="gradient-mesh"><div class="blob" style="width:340px;height:340px;top:-70px;right:-50px;background:#0b63ce;opacity:.10"></div><div class="blob" style="width:220px;height:220px;bottom:-50px;left:-40px;background:#10b981;opacity:.07"></div></div>
+    <div class="content">
+      <p class="pill reveal">Video 2</p>
+      <h2 class="font-display reveal" style="font-size:clamp(1.4rem,2.4vw,1.95rem);font-weight:700;margin-bottom:.8rem;color:#0f2747">Debugging is part of building</h2>
+      <div class="grid-cards grid-2 reveal" style="align-items:start">
+        <div>
+          <div class="media-embed" id="player-Uwuv05aZ6ug" onclick="playVideo('Uwuv05aZ6ug', this)" title="Click to play video">
+            <img src="https://img.youtube.com/vi/Uwuv05aZ6ug/hqdefault.jpg" alt="Debugging for kids video thumbnail">
+            <div class="play-btn"><div><svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"></path></svg></div></div>
+          </div>
+          <p style="font-size:.78rem;color:#5b7290;margin:6px 0 0;text-align:center"><a href="https://www.youtube.com/watch?v=Uwuv05aZ6ug" target="_blank" rel="noopener noreferrer" style="color:#0b63ce;text-decoration:underline">YouTube source</a></p>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div class="card"><p style="font-weight:800;color:#0b63ce;margin:0 0 6px">Look for these habits</p><ul class="big-text" style="margin:0;padding-left:18px"><li>Read what happened, not what you hoped happened.</li><li>Change one thing, then test again.</li><li>Ask: where did the program stop doing what I expected?</li></ul></div>
+          <div class="card" style="background:rgba(16,185,129,.08);border-color:rgba(16,185,129,.24)"><p style="margin:0;font-size:.84rem;color:#0d9488"><strong>Build-day reminder:</strong> a bug is evidence that your project is becoming real.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide" data-slide="9">
+    <div class="gradient-mesh"><div class="blob" style="width:360px;height:360px;top:-80px;right:-60px;background:#7c3aed;opacity:.10"></div><div class="blob" style="width:240px;height:240px;bottom:-50px;left:-40px;background:#10b981;opacity:.09"></div></div>
+    <canvas class="particle-canvas"></canvas>
+    <div class="content">
+      <p class="pill reveal">Share-Out</p>
+      <h2 class="font-display reveal" style="font-size:clamp(1.45rem,2.5vw,2rem);font-weight:700;margin-bottom:.9rem;color:#0f2747">End-of-class reflection</h2>
+      <div class="grid-cards grid-2 reveal">
+        <div class="card interactive-card tilt-card" tabindex="0"><img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=800&q=80" alt="Students sharing work with a partner" style="width:100%;height:130px;object-fit:cover;border-radius:10px;margin-bottom:10px"><p style="font-weight:800;color:#0b63ce;margin:0 0 6px">Pair share</p><p class="big-text">Show the part that works. Then name the one thing you will fix or add for homework.</p></div>
+        <div class="card interactive-card tilt-card" tabindex="0"><p style="font-weight:800;color:#7c3aed;margin:0 0 8px">Exit prompts</p><ol class="big-text" style="margin:0;padding-left:18px"><li>My first working slice is…</li><li>The AI, data, or decision part is…</li><li>The thing I am stuck on is…</li></ol></div>
+      </div>
+      <div class="card reveal" style="margin-top:12px;background:rgba(59,130,246,.08);border-color:rgba(59,130,246,.22)"><p style="margin:0;font-size:.9rem;color:#0b63ce"><strong>Homework:</strong> get one part working and write down one thing that is still stuck so the class can fix it together next time.</p></div>
+    </div>
+  </div>
+</div>
+
+<div class="nav-controls">
+  <button class="nav-btn" onclick="changeSlide(-1)" aria-label="Previous slide">&#8249;</button>
+  <div class="slide-dots" id="dots"></div>
+  <button class="nav-btn" onclick="changeSlide(1)" aria-label="Next slide">&#8250;</button>
+  <span class="slide-counter" id="counter">1 / 9</span>
+</div>
+
+<script>
+let current = 1;
+const total = document.querySelectorAll('.slide').length;
+const dotsContainer = document.getElementById('dots');
+const counter = document.getElementById('counter');
+for (let i = 1; i <= total; i++) { const dot = document.createElement('div'); dot.className = 'dot' + (i === 1 ? ' active' : ''); dot.onclick = () => goToSlide(i); dotsContainer.appendChild(dot); }
+function goToSlide(n) { const prev = document.querySelector('.slide.active'); const next = document.querySelector(`.slide[data-slide="${n}"]`); if (prev) prev.classList.remove('active'); if (next) { next.classList.add('active'); animateSlide(next); animateMeters(next); } current = n; updateNav(); }
+function changeSlide(dir) { let next = current + dir; if (next < 1) next = total; if (next > total) next = 1; goToSlide(next); }
+function updateNav() { document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i + 1 === current)); counter.textContent = current + ' / ' + total; }
+document.addEventListener('keydown', (e) => { if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); changeSlide(1); } if (e.key === 'ArrowLeft') { e.preventDefault(); changeSlide(-1); } });
+let touchStartX = 0;
+document.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; });
+document.addEventListener('touchend', (e) => { const diff = touchStartX - e.changedTouches[0].clientX; if (Math.abs(diff) > 50) changeSlide(diff > 0 ? 1 : -1); });
+function animateSlide(slide) { slide.querySelectorAll('.reveal').forEach((el, i) => { el.style.transition = 'none'; el.style.opacity = '0'; el.style.transform = 'translateY(18px)'; el.offsetHeight; const delay = i * 0.08; el.style.transition = `opacity 0.35s ease ${delay}s, transform 0.35s ease ${delay}s`; el.style.opacity = '1'; el.style.transform = 'translateY(0px)'; }); }
+function playVideo(id, container) { container.innerHTML = `<iframe src="https://www.youtube.com/embed/${id}?autoplay=1&rel=0" title="Embedded video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`; }
+document.addEventListener('mousemove', (e) => { const spotlight = document.getElementById('spotlight'); if (spotlight) spotlight.style.background = `radial-gradient(600px circle at ${e.clientX}px ${e.clientY}px, rgba(11,99,206,0.06), transparent 40%)`; });
+window.initParticles = function(canvas, options) { if (!canvas) return; const ctx = canvas.getContext('2d'); canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight; const interactive = options.interactive !== false; const count = options.count || (interactive ? 40 : 16); let mx = -1000, my = -1000; const particles = Array.from({ length: count }, () => ({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, vx:(Math.random()-.5)*.3, vy:(Math.random()-.5)*.3, size:Math.random()*2.5+.8, alpha:Math.random()*.35+.1 })); if (interactive) { canvas.addEventListener('mousemove', (e) => { const rect = canvas.getBoundingClientRect(); mx = e.clientX - rect.left; my = e.clientY - rect.top; }); canvas.addEventListener('mouseleave', () => { mx = -1000; my = -1000; }); } (function animate(){ ctx.clearRect(0,0,canvas.width,canvas.height); particles.forEach(p => { if (interactive) { const dx = p.x - mx, dy = p.y - my; const dist = Math.sqrt(dx*dx + dy*dy) || 1; if (dist < 120) { const force = (120 - dist) / 120 * 2; p.vx += (dx / dist) * force * 0.1; p.vy += (dy / dist) * force * 0.1; } } p.vx *= .98; p.vy *= .98; p.x += p.vx; p.y += p.vy; if (p.x < 0) p.x = canvas.width; if (p.x > canvas.width) p.x = 0; if (p.y < 0) p.y = canvas.height; if (p.y > canvas.height) p.y = 0; ctx.beginPath(); ctx.arc(p.x,p.y,p.size,0,Math.PI*2); ctx.fillStyle = `rgba(11,99,206,${p.alpha})`; ctx.fill(); }); requestAnimationFrame(animate); })(); };
+document.querySelectorAll('.particle-canvas').forEach(c => window.initParticles(c, { interactive: true, count: 40 }));
+document.querySelectorAll('.particle-canvas-ambient').forEach(c => window.initParticles(c, { interactive: false, count: 16 }));
+function initFlipChips(){ document.querySelectorAll('.flip-chip').forEach(btn => { btn.addEventListener('click', () => { const target = document.getElementById(btn.dataset.flipTarget); if (!target) return; document.querySelectorAll(`.flip-chip[data-flip-target="${btn.dataset.flipTarget}"]`).forEach(b => b.classList.remove('active')); btn.classList.add('active'); target.style.opacity='0'; target.style.transform='translateY(6px)'; setTimeout(() => { target.textContent = btn.dataset.flipContent; target.style.opacity='1'; target.style.transform='translateY(0)'; }, 120); }); }); }
+function initChoiceButtons(){ document.querySelectorAll('.choice-btn').forEach(btn => { btn.addEventListener('click', () => { const target = document.getElementById(btn.dataset.feedbackTarget); if (!target) return; const siblings = btn.parentElement.querySelectorAll('.choice-btn'); siblings.forEach(s => s.classList.remove('correct','incorrect')); if (btn.dataset.quizCorrect === 'true') btn.classList.add('correct'); else if (btn.dataset.quizCorrect === 'false') btn.classList.add('incorrect'); else btn.classList.add('correct'); target.style.opacity='0'; target.style.transform='translateY(6px)'; setTimeout(() => { target.textContent = btn.dataset.feedback; target.style.opacity='1'; target.style.transform='translateY(0)'; }, 120); }); }); }
+function initTiltCards(){ document.querySelectorAll('.tilt-card').forEach(card => { card.addEventListener('mousemove', (e) => { const r = card.getBoundingClientRect(); const x = e.clientX - r.left; const y = e.clientY - r.top; const rx = (y / r.height - .5) * -7; const ry = (x / r.width - .5) * 7; card.style.transform = `translateY(-6px) rotateX(${rx}deg) rotateY(${ry}deg)`; }); card.addEventListener('mouseleave', () => { card.style.transform = ''; }); card.addEventListener('click', () => { card.classList.toggle('active'); }); card.addEventListener('focus', () => { card.classList.add('active'); }); }); }
+function animateMeters(slide){ slide.querySelectorAll('.meter-fill').forEach((bar, i) => { bar.style.width = '0%'; bar.style.transition = `width .8s cubic-bezier(.16,1,.3,1) ${i*0.08}s`; bar.offsetHeight; bar.style.width = (bar.dataset.width || 60) + '%'; }); }
+initFlipChips(); initChoiceButtons(); initTiltCards();
+try { animateSlide(document.querySelector('.slide.active')); animateMeters(document.querySelector('.slide.active')); } catch(e) {}
+</script>
+</body>
+</html>
