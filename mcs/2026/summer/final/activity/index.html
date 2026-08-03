@@ -1,1 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Final Review Worksheet · Session 20 · Tue Aug 4</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#f4fbff;--sur:rgba(255,255,255,.97);--tx:#1f2a37;--tx2:#374151;--txm:#5b6b7e;--a1:#2563eb;--a2:#16a34a;--a3:#f59e0b;--ar:#ef4444;--ap:#7c3aed;--fd:'Fredoka',sans-serif;--fb:'Nunito',sans-serif;--fc:'Fira Code',monospace;}
+    *,*:before,*:after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:var(--fb);color:var(--tx);background:var(--bg);min-height:100vh}
+    .pbar{background:rgba(255,255,255,.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(148,163,184,.3);padding:10px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:20;gap:12px;flex-wrap:wrap}.pbar-title{font-family:var(--fd);font-size:1.05rem;font-weight:700;color:var(--a1)}.pbar-sub{font-size:.78rem;color:var(--txm)}.btn-p{background:var(--a1);color:#fff;border:none;padding:8px 20px;border-radius:999px;font-family:var(--fb);font-size:.82rem;font-weight:800;cursor:pointer;letter-spacing:.06em}
+    .page{max-width:920px;margin:0 auto;padding:32px 24px 60px}.shdr{background:linear-gradient(135deg,#2563eb 0%,#16a34a 62%,#f59e0b 100%);border-radius:20px;padding:28px 32px 24px;color:#fff;margin-bottom:28px;position:relative;overflow:hidden}.shdr:before,.shdr:after{content:'';position:absolute;border-radius:50%;background:rgba(255,255,255,.08)}.shdr:before{top:-60px;right:-60px;width:200px;height:200px}.shdr:after{bottom:-40px;left:-40px;width:140px;height:140px}.hday{font-size:.75rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;opacity:.85;margin-bottom:4px}.htitle{font-family:var(--fd);font-size:clamp(1.6rem,4vw,2.4rem);font-weight:700;line-height:1.1;margin-bottom:6px}.hsub{font-size:.9rem;opacity:.92;margin-bottom:14px;max-width:700px}.hpills{display:flex;gap:8px;flex-wrap:wrap}.hpill{background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:4px 14px;font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+    .sinfo,.g2,.g3{display:grid;gap:12px}.sinfo{grid-template-columns:repeat(3,1fr);margin-bottom:28px}.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:repeat(3,1fr)}.ifield,.card{background:var(--sur);border-radius:14px;border:1.5px solid rgba(37,99,235,.14);box-shadow:0 4px 18px rgba(15,23,42,.07)}.ifield{padding:12px 14px}.card{padding:18px 20px;margin-bottom:16px}.card.ab{border-left:4px solid var(--a1)}.card.ag{border-left:4px solid var(--a2)}.card.aa{border-left:4px solid var(--a3)}.card.ar{border-left:4px solid var(--ar)}.card.ap{border-left:4px solid var(--ap)}
+    .ilabel,.clabel,.slabel{font-size:.68rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase}.ilabel{color:var(--a1);margin-bottom:6px}.clabel{margin-bottom:8px}.slabel{display:inline-flex;align-items:center;gap:8px;padding:5px 16px;border-radius:999px;border:1px solid rgba(148,163,184,.4);background:rgba(255,255,255,.9);color:var(--a1);margin-bottom:10px}.stitle{font-family:var(--fd);font-size:clamp(1.3rem,2.5vw,1.8rem);font-weight:700;margin-bottom:16px;color:var(--tx);line-height:1.2}.intro{font-size:.9rem;color:var(--tx2);line-height:1.58;margin-bottom:16px}
+    .wl,.iline,textarea{width:100%;font-family:var(--fb);font-size:.88rem;color:var(--tx);outline:none}.iline,.wl{border:none;border-bottom:1.5px solid #cbd5e1;background:transparent;padding:4px 2px;height:30px}.wl:focus,.iline:focus{border-bottom-color:#2563eb}textarea{min-height:78px;padding:10px;border:1.5px solid #cbd5e1;border-radius:10px;background:#f8fafc;resize:vertical}textarea:focus{outline:2px solid rgba(37,99,235,.25)}
+    .tip{border-radius:10px;padding:10px 14px;font-size:.8rem;line-height:1.5;margin-top:10px}.tip.b{background:rgba(37,99,235,.07);color:#1e40af}.tip.g{background:rgba(22,163,74,.07);color:#14532d}.tip.a{background:rgba(245,158,11,.08);color:#92400e}.tip.r{background:rgba(239,68,68,.08);color:#991b1b}.tip.p{background:rgba(124,58,237,.08);color:#5b21b6}.div{border:none;border-top:2px dashed #dde6f0;margin:28px 0}.chk{list-style:none;padding:0}.chk li{display:flex;gap:8px;align-items:flex-start;font-size:.85rem;color:var(--tx2);margin-bottom:8px;line-height:1.45}.bx{width:17px;height:17px;border:2px solid #94a3b8;border-radius:4px;display:inline-block;background:#fff;flex-shrink:0;margin-top:1px}
+    .dom-num{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,#2563eb,#16a34a);color:#fff;font-family:var(--fd);font-weight:700;font-size:1rem;margin-right:8px;vertical-align:middle}.q-head{font-size:.88rem;font-weight:800;color:var(--tx);margin:12px 0 8px}.sess-tag{display:inline-block;font-size:.62rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#64748b;background:#eef2f7;border-radius:6px;padding:2px 8px;margin-left:6px;vertical-align:middle}.mc-opt{display:flex;align-items:center;gap:8px;font-size:.85rem;color:var(--tx2);margin-bottom:6px;line-height:1.4;cursor:pointer;padding:5px 8px;border-radius:9px;border:1.5px solid transparent;transition:.15s;user-select:none}.mc-opt:hover{background:#eff6ff;border-color:#bfdbfe}.mc-opt.selected{background:#eff6ff;border-color:#2563eb;font-weight:700;color:var(--tx)}.mc-let{flex-shrink:0;width:22px;height:22px;border:2px solid #94a3b8;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:.72rem;color:#64748b;transition:.15s}.mc-opt:hover .mc-let{border-color:#60a5fa;color:#2563eb}.mc-opt.selected .mc-let{background:#2563eb;border-color:#2563eb;color:#fff}.mc-opt.correct{background:#ecfdf5;border-color:#16a34a;font-weight:700;color:#065f46}.mc-opt.correct .mc-let{background:#16a34a;border-color:#16a34a;color:#fff}.mc-opt.wrong{background:#fff1f2;border-color:#ef4444;font-weight:700;color:#9f1239}.mc-opt.wrong .mc-let{background:#ef4444;border-color:#ef4444;color:#fff}.mc-mark{margin-left:auto;font-weight:800;font-size:.9rem;opacity:0}.mc-opt.correct .mc-mark{opacity:1;color:#16a34a}.mc-opt.wrong .mc-mark{opacity:1;color:#ef4444}.mc-feedback{font-size:.8rem;font-weight:800;margin-top:6px;padding:6px 10px;border-radius:8px;display:none}.mc-feedback.show{display:block}.mc-feedback.ok{background:#ecfdf5;color:#065f46}.mc-feedback.no{background:#fff1f2;color:#9f1239}
+    pre.code{background:#0f172a;color:#e2e8f0;border-radius:10px;padding:12px 14px;font-family:var(--fc);font-size:.82rem;line-height:1.55;overflow-x:auto;margin:6px 0}code{background:#e0f2ff;padding:1px 6px;border-radius:4px;font-family:var(--fc);font-size:.82em;color:#1d4ed8}table.rub{width:100%;border-collapse:collapse;font-size:.82rem;margin-top:8px}table.rub th{background:#1e293b;color:#e2e8f0;padding:8px 10px;text-align:left;font-weight:700}table.rub td{padding:8px 10px;border-bottom:1px solid #e2e8f0;vertical-align:top;color:var(--tx2)}table.rub tr:nth-child(even) td{background:rgba(241,245,249,.6)}table.rub td:first-child{font-weight:700;color:var(--tx)}.pts{font-family:var(--fc);font-size:.75rem;font-weight:800;color:var(--a1);white-space:nowrap}
+    .sfooter{margin-top:40px;padding:16px 20px;border-radius:12px;background:rgba(37,99,235,.05);border:1px solid rgba(37,99,235,.12);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:.76rem;color:var(--txm)}.gtext{background:linear-gradient(135deg,#2563eb,#16a34a,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800}.pb{page-break-before:always}.avoid{break-inside:avoid;page-break-inside:avoid}
+    
+    .mcq{margin-top:8px}
+    .mcq .mc-opt{cursor:pointer;border:1.5px solid #d6e0ea;background:#fff;transition:.18s ease}
+    .mcq .mc-opt:hover{border-color:#93c5fd;background:#f8fbff}
+    .mcq .mc-opt input{position:absolute;opacity:0;pointer-events:none}
+    .mcq .mc-opt.selected{border-color:#60a5fa;background:#dbeafe}
+    .mcq.revealed .mc-opt{opacity:.92}
+    .mcq.revealed .mc-opt.correct{border-color:#22c55e;background:#dcfce7;color:#14532d;font-weight:700}
+    .mcq.revealed .mc-opt.selected.wrong{border-color:#ef4444;background:#fee2e2;color:#991b1b}
+    .answer-controls{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+    .ans-btn{border:none;border-radius:999px;padding:7px 14px;font-size:.74rem;font-weight:800;letter-spacing:.05em;cursor:pointer}
+    .ans-check{background:#1d4ed8;color:#fff}
+    .ans-reset{background:#e2e8f0;color:#334155}
+    .ans-msg{margin-top:8px;font-size:.8rem;font-weight:800}
+    .ans-msg.ok{color:#15803d}.ans-msg.no{color:#b91c1c}
 
+    @media (max-width:680px){.g2,.g3,.sinfo{grid-template-columns:1fr}.page{padding:20px 14px 50px}.shdr{padding:22px 18px}}@media print{body{background:#fff!important}.no-print{display:none!important}.card{box-shadow:none!important;border:1.5px solid #d1d5db!important}}
+  
+.mc-question{margin-bottom:16px}
+.mc-options{display:grid;gap:8px;margin-top:8px}
+.mc-choice{position:relative;display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border:2px solid #dbe4ee;border-radius:12px;background:#fff;cursor:pointer;transition:.18s ease}
+.mc-choice:hover{border-color:#93c5fd;background:#f8fbff}
+.mc-choice input{position:absolute;opacity:0;pointer-events:none}
+.mc-bullet{width:22px;height:22px;border:2px solid #94a3b8;border-radius:50%;display:grid;place-items:center;flex-shrink:0;font-weight:800;font-size:.72rem;color:#64748b;background:#fff}
+.mc-text{font-size:.85rem;color:var(--tx2);line-height:1.45}
+.mc-choice.selected{border-color:#60a5fa;background:#eff6ff}
+.mc-choice.selected .mc-bullet{border-color:#3b82f6;background:#3b82f6;color:#fff}
+.mc-choice.correct{border-color:#22c55e;background:#f0fdf4}
+.mc-choice.correct .mc-bullet{border-color:#16a34a;background:#16a34a;color:#fff}
+.mc-choice.incorrect{border-color:#f87171;background:#fef2f2}
+.mc-choice.incorrect .mc-bullet{border-color:#ef4444;background:#ef4444;color:#fff}
+
+</style>
+</head>
+<body>
+  <div class="pbar no-print"><div><div class="pbar-title">🏆 Final Review Worksheet</div><div class="pbar-sub">Session 20 · Tue Aug 4 · Covers the attached session decks with extra focus on the final concept check and capstone demo</div></div><button class="btn-p" onclick="window.print()">Print / Save as PDF</button></div>
+  <div class="page">
+    <div class="shdr"><div style="font-size:2.8rem;margin-bottom:6px">🏆🧠</div><div class="hday">Tuesday, August 4 · Week 6 · Summer 2026 AI & Coding Program</div><div class="htitle">Final Review — Project Demo + Concept Check</div><div class="hsub">This worksheet is a friendly final warm-up built in the same overall style as the midterm review sheet, but aimed at the Session 20 final: students explain concepts in their own words, connect earlier lessons to a capstone, and rehearse a low-stakes partner demo.</div><div class="hpills"><span class="hpill">Scratch + Python</span><span class="hpill">AI Concepts</span><span class="hpill">Capstone Demo</span><span class="hpill">3 Tiers</span><span class="hpill">Growth Over Perfection</span></div></div>
+    <div class="sinfo"><div class="ifield"><div class="ilabel">Your Name</div><input class="iline" type="text" placeholder="First + last"></div><div class="ifield"><div class="ilabel">Date</div><input class="iline" type="text" value="August 4, 2026"></div><div class="ifield"><div class="ilabel">Section / Period</div><input class="iline" type="text" placeholder="Section 1, 2, or 3"></div></div>
+    <div class="slabel">🎯 How the final works</div><div class="stitle">Two parts — explain, then demo</div>
+    <div class="card ap avoid"><div class="clabel" style="color:#6d28d9">Session 20 focus</div><div class="g2"><div style="background:#faf5ff;border-radius:12px;padding:14px"><div style="font-weight:800;color:#6d28d9;margin-bottom:4px">Part 1 · Final Concept Check</div><p style="font-size:.83rem;color:#374151;line-height:1.55">Identify concepts in code, explain training data and bias in your own words, and answer one responsible-AI question.</p></div><div style="background:#f0fdf4;border-radius:12px;padding:14px"><div style="font-weight:800;color:#15803d;margin-bottom:4px">Part 2 · Capstone Progress Demo</div><p style="font-size:.83rem;color:#374151;line-height:1.55">Walk a partner or the teacher through what your project does so far. Pair-demo is the default; whole-class sharing stays optional.</p></div></div><div class="tip p">Teacher note for students: the final is graded on <strong>growth, effort, and explanation</strong>, not on perfect polish. Tier C should show a working Python component; Tier A may share a Scratch capstone plus one tiny turtle program.</div></div>
+    <div class="slabel">🗺️ Study map</div><div class="stitle">What this worksheet reviews from the attached materials</div>
+    <div class="card ab avoid"><div class="intro">These session decks build the runway into the final: Session 12 emphasizes Python conditionals, comparison operators, random, and smart search; Session 16 develops a rule-based chatbot with input, conditionals, lists, and functions; Session 18 turns those ideas into a capstone plan with one clear AI idea and a demo-ready explanation.</div><div class="g3"><div style="background:#eff6ff;border-radius:12px;padding:14px"><div style="font-weight:800;color:#1d4ed8;margin-bottom:6px">Session 12</div><div style="font-size:.83rem;color:#374151">Conditionals, guessing logic, and explaining how a program decides.</div></div><div style="background:#f0fdf4;border-radius:12px;padding:14px"><div style="font-weight:800;color:#15803d;margin-bottom:6px">Session 16</div><div style="font-size:.83rem;color:#374151">Chatbot rules, keywords, lists, functions, input → process → output.</div></div><div style="background:#faf5ff;border-radius:12px;padding:14px"><div style="font-weight:800;color:#6d28d9;margin-bottom:6px">Session 18</div><div style="font-size:.83rem;color:#374151">Capstone track, one AI idea, what “done” looks like, and partner explanation.</div></div></div><div class="tip b">Big picture: the final is not a brand-new test. It asks students to recombine earlier ideas from the course into one explanation and one project conversation.</div></div>
+    <hr class="div">
+    <div class="slabel">🧩 Part A</div><div class="stitle">Final vocabulary and concept connections</div><p class="intro">Write the best answer on each line. These are the ideas students need most for the final concept check and for talking clearly about their project.</p>
+    <div class="card ab avoid"><div class="clabel" style="color:#2563eb">Match the concept to the meaning</div><div class="g2"><div><p class="q-head"><span class="dom-num">1</span>Conditional <span class="sess-tag">Session 12</span></p><input class="wl" placeholder="A conditional is..."><p class="q-head"><span class="dom-num">2</span>Training data <span class="sess-tag">Session 15–17</span></p><input class="wl" placeholder="Training data is..."><p class="q-head"><span class="dom-num">3</span>Keyword rule <span class="sess-tag">Session 16</span></p><input class="wl" placeholder="A keyword rule means..."><p class="q-head"><span class="dom-num">4</span>Function <span class="sess-tag">Session 13 + 16</span></p><input class="wl" placeholder="A function helps by..."></div><div><p class="q-head"><span class="dom-num">5</span>Bias <span class="sess-tag">Session 17</span></p><input class="wl" placeholder="Bias can happen when..."><p class="q-head"><span class="dom-num">6</span>Model prediction <span class="sess-tag">Session 15</span></p><input class="wl" placeholder="A prediction is..."><p class="q-head"><span class="dom-num">7</span>Capstone <span class="sess-tag">Session 18–20</span></p><input class="wl" placeholder="A capstone project is..."><p class="q-head"><span class="dom-num">8</span>Debugging <span class="sess-tag">All sessions</span></p><input class="wl" placeholder="Debugging means..."></div></div><div class="tip g">Speaking prompt: if a student can explain each term in a short sentence, they are usually ready for the concept-check part of the final.</div></div>
+    <hr class="div">
+    <div class="slabel">✅ Part B</div><div class="stitle">Quick checks — 12 final-style questions</div><p class="intro">Click the best answer for each question — your choice highlights in blue. These final-style checks now use the same interactive multiple-choice feel as the attached activity sheet, with the correct answers spread across A, B, C, and D.</p>
+    
+
+<div class="card aa avoid mc-question">
+  <div class="q-head"><span class="dom-num">1</span>Decision logic <span class="sess-tag">Session 12</span></div>
+  <div class="mc-options" data-question="q1" data-answer="B">
+    <label class="mc-choice" data-choice="A"><input type="radio" name="q1"><span class="mc-bullet">A</span><span class="mc-text">A program uses <code>if</code> only to draw pictures.</span></label>
+    <label class="mc-choice" data-choice="B"><input type="radio" name="q1"><span class="mc-bullet">B</span><span class="mc-text">A program uses <code>if</code> when it needs to make a decision.</span></label>
+    <label class="mc-choice" data-choice="C"><input type="radio" name="q1"><span class="mc-bullet">C</span><span class="mc-text">A program uses <code>if</code> to store every variable forever.</span></label>
+    <label class="mc-choice" data-choice="D"><input type="radio" name="q1"><span class="mc-bullet">D</span><span class="mc-text"><code>if</code> means the program always repeats the same line forever.</span></label>
+  </div>
+  <div class="tip a">Think: conditionals answer a yes/no style question and choose a path.</div>
+</div>
+<div class="card ab avoid mc-question">
+  <div class="q-head"><span class="dom-num">2</span>Code reading <span class="sess-tag">Python</span></div>
+  <pre class="code">guess = 40
+secret = 52
+if guess &lt; secret:
+    print("Higher")</pre>
+  <div class="mc-options" data-question="q2" data-answer="D">
+    <label class="mc-choice" data-choice="A"><input type="radio" name="q2"><span class="mc-bullet">A</span><span class="mc-text">It prints <code>Lower</code>.</span></label>
+    <label class="mc-choice" data-choice="B"><input type="radio" name="q2"><span class="mc-bullet">B</span><span class="mc-text">It prints both <code>Higher</code> and <code>Lower</code>.</span></label>
+    <label class="mc-choice" data-choice="C"><input type="radio" name="q2"><span class="mc-bullet">C</span><span class="mc-text">It crashes because <code>if</code> cannot compare numbers.</span></label>
+    <label class="mc-choice" data-choice="D"><input type="radio" name="q2"><span class="mc-bullet">D</span><span class="mc-text">It prints <code>Higher</code>.</span></label>
+  </div>
+</div>
+<div class="card ag avoid mc-question">
+  <div class="q-head"><span class="dom-num">3</span>Chatbot logic <span class="sess-tag">Session 16</span></div>
+  <div class="mc-options" data-question="q3" data-answer="A">
+    <label class="mc-choice" data-choice="A"><input type="radio" name="q3"><span class="mc-bullet">A</span><span class="mc-text">A rule-based chatbot checks for words we planned ahead of time.</span></label>
+    <label class="mc-choice" data-choice="B"><input type="radio" name="q3"><span class="mc-bullet">B</span><span class="mc-text">A rule-based chatbot learns by itself from billions of examples.</span></label>
+    <label class="mc-choice" data-choice="C"><input type="radio" name="q3"><span class="mc-bullet">C</span><span class="mc-text">A rule-based chatbot never uses strings or input.</span></label>
+    <label class="mc-choice" data-choice="D"><input type="radio" name="q3"><span class="mc-bullet">D</span><span class="mc-text">A rule-based chatbot can only answer with pictures.</span></label>
+  </div>
+</div>
+<div class="card ap avoid mc-question">
+  <div class="q-head"><span class="dom-num">4</span>Functions <span class="sess-tag">Session 13 + 16</span></div>
+  <div class="mc-options" data-question="q4" data-answer="C">
+    <label class="mc-choice" data-choice="A"><input type="radio" name="q4"><span class="mc-bullet">A</span><span class="mc-text">A function is just another word for a bug.</span></label>
+    <label class="mc-choice" data-choice="B"><input type="radio" name="q4"><span class="mc-bullet">B</span><span class="mc-text">A function only works in Scratch, not Python.</span></label>
+    <label class="mc-choice" data-choice="C"><input type="radio" name="q4"><span class="mc-bullet">C</span><span class="mc-text">A function helps us reuse a chunk of code without copying it everywhere.</span></label>
+    <label class="mc-choice" data-choice="D"><input type="radio" name="q4"><span class="mc-bullet">D</span><span class="mc-text">A function deletes variables after every line runs.</span></label>
+  </div>
+</div>
+<div class="card ar avoid mc-question">
+  <div class="q-head"><span class="dom-num">5</span>Training data <span class="sess-tag">Session 15</span></div>
+  <div class="mc-options" data-question="q5" data-answer="B">
+    <label class="mc-choice" data-choice="A"><input type="radio" name="q5"><span class="mc-bullet">A</span><span class="mc-text">Training data means the computer battery percentage.</span></label>
+    <label class="mc-choice" data-choice="B"><input type="radio" name="q5"><span class="mc-bullet">B</span><span class="mc-text">Training data means examples shown to a model so it can learn a pattern.</span></label>
+    <label class="mc-choice" data-choice="C"><input type="radio" name="q5"><span class="mc-bullet">C</span><span class="mc-text">Training data means a secret password list.</span></label>
+    <label class="mc-choice" data-choice="D"><input type="radio" name="q5"><span class="mc-bullet">D</span><span class="mc-text">Training data means the final answer key for a worksheet.</span></label>
+  </div>
+</div>
+<div class="card aa avoid mc-question">
+  <div class="q-head"><span class="dom-num">6</span>Bias and fairness <span class="sess-tag">Session 17</span></div>
+  <div class="mc-options" data-question="q6" data-answer="D">
+    <label class="mc-choice" data-choice="A"><input type="radio" name="q6"><span class="mc-bullet">A</span><span class="mc-text">Bias only matters to adults, never students.</span></label>
+    <label class="mc-choice" data-choice="B"><input type="radio" name="q6"><span class="mc-bullet">B</span><span class="mc-text">An AI is always fair because computers do math.</span></label>
+    <label class="mc-choice" data-choice="C"><input type="radio" name="q6"><span class="mc-bullet">C</span><span class="mc-text">Bias means the computer screen is too bright.</span></label>
+    <label class="mc-choice" data-choice="D"><input type="radio" name="q6"><span class="mc-bullet">D</span><span class="mc-text">An AI can be unfair if its examples are too few or one-sided.</span></label>
+  </div>
+</div>
+<div class="card ab avoid mc-question">
+  <div class="q-head"><span class="dom-num">7</span>Input → process → output <span class="sess-tag">Session 9 + 16</span></div>
+  <div class="mc-options" data-question="q7" data-answer="A">
+    <label class="mc-choice" data-choice="A"><input type="radio" name="q7"><span class="mc-bullet">A</span><span class="mc-text">A chatbot takes words in, decides what they mean, then replies.</span></label>
+    <label class="mc-choice" data-choice="B"><input type="radio" name="q7"><span class="mc-bullet">B</span><span class="mc-text">A chatbot starts with output, then asks the user, then deletes the answer.</span></label>
+    <label class="mc-choice" data-choice="C"><input type="radio" name="q7"><span class="mc-bullet">C</span><span class="mc-text">A chatbot only works with images, never typed text.</span></label>
+    <label class="mc-choice" data-choice="D"><input type="radio" name="q7"><span class="mc-bullet">D</span><span class="mc-text">A chatbot skips input and only stores numbers.</span></label>
+  </div>
+</div>
+<div class="card ag avoid mc-question">
+  <div class="q-head"><span class="dom-num">8</span>Capstone rule <span class="sess-tag">Session 18</span></div>
+  <div class="mc-options" data-question="q8" data-answer="C">
+    <label class="mc-choice" data-choice="A"><input type="radio" name="q8"><span class="mc-bullet">A</span><span class="mc-text">Every capstone has to be a Python chatbot.</span></label>
+    <label class="mc-choice" data-choice="B"><input type="radio" name="q8"><span class="mc-bullet">B</span><span class="mc-text">Every capstone must use every coding concept in the whole course.</span></label>
+    <label class="mc-choice" data-choice="C"><input type="radio" name="q8"><span class="mc-bullet">C</span><span class="mc-text">Every capstone should include or explain one AI idea.</span></label>
+    <label class="mc-choice" data-choice="D"><input type="radio" name="q8"><span class="mc-bullet">D</span><span class="mc-text">Every capstone should be graded only on how fancy it looks.</span></label>
+  </div>
+</div>
+<div class="card ap avoid mc-question">
+  <div class="q-head"><span class="dom-num">9</span>Demo mindset <span class="sess-tag">Session 20</span></div>
+  <div class="mc-options" data-question="q9" data-answer="D">
+    <label class="mc-choice" data-choice="A"><input type="radio" name="q9"><span class="mc-bullet">A</span><span class="mc-text">A good demo only matters if the project is fully finished.</span></label>
+    <label class="mc-choice" data-choice="B"><input type="radio" name="q9"><span class="mc-bullet">B</span><span class="mc-text">A good demo should hide every bug and skip the explanation.</span></label>
+    <label class="mc-choice" data-choice="C"><input type="radio" name="q9"><span class="mc-bullet">C</span><span class="mc-text">A good demo means reading code silently without showing the project.</span></label>
+    <label class="mc-choice" data-choice="D"><input type="radio" name="q9"><span class="mc-bullet">D</span><span class="mc-text">A good demo explains what the project does, what concepts it uses, and what still needs work.</span></label>
+  </div>
+</div>
+<div class="card ar avoid mc-question">
+  <div class="q-head"><span class="dom-num">10</span>Responsible AI <span class="sess-tag">Session 17 + 20</span></div>
+  <div class="mc-options" data-question="q10" data-answer="B">
+    <label class="mc-choice" data-choice="A"><input type="radio" name="q10"><span class="mc-bullet">A</span><span class="mc-text">Humans should trust it more because it sounds confident.</span></label>
+    <label class="mc-choice" data-choice="B"><input type="radio" name="q10"><span class="mc-bullet">B</span><span class="mc-text">When AI gives a strange answer, a human should check it and think critically.</span></label>
+    <label class="mc-choice" data-choice="C"><input type="radio" name="q10"><span class="mc-bullet">C</span><span class="mc-text">Humans should share private information to help it improve.</span></label>
+    <label class="mc-choice" data-choice="D"><input type="radio" name="q10"><span class="mc-bullet">D</span><span class="mc-text">Humans should stop asking questions and accept the first result.</span></label>
+  </div>
+</div>
+<div class="card aa avoid mc-question">
+  <div class="q-head"><span class="dom-num">11</span>Tier C expectation <span class="sess-tag">Session 20</span></div>
+  <div class="mc-options" data-question="q11" data-answer="C">
+    <label class="mc-choice" data-choice="A"><input type="radio" name="q11"><span class="mc-bullet">A</span><span class="mc-text">Tier C students should avoid Python during the final.</span></label>
+    <label class="mc-choice" data-choice="B"><input type="radio" name="q11"><span class="mc-bullet">B</span><span class="mc-text">Tier C students only need a paper plan.</span></label>
+    <label class="mc-choice" data-choice="C"><input type="radio" name="q11"><span class="mc-bullet">C</span><span class="mc-text">Tier C students should show a working Python component.</span></label>
+    <label class="mc-choice" data-choice="D"><input type="radio" name="q11"><span class="mc-bullet">D</span><span class="mc-text">Tier C students should skip explaining their code logic.</span></label>
+  </div>
+</div>
+<div class="card ab avoid mc-question">
+  <div class="q-head"><span class="dom-num">12</span>Growth mindset <span class="sess-tag">Course culture</span></div>
+  <div class="mc-options" data-question="q12" data-answer="A">
+    <label class="mc-choice" data-choice="A"><input type="radio" name="q12"><span class="mc-bullet">A</span><span class="mc-text">Bugs are normal, and explaining your thinking still counts as real learning.</span></label>
+    <label class="mc-choice" data-choice="B"><input type="radio" name="q12"><span class="mc-bullet">B</span><span class="mc-text">One bug means the whole project failed.</span></label>
+    <label class="mc-choice" data-choice="C"><input type="radio" name="q12"><span class="mc-bullet">C</span><span class="mc-text">Only fast finishers learn computer science.</span></label>
+    <label class="mc-choice" data-choice="D"><input type="radio" name="q12"><span class="mc-bullet">D</span><span class="mc-text">Explaining your ideas does not matter if the screen is colorful.</span></label>
+  </div>
+  <div class="tip b">This one matters emotionally: the final is designed to be encouraging, private when needed, and low-stakes.</div>
+</div>
+<hr class="div pb">
+    <div class="slabel">💻 Part C</div><div class="stitle">Read the code — then explain it like a teacher</div><p class="intro">The final asks students not just to run code mentally, but to name the concepts used. These prompts build that skill directly.</p>
+    <div class="g2"><div class="card ab avoid" style="border:2px solid #bfdbfe;background:#f8faff"><div style="margin-bottom:8px;font-weight:800;color:#1d4ed8">Prompt 1 · Conditionals</div><pre class="code">secret = 7
+guess = 9
+if guess &gt; secret:
+    print("Lower")
+else:
+    print("Higher")</pre><p style="font-size:.82rem;font-weight:700;color:#1d4ed8;margin:8px 0 4px">What prints?</p><input class="wl" placeholder="It prints..."><p style="font-size:.82rem;font-weight:700;color:#1d4ed8;margin:10px 0 4px">Which concept does this use?</p><input class="wl" placeholder="It uses..."></div><div class="card ag avoid" style="border:2px solid #bbf7d0;background:#f8fff9"><div style="margin-bottom:8px;font-weight:800;color:#15803d">Prompt 2 · Chatbot keyword rule</div><pre class="code">msg = "hello robot".lower()
+if "hello" in msg:
+    print("Hi there!")
+else:
+    print("I don't understand yet.")</pre><p style="font-size:.82rem;font-weight:700;color:#15803d;margin:8px 0 4px">What prints?</p><input class="wl" placeholder="It prints..."><p style="font-size:.82rem;font-weight:700;color:#15803d;margin:10px 0 4px">Why does <code>lower()</code> help?</p><textarea placeholder="lower() helps because..."></textarea></div></div>
+    <div class="card ap avoid" style="border:2px solid #e9d5ff;background:#fdf9ff"><div style="margin-bottom:8px;font-weight:800;color:#6d28d9">Prompt 3 · Lists + functions + counting</div><pre class="code">def count_cats(items):
+    total = 0
+    for animal in items:
+        if animal == "cat":
+            total = total + 1
+    return total
+
+print(count_cats(["cat", "dog", "cat", "bird"]))</pre><div class="g2"><div><p style="font-size:.82rem;font-weight:700;color:#6d28d9;margin:8px 0 4px">What prints?</p><input class="wl" placeholder="It prints..."></div><div><p style="font-size:.82rem;font-weight:700;color:#6d28d9;margin:8px 0 4px">Name 3 concepts you see</p><input class="wl" placeholder="For example: function, loop, ..."></div></div><div class="tip p">Teacher move: ask students, “Which single line shows the decision?” and “Which line stores changing information?” That often unlocks the whole explanation.</div></div>
+    <hr class="div">
+    <div class="slabel">🤖 Part D</div><div class="stitle">Explain AI, training data, and bias</div><p class="intro">This is the heart of the final concept check. Keep the language age-appropriate and concrete.</p>
+    <div class="card ar avoid"><div class="clabel" style="color:#b91c1c">Use examples, not just big words</div><p style="font-size:.82rem;font-weight:700;color:#374151;margin-bottom:4px">1. What is AI?</p><textarea placeholder="AI is..."></textarea><p style="font-size:.82rem;font-weight:700;color:#374151;margin:10px 0 4px">2. What is training data? Use a simple example.</p><textarea placeholder="Training data is the examples we show a model, like..."></textarea><p style="font-size:.82rem;font-weight:700;color:#374151;margin:10px 0 4px">3. Why can AI be wrong or unfair?</p><textarea placeholder="AI can be wrong or unfair when..."></textarea><p style="font-size:.82rem;font-weight:700;color:#374151;margin:10px 0 4px">4. What should a human do before trusting an AI answer?</p><textarea placeholder="A human should..."></textarea><div class="tip r">Concrete story prompt: “If a model only saw sunny playground photos, what might happen on a rainy day?” This helps students explain bias without using abstract adult language.</div></div>
+    <hr class="div pb">
+    <div class="slabel">🚀 Part E</div><div class="stitle">Capstone demo rehearsal sheet</div><p class="intro">Session 20 is also a project-demo day. These boxes help students rehearse the exact explanation they need for a partner or teacher check-in.</p>
+    <div class="card ag avoid"><div class="clabel" style="color:#15803d">My project, in plain language</div><div class="g2"><div><p style="font-size:.8rem;font-weight:700;color:#15803d;margin-bottom:4px">Project title</p><input class="wl" placeholder="My project is called..."><p style="font-size:.8rem;font-weight:700;color:#15803d;margin:10px 0 4px">Track</p><input class="wl" placeholder="Game, AI mini-app, or story world"><p style="font-size:.8rem;font-weight:700;color:#15803d;margin:10px 0 4px">In one sentence, what does it do?</p><textarea placeholder="My project does..."></textarea></div><div><p style="font-size:.8rem;font-weight:700;color:#15803d;margin-bottom:4px">Who is it for?</p><input class="wl" placeholder="A friend, sibling, family, me..."><p style="font-size:.8rem;font-weight:700;color:#15803d;margin:10px 0 4px">Which coding ideas does it use?</p><textarea placeholder="It uses loops, conditionals, variables, lists, functions, sprites..."></textarea><p style="font-size:.8rem;font-weight:700;color:#15803d;margin:10px 0 4px">What still needs work?</p><textarea placeholder="I still need to fix or add..."></textarea></div></div></div>
+    <div class="g3"><div class="card ab avoid"><div class="clabel" style="color:#2563eb">Demo line 1</div><p style="font-size:.82rem;color:#374151;margin-bottom:6px">How I start my demo</p><textarea placeholder="Hi, this is my project..."></textarea></div><div class="card aa avoid"><div class="clabel" style="color:#b45309">Demo line 2</div><p style="font-size:.82rem;color:#374151;margin-bottom:6px">Where the AI idea is</p><textarea placeholder="The AI part is..."></textarea></div><div class="card ap avoid"><div class="clabel" style="color:#6d28d9">Demo line 3</div><p style="font-size:.82rem;color:#374151;margin-bottom:6px">One bug I fixed or one next step</p><textarea placeholder="One thing I fixed / still want to improve is..."></textarea></div></div>
+    <div class="card ab avoid"><div class="clabel" style="color:#2563eb">Tiered rehearsal checklist</div><div class="g3"><div><div style="font-weight:800;color:#0ea5a4;margin-bottom:6px">Tier A</div><ul class="chk"><li><span class="bx"></span>I can show the start of my project.</li><li><span class="bx"></span>I can point to one loop or one if-decision.</li><li><span class="bx"></span>I can explain one tiny turtle or Python idea too.</li></ul></div><div><div style="font-weight:800;color:#2563eb;margin-bottom:6px">Tier B</div><ul class="chk"><li><span class="bx"></span>I can explain what my project does.</li><li><span class="bx"></span>I can name at least two concepts it uses.</li><li><span class="bx"></span>I can say what I still want to improve.</li></ul></div><div><div style="font-weight:800;color:#7c3aed;margin-bottom:6px">Tier C</div><ul class="chk"><li><span class="bx"></span>I can show a working Python component.</li><li><span class="bx"></span>I can explain the code logic clearly.</li><li><span class="bx"></span>I can justify why my AI feature counts as AI.</li></ul></div></div><div class="tip g">Best partner-demo script: what it does → what concept it uses → where the AI part is → one thing I fixed or still want to build.</div></div>
+    <hr class="div">
+    <div class="slabel">🛠️ Part F</div><div class="stitle">Bug hunt — final-project problems you can actually fix</div><div class="card ar avoid"><div class="g2"><div><p class="q-head"><span class="dom-num">1</span>My project starts but nothing reacts.</p><textarea placeholder="Possible cause + fix..."></textarea><p class="q-head"><span class="dom-num">2</span>My chatbot always says “I don't understand.”</p><textarea placeholder="Possible cause + fix..."></textarea></div><div><p class="q-head"><span class="dom-num">3</span>The score or variable never changes.</p><textarea placeholder="Possible cause + fix..."></textarea><p class="q-head"><span class="dom-num">4</span>My model guesses badly on new examples.</p><textarea placeholder="Possible cause + fix..."></textarea></div></div><div class="tip r">Useful coaching prompts: “Where is the start event?” “What exact word is your rule checking for?” “Does the variable ever get updated?” “Did the model see enough varied examples?”</div></div>
+    <hr class="div">
+    <div class="slabel">🌟 Reflection</div><div class="stitle">Confidence check before the final</div><div class="card avoid"><div class="g2"><div><ul class="chk"><li><span class="bx"></span>I can explain a conditional.</li><li><span class="bx"></span>I can explain training data.</li><li><span class="bx"></span>I can explain one way AI can be wrong.</li><li><span class="bx"></span>I can point to the AI idea in my capstone.</li></ul></div><div><ul class="chk"><li><span class="bx"></span>I can talk through my project with a partner.</li><li><span class="bx"></span>I can name one bug I fixed or can fix next.</li><li><span class="bx"></span>I know that effort and explanation count.</li><li><span class="bx"></span>I am more ready than I was last week.</li></ul></div></div><div class="g2" style="margin-top:10px"><div><p style="font-size:.8rem;font-weight:700;color:#374151;margin-bottom:4px">The one idea I should review one more time</p><input class="wl" placeholder="Tonight I should review..."></div><div><p style="font-size:.8rem;font-weight:700;color:#374151;margin-bottom:4px">One thing I already feel proud of</p><input class="wl" placeholder="I am proud that I can..."></div></div></div>
+    <div class="slabel">📋 Rubric</div><div class="stitle">Worksheet scoring guide</div><div class="card avoid"><table class="rub"><thead><tr><th>Section</th><th>What to look for</th><th>Points</th></tr></thead><tbody><tr><td>Part A — Concepts</td><td>Student defines or connects key words in their own language.</td><td class="pts">4 pts</td></tr><tr><td>Part B — Quick Checks</td><td>Student attempts all 12 questions and can justify choices.</td><td class="pts">4 pts</td></tr><tr><td>Part C — Code Reading</td><td>Student predicts output and names at least one concept per snippet.</td><td class="pts">4 pts</td></tr><tr><td>Part D — AI Explanation</td><td>Student explains AI, training data, fairness, and human checking.</td><td class="pts">5 pts</td></tr><tr><td>Part E — Demo Rehearsal</td><td>Student can explain project purpose, AI idea, and next step.</td><td class="pts">5 pts</td></tr><tr><td>Part F — Bug Hunt</td><td>Student suggests realistic fixes tied to course concepts.</td><td class="pts">2 pts</td></tr><tr><td>Reflection</td><td>Student identifies confidence and one review target.</td><td class="pts">2 pts</td></tr></tbody></table><div class="tip g" style="margin-top:10px">Recommended grading stance: reward explanation, perseverance, and transfer of ideas into the capstone, exactly as the syllabus describes for the final.</div></div>
+    
+    <div class="slabel">🔎 For Study</div>
+    <div class="stitle">Answer Key — Check After You Try!</div>
+    <div class="card ag avoid" style="background:#f0fdf4">
+      <div class="clabel" style="color:#15803d">Don't peek until you've tried each section</div>
+      <div class="g2">
+        <div style="font-size:.82rem;color:#374151;line-height:1.7">
+          <strong>Part B — Quick Checks</strong><br>
+          1→C · 2→B · 3→D · 4→A · 5→C · 6→B<br>
+          7→D · 8→A · 9→C · 10→B · 11→D · 12→A
+        </div>
+        <div style="font-size:.82rem;color:#374151;line-height:1.7">
+          <strong>Part C — Code Reading</strong><br>
+          Prompt 1: <code>Lower</code><br>
+          Prompt 2: <code>Hi there!</code><br>
+          Prompt 3: <code>2</code><br><br>
+          <strong>Big ideas</strong><br>
+          Conditionals choose paths; training data gives examples; bias can come from too-few or one-sided examples.
+        </div>
+      </div>
+    </div>
+
+    <div class="sfooter"><div><strong>Final Review Worksheet</strong> · Detailed Session 20 prep sheet · Summer 2026 AI Coding Program<br><span class="gtext">Conditionals · Chatbots · Training Data · Bias · Debugging · Capstone Demo</span></div><div style="text-align:right">Ages 7–13 · Grades 1–9<br><span style="font-size:.7rem">Warm, low-stakes, and built for growth</span></div></div>
+  </div>
+<script>
+document.querySelectorAll('.mc-options').forEach(group => {
+  const choices = [...group.querySelectorAll('.mc-choice')];
+  const answer = group.dataset.answer;
+  choices.forEach(choice => {
+    choice.addEventListener('click', () => {
+      choices.forEach(c => c.classList.remove('selected','correct','incorrect'));
+      choice.classList.add('selected');
+      const input = choice.querySelector('input');
+      if (input) input.checked = true;
+      if (choice.dataset.choice === answer) {
+        choice.classList.add('correct');
+      } else {
+        choice.classList.add('incorrect');
+      }
+    });
+  });
+});
+</script>
+
+<script>
+function setupMcq(){
+  document.querySelectorAll('.mcq').forEach(mcq=>{
+    mcq.querySelectorAll('.mc-opt').forEach(opt=>{
+      opt.addEventListener('click', ()=>{
+        if(mcq.classList.contains('revealed')) return;
+        mcq.querySelectorAll('.mc-opt').forEach(o=>o.classList.remove('selected'));
+        opt.classList.add('selected');
+        const input = opt.querySelector('input'); if(input) input.checked = true;
+      });
+    });
+  });
+}
+function checkMcq(btn){
+  const mcq = btn.closest('.mcq');
+  const msg = mcq.querySelector('.ans-msg');
+  const selected = mcq.querySelector('.mc-opt.selected');
+  if(!selected){ msg.textContent = 'Choose an answer first.'; msg.className = 'ans-msg no'; return; }
+  mcq.classList.add('revealed');
+  mcq.querySelectorAll('.mc-opt').forEach(o=>{ if(o.dataset.correct === 'true') o.classList.add('correct'); });
+  if(selected.dataset.correct === 'true'){
+    msg.textContent = 'Correct!'; msg.className = 'ans-msg ok';
+  } else {
+    selected.classList.add('wrong');
+    msg.textContent = 'Not quite — the correct answer is highlighted in green.'; msg.className = 'ans-msg no';
+  }
+}
+function resetMcq(btn){
+  const mcq = btn.closest('.mcq');
+  mcq.classList.remove('revealed');
+  mcq.querySelectorAll('.mc-opt').forEach(o=>{o.classList.remove('selected','wrong','correct'); if(o.querySelector('input')) o.querySelector('input').checked=false; if(o.dataset.correct==='true') o.classList.add('correct');});
+  mcq.querySelectorAll('.mc-opt.correct').forEach(o=>o.classList.remove('correct'));
+  const msg = mcq.querySelector('.ans-msg'); msg.textContent=''; msg.className='ans-msg';
+}
+window.addEventListener('DOMContentLoaded', setupMcq);
+</script>
+
+
+<script>
+document.querySelectorAll('.mc-options').forEach(group => {
+  const choices = [...group.querySelectorAll('.mc-choice')];
+  const answer = group.dataset.answer;
+  choices.forEach(choice => {
+    choice.addEventListener('click', () => {
+      choices.forEach(c => c.classList.remove('selected','correct','incorrect'));
+      choice.classList.add('selected');
+      const input = choice.querySelector('input');
+      if (input) input.checked = true;
+      if (choice.dataset.choice === answer) choice.classList.add('correct');
+      else choice.classList.add('incorrect');
+    });
+  });
+});
+</script>
+
+</body>
+</html>
