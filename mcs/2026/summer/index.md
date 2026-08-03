@@ -29,7 +29,8 @@
 | **5-1** | [AI Made Real](https://hue881.github.io/mcs/2026/summer/5/1) | [5-1 Activity](https://hue881.github.io/mcs/2026/summer/5/1/activity) | [5-1 Homework](https://hue881.github.io/mcs/2026/summer/5/1/homework) | -- ||
 | **5-2** | [Build a Rule-Based Chatbot](https://hue881.github.io/mcs/2026/summer/5/2) | [5-2 Activity](https://hue881.github.io/mcs/2026/summer/5/2/activity) | [5-2 Homework](https://hue881.github.io/mcs/2026/summer/5/2/homework) | -- ||
 | **5-3** | [How Real AI Works — Through Stories](https://hue881.github.io/mcs/2026/summer/5/3) | [5-3 Activity](https://hue881.github.io/mcs/2026/summer/5/3/activity) | [5-3 Homework](https://hue881.github.io/mcs/2026/summer/5/3/homework) | -- ||
-
+| **5-4** | [Capstone Kickoff](https://hue881.github.io/mcs/2026/summer/5/4) | [5-4 Activity](https://hue881.github.io/mcs/2026/summer/5/4/activity) | [5-4 Homework](https://hue881.github.io/mcs/2026/summer/5/4/homework) | -- ||
+| **6-2** | [FINAL: Project Demo + Concept Check](https://hue881.github.io/mcs/2026/summer/6/2) | [6-2 Activity](https://hue881.github.io/mcs/2026/summer/6/2/activity) |-- | -- ||
 
 
 
