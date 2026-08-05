@@ -1,1 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Activity Sheet · Session 20 · Capstone Build Day 1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --color-bg: #f0f8ff; --color-surface: rgba(255,255,255,0.97);
+  --color-text: #0f2747; --color-text-secondary: #3a5a7a; --color-text-muted: #5b7290;
+  --color-accent-1: #0b63ce; --color-accent-2: #10b981; --color-accent-3: #f59e0b;
+  --color-accent-red: #ef4444; --color-accent-purple: #7c3aed;
+  --font-display: 'Fredoka', 'Trebuchet MS', sans-serif;
+  --font-body: 'Nunito', Arial, sans-serif; --font-code: 'Fira Code', Consolas, monospace;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+@media print {
+  body { background: #fff !important; } .no-print { display: none !important; }
+  .page-break { page-break-before: always; }
+  .card { box-shadow: none !important; border: 1.5px solid #d1d5db !important; }
+  .code-block { border: 1.5px solid #cbd5e1 !important; }
+}
+body { font-family: var(--font-body); color: var(--color-text); background: var(--color-bg); min-height: 100vh; }
+.print-bar { background: rgba(255,255,255,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(148,163,184,0.3); padding: 10px 24px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; gap: 12px; flex-wrap: wrap; }
+.print-bar .bar-title { font-family: var(--font-display); font-size: 1.05rem; font-weight: 700; color: var(--color-accent-1); }
+.print-bar .bar-sub { font-size: 0.78rem; color: var(--color-text-muted); }
+.btn-print { background: var(--color-accent-1); color: #fff; border: none; padding: 8px 20px; border-radius: 999px; font-family: var(--font-body); font-size: 0.82rem; font-weight: 800; cursor: pointer; letter-spacing: 0.06em; transition: background 0.2s, transform 0.15s; }
+.btn-print:hover { background: #0952b0; transform: translateY(-1px); }
+.page { max-width: 920px; margin: 0 auto; padding: 32px 24px 60px; }
+.sheet-header { background: linear-gradient(135deg, #0b63ce 0%, #10b981 55%, #f59e0b 100%); border-radius: 20px; padding: 28px 32px 24px; color: #fff; margin-bottom: 28px; position: relative; overflow: hidden; }
+.sheet-header::before { content: ''; position: absolute; top: -60px; right: -60px; width: 200px; height: 200px; background: rgba(255,255,255,0.08); border-radius: 50%; }
+.sheet-header::after { content: ''; position: absolute; bottom: -40px; left: -40px; width: 140px; height: 140px; background: rgba(255,255,255,0.06); border-radius: 50%; }
+.header-emoji { font-size: 2.8rem; margin-bottom: 6px; }
+.header-day { font-size: 0.75rem; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; opacity: 0.85; margin-bottom: 4px; }
+.header-title { font-family: var(--font-display); font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 700; line-height: 1.1; margin-bottom: 6px; }
+.header-sub { font-size: 0.88rem; opacity: 0.85; margin-bottom: 14px; }
+.header-pills { display: flex; gap: 8px; flex-wrap: wrap; }
+.header-pill { background: rgba(255,255,255,0.22); border: 1px solid rgba(255,255,255,0.35); border-radius: 999px; padding: 4px 14px; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
+.student-info { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 28px; }
+@media (max-width: 600px) { .student-info { grid-template-columns: 1fr; } }
+.info-field { background: var(--color-surface); border-radius: 12px; padding: 12px 14px; border: 1.5px solid rgba(11,99,206,0.14); box-shadow: 0 2px 8px rgba(15,23,42,0.05); }
+.info-label { font-size: 0.65rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-accent-1); margin-bottom: 6px; }
+.info-line { border: none; border-bottom: 1.5px solid #cbd5e1; width: 100%; font-family: var(--font-body); font-size: 0.9rem; color: var(--color-text); background: transparent; outline: none; padding: 2px 0; }
+.info-line:focus { border-bottom-color: #0b63ce; }
+.section-label { display: inline-flex; align-items: center; gap: 8px; padding: 5px 16px; border-radius: 999px; border: 1px solid rgba(148,163,184,0.4); background: rgba(255,255,255,0.9); font-size: 0.72rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-accent-1); margin-bottom: 10px; }
+.section-title { font-family: var(--font-display); font-size: clamp(1.3rem, 2.5vw, 1.8rem); font-weight: 700; margin-bottom: 16px; color: var(--color-text); line-height: 1.2; }
+.card { background: var(--color-surface); border-radius: 16px; padding: 18px 20px; box-shadow: 0 4px 18px rgba(15,23,42,0.07); border: 1px solid rgba(255,255,255,0.7); margin-bottom: 16px; }
+.card.accent-blue { border-left: 4px solid var(--color-accent-1); }
+.card.accent-green { border-left: 4px solid var(--color-accent-2); }
+.card.accent-amber { border-left: 4px solid var(--color-accent-3); }
+.card.accent-red { border-left: 4px solid var(--color-accent-red); }
+.card.accent-purple { border-left: 4px solid var(--color-accent-purple); }
+.card-label { font-size: 0.68rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 8px; }
+.card-label.blue { color: var(--color-accent-1); } .card-label.green { color: #047857; } .card-label.amber { color: #b45309; } .card-label.red { color: #b91c1c; } .card-label.purple { color: #6d28d9; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+@media (max-width: 680px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+.code-block { background: #0f2747; color: #e6f2ff; border-radius: 12px; padding: 14px 18px; font-family: var(--font-code); font-size: clamp(0.68rem, 1.1vw, 0.83rem); line-height: 1.6; overflow-x: auto; border: 1px solid rgba(11,99,206,0.14); margin-bottom: 12px; white-space: pre; }
+.write-lines { margin: 8px 0; }
+input.write-line { border: none; border-bottom: 1.5px solid #cbd5e1; width: 100%; margin-bottom: 10px; height: 28px; display: block; background: transparent; font-family: var(--font-body); font-size: 0.88rem; color: var(--color-text); outline: none; padding: 2px 4px; }
+input.write-line:focus { border-bottom-color: #0b63ce; }
+input.write-line::placeholder { color: #bdc5d1; font-style: italic; }
+textarea.write-area { border: 1.5px solid #cbd5e1; border-radius: 8px; width: 100%; min-height: 70px; padding: 8px; font-family: var(--font-body); font-size: 0.85rem; color: var(--color-text); resize: vertical; background: #f8fafc; outline: none; display: block; }
+textarea.write-area:focus { outline: 2px solid rgba(11,99,206,0.3); }
+textarea.write-area::placeholder { color: #bdc5d1; font-style: italic; }
+.level-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 14px; border-radius: 999px; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 8px; }
+.level-a { background: linear-gradient(135deg, #10b981, #059669); color: #fff; }
+.level-b { background: linear-gradient(135deg, #0b63ce, #2563eb); color: #fff; }
+.level-c { background: linear-gradient(135deg, #7c3aed, #ef4444); color: #fff; }
+.rhythm-warmup { background: linear-gradient(135deg,#f59e0b,#d97706); color: #fff; display:inline-flex;align-items:center;gap:6px;padding:4px 14px;border-radius:999px;font-size:0.72rem;font-weight:800;letter-spacing:0.08em;text-transform:uppercase; }
+.rhythm-mini { background: linear-gradient(135deg,#0b63ce,#2563eb); color: #fff; display:inline-flex;align-items:center;gap:6px;padding:4px 14px;border-radius:999px;font-size:0.72rem;font-weight:800;letter-spacing:0.08em;text-transform:uppercase; }
+.rhythm-build { background: linear-gradient(135deg,#10b981,#059669); color: #fff; display:inline-flex;align-items:center;gap:6px;padding:4px 14px;border-radius:999px;font-size:0.72rem;font-weight:800;letter-spacing:0.08em;text-transform:uppercase; }
+.rhythm-break { background: linear-gradient(135deg,#ef4444,#dc2626); color: #fff; display:inline-flex;align-items:center;gap:6px;padding:4px 14px;border-radius:999px;font-size:0.72rem;font-weight:800;letter-spacing:0.08em;text-transform:uppercase; }
+.rhythm-open { background: linear-gradient(135deg,#7c3aed,#6d28d9); color: #fff; display:inline-flex;align-items:center;gap:6px;padding:4px 14px;border-radius:999px;font-size:0.72rem;font-weight:800;letter-spacing:0.08em;text-transform:uppercase; }
+.rhythm-share { background: linear-gradient(135deg,#0b63ce,#10b981); color: #fff; display:inline-flex;align-items:center;gap:6px;padding:4px 14px;border-radius:999px;font-size:0.72rem;font-weight:800;letter-spacing:0.08em;text-transform:uppercase; }
+.check-list { list-style: none; padding: 0; }
+.check-list li { display: flex; align-items: flex-start; gap: 8px; font-size: 0.85rem; color: var(--color-text-secondary); margin-bottom: 8px; line-height: 1.45; }
+.check-list li .box { flex-shrink: 0; width: 17px; height: 17px; border: 2px solid #94a3b8; border-radius: 4px; margin-top: 1px; background: #fff; display: inline-block; }
+table.rubric { width: 100%; border-collapse: collapse; font-size: 0.82rem; margin-top: 8px; }
+table.rubric th { background: #0f2747; color: #e6f2ff; padding: 8px 10px; text-align: left; font-weight: 700; letter-spacing: 0.05em; }
+table.rubric td { padding: 8px 10px; border-bottom: 1px solid #e2e8f0; vertical-align: top; color: var(--color-text-secondary); }
+table.rubric tr:nth-child(even) td { background: rgba(241,245,249,0.6); }
+table.rubric td:first-child { font-weight: 700; color: var(--color-text); }
+table.rubric .pts { font-family: var(--font-code); font-size: 0.75rem; font-weight: 800; color: var(--color-accent-1); white-space: nowrap; }
+.timeline { position: relative; padding-left: 22px; }
+.timeline::before { content: ''; position: absolute; left: 8px; top: 4px; bottom: 4px; width: 3px; border-radius: 999px; background: linear-gradient(to bottom, #0b63ce, #10b981); }
+.timeline-step { position: relative; margin-bottom: 12px; }
+.timeline-dot { position: absolute; left: -15px; top: 4px; width: 12px; height: 12px; border-radius: 999px; border: 2px solid #f0f8ff; background: #0b63ce; box-shadow: 0 0 0 3px rgba(11,99,206,0.2); }
+.timeline-dot.green { background: #10b981; } .timeline-dot.amber { background: #f59e0b; }
+.timeline-dot.red { background: #ef4444; } .timeline-dot.purple { background: #7c3aed; }
+.tip-box { border-radius: 10px; padding: 10px 14px; font-size: 0.8rem; line-height: 1.5; margin-top: 10px; }
+.tip-box.blue { background: rgba(11,99,206,0.07); color: #1e40af; }
+.tip-box.green { background: rgba(16,185,129,0.07); color: #065f46; }
+.tip-box.amber { background: rgba(245,158,11,0.07); color: #92400e; }
+.tip-box.purple { background: rgba(124,58,237,0.07); color: #5b21b6; }
+.break-card { background: linear-gradient(135deg, #fdf4e3, #fff7e6); border: 2px dashed rgba(245,158,11,0.4); border-radius: 18px; padding: 18px 22px; }
+.divider { border: none; border-top: 2px dashed #dde6f0; margin: 28px 0; }
+.grad-text { background: linear-gradient(135deg,#0b63ce,#f59e0b,#10b981); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.sheet-footer { margin-top: 40px; padding: 16px 20px; border-radius: 12px; background: rgba(11,99,206,0.05); border: 1px solid rgba(11,99,206,0.12); display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; font-size: 0.76rem; color: var(--color-text-muted); }
+.sheet-footer strong { color: var(--color-text); }
+p, li { font-size: 0.88rem; color: var(--color-text-secondary); line-height: 1.55; }
+strong { color: var(--color-text); }
+code { background: #e0f2ff; padding: 1px 6px; border-radius: 4px; font-family: var(--font-code); font-size: 0.82em; color: #0b63ce; }
+.mb-1 { margin-bottom: 6px; } .mb-2 { margin-bottom: 10px; } .mb-3 { margin-bottom: 14px; }
+.mt-2 { margin-top: 10px; } .mt-3 { margin-top: 14px; }
+.track-card { border: 2px solid; border-radius: 14px; padding: 14px 16px; text-align: center; }
+.track-game { border-color: #10b981; background: #e6f7f0; }
+.track-ai { border-color: #7c3aed; background: #ede9fe; }
+.track-story { border-color: #f59e0b; background: #fdf4e3; }
+</style>
+</head>
+<body>
 
+<div class="print-bar no-print">
+  <div>
+    <div class="bar-title">Session 20 · In-Class Activity Sheet</div>
+    <div class="bar-sub">Capstone Build Day 1 — First Working Slice · Tiered · Ages 7–13</div>
+  </div>
+  <button class="btn-print" onclick="window.print()">🖨 Print / Save as PDF</button>
+</div>
+
+<div class="page">
+
+  <div class="sheet-header">
+    <div class="header-emoji">🔧</div>
+    <div class="header-day">Session 20 · Wed Aug 5 · Week 6 · In-Class Activity Sheet</div>
+    <div class="header-title">Capstone Build Day 1</div>
+    <div class="header-sub">Get a first working slice running early — follow the Daily Rhythm, block by block</div>
+    <div class="header-pills">
+      <span class="header-pill">75–110 min</span>
+      <span class="header-pill">Game · AI App · Story</span>
+      <span class="header-pill">Ages 7–13</span>
+      <span class="header-pill">3 Tiers</span>
+      <span class="header-pill">🤖 AI Moment</span>
+    </div>
+  </div>
+
+  <div class="student-info">
+    <div class="info-field"><div class="info-label">Your Name</div><input class="info-line" type="text" placeholder="First Last"></div>
+    <div class="info-field"><div class="info-label">Date</div><input class="info-line" type="text" placeholder="August 5, 2026"></div>
+    <div class="info-field"><div class="info-label">Section / Period</div><input class="info-line" type="text" placeholder="Section 1 / 2 / 3"></div>
+  </div>
+
+  <div class="section-label">Before You Begin</div>
+  <div class="section-title">Today's Daily Rhythm</div>
+  <div class="grid-2 mb-3">
+    <div class="card accent-blue">
+      <div class="card-label blue">Your Mission Today</div>
+      <p class="mb-2">Today students build the smallest real version of their capstone, conference with the teacher, and check where the AI, data, or decision logic lives in the project.</p>
+      <div class="timeline">
+        <div class="timeline-step"><div class="timeline-dot amber"></div><p><strong>Block 1</strong> — Warm-Up (10 min, no screen)</p></div>
+        <div class="timeline-step"><div class="timeline-dot"></div><p><strong>Block 2</strong> — Mini-Lesson: Tiny Working Slice (15–20 min)</p></div>
+        <div class="timeline-step"><div class="timeline-dot green"></div><p><strong>Block 3</strong> — Guided Build: Conference Prep (20 min)</p></div>
+        <div class="timeline-step"><div class="timeline-dot red"></div><p><strong>Block 4</strong> — Movement Break (5 min)</p></div>
+        <div class="timeline-step"><div class="timeline-dot purple"></div><p><strong>Block 5</strong> — Open Build · Tiered (30–40 min)</p></div>
+        <div class="timeline-step" style="margin-bottom:0"><div class="timeline-dot" style="background:#8b5cf6"></div><p><strong>Block 6</strong> — Share-Out (10 min)</p></div>
+      </div>
+    </div>
+    <div class="card accent-blue">
+      <div class="card-label blue">Key Ideas for Today</div>
+      <ul style="list-style:disc;padding-left:18px;line-height:1.9">
+        <li><strong>First working slice</strong> — the smallest real version of your project that actually runs</li>
+        <li><strong>Teacher conference</strong> — a quick check-in on what works, what's stuck, and the next move</li>
+        <li><strong>Mid-build AI check</strong> — pointing to exactly where the AI, data, or decision lives</li>
+        <li><strong>Debugging</strong> — reading what actually happened, changing one thing, testing again</li>
+      </ul>
+      <div class="tip-box purple mt-2"><strong>🤖 AI connection:</strong> AI/decision logic can be an if-then rule, a list of data (chatbot words, Teachable Machine examples), or a prediction/confidence score!</div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="section-label"><span class="rhythm-warmup">⏱ Block 1</span></div>
+  <div class="section-title">Warm-Up — No Screens · 10 min</div>
+
+  <div class="card accent-amber mb-2">
+    <div class="card-label amber">Reopen &amp; Name the Smallest Thing</div>
+    <p class="mb-2">Reopen your project plan from last session. Name the <strong>smallest thing that can work today</strong>, and start quickly — don't overthink it.</p>
+    <p style="font-size:0.83rem;font-weight:700;color:#b45309;margin-bottom:6px">The smallest thing I will get working today:</p>
+    <input class="write-line" type="text" placeholder="Today I will get ... working.">
+  </div>
+
+  <div class="card accent-blue mb-3">
+    <div class="card-label blue">Teacher Prompt to Think About</div>
+    <p class="mb-2">If your project were only <strong>20 seconds long</strong> today, what would we still be able to test?</p>
+    <textarea class="write-area" style="min-height:60px" placeholder="Even in just 20 seconds, someone could see..."></textarea>
+  </div>
+
+  <hr class="divider">
+
+  <div class="section-label"><span class="rhythm-mini">📺 Block 2</span></div>
+  <div class="section-title">Mini-Lesson — What Counts as a First Working Slice? · 15–20 min</div>
+
+  <div class="card accent-purple mb-2">
+    <div class="card-label purple">One Testable Piece per Track</div>
+    <div class="grid-3">
+      <div class="track-card track-game">
+        <div style="font-size:1.6rem;margin-bottom:4px">🎮</div>
+        <p style="font-weight:800;color:#047857;font-size:0.88rem">Game</p>
+        <p style="font-size:0.78rem;color:#374151;margin-top:4px">One playable loop: start, move, click, score, or win/lose rule.</p>
+      </div>
+      <div class="track-card track-ai">
+        <div style="font-size:1.6rem;margin-bottom:4px">🤖</div>
+        <p style="font-weight:800;color:#6d28d9;font-size:0.88rem">AI Mini-App</p>
+        <p style="font-size:0.78rem;color:#374151;margin-top:4px">One real response path: classify two things, answer one keyword, or make one prediction.</p>
+      </div>
+      <div class="track-card track-story">
+        <div style="font-size:1.6rem;margin-bottom:4px">📖</div>
+        <p style="font-weight:800;color:#b45309;font-size:0.88rem">Story</p>
+        <p style="font-size:0.78rem;color:#374151;margin-top:4px">One scene that runs: character appears, dialogue works, one choice changes what happens.</p>
+      </div>
+    </div>
+    <div class="tip-box purple mt-2">Build lenses to try: <strong>Testable</strong> (something the class can test without explanation), <strong>Smaller</strong> (cut menus/extras until the core works), <strong>Faster</strong> (the version that gives the fastest useful feedback).</div>
+    <p style="font-size:0.83rem;font-weight:700;color:#374151;margin-top:10px;margin-bottom:4px">Which lens will you use today? Circle one:</p>
+    <p style="font-size:0.85rem;color:#374151">🎯 <strong>Testable</strong> &nbsp;&nbsp; ✂️ <strong>Smaller</strong> &nbsp;&nbsp; ⚡ <strong>Faster</strong></p>
+  </div>
+
+  <div class="card accent-green mb-3">
+    <div class="card-label green">Think Like a Programmer — Build Tiny First</div>
+    <p class="mb-2">Start simple before adding extras. Test one piece at a time. Let the working version teach you what to add next.</p>
+    <p style="font-size:0.83rem;font-weight:700;color:#374151;margin-bottom:4px">What is the capstone version of a tiny working program — for YOUR project?</p>
+    <input class="write-line" type="text" placeholder="My tiny working version is...">
+  </div>
+
+  <hr class="divider">
+
+  <div class="section-label"><span class="rhythm-build">🔨 Block 3</span></div>
+  <div class="section-title">Guided Build — Conference Prep · 20 min</div>
+
+  <div class="card mb-3">
+    <div class="card-label blue">Prepare to Show the Teacher — Follow the Conference Script</div>
+    <p class="mb-2">Before your conference, fill in these answers so you're ready. Use the script: <strong>Show the working part → Name the stuck part → Pick one next step → Build 5 more minutes before changing the plan.</strong></p>
+    <div class="code-block">1. Show me the working part
+2. Name the stuck part
+3. Pick one next step
+4. Build for 5 more minutes before changing the plan</div>
+    <div class="timeline">
+      <div class="timeline-step"><div class="timeline-dot amber"></div>
+        <p><strong>✓ What already works on your screen?</strong></p>
+        <input class="write-line" type="text" placeholder="What works so far...">
+      </div>
+      <div class="timeline-step"><div class="timeline-dot"></div>
+        <p><strong>✓ What part is almost working?</strong></p>
+        <input class="write-line" type="text" placeholder="Almost working...">
+      </div>
+      <div class="timeline-step"><div class="timeline-dot green"></div>
+        <p><strong>✓ What is the one bug or blocker?</strong></p>
+        <input class="write-line" type="text" placeholder="My blocker is...">
+      </div>
+      <div class="timeline-step" style="margin-bottom:0"><div class="timeline-dot purple"></div>
+        <p><strong>✓ What's the next tiny test?</strong></p>
+        <input class="write-line" type="text" placeholder="Next tiny test:...">
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider page-break">
+
+  <div class="section-label"><span class="rhythm-break">💃 Block 4</span></div>
+  <div class="section-title">Movement Break — Stand, Point, Decide · 5 min</div>
+
+  <div class="break-card mb-3">
+    <p style="font-size:1rem;font-weight:800;color:#78350f;margin-bottom:12px">🚦 Move to the spot that matches where you are right now:</p>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div style="background:rgba(255,255,255,0.7);border-radius:10px;padding:8px 14px;font-size:0.9rem;color:#374151"><strong>Left wall:</strong> I already have something working.</div>
+      <div style="background:rgba(255,255,255,0.7);border-radius:10px;padding:8px 14px;font-size:0.9rem;color:#374151"><strong>Middle:</strong> One piece works, one piece is stuck.</div>
+      <div style="background:rgba(255,255,255,0.7);border-radius:10px;padding:8px 14px;font-size:0.9rem;color:#374151"><strong>Right wall:</strong> I need help choosing my next tiny step.</div>
+    </div>
+    <p style="font-size:0.83rem;color:#374151;margin-top:10px;font-weight:700">Where did you stand, and why?</p>
+    <input class="write-line" type="text" placeholder="I stood at ... because...">
+  </div>
+
+  <hr class="divider">
+
+  <div class="section-label"><span class="rhythm-open">🚀 Block 5</span></div>
+  <div class="section-title">Open Build — Choose Your Tier · 30–40 min</div>
+
+  <div class="card accent-blue mb-2">
+    <div class="card-label blue">Instructions — Pick Your Tier</div>
+    <div class="grid-3">
+      <div style="text-align:center;padding:8px">
+        <div style="font-size:1.8rem;margin-bottom:4px">🌱</div>
+        <span class="level-badge level-a">Tier A — Foundations</span>
+        <p style="font-size:0.82rem;color:#374151;margin-top:4px">Grades 1–3</p>
+      </div>
+      <div style="text-align:center;padding:8px">
+        <div style="font-size:1.8rem;margin-bottom:4px">⭐</div>
+        <span class="level-badge level-b">Tier B — Core</span>
+        <p style="font-size:0.82rem;color:#374151;margin-top:4px">Grades 3–5</p>
+      </div>
+      <div style="text-align:center;padding:8px">
+        <div style="font-size:1.8rem;margin-bottom:4px">🚀</div>
+        <span class="level-badge level-c">Tier C — Accelerated</span>
+        <p style="font-size:0.82rem;color:#374151;margin-top:4px">Grades 6–9</p>
+      </div>
+    </div>
+    <p style="font-size:0.8rem;color:#374151;margin-top:8px;text-align:center">Circle your tier: &nbsp; <strong>Tier A</strong> &nbsp;&nbsp; <strong>Tier B</strong> &nbsp;&nbsp; <strong>Tier C</strong></p>
+  </div>
+
+  <div class="card mb-2" style="border-top:4px solid #10b981">
+    <div style="margin-bottom:8px"><span class="level-badge level-a">🌱 Tier A — One Simple Action with a Buddy</span></div>
+    <div class="grid-2">
+      <div>
+        <div class="card-label green">What to do</div>
+        <p class="mb-2">With a buddy's help, get <strong>ONE thing on screen to react</strong> — a sprite moves, a shape draws, or a message appears.</p>
+        <ul class="check-list mt-2">
+          <li><span class="box"></span>One thing runs and reacts on screen</li>
+          <li><span class="box"></span>Showed it to a buddy or teacher</li>
+          <li><span class="box"></span>Named one thing to try next</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card-label green">Draw or describe what worked</div>
+        <div style="border:2px dashed #6ee7b7;border-radius:10px;min-height:100px;background:#f0fdf4"></div>
+        <p style="font-size:0.8rem;color:#374151;margin-top:8px;font-weight:700">What did you get working?</p>
+        <input class="write-line" type="text" placeholder="I got ... to work.">
+      </div>
+    </div>
+  </div>
+
+  <div class="card mb-2" style="border-top:4px solid #0b63ce">
+    <div style="margin-bottom:8px"><span class="level-badge level-b">⭐ Tier B — Build the Tested Slice</span></div>
+    <div class="grid-2">
+      <div>
+        <div class="card-label blue">What to do</div>
+        <p class="mb-2">Build your <strong>one testable piece</strong> from the mini-lesson (one game rule, one chatbot answer, or one story scene) until it actually runs start to finish.</p>
+        <ul class="check-list mt-2">
+          <li><span class="box"></span>One full testable piece runs without crashing</li>
+          <li><span class="box"></span>Tested it myself at least twice</li>
+          <li><span class="box"></span>Completed the conference prep questions</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card-label blue">Describe your working slice</div>
+        <textarea class="write-area" style="min-height:80px" placeholder="My working slice does..."></textarea>
+      </div>
+    </div>
+  </div>
+
+  <div class="card accent-purple mb-3" style="border-top:4px solid #7c3aed">
+    <div style="margin-bottom:8px"><span class="level-badge level-c">🚀 Tier C — Working Slice + Debug Log</span></div>
+    <div class="grid-2">
+      <div>
+        <div class="card-label purple">What to do</div>
+        <p class="mb-2">Get your working slice running, then keep a <strong>debug log</strong>: every bug you hit, what you changed, and whether it worked.</p>
+        <ul class="check-list mt-2">
+          <li><span class="box"></span>Working slice runs reliably</li>
+          <li><span class="box"></span>At least 2 bugs logged with fixes tried</li>
+          <li><span class="box"></span>Can point to exactly where the AI/data/decision lives in the code</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card-label purple">Debug log</div>
+        <div class="write-lines">
+          <input class="write-line" type="text" placeholder="Bug 1: ... → Fix tried: ...">
+          <input class="write-line" type="text" placeholder="Bug 2: ... → Fix tried: ...">
+        </div>
+      </div>
+    </div>
+    <div class="tip-box purple mt-2">🐛 <strong>Debug-day reminder:</strong> a bug is evidence that your project is becoming real. Read what actually happened, change one thing, test again.</div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="section-label">Mid-Build Check</div>
+  <div class="section-title">🤖 AI Check — Where Is the AI, Data, or Decision?</div>
+
+  <div class="card accent-amber mb-3">
+    <div class="card-label amber">Point to It in Your Own Project</div>
+    <div class="grid-3">
+      <div class="card" style="padding:12px 14px">
+        <p style="font-weight:700;color:#0d9488;font-size:0.83rem;margin-bottom:4px">Decision logic</p>
+        <p style="font-size:0.78rem;color:#374151">If the player touches lava, lose a life. If the guess is too high, say "too high."</p>
+      </div>
+      <div class="card" style="padding:12px 14px">
+        <p style="font-weight:700;color:#0b63ce;font-size:0.83rem;margin-bottom:4px">Data</p>
+        <p style="font-size:0.78rem;color:#374151">A list of words for a chatbot, examples for Teachable Machine, or saved score values.</p>
+      </div>
+      <div class="card" style="padding:12px 14px">
+        <p style="font-weight:700;color:#b45309;font-size:0.83rem;margin-bottom:4px">AI element</p>
+        <p style="font-size:0.78rem;color:#374151">A classifier, chatbot behavior, prediction, confidence score, or an explainable smart choice.</p>
+      </div>
+    </div>
+    <p style="font-size:0.83rem;font-weight:700;color:#374151;margin-top:10px;margin-bottom:4px">Sentence stem — finish it about your own project:</p>
+    <input class="write-line" type="text" placeholder="My project uses AI or AI-style logic when it...">
+  </div>
+
+  <hr class="divider">
+
+  <div class="section-label"><span class="rhythm-share">💬 Block 6</span></div>
+  <div class="section-title">Share-Out — End-of-Class Reflection · 10 min</div>
+
+  <div class="card mb-3">
+    <div class="card-label blue">Default — Pair Share</div>
+    <div class="grid-2">
+      <div>
+        <p class="mb-2">Show your partner the part that works. Then name the <strong>one thing</strong> you will fix or add for homework.</p>
+        <p style="font-size:0.83rem;font-weight:700;color:#374151;margin-bottom:6px">I will fix or add for homework:</p>
+        <input class="write-line" type="text" placeholder="For homework I will...">
+      </div>
+      <div>
+        <p style="font-size:0.83rem;font-weight:700;color:#0b63ce;margin-bottom:6px">Exit prompts:</p>
+        <div class="write-lines">
+          <input class="write-line" type="text" placeholder="My first working slice is...">
+          <input class="write-line" type="text" placeholder="The AI, data, or decision part is...">
+          <input class="write-line" type="text" placeholder="The thing I am stuck on is...">
+        </div>
+      </div>
+    </div>
+    <div class="tip-box blue mt-2">No one is ever forced to present. Optional: 1–2 volunteers show their working slice to the whole class!</div>
+  </div>
+
+  <hr class="divider">
+  <div class="section-label">Reflect</div>
+  <div class="section-title">Exit Ticket &amp; Growth Check</div>
+
+  <div class="card mb-3">
+    <div class="grid-2">
+      <div>
+        <div class="card-label blue">Exit Ticket</div>
+        <p style="font-size:0.8rem;font-weight:700;color:#374151;margin:8px 0 3px">Tonight's homework:</p>
+        <p style="font-size:0.8rem;color:#374151">Get one part of your project working and write down one thing that is still stuck so the class can fix it together next time.</p>
+      </div>
+      <div>
+        <div class="card-label green">Growth Mindset Check</div>
+        <p style="font-size:0.8rem;color:#374151;margin-bottom:8px">Circle the one that describes you today:</p>
+        <div style="display:flex;flex-direction:column;gap:7px;font-size:0.83rem;color:#374151">
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="radio" name="mood" style="accent-color:#0b63ce"> I got my working slice running today</label>
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="radio" name="mood" style="accent-color:#0b63ce"> I fixed a bug on my own</label>
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="radio" name="mood" style="accent-color:#0b63ce"> My conference helped me find my next step</label>
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="radio" name="mood" style="accent-color:#0b63ce"> I can now explain where the AI is in my project</label>
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="radio" name="mood" style="accent-color:#0b63ce"> I'm still stuck, and that's okay — I have a next step</label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-label">Scoring</div>
+  <div class="section-title">Rubric &amp; Points</div>
+  <div class="card mb-3">
+    <table class="rubric">
+      <thead><tr><th>Block</th><th>What to Look For</th><th>Points</th></tr></thead>
+      <tbody>
+        <tr><td>Block 1 — Warm-Up</td><td>Smallest-thing goal named; 20-second test answered</td><td class="pts">3 pts</td></tr>
+        <tr><td>Block 2 — Mini-Lesson</td><td>Build lens chosen; tiny working version named for own project</td><td class="pts">3 pts</td></tr>
+        <tr><td>Block 3 — Guided Build</td><td>All 4 conference prep questions answered honestly</td><td class="pts">4 pts</td></tr>
+        <tr><td>Block 5 — Open Build</td><td>Chosen tier fully completed; slice actually runs</td><td class="pts">8 pts</td></tr>
+        <tr><td>Mid-Build AI Check</td><td>Sentence stem completed pointing to a real AI/data/decision element</td><td class="pts">2 pts</td></tr>
+        <tr><td>Block 6 — Share-Out</td><td>Exit prompts completed; homework goal named</td><td class="pts">2 pts</td></tr>
+        <tr><td>⭐ Tier C Debug Log Bonus</td><td>2+ bugs logged with fixes tried</td><td class="pts">+2</td></tr>
+      </tbody>
+    </table>
+    <div style="display:flex;justify-content:flex-end;margin-top:10px;gap:24px;font-size:0.82rem;color:#374151">
+      <span>Total (without bonus) <strong style="font-family:var(--font-code);color:#0b63ce">/ 22</strong></span>
+      <span>Total (with bonus) <strong style="font-family:var(--font-code);color:#10b981">/ 24</strong></span>
+    </div>
+  </div>
+
+  <div class="sheet-footer">
+    <div><strong>Session 20 · Capstone Build Day 1</strong> · In-Class Activity Sheet · Modern Chinese School Summer 2026<br>
+    <span class="grad-text" style="font-weight:800">First working slice · Teacher conference · AI/data check · Debugging</span></div>
+    <div style="text-align:right">Ages 7–13 · Grades 1–9<br><span style="font-size:0.7rem">A bug is evidence your project is becoming real.</span></div>
+  </div>
+
+</div>
+</body>
+</html>
