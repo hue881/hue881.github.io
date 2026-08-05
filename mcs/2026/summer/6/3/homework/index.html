@@ -1,1 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Homework · Session 20 · Capstone Build Day 1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --color-bg: #f0f8ff; --color-surface: rgba(255,255,255,0.97);
+  --color-text: #0f2747; --color-text-secondary: #3a5a7a; --color-text-muted: #5b7290;
+  --color-accent-1: #0b63ce; --color-accent-2: #10b981; --color-accent-3: #f59e0b;
+  --color-accent-red: #ef4444; --color-accent-purple: #7c3aed;
+  --font-display: 'Fredoka', 'Trebuchet MS', sans-serif;
+  --font-body: 'Nunito', Arial, sans-serif; --font-code: 'Fira Code', Consolas, monospace;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+@media print {
+  body { background: #fff !important; } .no-print { display: none !important; }
+  .page-break { page-break-before: always; }
+  .card { box-shadow: none !important; border: 1.5px solid #d1d5db !important; }
+}
+body { font-family: var(--font-body); color: var(--color-text); background: var(--color-bg); min-height: 100vh; }
+.print-bar { background: rgba(255,255,255,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(148,163,184,0.3); padding: 10px 24px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; gap: 12px; flex-wrap: wrap; }
+.print-bar .bar-title { font-family: var(--font-display); font-size: 1.05rem; font-weight: 700; color: var(--color-accent-1); }
+.print-bar .bar-sub { font-size: 0.78rem; color: var(--color-text-muted); }
+.btn-print { background: var(--color-accent-1); color: #fff; border: none; padding: 8px 20px; border-radius: 999px; font-family: var(--font-body); font-size: 0.82rem; font-weight: 800; cursor: pointer; letter-spacing: 0.06em; transition: background 0.2s, transform 0.15s; }
+.btn-print:hover { background: #0952b0; transform: translateY(-1px); }
+.page { max-width: 920px; margin: 0 auto; padding: 32px 24px 60px; }
+.sheet-header { background: linear-gradient(135deg, #10b981 0%, #0b63ce 55%, #7c3aed 100%); border-radius: 20px; padding: 28px 32px 24px; color: #fff; margin-bottom: 22px; position: relative; overflow: hidden; }
+.sheet-header::before { content: ''; position: absolute; top: -60px; right: -60px; width: 200px; height: 200px; background: rgba(255,255,255,0.08); border-radius: 50%; }
+.header-emoji { font-size: 2.6rem; margin-bottom: 6px; }
+.header-day { font-size: 0.75rem; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; opacity: 0.85; margin-bottom: 4px; }
+.header-title { font-family: var(--font-display); font-size: clamp(1.5rem, 4vw, 2.2rem); font-weight: 700; line-height: 1.1; margin-bottom: 6px; }
+.header-sub { font-size: 0.86rem; opacity: 0.9; margin-bottom: 14px; }
+.header-pills { display: flex; gap: 8px; flex-wrap: wrap; }
+.header-pill { background: rgba(255,255,255,0.22); border: 1px solid rgba(255,255,255,0.35); border-radius: 999px; padding: 4px 14px; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
+.timer-banner { background: #0f2747; border-radius: 14px; padding: 14px 18px; margin-bottom: 22px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.timer-chip { display: flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.08); border-radius: 999px; padding: 6px 14px; font-size: 0.78rem; color: #e6f2ff; font-weight: 700; }
+.timer-chip .tm { color: #fbbf24; font-family: var(--font-code); }
+.student-info { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 26px; }
+@media (max-width: 600px) { .student-info { grid-template-columns: 1fr; } }
+.info-field { background: var(--color-surface); border-radius: 12px; padding: 12px 14px; border: 1.5px solid rgba(11,99,206,0.14); box-shadow: 0 2px 8px rgba(15,23,42,0.05); }
+.info-label { font-size: 0.65rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-accent-1); margin-bottom: 6px; }
+.info-line { border: none; border-bottom: 1.5px solid #cbd5e1; width: 100%; font-family: var(--font-body); font-size: 0.9rem; color: var(--color-text); background: transparent; outline: none; padding: 2px 0; }
+.section-label { display: inline-flex; align-items: center; gap: 8px; padding: 5px 16px; border-radius: 999px; border: 1px solid rgba(148,163,184,0.4); background: rgba(255,255,255,0.9); font-size: 0.72rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-accent-1); margin-bottom: 10px; }
+.section-title { font-family: var(--font-display); font-size: clamp(1.3rem, 2.5vw, 1.8rem); font-weight: 700; margin-bottom: 16px; color: var(--color-text); line-height: 1.2; }
+.card { background: var(--color-surface); border-radius: 16px; padding: 18px 20px; box-shadow: 0 4px 18px rgba(15,23,42,0.07); border: 1px solid rgba(255,255,255,0.7); margin-bottom: 16px; }
+.card.accent-blue { border-left: 4px solid var(--color-accent-1); }
+.card.accent-green { border-left: 4px solid var(--color-accent-2); }
+.card.accent-amber { border-left: 4px solid var(--color-accent-3); }
+.card.accent-purple { border-left: 4px solid var(--color-accent-purple); }
+.card-label { font-size: 0.68rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 8px; }
+.card-label.blue { color: var(--color-accent-1); } .card-label.green { color: #047857; } .card-label.amber { color: #b45309; } .card-label.purple { color: #6d28d9; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+@media (max-width: 680px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+input.write-line { border: none; border-bottom: 1.5px solid #cbd5e1; width: 100%; margin-bottom: 10px; height: 28px; display: block; background: transparent; font-family: var(--font-body); font-size: 0.88rem; color: var(--color-text); outline: none; padding: 2px 4px; }
+input.write-line::placeholder { color: #bdc5d1; font-style: italic; }
+textarea.write-area { border: 1.5px solid #cbd5e1; border-radius: 8px; width: 100%; min-height: 70px; padding: 8px; font-family: var(--font-body); font-size: 0.85rem; color: var(--color-text); resize: vertical; background: #f8fafc; outline: none; display: block; }
+textarea.write-area::placeholder { color: #bdc5d1; font-style: italic; }
+.level-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 14px; border-radius: 999px; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 8px; }
+.level-a { background: linear-gradient(135deg, #10b981, #059669); color: #fff; }
+.level-b { background: linear-gradient(135deg, #0b63ce, #2563eb); color: #fff; }
+.level-c { background: linear-gradient(135deg, #7c3aed, #ef4444); color: #fff; }
+.check-list { list-style: none; padding: 0; }
+.check-list li { display: flex; align-items: flex-start; gap: 8px; font-size: 0.85rem; color: var(--color-text-secondary); margin-bottom: 8px; line-height: 1.45; }
+.check-list li .box { flex-shrink: 0; width: 17px; height: 17px; border: 2px solid #94a3b8; border-radius: 4px; margin-top: 1px; background: #fff; display: inline-block; }
+table.rubric { width: 100%; border-collapse: collapse; font-size: 0.82rem; margin-top: 8px; }
+table.rubric th { background: #0f2747; color: #e6f2ff; padding: 8px 10px; text-align: left; font-weight: 700; letter-spacing: 0.05em; }
+table.rubric td { padding: 8px 10px; border-bottom: 1px solid #e2e8f0; vertical-align: top; color: var(--color-text-secondary); }
+table.rubric tr:nth-child(even) td { background: rgba(241,245,249,0.6); }
+table.rubric td:first-child { font-weight: 700; color: var(--color-text); }
+table.rubric .pts { font-family: var(--font-code); font-size: 0.75rem; font-weight: 800; color: var(--color-accent-1); white-space: nowrap; }
+.tip-box { border-radius: 10px; padding: 10px 14px; font-size: 0.8rem; line-height: 1.5; margin-top: 10px; }
+.tip-box.blue { background: rgba(11,99,206,0.07); color: #1e40af; }
+.tip-box.green { background: rgba(16,185,129,0.07); color: #065f46; }
+.tip-box.amber { background: rgba(245,158,11,0.07); color: #92400e; }
+.tip-box.purple { background: rgba(124,58,237,0.07); color: #5b21b6; }
+.divider { border: none; border-top: 2px dashed #dde6f0; margin: 26px 0; }
+.grad-text { background: linear-gradient(135deg,#10b981,#0b63ce,#7c3aed); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.sheet-footer { margin-top: 40px; padding: 16px 20px; border-radius: 12px; background: rgba(11,99,206,0.05); border: 1px solid rgba(11,99,206,0.12); display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; font-size: 0.76rem; color: var(--color-text-muted); }
+.sheet-footer strong { color: var(--color-text); }
+p, li { font-size: 0.88rem; color: var(--color-text-secondary); line-height: 1.55; }
+strong { color: var(--color-text); }
+</style>
+</head>
+<body>
 
+<div class="print-bar no-print">
+  <div>
+    <div class="bar-title">Session 20 · 30-Minute Homework</div>
+    <div class="bar-sub">Capstone Build Day 1 — Keep Building &amp; Log the Stuck Part · Tiered · Ages 7–13</div>
+  </div>
+  <button class="btn-print" onclick="window.print()">🖨 Print / Save as PDF</button>
+</div>
+
+<div class="page">
+
+  <div class="sheet-header">
+    <div class="header-emoji">🛠️</div>
+    <div class="header-day">Session 20 Homework · Wed Aug 5 · Week 6</div>
+    <div class="header-title">Get One Part Working</div>
+    <div class="header-sub">Tonight: build on your first working slice and write down one thing that's still stuck — about 30 minutes</div>
+    <div class="header-pills">
+      <span class="header-pill">30 minutes</span>
+      <span class="header-pill">Laptop / Scratch / Python</span>
+      <span class="header-pill">3 Tiers</span>
+      <span class="header-pill">Due next session (Aug 6)</span>
+    </div>
+  </div>
+
+  <div class="timer-banner no-print">
+    <span class="timer-chip">⏱ Part 1 <span class="tm">5 min</span> — Reopen &amp; Recall</span>
+    <span class="timer-chip">⏱ Part 2 <span class="tm">18 min</span> — Tiered Build Task</span>
+    <span class="timer-chip">⏱ Part 3 <span class="tm">4 min</span> — AI Connection</span>
+    <span class="timer-chip">⏱ Reflect <span class="tm">3 min</span></span>
+  </div>
+
+  <div class="student-info">
+    <div class="info-field"><div class="info-label">Your Name</div><input class="info-line" type="text" placeholder="First Last"></div>
+    <div class="info-field"><div class="info-label">Date</div><input class="info-line" type="text" placeholder="August 5, 2026"></div>
+    <div class="info-field"><div class="info-label">Section</div><input class="info-line" type="text" placeholder="Section 1 / 2 / 3"></div>
+  </div>
+
+  <div class="section-label">Part 1 · 5 min</div>
+  <div class="section-title">Reopen &amp; Recall</div>
+
+  <div class="card accent-blue mb-2">
+    <div class="card-label blue">Where You Left Off</div>
+    <div class="grid-2">
+      <div>
+        <p style="font-size:0.83rem;font-weight:700;color:#374151;margin-bottom:4px">My working slice does:</p>
+        <input class="write-line" type="text" placeholder="It currently...">
+      </div>
+      <div>
+        <p style="font-size:0.83rem;font-weight:700;color:#374151;margin-bottom:4px">What I'm stuck on:</p>
+        <input class="write-line" type="text" placeholder="I'm stuck on...">
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="section-label">Part 2 · 18 min</div>
+  <div class="section-title">Coding Challenge — Get One Part Working</div>
+
+  <div class="card accent-green mb-2">
+    <div class="card-label green">Everyone — The Core Task</div>
+    <p class="mb-2">Get <strong>one part</strong> of your project working (or working better than it did in class), then write down <strong>one thing that is still stuck</strong> so the class can fix it together next time.</p>
+  </div>
+
+  <div class="card mb-2" style="border-top:4px solid #10b981">
+    <div style="margin-bottom:8px"><span class="level-badge level-a">🌱 Tier A — Foundations</span></div>
+    <p class="mb-2">Try the same working slice from class ONE more time at home. Change only <strong>one small thing</strong> (a color, a number, a word) and see what happens.</p>
+    <input class="write-line" type="text" placeholder="The one small thing I changed was...">
+    <ul class="check-list mt-2">
+      <li><span class="box"></span>Ran my project at least once at home</li>
+      <li><span class="box"></span>Changed one small thing and noticed what happened</li>
+    </ul>
+  </div>
+
+  <div class="card mb-2" style="border-top:4px solid #0b63ce">
+    <div style="margin-bottom:8px"><span class="level-badge level-b">⭐ Tier B — Core</span></div>
+    <p class="mb-2">Get your working slice from class to run <strong>reliably 3 times in a row</strong> without crashing, then add ONE small new detail (a sound, a message, a second action).</p>
+    <p style="font-size:0.83rem;font-weight:700;color:#374151;margin-bottom:4px">The new detail I added:</p>
+    <input class="write-line" type="text" placeholder="I added...">
+    <ul class="check-list mt-2">
+      <li><span class="box"></span>Ran without crashing 3 times</li>
+      <li><span class="box"></span>Added one small new detail</li>
+    </ul>
+  </div>
+
+  <div class="card accent-purple mb-3" style="border-top:4px solid #7c3aed">
+    <div style="margin-bottom:8px"><span class="level-badge level-c">🚀 Tier C — Accelerated</span></div>
+    <p class="mb-2">Continue your debug log from class. Fix at least <strong>one bug</strong> you flagged, and write the exact line or block of logic you changed.</p>
+    <div class="grid-2">
+      <div>
+        <p style="font-size:0.83rem;font-weight:700;color:#6d28d9;margin-bottom:4px">Bug I fixed:</p>
+        <input class="write-line" type="text" placeholder="The bug was...">
+      </div>
+      <div>
+        <p style="font-size:0.83rem;font-weight:700;color:#6d28d9;margin-bottom:4px">What I changed:</p>
+        <input class="write-line" type="text" placeholder="I changed...">
+      </div>
+    </div>
+    <div class="tip-box purple mt-2">🎁 <strong>Stretch goal:</strong> add a second small testable piece (a second rule, a second chatbot response, a second scene beat) beyond your original slice.</div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="section-label">Part 3 · 4 min</div>
+  <div class="section-title">AI Connection</div>
+
+  <div class="card accent-amber mb-3">
+    <div class="card-label amber">Think It Through</div>
+    <p class="mb-2"><strong>1.</strong> Point to the exact spot in your project (a line of code, a Scratch block, or a trained model) where the AI, data, or decision-making lives.</p>
+    <textarea class="write-area" style="min-height:55px" placeholder="The AI/data/decision part is..."></textarea>
+    <p class="mb-2 mt-2"><strong>2.</strong> If your project were only 20 seconds long, would someone still be able to see that AI part? Why or why not?</p>
+    <textarea class="write-area" style="min-height:55px" placeholder="Yes/No, because..."></textarea>
+  </div>
+
+  <hr class="divider">
+
+  <div class="section-label">Reflect · 3 min</div>
+  <div class="section-title">Before You Turn It In</div>
+
+  <div class="card mb-3">
+    <div class="grid-2">
+      <div>
+        <p style="font-size:0.83rem;color:#374151;margin-bottom:8px">Check the boxes that are true:</p>
+        <ul class="check-list">
+          <li><span class="box"></span>I got one part of my project working (or working better)</li>
+          <li><span class="box"></span>I matched my tier's task (A / B / C)</li>
+          <li><span class="box"></span>I answered both AI Connection questions</li>
+          <li><span class="box"></span>I wrote down what's still stuck so we can fix it together</li>
+        </ul>
+      </div>
+      <div>
+        <p style="font-size:0.83rem;font-weight:700;color:#374151;margin-bottom:6px">One thing that's still stuck (bring this to class!):</p>
+        <input class="write-line" type="text" placeholder="I'm still stuck on...">
+        <div class="tip-box green mt-2">Next session (Aug 6): <strong>Capstone Build Day 2</strong> — core features complete, with debugging support.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-label">Scoring</div>
+  <div class="section-title">Rubric &amp; Points</div>
+  <div class="card mb-3">
+    <table class="rubric">
+      <thead><tr><th>Part</th><th>What to Look For</th><th>Points</th></tr></thead>
+      <tbody>
+        <tr><td>Part 1 — Reopen &amp; Recall</td><td>Current state and stuck point named honestly</td><td class="pts">3 pts</td></tr>
+        <tr><td>Part 2 — Build Task</td><td>Completed at the student's tier level; something new works or improves</td><td class="pts">9 pts</td></tr>
+        <tr><td>Part 3 — AI Connection</td><td>Both questions answered thoughtfully, pointing to a real project detail</td><td class="pts">4 pts</td></tr>
+        <tr><td>Reflect</td><td>Checklist completed; stuck point ready to bring to class</td><td class="pts">2 pts</td></tr>
+        <tr><td>🎁 Tier C Stretch Goal</td><td>Second testable piece added beyond the original slice</td><td class="pts">+2</td></tr>
+      </tbody>
+    </table>
+    <div style="display:flex;justify-content:flex-end;margin-top:10px;gap:24px;font-size:0.82rem;color:#374151">
+      <span>Total (without bonus) <strong style="font-family:var(--font-code);color:#0b63ce">/ 18</strong></span>
+      <span>Total (with bonus) <strong style="font-family:var(--font-code);color:#10b981">/ 20</strong></span>
+    </div>
+  </div>
+
+  <div class="sheet-footer">
+    <div><strong>Session 20 · Capstone Build Day 1</strong> · 30-Minute Homework · Modern Chinese School Summer 2026<br>
+    <span class="grad-text" style="font-weight:800">Get one part working · Debug · Locate the AI</span></div>
+    <div style="text-align:right">Ages 7–13 · Grades 1–9<br><span style="font-size:0.7rem">A bug is evidence your project is becoming real.</span></div>
+  </div>
+
+</div>
+</body>
+</html>
