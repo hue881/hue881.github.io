@@ -21,7 +21,7 @@
 | **2-4** | [The Bridge](https://hue881.github.io/mcs/2026/summer/2/4) | [2-4 Activity](https://hue881.github.io/mcs/2026/summer/2/4/activity) | [2-4 Homework](https://hue881.github.io/mcs/2026/summer/2/4/homework) | -- ||
 | **3-1** | [Midterm Review](https://hue881.github.io/mcs/2026/summer/midterm) | [3-1 Activity](https://hue881.github.io/mcs/2026/summer/midterm/activity) |-- | -- ||
 | **3-2** | [Python: Variables, Input & Output](https://hue881.github.io/mcs/2026/summer/3/2) | [3-2 Activity](https://hue881.github.io/mcs/2026/summer/3/2/activity) | [3-2 Homework](https://hue881.github.io/mcs/2026/summer/3/2/homework) | -- ||
-| **3-3** | [Midterm Exam]() |--  |--  | -- ||
+| **3-3** | [Midterm Exam] |--  |--  | -- ||
 | **4-1** | [Python turtle Graphics + Loops](https://hue881.github.io/mcs/2026/summer/4/1) | [4-1 Activity](https://hue881.github.io/mcs/2026/summer/4/1/activity) | [4-1 Homework](https://hue881.github.io/mcs/2026/summer/4/1/homework) | -- |*|
 | **4-2** | [Python: Conditionals](https://hue881.github.io/mcs/2026/summer/4/2) | [4-2 Activity](https://hue881.github.io/mcs/2026/summer/4/2/activity) | [4-2 Homework](https://hue881.github.io/mcs/2026/summer/4/2/homework) | [4-2 Challenge](https://hue881.github.io/mcs/2026/summer/4/2/challenge) ||
 | **4-3** | [Functions: Reusable Blocks](https://hue881.github.io/mcs/2026/summer/4/3) | [4-3 Activity](https://hue881.github.io/mcs/2026/summer/4/3/activity) | [4-3 Homework](https://hue881.github.io/mcs/2026/summer/4/3/homework) | [4-3 Challenge](https://hue881.github.io/mcs/2026/summer/4/3/challenge) ||
@@ -32,7 +32,7 @@
 | **5-4** | [Capstone Kickoff](https://hue881.github.io/mcs/2026/summer/5/4) | [5-4 Activity](https://hue881.github.io/mcs/2026/summer/5/4/activity) | [5-4 Homework](https://hue881.github.io/mcs/2026/summer/5/4/homework) | -- ||
 | **6-2** | [FINAL: Project Demo + Concept Check](https://hue881.github.io/mcs/2026/summer/6/2) | [6-2 Activity](https://hue881.github.io/mcs/2026/summer/6/2/activity) |-- | -- ||
 | **6-3** | [Capstone Build Day 1](https://hue881.github.io/mcs/2026/summer/6/3) | [6-3 Activity](https://hue881.github.io/mcs/2026/summer/6/3/activity) |[6-3 Homework](https://hue881.github.io/mcs/2026/summer/6/3/homework)| -- ||
-| **6-4** | [Final Exam](https://hue881.github.io/mcs/2026/summer/final) |--  |--  | -- ||
+| **6-4** | [Final Exam] |--  |--  | -- ||
 
 
 
