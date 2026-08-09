@@ -34,6 +34,7 @@
 | **6-2** | [FINAL: Project Demo + Concept Check](https://hue881.github.io/mcs/2026/summer/6/2) | [6-2 Activity](https://hue881.github.io/mcs/2026/summer/6/2/activity) |-- | -- ||
 | **6-3** | [Capstone Build Day 1](https://hue881.github.io/mcs/2026/summer/6/3) | [6-3 Activity](https://hue881.github.io/mcs/2026/summer/6/3/activity) |[6-3 Homework](https://hue881.github.io/mcs/2026/summer/6/3/homework)| -- ||
 | **6-4** | Final Exam |--  |--  | -- ||
+| **7-1** | [Capstone Build Day 2](https://hue881.github.io/mcs/2026/summer/7/1) | [7-1 Activity](https://hue881.github.io/mcs/2026/summer/7/1/activity) | [5-4 Homework](https://hue881.github.io/mcs/2026/summer/7/1/homework) | -- ||
 
 
 
