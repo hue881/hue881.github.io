@@ -6,6 +6,7 @@
 [Instructor](https://hue881.github.io/mcs/2026/hue)  
 [Syllabus](https://hue881.github.io/mcs/2026/summer/syllabus)  
 [Rules and Regulations](https://hue881.github.io/mcs/2026/rules) 
+[End of Summer Party Permission Slip](https://hue881.github.io/mcs/2026/summer/permission) 
 
 [Dropbox Transfer](https://www.dropbox.com/request/6ef6fxmcmxaslq2o2gr3)
 
