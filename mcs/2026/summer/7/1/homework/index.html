@@ -1,1 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Homework &middot; Session 21 &middot; Capstone Build Day 2 (30 min)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f4fbff;--sur:rgba(255,255,255,.97);--tx:#1f2a37;--tx2:#374151;--txm:#5b6b7e;--a1:#0b63ce;--a2:#10b981;--a3:#f59e0b;--ar:#e44;--ap:#7c3aed;--fd:'Fredoka','Trebuchet MS',sans-serif;--fb:'Nunito',Arial,sans-serif;--fc:'Fira Code',Consolas,monospace}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+@media print{body{background:#fff!important}.no-print{display:none!important}.pb{page-break-before:always}.card{box-shadow:none!important;border:1.5px solid #d1d5db!important}}
+body{font-family:var(--fb);color:var(--tx);background:var(--bg);min-height:100vh}
+.pbar{background:rgba(255,255,255,.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(148,163,184,.3);padding:10px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;gap:12px;flex-wrap:wrap}
+.pbar-title{font-family:var(--fd);font-size:1.05rem;font-weight:700;color:var(--a1)}
+.pbar-sub{font-size:.78rem;color:var(--txm)}
+.btn-p{background:var(--a1);color:#fff;border:none;padding:8px 20px;border-radius:999px;font-family:var(--fb);font-size:.82rem;font-weight:800;cursor:pointer;letter-spacing:.06em;transition:.2s}
+.btn-p:hover{background:#0949a0;transform:translateY(-1px)}
+.page{max-width:920px;margin:0 auto;padding:32px 24px 60px}
+.shdr{background:linear-gradient(135deg,#0b63ce 0%,#10b981 60%,#f59e0b 100%);border-radius:20px;padding:28px 32px 24px;color:#fff;margin-bottom:28px;position:relative;overflow:hidden}
+.shdr::before{content:'';position:absolute;top:-60px;right:-60px;width:200px;height:200px;background:rgba(255,255,255,.08);border-radius:50%}
+.shdr::after{content:'';position:absolute;bottom:-40px;left:-40px;width:140px;height:140px;background:rgba(255,255,255,.06);border-radius:50%}
+.hday{font-size:.75rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;opacity:.85;margin-bottom:4px}
+.htitle{font-family:var(--fd);font-size:clamp(1.6rem,4vw,2.4rem);font-weight:700;line-height:1.1;margin-bottom:6px}
+.hsub{font-size:.88rem;opacity:.85;margin-bottom:14px}
+.hpills{display:flex;gap:8px;flex-wrap:wrap}
+.hpill{background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:4px 14px;font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+.sinfo{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:28px}
+@media(max-width:600px){.sinfo{grid-template-columns:1fr}}
+.ifield{background:var(--sur);border-radius:12px;padding:12px 14px;border:1.5px solid rgba(11,99,206,.14);box-shadow:0 2px 8px rgba(15,23,42,.05)}
+.ilabel{font-size:.65rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--a1);margin-bottom:6px}
+.iline{border:none;border-bottom:1.5px solid #cbd5e1;width:100%;font-family:var(--fb);font-size:.9rem;color:var(--tx);background:transparent;outline:none;padding:2px 0}
+.iline:focus{border-bottom-color:#0b63ce}
+.slabel{display:inline-flex;align-items:center;gap:8px;padding:5px 16px;border-radius:999px;border:1px solid rgba(148,163,184,.4);background:rgba(255,255,255,.9);font-size:.72rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--a1);margin-bottom:10px}
+.stitle{font-family:var(--fd);font-size:clamp(1.3rem,2.5vw,1.8rem);font-weight:700;margin-bottom:16px;color:var(--tx);line-height:1.2}
+.card{background:var(--sur);border-radius:16px;padding:18px 20px;box-shadow:0 4px 18px rgba(15,23,42,.07);border:1px solid rgba(255,255,255,.7);margin-bottom:16px}
+.card.ab{border-left:4px solid var(--a1)}.card.ag{border-left:4px solid var(--a2)}.card.aa{border-left:4px solid var(--a3)}.card.ar{border-left:4px solid var(--ar)}.card.ap{border-left:4px solid var(--ap)}
+.clabel{font-size:.68rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;margin-bottom:8px}
+.cl-b{color:var(--a1)}.cl-g{color:#0a7a56}.cl-a{color:#b45309}.cl-r{color:#b91c1c}.cl-p{color:#6d28d9}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media(max-width:680px){.g2,.g3{grid-template-columns:1fr}}
+.wl{border:none;border-bottom:1.5px solid #cbd5e1;width:100%;margin-bottom:10px;height:28px;display:block;background:transparent;font-family:var(--fb);font-size:.88rem;color:var(--tx);outline:none;padding:2px 4px}
+.wl:focus{border-bottom-color:#0b63ce}
+.wl::placeholder{color:#bdc5d1;font-style:italic}
+.wa{border:1.5px solid #cbd5e1;border-radius:8px;width:100%;min-height:70px;padding:8px;font-family:var(--fb);font-size:.85rem;color:var(--tx);resize:vertical;background:#f8fafc;outline:none;display:block}
+.wa:focus{outline:2px solid rgba(11,99,206,.3)}
+.wa::placeholder{color:#bdc5d1;font-style:italic}
+.tip{border-radius:10px;padding:10px 14px;font-size:.8rem;line-height:1.5;margin-top:10px}
+.tip.b{background:rgba(11,99,206,.07);color:#0b3d80}.tip.g{background:rgba(16,185,129,.08);color:#065f46}.tip.a{background:rgba(245,158,11,.07);color:#92400e}.tip.p{background:rgba(124,58,237,.07);color:#5b21b6}
+.div{border:none;border-top:2px dashed #dde6f0;margin:28px 0}
+.chk{list-style:none;padding:0}
+.chk li{display:flex;align-items:flex-start;gap:8px;font-size:.85rem;color:var(--tx2);margin-bottom:8px;line-height:1.45}
+.chk li .bx{flex-shrink:0;width:17px;height:17px;border:2px solid #94a3b8;border-radius:4px;margin-top:1px;background:#fff;display:inline-block}
+.sb{display:inline-flex;align-items:center;gap:4px;padding:3px 10px 3px 8px;border-radius:6px;font-family:var(--fc);font-weight:700;font-size:.78rem;cursor:default;user-select:none;vertical-align:middle}
+.sbp{background:#9c27b0;color:#fff}.sbo{background:#f59e0b;color:#fff}.sbb{background:#0b63ce;color:#fff}.sby{background:#eab308;color:#333}.sbt{background:#10b981;color:#fff}.sbg{background:#22c55e;color:#fff}
+.lvl{display:inline-flex;align-items:center;gap:6px;padding:4px 14px;border-radius:999px;font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px}
+.la{background:linear-gradient(135deg,#0b63ce,#60a5fa);color:#fff}
+.lb{background:linear-gradient(135deg,#10b981,#4ade80);color:#fff}
+.lc{background:linear-gradient(135deg,#7c3aed,#f59e0b);color:#fff}
+table.rub{width:100%;border-collapse:collapse;font-size:.82rem;margin-top:8px}
+table.rub th{background:#1e293b;color:#e2e8f0;padding:8px 10px;text-align:left;font-weight:700;letter-spacing:.05em}
+table.rub td{padding:8px 10px;border-bottom:1px solid #e2e8f0;vertical-align:top;color:var(--tx2)}
+table.rub tr:nth-child(even) td{background:rgba(241,245,249,.6)}
+table.rub td:first-child{font-weight:700;color:var(--tx)}
+table.rub .pts{font-family:var(--fc);font-size:.75rem;font-weight:800;color:var(--a1);white-space:nowrap}
+.sfooter{margin-top:40px;padding:16px 20px;border-radius:12px;background:rgba(11,99,206,.05);border:1px solid rgba(11,99,206,.12);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:.76rem;color:var(--txm)}
+.sfooter strong{color:var(--tx)}
+.gtext{background:linear-gradient(135deg,#0b63ce,#10b981,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.mb1{margin-bottom:6px}.mb2{margin-bottom:10px}.mb3{margin-bottom:14px}.mt2{margin-top:10px}.mt3{margin-top:14px}
+.tmuted{color:var(--txm);font-size:.78rem}
+code{background:#e0f2ff;padding:1px 6px;border-radius:4px;font-family:var(--fc);font-size:.82em;color:#0b3d80}
+.timer{display:flex;border-radius:12px;overflow:hidden;margin-bottom:20px;border:2px solid rgba(11,99,206,.15)}
+.tseg{flex:1;padding:8px 4px;text-align:center;font-size:.62rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase;line-height:1.3}
+.t1{background:#eff6ff;color:#0b3d80;border-right:1px solid rgba(11,99,206,.15)}
+.t2{background:#f0fdf4;color:#0a7a56;border-right:1px solid rgba(16,185,129,.15)}
+.t3{background:#fefce8;color:#a16207}
+</style>
+</head>
+<body>
+<div class="pbar no-print">
+  <div><div class="pbar-title">&#127968; Session 21 &middot; Homework</div><div class="pbar-sub">Capstone Build Day 2 &mdash; 30-Minute Take-Home &middot; Ages 7&ndash;13</div></div>
+  <button class="btn-p" onclick="window.print()">&#128438; Print / Save as PDF</button>
+</div>
+<div class="page">
 
+<div class="shdr">
+  <div style="font-size:2.8rem;margin-bottom:6px;">&#127968;&#128027;</div>
+  <div class="hday">Session 21 Homework &middot; Due Next Class &middot; Summer 2026 AI &amp; Coding Program</div>
+  <div class="htitle">Finish Your Feature + Write Your Showcase Intro</div>
+  <div class="hsub">30 minutes at home. Finish your main feature and start describing what your project does.</div>
+  <div class="hpills">
+    <span class="hpill">&#9203; 30 min</span><span class="hpill">Ages 7&ndash;13</span><span class="hpill">3 Tiers</span><span class="hpill">Debugging &middot; Showcase Prep</span>
+  </div>
+</div>
+
+<div class="sinfo">
+  <div class="ifield"><div class="ilabel">&#128100; Your Name</div><input class="iline" type="text" placeholder="First Last" /></div>
+  <div class="ifield"><div class="ilabel">&#128197; Date Assigned</div><input class="iline" type="text" value="August 10, 2026" /></div>
+  <div class="ifield"><div class="ilabel">&#127979; Section / Period</div><input class="iline" type="text" placeholder="Section 1 / 2 / 3" /></div>
+</div>
+
+<!-- TIME BUDGET -->
+<div class="slabel">&#9203; Time Budget</div>
+<div class="stitle">30 Minutes, Two Parts</div>
+<div class="timer">
+  <div class="tseg t1">&#128296;<br>Finish Your Feature<br>20 min</div>
+  <div class="tseg t2">&#128172;<br>Showcase Intro Draft<br>10 min</div>
+</div>
+<p class="tmuted mb3">Every tier does both parts &mdash; the depth changes, not the time. Set a timer so you don&rsquo;t go over 30 minutes!</p>
+
+<!-- FROM TODAY -->
+<div class="card ab mb3">
+  <div class="clabel cl-b">&#128203; Quick Recap From Class</div>
+  <p class="mb2" style="font-size:.85rem;color:#374151;">Today you learned the debugging method: <strong>Stop &rarr; Check &rarr; Find &rarr; Fix &rarr; Test</strong>. Use it tonight if anything breaks &mdash; don&rsquo;t just guess and change random things!</p>
+  <div class="g3">
+    <div style="background:#fff1f2;border-radius:10px;padding:10px;text-align:center;"><div style="font-size:1.3rem;">&#128683;</div><div style="font-weight:800;font-size:.75rem;color:#b91c1c;">Syntax Bug</div><div style="font-size:.68rem;color:#374151;">Won&rsquo;t run at all</div></div>
+    <div style="background:#fff7ed;border-radius:10px;padding:10px;text-align:center;"><div style="font-size:1.3rem;">&#128165;</div><div style="font-weight:800;font-size:.75rem;color:#b45309;">Runtime Bug</div><div style="font-size:.68rem;color:#374151;">Crashes while running</div></div>
+    <div style="background:#faf5ff;border-radius:10px;padding:10px;text-align:center;"><div style="font-size:1.3rem;">&#129300;</div><div style="font-weight:800;font-size:.75rem;color:#6d28d9;">Logic Bug</div><div style="font-size:.68rem;color:#374151;">Runs, but wrong result</div></div>
+  </div>
+</div>
+
+<hr class="div">
+
+<!-- PART 1 -->
+<div class="slabel">&#128296; Part 1 &middot; Finish Your Feature (20 min)</div>
+<div class="stitle">Find Your Tier and Complete Your Goal</div>
+
+<!-- Tier A -->
+<div class="card mb2" style="border:2px solid #bfdbfe;background:#f8faff;">
+  <div style="margin-bottom:8px;"><span class="lvl la">Tier A &mdash; Foundations &middot; Grades 1&ndash;3</span></div>
+  <div class="clabel cl-b">&#127374; Goal: Make your one feature run without help</div>
+  <p class="mb2" style="font-size:.85rem;color:#374151;">Open your project. Run it 3 times in a row. If it breaks, try ONE fix using Stop &rarr; Check &rarr; Find &rarr; Fix &rarr; Test.</p>
+  <div class="chk">
+    <li><span class="bx"></span> I ran my project 3 times</li>
+    <li><span class="bx"></span> It worked the same way every time (or I know why it didn&rsquo;t)</li>
+    <li><span class="bx"></span> If it broke, I tried ONE fix, not many at once</li>
+  </div>
+  <p style="font-size:.8rem;font-weight:700;color:#0b3d80;margin-top:8px;margin-bottom:4px;">Did your project work all 3 times? What happened?</p>
+  <input class="wl" type="text" placeholder="It worked... / It broke because..." />
+</div>
+
+<!-- Tier B -->
+<div class="card mb2" style="border:2px solid #bbf7d0;background:#f8fff9;">
+  <div style="margin-bottom:8px;"><span class="lvl lb">Tier B &mdash; Core &middot; Grades 3&ndash;5</span></div>
+  <div class="clabel cl-g">&#9989; Goal: Core feature runs end-to-end, one bug logged</div>
+  <p class="mb2" style="font-size:.85rem;color:#374151;">Get your must-have feature fully working. If you hit a bug, write it in the log below using the 5-step method.</p>
+  <div class="chk">
+    <li><span class="bx"></span> Core feature runs from start to finish tonight</li>
+    <li><span class="bx"></span> I used print/say debugging at least once</li>
+    <li><span class="bx"></span> I logged one bug below, even if I couldn&rsquo;t fully fix it</li>
+  </div>
+  <p style="font-size:.8rem;font-weight:700;color:#0a7a56;margin-top:8px;margin-bottom:4px;">Bug Log &mdash; Stop / Check / Find / Fix / Test:</p>
+  <div class="g2">
+    <input class="wl" type="text" placeholder="Stop: what broke?" />
+    <input class="wl" type="text" placeholder="Check: expected vs actual?" />
+  </div>
+  <div class="g2">
+    <input class="wl" type="text" placeholder="Find: which line/step?" />
+    <input class="wl" type="text" placeholder="Fix &amp; Test: what did you try?" />
+  </div>
+</div>
+
+<!-- Tier C -->
+<div class="card mb2" style="border:2px solid #e9d5ff;background:#fdf9ff;">
+  <div style="margin-bottom:8px;"><span class="lvl lc">Tier C &mdash; Accelerated &middot; Grades 6&ndash;9</span></div>
+  <div class="clabel cl-p">&#128995; Goal: Core feature solid + edge-case stress test</div>
+  <p class="mb2" style="font-size:.85rem;color:#374151;">Finish your core feature, then deliberately try to break it with 2 unusual inputs. Log both attempts.</p>
+  <div class="chk">
+    <li><span class="bx"></span> Core feature runs reliably</li>
+    <li><span class="bx"></span> Tried 2 edge-case inputs on purpose</li>
+    <li><span class="bx"></span> Classified any bug found (syntax/runtime/logic)</li>
+  </div>
+  <p style="font-size:.8rem;font-weight:700;color:#6d28d9;margin-top:8px;margin-bottom:4px;">Edge-case test log:</p>
+  <div class="g2">
+    <input class="wl" type="text" placeholder="Edge case 1: what I tried + what happened" />
+    <input class="wl" type="text" placeholder="Edge case 2: what I tried + what happened" />
+  </div>
+</div>
+
+<hr class="div">
+
+<!-- PART 2 -->
+<div class="slabel">&#128172; Part 2 &middot; Showcase Intro Draft (10 min)</div>
+<div class="stitle">Start Your &ldquo;What It Does&rdquo; Description</div>
+<div class="card aa mb3">
+  <div class="clabel cl-a">&#127908; Get Ready to Explain Your Project</div>
+  <p class="mb2" style="font-size:.85rem;color:#374151;">On the last day of Build (Session 22), you&rsquo;ll write a 30-second spoken intro for the showcase. Tonight, get the raw material down &mdash; it doesn&rsquo;t need to be perfect.</p>
+  <p style="font-size:.83rem;font-weight:700;color:#b45309;margin-bottom:4px;">1. In one sentence, what is your project?</p>
+  <input class="wl" type="text" placeholder="My project is a..." />
+  <p style="font-size:.83rem;font-weight:700;color:#b45309;margin-bottom:4px;margin-top:8px;">2. How does someone use it? (What do they click, type, or do first?)</p>
+  <input class="wl" type="text" placeholder="You start by..." />
+  <p style="font-size:.83rem;font-weight:700;color:#b45309;margin-bottom:4px;margin-top:8px;">3. What is the ONE thing you're most proud of in your project?</p>
+  <input class="wl" type="text" placeholder="I'm proud of..." />
+  <div class="tip a">Say your 3 sentences out loud once before bed &mdash; it&rsquo;s easier to remember than reading it silently!</div>
+</div>
+
+<!-- SIGN OFF -->
+<div class="card ab mb3">
+  <div class="clabel cl-b">&#9989; Parent / Guardian Check (optional)</div>
+  <p style="font-size:.83rem;color:#374151;margin-bottom:10px;">A grown-up can check this box after watching the student run their project once.</p>
+  <label style="font-size:.85rem;display:flex;align-items:center;gap:8px;cursor:pointer;"><input type="checkbox" style="accent-color:#0b63ce;width:18px;height:18px;"> I watched my child run their project tonight.</label>
+</div>
+
+<!-- RUBRIC -->
+<div class="slabel">&#128202; Scoring</div>
+<div class="stitle">Rubric &amp; Points</div>
+<div class="card mb3">
+  <table class="rub">
+    <thead><tr><th>Section</th><th>What to Look For</th><th>Points</th></tr></thead>
+    <tbody>
+      <tr><td>Part 1 &mdash; Tier A</td><td>Ran project 3x; noted result; attempted one fix if needed</td><td class="pts">3 pts</td></tr>
+      <tr><td>Part 1 &mdash; Tier B</td><td>Core feature runs; bug log filled with Stop/Check/Find/Fix/Test</td><td class="pts">4 pts</td></tr>
+      <tr><td>Part 1 &mdash; Tier C</td><td>Core feature reliable; 2 edge cases tested and logged</td><td class="pts">5 pts</td></tr>
+      <tr><td>Part 2 &mdash; Showcase Intro</td><td>All 3 sentences drafted (what it is, how to use it, proudest part)</td><td class="pts">3 pts</td></tr>
+    </tbody>
+  </table>
+  <div style="display:flex;justify-content:flex-end;margin-top:10px;gap:24px;font-size:.82rem;color:#374151;">
+    <span>Tier A: <strong style="font-family:var(--fc);color:#0b63ce;">____ / 6</strong></span>
+    <span>Tier B: <strong style="font-family:var(--fc);color:#10b981;">____ / 7</strong></span>
+    <span>Tier C: <strong style="font-family:var(--fc);color:#7c3aed;">____ / 8</strong></span>
+  </div>
+</div>
+
+<div class="sfooter">
+  <div><strong>Session 21 Homework &middot; Capstone Build Day 2</strong> &middot; 30-Minute Tiered Homework &middot; Mr. Hsiao &ldquo;Hue&rdquo; Weng &middot; Summer 2026<br>
+  <span class="gtext" style="font-weight:800;">Debugging &middot; Bug Logging &middot; Showcase Prep</span></div>
+  <div style="text-align:right;">Ages 7&ndash;13 &middot; Grades 1&ndash;9<br><span style="font-size:.7rem;">&#127968; Due at the start of Session 22 &mdash; Feature Freeze!</span></div>
+</div>
+
+</div>
+</body>
+</html>
