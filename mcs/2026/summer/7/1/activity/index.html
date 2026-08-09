@@ -1,1 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Activity Sheet &middot; Session 21 &middot; Capstone Build Day 2 &mdash; Core Features &amp; Debugging</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f4fbff;--sur:rgba(255,255,255,.97);--tx:#1f2a37;--tx2:#374151;--txm:#5b6b7e;--a1:#0b63ce;--a2:#10b981;--a3:#f59e0b;--ar:#e44;--ap:#7c3aed;--fd:'Fredoka','Trebuchet MS',sans-serif;--fb:'Nunito',Arial,sans-serif;--fc:'Fira Code',Consolas,monospace}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+@media print{body{background:#fff!important}.no-print{display:none!important}.pb{page-break-before:always}.card{box-shadow:none!important;border:1.5px solid #d1d5db!important}}
+body{font-family:var(--fb);color:var(--tx);background:var(--bg);min-height:100vh}
+.pbar{background:rgba(255,255,255,.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(148,163,184,.3);padding:10px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;gap:12px;flex-wrap:wrap}
+.pbar-title{font-family:var(--fd);font-size:1.05rem;font-weight:700;color:var(--a1)}
+.pbar-sub{font-size:.78rem;color:var(--txm)}
+.btn-p{background:var(--a1);color:#fff;border:none;padding:8px 20px;border-radius:999px;font-family:var(--fb);font-size:.82rem;font-weight:800;cursor:pointer;letter-spacing:.06em;transition:.2s}
+.btn-p:hover{background:#0949a0;transform:translateY(-1px)}
+.page{max-width:920px;margin:0 auto;padding:32px 24px 60px}
+.shdr{background:linear-gradient(135deg,#0b63ce 0%,#10b981 60%,#f59e0b 100%);border-radius:20px;padding:28px 32px 24px;color:#fff;margin-bottom:28px;position:relative;overflow:hidden}
+.shdr::before{content:'';position:absolute;top:-60px;right:-60px;width:200px;height:200px;background:rgba(255,255,255,.08);border-radius:50%}
+.shdr::after{content:'';position:absolute;bottom:-40px;left:-40px;width:140px;height:140px;background:rgba(255,255,255,.06);border-radius:50%}
+.hday{font-size:.75rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;opacity:.85;margin-bottom:4px}
+.htitle{font-family:var(--fd);font-size:clamp(1.6rem,4vw,2.4rem);font-weight:700;line-height:1.1;margin-bottom:6px}
+.hsub{font-size:.88rem;opacity:.85;margin-bottom:14px}
+.hpills{display:flex;gap:8px;flex-wrap:wrap}
+.hpill{background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:4px 14px;font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+.sinfo{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:28px}
+@media(max-width:600px){.sinfo{grid-template-columns:1fr}}
+.ifield{background:var(--sur);border-radius:12px;padding:12px 14px;border:1.5px solid rgba(11,99,206,.14);box-shadow:0 2px 8px rgba(15,23,42,.05)}
+.ilabel{font-size:.65rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--a1);margin-bottom:6px}
+.iline{border:none;border-bottom:1.5px solid #cbd5e1;width:100%;font-family:var(--fb);font-size:.9rem;color:var(--tx);background:transparent;outline:none;padding:2px 0}
+.iline:focus{border-bottom-color:#0b63ce}
+.slabel{display:inline-flex;align-items:center;gap:8px;padding:5px 16px;border-radius:999px;border:1px solid rgba(148,163,184,.4);background:rgba(255,255,255,.9);font-size:.72rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--a1);margin-bottom:10px}
+.stitle{font-family:var(--fd);font-size:clamp(1.3rem,2.5vw,1.8rem);font-weight:700;margin-bottom:16px;color:var(--tx);line-height:1.2}
+.card{background:var(--sur);border-radius:16px;padding:18px 20px;box-shadow:0 4px 18px rgba(15,23,42,.07);border:1px solid rgba(255,255,255,.7);margin-bottom:16px}
+.card.ab{border-left:4px solid var(--a1)}.card.ag{border-left:4px solid var(--a2)}.card.aa{border-left:4px solid var(--a3)}.card.ar{border-left:4px solid var(--ar)}.card.ap{border-left:4px solid var(--ap)}
+.clabel{font-size:.68rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;margin-bottom:8px}
+.cl-b{color:var(--a1)}.cl-g{color:#0a7a56}.cl-a{color:#b45309}.cl-r{color:#b91c1c}.cl-p{color:#6d28d9}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media(max-width:680px){.g2,.g3{grid-template-columns:1fr}}
+.wl{border:none;border-bottom:1.5px solid #cbd5e1;width:100%;margin-bottom:10px;height:28px;display:block;background:transparent;font-family:var(--fb);font-size:.88rem;color:var(--tx);outline:none;padding:2px 4px}
+.wl:focus{border-bottom-color:#0b63ce}
+.wl::placeholder{color:#bdc5d1;font-style:italic}
+.wa{border:1.5px solid #cbd5e1;border-radius:8px;width:100%;min-height:70px;padding:8px;font-family:var(--fb);font-size:.85rem;color:var(--tx);resize:vertical;background:#f8fafc;outline:none;display:block}
+.wa:focus{outline:2px solid rgba(11,99,206,.3)}
+.wa::placeholder{color:#bdc5d1;font-style:italic}
+.tip{border-radius:10px;padding:10px 14px;font-size:.8rem;line-height:1.5;margin-top:10px}
+.tip.b{background:rgba(11,99,206,.07);color:#0b3d80}.tip.g{background:rgba(16,185,129,.08);color:#065f46}.tip.a{background:rgba(245,158,11,.07);color:#92400e}.tip.p{background:rgba(124,58,237,.07);color:#5b21b6}
+.div{border:none;border-top:2px dashed #dde6f0;margin:28px 0}
+.chk{list-style:none;padding:0}
+.chk li{display:flex;align-items:flex-start;gap:8px;font-size:.85rem;color:var(--tx2);margin-bottom:8px;line-height:1.45}
+.chk li .bx{flex-shrink:0;width:17px;height:17px;border:2px solid #94a3b8;border-radius:4px;margin-top:1px;background:#fff;display:inline-block}
+.sb{display:inline-flex;align-items:center;gap:4px;padding:3px 10px 3px 8px;border-radius:6px;font-family:var(--fc);font-weight:700;font-size:.78rem;cursor:default;user-select:none;vertical-align:middle}
+.sbp{background:#9c27b0;color:#fff}.sbo{background:#f59e0b;color:#fff}.sbb{background:#0b63ce;color:#fff}.sby{background:#eab308;color:#333}.sbt{background:#10b981;color:#fff}.sbg{background:#22c55e;color:#fff}.sbr{background:#e44;color:#fff}
+.lvl{display:inline-flex;align-items:center;gap:6px;padding:4px 14px;border-radius:999px;font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px}
+.la{background:linear-gradient(135deg,#0b63ce,#60a5fa);color:#fff}
+.lb{background:linear-gradient(135deg,#10b981,#4ade80);color:#fff}
+.lc{background:linear-gradient(135deg,#7c3aed,#f59e0b);color:#fff}
+.lx{background:linear-gradient(135deg,#f59e0b,#f97066);color:#fff}
+table.rub{width:100%;border-collapse:collapse;font-size:.82rem;margin-top:8px}
+table.rub th{background:#1e293b;color:#e2e8f0;padding:8px 10px;text-align:left;font-weight:700;letter-spacing:.05em}
+table.rub td{padding:8px 10px;border-bottom:1px solid #e2e8f0;vertical-align:top;color:var(--tx2)}
+table.rub tr:nth-child(even) td{background:rgba(241,245,249,.6)}
+table.rub td:first-child{font-weight:700;color:var(--tx)}
+table.rub .pts{font-family:var(--fc);font-size:.75rem;font-weight:800;color:var(--a1);white-space:nowrap}
+.sfooter{margin-top:40px;padding:16px 20px;border-radius:12px;background:rgba(11,99,206,.05);border:1px solid rgba(11,99,206,.12);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:.76rem;color:var(--txm)}
+.sfooter strong{color:var(--tx)}
+.gtext{background:linear-gradient(135deg,#0b63ce,#10b981,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.mb1{margin-bottom:6px}.mb2{margin-bottom:10px}.mb3{margin-bottom:14px}.mt2{margin-top:10px}.mt3{margin-top:14px}
+.tmuted{color:var(--txm);font-size:.78rem}
+code{background:#e0f2ff;padding:1px 6px;border-radius:4px;font-family:var(--fc);font-size:.82em;color:#0b3d80}
+.rbar{display:flex;border-radius:12px;overflow:hidden;margin-bottom:20px;border:2px solid rgba(11,99,206,.15)}
+.rb{flex:1;padding:8px 4px;text-align:center;font-size:.62rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase;line-height:1.3}
+.rw{background:#eff6ff;color:#0b3d80;border-right:1px solid rgba(11,99,206,.15)}
+.rm{background:#f0fdf4;color:#0a7a56;border-right:1px solid rgba(16,185,129,.15)}
+.rg{background:#fefce8;color:#a16207;border-right:1px solid rgba(245,158,11,.15)}
+.rk{background:#fdf4ff;color:#7e22ce;border-right:1px solid rgba(124,58,237,.15)}
+.ro{background:#fff1f2;color:#be123c;border-right:1px solid rgba(228,68,68,.15)}
+.rs{background:#ecfdf5;color:#065f46}
+.tl{position:relative;padding-left:22px}
+.tl::before{content:'';position:absolute;left:8px;top:4px;bottom:4px;width:3px;border-radius:999px;background:linear-gradient(to bottom,#0b63ce,#10b981,#f59e0b)}
+.tls{position:relative;margin-bottom:12px}
+.tld{position:absolute;left:-15px;top:4px;width:12px;height:12px;border-radius:999px;border:2px solid #f4fbff;background:#0b63ce;box-shadow:0 0 0 3px rgba(11,99,206,.2)}
+.tld.g{background:#10b981}.tld.p{background:#7c3aed}.tld.a{background:#f59e0b}.tld.r{background:#e44}
+.sc-row{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border-radius:10px;margin-bottom:8px;border:1.5px solid transparent;transition:.2s}
+.sc-row:hover{border-color:#bfdbfe}
+.sc-row input[type=checkbox]{margin-top:2px;accent-color:#10b981;width:18px;height:18px;flex-shrink:0;cursor:pointer}
+.sc-lbl{font-size:.88rem;color:var(--tx2);line-height:1.4}
+.sc-lbl strong{color:var(--tx)}
+</style>
+</head>
+<body>
+<div class="pbar no-print">
+  <div><div class="pbar-title">&#128296; Session 21 &middot; Activity Sheet</div><div class="pbar-sub">Capstone Build Day 2 &mdash; Core Features &amp; Debugging &middot; Ages 7&ndash;13</div></div>
+  <button class="btn-p" onclick="window.print()">&#128438; Print / Save as PDF</button>
+</div>
+<div class="page">
 
+<div class="shdr">
+  <div style="font-size:2.8rem;margin-bottom:6px;">&#128296;&#128027;</div>
+  <div class="hday">Session 21 &middot; Monday, August 10 &middot; Week 7 &middot; Summer 2026 AI &amp; Coding Program</div>
+  <div class="htitle">Capstone Build Day 2: Core Features &amp; Debugging</div>
+  <div class="hsub">Get your one must-have feature working &mdash; and learn to think like a debugger.</div>
+  <div class="hpills">
+    <span class="hpill">&#128187; Capstone</span><span class="hpill">&#8987; 110 min</span><span class="hpill">Ages 7&ndash;13</span><span class="hpill">3 Tiers</span><span class="hpill">Debugging &middot; AI Fairness</span>
+  </div>
+</div>
+
+<div class="sinfo">
+  <div class="ifield"><div class="ilabel">&#128100; Your Name</div><input class="iline" type="text" placeholder="First Last" /></div>
+  <div class="ifield"><div class="ilabel">&#128197; Date</div><input class="iline" type="text" value="August 10, 2026" /></div>
+  <div class="ifield"><div class="ilabel">&#127979; Section / Period</div><input class="iline" type="text" placeholder="Section 1 / 2 / 3" /></div>
+</div>
+
+<!-- DAILY RHYTHM -->
+<div class="slabel">&#8987; Today&rsquo;s Rhythm</div>
+<div class="stitle">Daily Schedule &mdash; Follow Along!</div>
+<div class="rbar">
+  <div class="rb rw">&#129504;<br>Warm-Up<br>10 min</div>
+  <div class="rb rm">&#128161;<br>Mini-Lesson<br>15&ndash;20 min</div>
+  <div class="rb rg">&#128296;<br>Guided Build<br>20 min</div>
+  <div class="rb rk">&#128131;<br>Move Break<br>5 min</div>
+  <div class="rb ro">&#128736;<br>Open Build<br>30&ndash;40 min</div>
+  <div class="rb rs">&#127908;<br>Share-Out<br>10 min</div>
+</div>
+<p class="tmuted mb3">Section 1 (75 min)? Compress to: Warm-Up (5) &rarr; Mini-Lesson + AI Moment (15) &rarr; Guided Build (20) &rarr; Brain Break (5) &rarr; Open Build (25) &rarr; Quick Share (5).</p>
+
+<!-- PART 1: WARM-UP -->
+<div class="slabel">&#129504; Part 1 &middot; Warm-Up (10 min)</div>
+<div class="stitle">Think First &mdash; Before You Touch the Keyboard</div>
+<div class="card ab mb3">
+  <div class="clabel cl-b">&#10067; Three Questions, No Screens</div>
+  <p class="mb2">Answer honestly. You&rsquo;ll use these answers all class long.</p>
+  <p style="font-size:.83rem;font-weight:700;color:#374151;margin-bottom:6px;">1. What is the ONE feature your project cannot work without? (If it vanished, would your project still make sense to a visitor?)</p>
+  <input class="wl" type="text" placeholder="My must-have feature is..." />
+  <p style="font-size:.83rem;font-weight:700;color:#374151;margin:10px 0 6px;">2. What happened the last time you ran your project &mdash; did it do what you expected?</p>
+  <input class="wl" type="text" placeholder="Last time I ran it..." />
+  <p style="font-size:.83rem;font-weight:700;color:#374151;margin:10px 0 6px;">3. If something broke, where do you think the problem might be hiding? (Hint: think about the last line that ran before things went wrong.)</p>
+  <input class="wl" type="text" placeholder="I think the problem is hiding in..." />
+  <div class="tip b">Hold onto your answer to Question 3 &mdash; we&rsquo;re about to learn exactly how to hunt that bug down.</div>
+</div>
+
+<hr class="div">
+
+<!-- PART 2: MINI-LESSON -->
+<div class="slabel">&#128161; Part 2 &middot; Mini-Lesson (15&ndash;20 min)</div>
+<div class="stitle">Bugs Are Not Failures &mdash; They&rsquo;re Clues</div>
+<div class="card ag mb2">
+  <div class="clabel cl-g">&#128027; Key Vocabulary</div>
+  <div class="g2 mb2">
+    <div style="background:#f0fdf4;border-radius:10px;padding:12px;">
+      <p style="font-weight:800;font-size:.85rem;color:#0a7a56;margin-bottom:4px;">bug</p>
+      <p style="font-size:.8rem;color:#374151;">A mistake in code that makes a program do something different from what you planned.</p>
+    </div>
+    <div style="background:#eff6ff;border-radius:10px;padding:12px;">
+      <p style="font-weight:800;font-size:.85rem;color:#0b3d80;margin-bottom:4px;">debugging</p>
+      <p style="font-size:.8rem;color:#374151;">The process of finding and fixing a bug &mdash; one careful step at a time.</p>
+    </div>
+  </div>
+  <div class="tip g">&#129419; Fun fact: the word &ldquo;bug&rdquo; comes from a real moth found stuck inside a giant 1947 computer, causing it to malfunction! A bug never means you&rsquo;re bad at coding &mdash; it means you&rsquo;re one clue away from understanding your program better.</div>
+</div>
+<div class="card ab mb2">
+  <div class="clabel cl-b">&#128269; Our Debugging Method &mdash; Stop &rarr; Check &rarr; Find &rarr; Fix &rarr; Test</div>
+  <div class="tl">
+    <div class="tls"><div class="tld"></div><div class="mb1"><strong>1 &mdash; Stop.</strong> Don&rsquo;t panic or randomly change things. Take a breath.</div></div>
+    <div class="tls"><div class="tld"></div><div class="mb1"><strong>2 &mdash; Check.</strong> What should happen? What is actually happening?</div></div>
+    <div class="tls"><div class="tld g"></div><div class="mb1"><strong>3 &mdash; Find.</strong> Look line by line where the behavior first goes wrong.</div></div>
+    <div class="tls"><div class="tld a"></div><div class="mb1"><strong>4 &mdash; Fix.</strong> Change one thing at a time &mdash; never many things at once.</div></div>
+    <div class="tls"><div class="tld r"></div><div class="mb1"><strong>5 &mdash; Test.</strong> Run it again. Did it work? If not, go back to Check.</div></div>
+  </div>
+  <div class="tip b mt2">Repeat until it works. That&rsquo;s debugging!</div>
+</div>
+<div class="card aa mb2">
+  <div class="clabel cl-a">&#128161; Print Debugging &mdash; the Fastest Fix in Your Toolkit</div>
+  <p class="mb2">If you&rsquo;re not sure a variable holds the value you expect, just ask the program to show you.</p>
+  <div class="g2 mb2">
+    <div style="background:#eff6ff;border-radius:10px;padding:12px;">
+      <p style="font-size:.78rem;font-weight:800;color:#0b3d80;margin-bottom:6px;">&#128013; Python</p>
+      <p style="font-family:var(--fc);font-size:.78rem;color:#374151;">score = 0<br>score = score + 1<br><span style="color:#0b63ce;">print</span>("score is now:", score) <span style="color:#0a7a56;"># check it!</span></p>
+    </div>
+    <div style="background:#f0fdf4;border-radius:10px;padding:12px;">
+      <p style="font-size:.78rem;font-weight:800;color:#0a7a56;margin-bottom:6px;">&#128049; Scratch</p>
+      <p style="font-size:.8rem;color:#374151;">Drag a <span class="sb sbg" style="font-size:.68rem;">say [variable] for 2 secs</span> block right after the spot you suspect is buggy. Or check the box next to a variable to watch it live on stage.</p>
+    </div>
+  </div>
+  <p style="font-size:.8rem;font-weight:700;color:#b45309;margin-bottom:4px;">If your variable shows the wrong number, does that tell you WHERE the bug is, or just THAT there is one?</p>
+  <input class="wl" type="text" placeholder="I think it tells me..." />
+</div>
+<div class="card ap mb3">
+  <div class="clabel cl-p">&#128269; Know Your Enemy &mdash; Three Kinds of Bugs</div>
+  <div class="g3 mb2">
+    <div style="background:#fff1f2;border-radius:12px;padding:14px;text-align:center;">
+      <div style="font-size:1.6rem;margin-bottom:6px;">&#128683;</div>
+      <div style="font-weight:800;font-size:.83rem;color:#b91c1c;margin-bottom:4px;">Syntax Bug</div>
+      <div style="font-size:.76rem;color:#374151;">The computer can&rsquo;t understand your code &mdash; like a typo or missing colon. Program won&rsquo;t run at all.</div>
+    </div>
+    <div style="background:#fff7ed;border-radius:12px;padding:14px;text-align:center;">
+      <div style="font-size:1.6rem;margin-bottom:6px;">&#128165;</div>
+      <div style="font-weight:800;font-size:.83rem;color:#b45309;margin-bottom:4px;">Runtime Bug</div>
+      <div style="font-size:.76rem;color:#374151;">Code is written correctly but crashes while running &mdash; like dividing by zero. Program starts, then stops suddenly.</div>
+    </div>
+    <div style="background:#faf5ff;border-radius:12px;padding:14px;text-align:center;">
+      <div style="font-size:1.6rem;margin-bottom:6px;">&#129300;</div>
+      <div style="font-weight:800;font-size:.83rem;color:#6d28d9;margin-bottom:4px;">Logic Bug</div>
+      <div style="font-size:.76rem;color:#374151;">The program runs perfectly &mdash; it just does the wrong thing. Hardest to find: no error message!</div>
+    </div>
+  </div>
+  <p style="font-size:.83rem;font-weight:700;color:#6d28d9;margin-bottom:4px;">Which of these three do you think is hiding in your project right now?</p>
+  <input class="wl" type="text" placeholder="I think my bug is a..." />
+</div>
+<div class="card ab mb3">
+  <div class="clabel cl-b">&#128373;&#65039; Spot the Bug &mdash; Live Challenge</div>
+  <p class="mb2" style="font-size:.85rem;color:#374151;">This tiny program is supposed to print numbers 1 through 5. Which line is buggy?</p>
+  <p style="font-family:var(--fc);font-size:.82rem;background:#f8fafc;border-radius:8px;padding:10px;color:#374151;">count = 1<br><span style="color:#0b63ce;">while</span> count &lt; 5:<br>&nbsp;&nbsp;print(count)<br>&nbsp;&nbsp;count = count + 1</p>
+  <div class="tip b mt2">This is a <strong>logic bug</strong>! <code>count &lt; 5</code> stops the loop before printing 5 &mdash; it only prints 1, 2, 3, 4. Fix: change <code>&lt;</code> to <code>&lt;=</code>.</div>
+</div>
+
+<hr class="div">
+
+<!-- PART 3: GUIDED BUILD -->
+<div class="slabel">&#128296; Part 3 &middot; Guided Build (20 min)</div>
+<div class="stitle">Practice the Method &mdash; Together</div>
+<p style="font-size:.88rem;color:#374151;margin-bottom:14px;">Your teacher will model debugging a real bug on the board. Follow along and fill in each box as it happens.</p>
+<div class="card ab mb3">
+  <div class="clabel cl-b">&#128203; Watch &amp; Record: Stop &rarr; Check &rarr; Find &rarr; Fix &rarr; Test</div>
+  <div class="tl">
+    <div class="tls"><div class="tld"></div>
+      <div class="mb1"><strong>Stop</strong> &mdash; What was the bug the teacher demoed?</div>
+      <input class="wl" type="text" placeholder="The bug was..." />
+    </div>
+    <div class="tls"><div class="tld"></div>
+      <div class="mb1"><strong>Check</strong> &mdash; What SHOULD have happened vs. what actually happened?</div>
+      <input class="wl" type="text" placeholder="It should have... but instead..." />
+    </div>
+    <div class="tls"><div class="tld g"></div>
+      <div class="mb1"><strong>Find</strong> &mdash; Which line did the bug turn out to be hiding in?</div>
+      <input class="wl" type="text" placeholder="The bug was hiding in..." />
+    </div>
+    <div class="tls"><div class="tld a"></div>
+      <div class="mb1"><strong>Fix</strong> &mdash; What ONE change fixed it?</div>
+      <input class="wl" type="text" placeholder="We changed..." />
+    </div>
+    <div class="tls"><div class="tld r"></div>
+      <div class="mb1"><strong>Test</strong> &mdash; Did it work the second time?</div>
+      <label style="font-size:.8rem;display:flex;align-items:center;gap:6px;"><input type="checkbox" style="accent-color:#0b63ce;"> Yes, confirmed fixed!</label>
+    </div>
+  </div>
+  <div class="tip g mt2">&#127919; Notice: the teacher never changed more than ONE thing before testing again. That&rsquo;s the whole secret.</div>
+</div>
+
+<hr class="div pb">
+
+<!-- PART 4: MOVEMENT BREAK -->
+<div class="slabel">&#128131; Movement Break (5 min)</div>
+<div class="stitle">Bug Hunt Charades</div>
+<div class="card ap mb3">
+  <div class="clabel cl-p">&#128373; Act It Out</div>
+  <p class="mb2">Stand up! Your teacher calls out a bug type &mdash; act out how you&rsquo;d react.</p>
+  <div class="g2">
+    <div><div class="chk">
+      <li><span class="bx"></span> &ldquo;Syntax Bug&rdquo; &rarr; freeze completely, arms crossed (nothing runs!)</li>
+      <li><span class="bx"></span> &ldquo;Runtime Bug&rdquo; &rarr; walk normally, then suddenly collapse</li>
+    </div></div>
+    <div><div class="chk">
+      <li><span class="bx"></span> &ldquo;Logic Bug&rdquo; &rarr; keep walking calmly but in the wrong direction</li>
+      <li><span class="bx"></span> &ldquo;Fixed!&rdquo; &rarr; jump and cheer</li>
+    </div></div>
+  </div>
+  <p style="font-size:.8rem;font-weight:700;color:#6d28d9;margin-top:10px;margin-bottom:4px;">Which bug type was the funniest to act out, and why?</p>
+  <input class="wl" type="text" placeholder="The funniest was..." />
+</div>
+
+<!-- PART 5: OPEN BUILD -->
+<div class="slabel">&#128736; Part 5 &middot; Open Build (30&ndash;40 min)</div>
+<div class="stitle">Find Your Tier and Build!</div>
+<p style="font-size:.88rem;color:#374151;margin-bottom:14px;">Today&rsquo;s priority order for everyone: 1) Get your core feature running end-to-end, even if rough. 2) Use Stop&rarr;Check&rarr;Find&rarr;Fix&rarr;Test the moment something breaks. 3) Run the AI fairness &amp; clarity check below. Find your tier and dig in &mdash; then climb!</p>
+
+<!-- Tier A -->
+<div class="card mb2" style="border:2px solid #bfdbfe;background:#f8faff;">
+  <div style="margin-bottom:8px;"><span class="lvl la">Tier A &mdash; Foundations &middot; Grades 1&ndash;3</span></div>
+  <div class="clabel cl-b">&#127374; Goal: One feature runs from start to finish</div>
+  <p class="mb2" style="font-size:.85rem;color:#374151;">Work with your buddy. Focus on making ONE thing work reliably &mdash; not adding anything new today.</p>
+  <div class="g2 mb2">
+    <div style="background:#eff6ff;border-radius:10px;padding:12px;">
+      <p style="font-size:.78rem;font-weight:800;color:#0b3d80;margin-bottom:8px;">Your checklist:</p>
+      <div class="chk">
+        <li><span class="bx"></span> I can point to my ONE must-have feature</li>
+        <li><span class="bx"></span> I ran it and watched what happened</li>
+        <li><span class="bx"></span> I used the <span class="sb sbb" style="font-size:.68rem;">say [ ] for 2 secs</span> trick to check a value</li>
+        <li><span class="bx"></span> I fixed one bug with my buddy&rsquo;s help</li>
+      </div>
+    </div>
+    <div style="background:#f0f9ff;border-radius:10px;padding:12px;">
+      <p style="font-size:.78rem;font-weight:800;color:#0369a1;margin-bottom:6px;">Buddy debugging steps:</p>
+      <div style="display:flex;flex-direction:column;gap:5px;">
+        <span class="sb sbb" style="font-size:.68rem;">Stop</span>
+        <span class="sb sbg" style="font-size:.68rem;">Check what it should do</span>
+        <span class="sb sby" style="font-size:.68rem;">Find the spot</span>
+        <span class="sb sbo" style="font-size:.68rem;">Fix ONE thing</span>
+        <span class="sb sbt" style="font-size:.68rem;">Test again</span>
+      </div>
+    </div>
+  </div>
+  <p style="font-size:.8rem;font-weight:700;color:#0b3d80;margin-bottom:4px;">What bug did you and your buddy squash today?</p>
+  <input class="wl" type="text" placeholder="We fixed..." />
+  <div class="tip b">Buddy tip: One person reads the code out loud, the other watches the screen. Switch jobs after each bug!</div>
+</div>
+
+<!-- Tier B -->
+<div class="card mb2" style="border:2px solid #bbf7d0;background:#f8fff9;">
+  <div style="margin-bottom:8px;"><span class="lvl lb">Tier B &mdash; Core &middot; Grades 3&ndash;5</span></div>
+  <div class="clabel cl-g">&#9989; Goal: Core feature working + first fairness check</div>
+  <p class="mb2" style="font-size:.85rem;color:#374151;">Get your must-have feature running end-to-end, apply the 5-step method to any bug you hit, then check your AI part for fairness.</p>
+  <div class="g2 mb2">
+    <div>
+      <p style="font-size:.78rem;font-weight:800;color:#0a7a56;margin-bottom:8px;">Your checklist:</p>
+      <div class="chk">
+        <li><span class="bx"></span> Core feature runs start to finish</li>
+        <li><span class="bx"></span> Used print/say debugging at least once</li>
+        <li><span class="bx"></span> Identified the bug type (syntax/runtime/logic)</li>
+        <li><span class="bx"></span> Fixed at least one real bug using Stop&rarr;Check&rarr;Find&rarr;Fix&rarr;Test</li>
+        <li><span class="bx"></span> Ran the AI fairness &amp; clarity check (below)</li>
+      </div>
+    </div>
+    <div style="background:#f0fdf4;border-radius:10px;padding:12px;">
+      <p style="font-size:.78rem;font-weight:800;color:#0a7a56;margin-bottom:6px;">&#129302; AI Fairness &amp; Clarity Check</p>
+      <div class="chk">
+        <li><span class="bx"></span> <strong>FAIR:</strong> Works for everyone, not just my test cases</li>
+        <li><span class="bx"></span> <strong>CLEAR:</strong> A stranger wouldn&rsquo;t think it&rsquo;s magic</li>
+        <li><span class="bx"></span> <strong>TESTED:</strong> Tried an input I never tested before</li>
+        <li><span class="bx"></span> <strong>CLARITY:</strong> No one could misunderstand what it decides</li>
+      </div>
+    </div>
+  </div>
+  <div class="g2">
+    <div><p style="font-size:.8rem;font-weight:700;color:#0a7a56;margin-bottom:4px;">What bug did you find &amp; fix?</p><input class="wl" type="text" placeholder="I found and fixed..." /></div>
+    <div><p style="font-size:.8rem;font-weight:700;color:#0a7a56;margin-bottom:4px;">Fairness check result:</p><input class="wl" type="text" placeholder="My AI part is fair because... / needs work because..." /></div>
+  </div>
+</div>
+
+<!-- Tier C -->
+<div class="card mb2" style="border:2px solid #e9d5ff;background:#fdf9ff;">
+  <div style="margin-bottom:8px;"><span class="lvl lc">Tier C &mdash; Accelerated &middot; Grades 6&ndash;9</span></div>
+  <div class="clabel cl-p">&#128995; Goal: Core feature solid + edge cases + fairness audit</div>
+  <p class="mb2" style="font-size:.85rem;color:#374151;">Beyond making it work, actively try to <strong>break</strong> your own project with unusual inputs, then document and fix what you find.</p>
+  <div class="g2 mb2">
+    <div>
+      <p style="font-size:.78rem;font-weight:800;color:#6d28d9;margin-bottom:8px;">Your checklist:</p>
+      <div class="chk">
+        <li><span class="bx"></span> All Tier B goals complete</li>
+        <li><span class="bx"></span> Tried at least 2 unusual/edge-case inputs on purpose</li>
+        <li><span class="bx"></span> Classified each bug found (syntax/runtime/logic)</li>
+        <li><span class="bx"></span> Used print debugging to trace a variable's value over time</li>
+        <li><span class="bx"></span> Full AI fairness &amp; clarity audit written up (below)</li>
+        <li><span class="bx"></span> Helped a classmate debug using the 5-step method</li>
+      </div>
+    </div>
+    <div>
+      <p style="font-size:.78rem;font-weight:800;color:#6d28d9;margin-bottom:6px;">Think through:</p>
+      <p style="font-size:.75rem;color:#374151;margin-bottom:2px;">What edge-case input broke (or almost broke) your project?</p>
+      <input class="wl" type="text" placeholder="When I tried..." />
+      <p style="font-size:.75rem;color:#374151;margin-bottom:2px;margin-top:6px;">If your AI part isn&rsquo;t fair yet, what specifically would you change?</p>
+      <input class="wl" type="text" placeholder="I would change..." />
+    </div>
+  </div>
+  <div class="tip p">Stretch: Write your edge cases down as a mini &ldquo;test list&rdquo; you can rerun tomorrow during Feature Freeze &mdash; professional programmers call this <strong>regression testing</strong>.</div>
+</div>
+
+<!-- Challenge Card -->
+<div class="card mb3" style="border:2px solid #fde68a;background:#fffbeb;">
+  <div style="margin-bottom:8px;"><span class="lvl lx">&#11088; Challenge Card &mdash; All Tiers</span></div>
+  <div class="clabel cl-a">&#128373;&#65039; Teach the Bug</div>
+  <div class="g2">
+    <div>
+      <p style="font-size:.83rem;color:#374151;margin-bottom:6px;">Explain one bug you fixed today to a neighbor <strong>without showing them the code</strong> &mdash; just describe it in words.</p>
+      <label style="font-size:.8rem;display:flex;align-items:center;gap:6px;cursor:pointer;"><input type="checkbox" style="accent-color:#f59e0b;"> Explained it out loud!</label>
+    </div>
+    <div>
+      <p style="font-size:.83rem;color:#374151;margin-bottom:6px;">Ask them to guess which bug type (syntax/runtime/logic) it was before you tell them.</p>
+      <p style="font-size:.8rem;font-weight:700;color:#b45309;margin-top:8px;margin-bottom:2px;">Did they guess correctly? What made it tricky to explain?</p>
+      <input class="wl" type="text" placeholder="They guessed... It was tricky because..." />
+    </div>
+  </div>
+</div>
+
+<hr class="div">
+
+<!-- PART 6: SHARE-OUT -->
+<div class="slabel">&#127908; Part 6 &middot; Share-Out (10 min)</div>
+<div class="stitle">Show Your Neighbor &mdash; Then Reflect</div>
+<div class="card ag mb2">
+  <div class="clabel cl-g">&#128101; Pair-Share Protocol</div>
+  <p class="mb2">Turn to the person next to you. Use these sentence starters:</p>
+  <div class="g2 mb2">
+    <div style="background:#f0fdf4;border-radius:10px;padding:12px;">
+      <p style="font-size:.78rem;font-weight:800;color:#0a7a56;margin-bottom:6px;">Presenting your bug fix:</p>
+      <p style="font-size:.82rem;color:#374151;font-style:italic;margin-bottom:4px;">&ldquo;My core feature is <u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u>.&rdquo;</p>
+      <p style="font-size:.82rem;color:#374151;font-style:italic;margin-bottom:4px;">&ldquo;The bug I found was a <u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u> bug.&rdquo;</p>
+      <p style="font-size:.82rem;color:#374151;font-style:italic;">&ldquo;I fixed it by <u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u>.&rdquo;</p>
+    </div>
+    <div style="background:#eff6ff;border-radius:10px;padding:12px;">
+      <p style="font-size:.78rem;font-weight:800;color:#0b3d80;margin-bottom:6px;">After watching your partner&rsquo;s:</p>
+      <p style="font-size:.82rem;color:#374151;font-style:italic;margin-bottom:4px;">&ldquo;I notice <u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u> in yours.&rdquo;</p>
+      <p style="font-size:.82rem;color:#374151;font-style:italic;margin-bottom:4px;">&ldquo;One edge case to try: <u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u>.&rdquo;</p>
+      <p style="font-size:.82rem;color:#374151;font-style:italic;">&ldquo;Is your AI part fair for <u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u>?&rdquo;</p>
+    </div>
+  </div>
+  <div class="g2">
+    <div><p style="font-size:.8rem;font-weight:700;color:#374151;margin-bottom:4px;">What did your partner fix today?</p><input class="wl" type="text" placeholder="My partner fixed..." /></div>
+    <div><p style="font-size:.8rem;font-weight:700;color:#374151;margin-bottom:4px;">One edge case they suggested you try:</p><input class="wl" type="text" placeholder="They suggested I try..." /></div>
+  </div>
+</div>
+
+<div class="card ab mb3">
+  <div class="clabel cl-b">&#128296; Feature-Freeze-Ready Checklist</div>
+  <p style="font-size:.83rem;color:#374151;margin-bottom:12px;">Before you close your project, check all three boxes:</p>
+  <div style="background:#f0f9ff;border-radius:12px;padding:14px;">
+    <div class="sc-row"><input type="checkbox"><div class="sc-lbl"><strong>It RUNS</strong> &mdash; My core feature works end-to-end without crashing.</div></div>
+    <div class="sc-row"><input type="checkbox"><div class="sc-lbl"><strong>It&rsquo;s FAIR &amp; CLEAR</strong> &mdash; I ran the AI fairness &amp; clarity check on my project.</div></div>
+    <div class="sc-row"><input type="checkbox"><div class="sc-lbl"><strong>It&rsquo;s DOCUMENTED</strong> &mdash; I know what bug(s) I fixed and can explain how.</div></div>
+  </div>
+  <p style="font-size:.8rem;font-weight:700;color:#0b63ce;margin-top:10px;margin-bottom:4px;">Reminder: Tomorrow is Feature Freeze &mdash; no new features, just making everything work reliably!</p>
+</div>
+
+<!-- REFLECTION -->
+<div class="slabel">&#128172; Reflection</div>
+<div class="stitle">Exit Ticket &amp; Growth Check</div>
+<div class="card mb3">
+  <div class="g2">
+    <div>
+      <div class="clabel cl-b">&#129504; Exit Ticket</div>
+      <p style="font-size:.8rem;font-weight:700;color:#374151;margin:8px 0 3px;">1. What is your core feature, and does it work now?</p>
+      <div><input class="wl" type="text" placeholder="My core feature is..." /><input class="wl" type="text" placeholder="It works because... / It still needs..." /></div>
+      <p style="font-size:.8rem;font-weight:700;color:#374151;margin:8px 0 3px;">2. What was the hardest bug &amp; how did you fix it?</p>
+      <div><input class="wl" type="text" placeholder="The hardest bug was..." /><input class="wl" type="text" placeholder="I fixed it by..." /></div>
+      <p style="font-size:.8rem;font-weight:700;color:#374151;margin:8px 0 3px;">3. Is your AI part fair and clear? Why or why not?</p>
+      <input class="wl" type="text" placeholder="I think it is / isn't fair because..." />
+    </div>
+    <div>
+      <div class="clabel cl-g">&#127807; Growth Mindset Check</div>
+      <p style="font-size:.8rem;color:#374151;margin-bottom:8px;">Circle the one that describes you today:</p>
+      <div style="display:flex;flex-direction:column;gap:7px;font-size:.83rem;color:#374151;">
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;"><input type="radio" name="mood" style="accent-color:#0b63ce;"> I got stuck but kept trying</label>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;"><input type="radio" name="mood" style="accent-color:#10b981;"> I figured out a bug by myself</label>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;"><input type="radio" name="mood" style="accent-color:#7c3aed;"> I helped a classmate debug</label>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;"><input type="radio" name="mood" style="accent-color:#f59e0b;"> I found and fixed an edge case</label>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;"><input type="radio" name="mood" style="accent-color:#e44;"> My core feature RUNS &mdash; and I&rsquo;m proud!</label>
+      </div>
+      <p style="font-size:.8rem;font-weight:700;color:#6d28d9;margin:12px 0 4px;">One debugging skill I still want to learn:</p>
+      <input class="wl" type="text" placeholder="..." />
+      <p style="font-size:.8rem;font-weight:700;color:#0a7a56;margin:8px 0 4px;">One thing I did really well today:</p>
+      <input class="wl" type="text" placeholder="..." />
+    </div>
+  </div>
+</div>
+
+<!-- RUBRIC -->
+<div class="slabel">&#128202; Scoring</div>
+<div class="stitle">Rubric &amp; Points</div>
+<div class="card mb3">
+  <table class="rub">
+    <thead><tr><th>Section</th><th>What to Look For</th><th>Points</th></tr></thead>
+    <tbody>
+      <tr><td>Part 1 &mdash; Warm-Up</td><td>Three think-first questions answered honestly</td><td class="pts">2 pts</td></tr>
+      <tr><td>Part 2 &mdash; Mini-Lesson</td><td>Bug types identified; print-debugging question answered; Spot-the-Bug reviewed</td><td class="pts">3 pts</td></tr>
+      <tr><td>Part 3 &mdash; Guided Build</td><td>All 5 steps of the debugging method recorded from the class demo</td><td class="pts">3 pts</td></tr>
+      <tr><td>Part 4 &mdash; Movement Break</td><td>Charades reflection answered (participation check)</td><td class="pts">1 pt</td></tr>
+      <tr><td>Part 5A &mdash; Tier A Build</td><td>One feature runs; one bug fixed with buddy help</td><td class="pts">4 pts</td></tr>
+      <tr><td>Part 5B &mdash; Tier B Build</td><td>Core feature runs end-to-end; bug found &amp; fixed; fairness check complete</td><td class="pts">5 pts</td></tr>
+      <tr><td>Part 5C &mdash; Tier C Build</td><td>All Tier B goals + edge cases tested + fairness audit written</td><td class="pts">6 pts</td></tr>
+      <tr><td>Part 6 &mdash; Share-Out &amp; Reflection</td><td>Pair-share recorded; feature-freeze-ready checklist signed off; exit ticket complete</td><td class="pts">3 pts</td></tr>
+      <tr><td>&#11088; Challenge Card</td><td>Bug explained aloud to a partner without showing code, response documented</td><td class="pts">+2</td></tr>
+    </tbody>
+  </table>
+  <div style="display:flex;justify-content:flex-end;margin-top:10px;gap:24px;font-size:.82rem;color:#374151;">
+    <span>Tier A: <strong style="font-family:var(--fc);color:#0b63ce;">____ / 16</strong></span>
+    <span>Tier B: <strong style="font-family:var(--fc);color:#10b981;">____ / 17</strong></span>
+    <span>Tier C: <strong style="font-family:var(--fc);color:#7c3aed;">____ / 18</strong></span>
+  </div>
+</div>
+
+<div class="sfooter">
+  <div><strong>Session 21 &middot; Capstone Build Day 2</strong> &middot; Differentiated Activity Sheet &middot; Mr. Hsiao &ldquo;Hue&rdquo; Weng &middot; Summer 2026<br>
+  <span class="gtext" style="font-weight:800;">Debugging &middot; Stop-Check-Find-Fix-Test &middot; AI Fairness &middot; Capstone</span></div>
+  <div style="text-align:right;">Ages 7&ndash;13 &middot; Grades 1&ndash;9<br><span style="font-size:.7rem;">&#128296; Every bug you squash makes you a stronger builder!</span></div>
+</div>
+
+</div>
+</body>
+</html>
