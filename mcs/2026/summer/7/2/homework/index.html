@@ -1,1 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Homework &middot; Sessions 22 &middot; Feature Freeze &amp; Showcase Rehearsal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f4fbff;--sur:rgba(255,255,255,.97);--tx:#1f2a37;--tx2:#374151;--txm:#5b6b7e;--a1:#0b63ce;--a2:#10b981;--a3:#f59e0b;--ar:#ef4444;--ap:#7c3aed;--fd:'Fredoka','Trebuchet MS',sans-serif;--fb:'Nunito',Arial,sans-serif;--fc:'Fira Code',Consolas,monospace}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+@media print{body{background:#fff!important}.no-print{display:none!important}.card{box-shadow:none!important;border:1.5px solid #d1d5db!important}}
+body{font-family:var(--fb);color:var(--tx);background:var(--bg);min-height:100vh}
+.pbar{background:rgba(255,255,255,.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(148,163,184,.3);padding:10px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;gap:12px;flex-wrap:wrap}
+.pbar-title{font-family:var(--fd);font-size:1.05rem;font-weight:700;color:var(--a1)}
+.pbar-sub{font-size:.78rem;color:var(--txm)}
+.btn-p{background:var(--a1);color:#fff;border:none;padding:8px 20px;border-radius:999px;font-family:var(--fb);font-size:.82rem;font-weight:800;cursor:pointer;letter-spacing:.06em;transition:.2s}
+.btn-p:hover{background:#084ea0;transform:translateY(-1px)}
+.page{max-width:920px;margin:0 auto;padding:32px 24px 60px}
+.shdr{background:linear-gradient(135deg,#0b63ce 0%,#10b981 60%,#f59e0b 100%);border-radius:20px;padding:28px 32px 24px;color:#fff;margin-bottom:28px;position:relative;overflow:hidden}
+.shdr::before{content:'';position:absolute;top:-60px;right:-60px;width:200px;height:200px;background:rgba(255,255,255,.08);border-radius:50%}
+.shdr::after{content:'';position:absolute;bottom:-40px;left:-40px;width:140px;height:140px;background:rgba(255,255,255,.06);border-radius:50%}
+.hday{font-size:.75rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;opacity:.85;margin-bottom:4px}
+.htitle{font-family:var(--fd);font-size:clamp(1.6rem,4vw,2.4rem);font-weight:700;line-height:1.1;margin-bottom:6px}
+.hsub{font-size:.88rem;opacity:.85;margin-bottom:14px}
+.hpills{display:flex;gap:8px;flex-wrap:wrap}
+.hpill{background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:4px 14px;font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+.sinfo{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:28px}
+@media(max-width:600px){.sinfo{grid-template-columns:1fr}}
+.ifield{background:var(--sur);border-radius:12px;padding:12px 14px;border:1.5px solid rgba(11,99,206,.14);box-shadow:0 2px 8px rgba(15,23,42,.05)}
+.ilabel{font-size:.65rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--a1);margin-bottom:6px}
+.iline{border:none;border-bottom:1.5px solid #cbd5e1;width:100%;font-family:var(--fb);font-size:.9rem;color:var(--tx);background:transparent;outline:none;padding:2px 0}
+.iline:focus{border-bottom-color:#0b63ce}
+.slabel{display:inline-flex;align-items:center;gap:8px;padding:5px 16px;border-radius:999px;border:1px solid rgba(148,163,184,.4);background:rgba(255,255,255,.9);font-size:.72rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--a1);margin-bottom:10px}
+.stitle{font-family:var(--fd);font-size:clamp(1.3rem,2.5vw,1.8rem);font-weight:700;margin-bottom:16px;color:var(--tx);line-height:1.2}
+.card{background:var(--sur);border-radius:16px;padding:18px 20px;box-shadow:0 4px 18px rgba(15,23,42,.07);border:1px solid rgba(255,255,255,.7);margin-bottom:16px}
+.card.ab{border-left:4px solid var(--a1)}.card.ag{border-left:4px solid var(--a2)}.card.aa{border-left:4px solid var(--a3)}
+.clabel{font-size:.68rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;margin-bottom:8px}
+.cl-b{color:var(--a1)}.cl-g{color:#047857}.cl-a{color:#b45309}.cl-p{color:#6d28d9}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:680px){.g2{grid-template-columns:1fr}}
+.wl{border:none;border-bottom:1.5px solid #cbd5e1;width:100%;margin-bottom:10px;height:28px;display:block;background:transparent;font-family:var(--fb);font-size:.88rem;color:var(--tx);outline:none;padding:2px 4px}
+.wl:focus{border-bottom-color:#0b63ce}
+.wl::placeholder{color:#bdc5d1;font-style:italic}
+.wa{border:1.5px solid #cbd5e1;border-radius:8px;width:100%;min-height:70px;padding:8px;font-family:var(--fb);font-size:.85rem;color:var(--tx);resize:vertical;background:#f8fafc;outline:none;display:block}
+.wa:focus{outline:2px solid rgba(11,99,206,.3)}
+.wa::placeholder{color:#bdc5d1;font-style:italic}
+.tip{border-radius:10px;padding:10px 14px;font-size:.8rem;line-height:1.5;margin-top:10px}
+.tip.b{background:rgba(11,99,206,.07);color:#1e40af}.tip.g{background:rgba(16,185,129,.07);color:#065f46}.tip.a{background:rgba(245,158,11,.07);color:#92400e}
+.div{border:none;border-top:2px dashed #dde6f0;margin:28px 0}
+.chk{list-style:none;padding:0}
+.chk li{display:flex;align-items:flex-start;gap:8px;font-size:.85rem;color:var(--tx2);margin-bottom:8px;line-height:1.45}
+.chk li .bx{flex-shrink:0;width:17px;height:17px;border:2px solid #94a3b8;border-radius:4px;margin-top:1px;background:#fff;display:inline-block}
+.lvl{display:inline-flex;align-items:center;gap:6px;padding:4px 14px;border-radius:999px;font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px}
+.la{background:linear-gradient(135deg,#0b63ce,#60a5fa);color:#fff}
+.lb{background:linear-gradient(135deg,#10b981,#4ade80);color:#fff}
+.lc{background:linear-gradient(135deg,#7c3aed,#f59e0b);color:#fff}
+.timer{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:999px;background:rgba(11,99,206,.1);color:#0b63ce;font-size:.72rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;margin-left:8px}
+.sfooter{margin-top:40px;padding:16px 20px;border-radius:12px;background:rgba(11,99,206,.05);border:1px solid rgba(11,99,206,.12);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:.76rem;color:var(--txm)}
+.sfooter strong{color:var(--tx)}
+.gtext{background:linear-gradient(135deg,#0b63ce,#10b981,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.mb2{margin-bottom:10px}.mb3{margin-bottom:14px}.mt2{margin-top:10px}
+</style>
+</head>
+<body>
+<div class="pbar no-print">
+  <div><div class="pbar-title">&#128337; 30-Minute Homework &middot; Sessions 22</div><div class="pbar-sub">Feature Freeze &amp; Showcase Rehearsal &mdash; Differentiated &middot; Ages 7&ndash;13</div></div>
+  <button class="btn-p" onclick="window.print()">&#128438; Print / Save as PDF</button>
+</div>
+<div class="page">
 
+<div class="shdr">
+  <div style="font-size:2.8rem;margin-bottom:6px;">&#128337;&#127908;</div>
+  <div class="hday">Sessions 22 &middot; Capstone Sprint, Week 7 &middot; Summer 2026 AI &amp; Coding Program</div>
+  <div class="htitle">30-Minute Homework: Freeze, Fix &amp; Rehearse</div>
+  <div class="hsub">Same 30 minutes for everyone &mdash; the goal changes by tier so every student is stretched, not stuck.</div>
+  <div class="hpills">
+    <span class="hpill">&#8987; 30 min</span><span class="hpill">Ages 7&ndash;13</span><span class="hpill">3 Tiers</span><span class="hpill">Do at home</span>
+  </div>
+</div>
+
+<div class="sinfo">
+  <div class="ifield"><div class="ilabel">&#128100; Your Name</div><input class="iline" type="text" placeholder="First Last" /></div>
+  <div class="ifield"><div class="ilabel">&#128197; Assigned After</div><input class="iline" type="text" placeholder="Session 22" /></div>
+  <div class="ifield"><div class="ilabel">&#127979; Section / Period</div><input class="iline" type="text" placeholder="Section 1 / 2 / 3" /></div>
+</div>
+
+<div class="card ab mb3">
+  <div class="clabel cl-b">&#128161; How to Use This Sheet</div>
+  <p style="font-size:.85rem;color:#374151;">Find your tier below and do that box &mdash; it should take about 30 minutes total. Bring this sheet back to class. If you finish early, try the Challenge line at the bottom of your tier!</p>
+</div>
+
+<!-- TIER A -->
+<div class="card mb2" style="border:2px solid #bfdbfe;background:#f8faff;">
+  <div style="margin-bottom:8px;"><span class="lvl la">Tier A &mdash; Foundations &middot; Grades 1&ndash;3</span></div>
+  <div class="clabel cl-b">&#127374; Practice Saying Your Project Out Loud <span class="timer">&#8987; ~30 min</span></div>
+  <p class="mb2" style="font-size:.85rem;color:#374151;">Tonight, practice explaining your project to a family member, a stuffed animal, or a mirror &mdash; even a pet counts!</p>
+  <div class="chk mb2">
+    <li><span class="bx"></span> <strong>(10 min)</strong> Say out loud: what is my project called, and what does it do?</li>
+    <li><span class="bx"></span> <strong>(10 min)</strong> Draw or write ONE thing you are proud of in your project.</li>
+    <li><span class="bx"></span> <strong>(10 min)</strong> Say your whole intro 3 times until it feels smooth.</li>
+  </div>
+  <p style="font-size:.8rem;font-weight:700;color:#0b63ce;margin-bottom:4px;">My project is called:</p>
+  <input class="wl" type="text" placeholder="My project is called..." />
+  <p style="font-size:.8rem;font-weight:700;color:#0b63ce;margin-bottom:4px;">One thing I'm proud of:</p>
+  <input class="wl" type="text" placeholder="I'm proud of..." />
+  <div class="tip b">&#11088; Challenge: ask your family member one question about your project and try to answer it!</div>
+</div>
+
+<!-- TIER B -->
+<div class="card mb2" style="border:2px solid #bbf7d0;background:#f8fff9;">
+  <div style="margin-bottom:8px;"><span class="lvl lb">Tier B &mdash; Core &middot; Grades 3&ndash;5</span></div>
+  <div class="clabel cl-g">&#9989; Write &amp; Rehearse Your 30-Second Intro <span class="timer">&#8987; ~30 min</span></div>
+  <p class="mb2" style="font-size:.85rem;color:#374151;">Write out your full 30-second intro, then practice saying it out loud until it flows without reading.</p>
+  <div class="chk mb2">
+    <li><span class="bx"></span> <strong>(10 min)</strong> Write your 3-part intro below (what it is, the AI part, what you're proud of).</li>
+    <li><span class="bx"></span> <strong>(10 min)</strong> Read it out loud 3 times, timing yourself &mdash; aim for about 30 seconds.</li>
+    <li><span class="bx"></span> <strong>(10 min)</strong> Say it once WITHOUT looking at the paper. Note what you forgot.</li>
+  </div>
+  <input class="wl" type="text" placeholder="1&#65039;&#8419; My project is called ___ and it does ___." />
+  <input class="wl" type="text" placeholder="2&#65039;&#8419; The AI part is ___." />
+  <input class="wl" type="text" placeholder="3&#65039;&#8419; I'm proud of ___." />
+  <p style="font-size:.8rem;font-weight:700;color:#047857;margin:8px 0 4px;">What did you forget when you tried without the paper?</p>
+  <input class="wl" type="text" placeholder="I forgot to mention..." />
+  <div class="tip g">&#11088; Challenge: time yourself with a clock or phone timer &mdash; were you close to 30 seconds?</div>
+</div>
+
+<!-- TIER C -->
+<div class="card mb2" style="border:2px solid #e9d5ff;background:#fdf9ff;">
+  <div style="margin-bottom:8px;"><span class="lvl lc">Tier C &mdash; Accelerated &middot; Grades 6&ndash;9</span></div>
+  <div class="clabel cl-p">&#128995; Bug Hunt Log + Polished Intro <span class="timer">&#8987; ~30 min</span></div>
+  <p class="mb2" style="font-size:.85rem;color:#374151;">Do a deeper self-review: hunt for one more bug on your own, log it properly, then rehearse a tighter intro.</p>
+  <div class="chk mb2">
+    <li><span class="bx"></span> <strong>(12 min)</strong> Test your project 3 different unusual ways (weird input, fast clicking, etc.) and log any bug you find below.</li>
+    <li><span class="bx"></span> <strong>(10 min)</strong> Write and rehearse your 30-second intro, including one sentence about the AI fairness check.</li>
+    <li><span class="bx"></span> <strong>(8 min)</strong> Say the intro out loud twice, timing it to land close to 30 seconds.</li>
+  </div>
+  <div class="wa mb2" contenteditable="true" placeholder="Bug found: ...&#10;How I tested for it: ...&#10;Plan to fix it next session: ..." style="min-height:70px;"></div>
+  <input class="wl" type="text" placeholder="My 30-second intro (including AI fairness note): ..." />
+  <div class="tip a">&#11088; Challenge: ask a sibling or friend to be a &ldquo;tough audience&rdquo; and ask you one hard question about your project. Write their question and your answer.</div>
+  <input class="wl mt2" type="text" placeholder="Their question was... / My answer was..." />
+</div>
+
+<hr class="div">
+
+<div class="card mb3">
+  <div class="clabel cl-b">&#9997;&#65039; Parent/Guardian Sign-Off (optional)</div>
+  <p style="font-size:.83rem;color:#374151;margin-bottom:10px;">I watched or listened to my child practice their project intro tonight.</p>
+  <div class="g2">
+    <div><p style="font-size:.8rem;font-weight:700;color:#374151;margin-bottom:4px;">Signature:</p><input class="wl" type="text" placeholder="Parent/Guardian signature" /></div>
+    <div><p style="font-size:.8rem;font-weight:700;color:#374151;margin-bottom:4px;">One thing that impressed you:</p><input class="wl" type="text" placeholder="I was impressed by..." /></div>
+  </div>
+</div>
+
+<div class="sfooter">
+  <div><strong>Sessions 22 Homework &middot; Feature Freeze &amp; Showcase Rehearsal</strong> &middot; Mr. Hsiao &ldquo;Hue&rdquo; Weng &middot; Summer 2026<br>
+  <span class="gtext" style="font-weight:800;">30 Minutes &middot; Every Session &middot; Bring It Back to Class</span></div>
+  <div style="text-align:right;">Ages 7&ndash;13 &middot; Grades 1&ndash;9<br><span style="font-size:.7rem;">&#127908; Practice makes showcase day feel easy!</span></div>
+</div>
+
+</div>
+</body>
+</html>
