@@ -1,1 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="slides-format" content="viewport">
+    <title>Session 23 · Project Showcase</title>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+    <style type="text/tailwindcss">
+        @theme {
+            --color-bg: #f0f7ff;
+            --color-bg-deep: #e4f0fc;
+            --color-surface: #ffffff;
+            --color-text: #1a2e50;
+            --color-text-secondary: #3b5278;
+            --color-text-muted: #6b87a8;
+            --color-accent-1: #2563eb;
+            --color-accent-2: #f97066;
+            --color-accent-3: #16a34a;
+            --color-glass-bg: rgba(255,255,255,0.85);
+            --color-glass-border: rgba(37,99,235,0.10);
+            --color-vignette: rgba(0,0,0,0.05);
+            --font-display: 'Nunito', sans-serif;
+            --font-body: 'DM Sans', sans-serif;
+        }
+    </style>
+
+    <style>
+        :root {
+            --color-bg: #f0f7ff;
+            --color-text: #1a2e50;
+            --glow-color-rgb: 37,99,235;
+        }
+        *, *::before, *::after { box-sizing: border-box; }
+        html, body { background: var(--color-bg); margin: 0; }
+        body { font-family: 'DM Sans', sans-serif; color: var(--color-text); overflow: hidden; height: 100vh; width: 100vw; }
+        .deck { width: 100vw; height: 100vh; position: relative; }
+        .slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--color-bg); display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; transform: scale(0.95); transition: opacity 0.7s ease, transform 0.7s ease; pointer-events: none; overflow: hidden; }
+        .slide.active { opacity: 1; transform: scale(1); pointer-events: all; }
+        .slide > .content { position: relative; z-index: 2; width: 100%; max-width: 1100px; padding: clamp(1rem, 3vw, 3rem); }
+        .nav-controls { position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 14px; z-index: 100; background: rgba(255,255,255,0.9); backdrop-filter: blur(10px); padding: 8px 20px; border-radius: 40px; border: 1px solid rgba(37,99,235,0.15); box-shadow: 0 4px 20px rgba(37,99,235,0.10); }
+        .nav-btn { width: 36px; height: 36px; border: none; background: rgba(37,99,235,0.08); color: #2563eb; border-radius: 50%; font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s; }
+        .nav-btn:hover { background: rgba(37,99,235,0.18); }
+        .slide-dots { display: flex; gap: 6px; }
+        .slide-dots .dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(37,99,235,0.2); cursor: pointer; transition: background 0.3s, transform 0.3s; }
+        .slide-dots .dot.active { background: #2563eb; transform: scale(1.4); }
+        .slide-counter { font-size: 0.78rem; color: #6b87a8; min-width: 36px; text-align: center; font-family: 'DM Sans', sans-serif; }
+        .reveal { opacity: 0; transform: translateY(20px); }
+
+        /* Gradient mesh */
+        @keyframes float-slow { 0%{transform:translate(0,0) scale(1);} 25%{transform:translate(40px,-30px) scale(1.08);} 50%{transform:translate(-30px,25px) scale(0.94);} 75%{transform:translate(35px,15px) scale(1.05);} 100%{transform:translate(0,0) scale(1);} }
+        @keyframes float-drift { 0%{transform:translate(0,0) scale(1);} 33%{transform:translate(-40px,-40px) scale(1.1);} 66%{transform:translate(30px,25px) scale(0.91);} 100%{transform:translate(0,0) scale(1);} }
+        @keyframes float { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-12px);} }
+        @keyframes bounce-gentle { 0%,100%{transform:translateY(0) scale(1);} 50%{transform:translateY(-8px) scale(1.03);} }
+        .gradient-mesh { position: absolute; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+        .blob { position: absolute; border-radius: 50%; filter: blur(70px); animation: float-slow 12s ease-in-out infinite; }
+        .blob:nth-child(2) { animation: float-drift 16s ease-in-out infinite; }
+        .blob:nth-child(3) { animation: float-slow 20s ease-in-out infinite reverse; }
+
+        /* Vignette */
+        .slide::after { content:''; position:absolute; inset:0; z-index:1; pointer-events:none; background: radial-gradient(ellipse at center, transparent 55%, var(--color-vignette) 100%); }
+
+        /* Glow pulse */
+        @keyframes glow-pulse { 0%,100%{text-shadow:0 0 20px rgba(37,99,235,0.4);} 50%{text-shadow:0 0 35px rgba(37,99,235,0.7);} }
+        .glow-pulse { animation: glow-pulse 3s ease-in-out infinite; }
+
+        /* Cards */
+        .card-light { background: #fff; border: 1px solid rgba(37,99,235,0.1); border-radius: 16px; padding: 1.2rem 1.4rem; box-shadow: 0 2px 14px rgba(37,99,235,0.07); transition: transform 0.25s, box-shadow 0.25s; }
+        .card-light:hover { transform: translateY(-4px); box-shadow: 0 8px 28px rgba(37,99,235,0.13); }
+        .card-accent-left { border-left: 4px solid #2563eb; }
+        .card-orange { border-left: 4px solid #f97066; }
+        .card-green { border-left: 4px solid #16a34a; }
+        .card-yellow { border-left: 4px solid #f59e0b; }
+
+        /* Timer bar */
+        @keyframes shrink { from{width:100%;} to{width:0%;} }
+        .timer-bar { height: 5px; border-radius: 3px; background: linear-gradient(90deg, #2563eb, #f97066); }
+
+        /* Pill badges */
+        .pill { display: inline-flex; align-items: center; gap: 6px; padding: 4px 14px; border-radius: 999px; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
+        .pill-blue { background: rgba(37,99,235,0.12); color: #1d4ed8; }
+        .pill-orange { background: rgba(249,112,102,0.14); color: #c2410c; }
+        .pill-green { background: rgba(22,163,74,0.12); color: #15803d; }
+        .pill-yellow { background: rgba(245,158,11,0.14); color: #b45309; }
+
+        /* Scratch block styles */
+        .scratch-block { display: inline-flex; align-items: center; gap: 5px; padding: 6px 14px 6px 10px; border-radius: 8px; font-family: 'DM Sans', monospace; font-weight: 700; font-size: 0.85rem; cursor: default; user-select: none; }
+        .block-purple { background: #7c3aed; color: #fff; }
+        .block-orange { background: #f97316; color: #fff; }
+        .block-blue { background: #2563eb; color: #fff; }
+        .block-yellow { background: #d97706; color: #fff; }
+        .block-green { background: #16a34a; color: #fff; }
+        .block-teal { background: #0891b2; color: #fff; }
+        .block-notch::before { content:''; display:inline-block; width:10px; height:10px; border-radius:50%; background:rgba(255,255,255,0.35); margin-right:4px; }
+
+        /* Video embed styles */
+        .video-container { position: relative; border-radius: 14px; overflow: hidden; cursor: pointer; box-shadow: 0 4px 24px rgba(37,99,235,0.15); transition: transform 0.25s, box-shadow 0.25s; }
+        .video-container:hover { transform: translateY(-3px); box-shadow: 0 10px 36px rgba(37,99,235,0.22); }
+        .video-thumb { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .play-overlay { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0,0,0,0.25); transition: background 0.2s; gap: 8px; }
+        .video-container:hover .play-overlay { background: rgba(0,0,0,0.35); }
+        .play-btn-circle { width: 56px; height: 56px; border-radius: 50%; background: rgba(255,255,255,0.95); display: flex; align-items: center; justify-content: center; }
+        .play-btn-circle svg { width: 24px; height: 24px; fill: #2563eb; margin-left: 3px; }
+        .video-label { color: #fff; font-size: 0.8rem; font-weight: 600; text-shadow: 0 1px 3px rgba(0,0,0,0.5); letter-spacing: 0.03em; }
+        .video-source-link { font-size: 0.72rem; color: rgba(255,255,255,0.8); text-shadow: 0 1px 2px rgba(0,0,0,0.4); }
+
+        /* Step number */
+        .step-num { width: 34px; height: 34px; border-radius: 50%; background: #2563eb; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 0.95rem; flex-shrink: 0; }
+
+        /* Progress tracker */
+        .progress-track-h { display: flex; align-items: center; gap: 0; }
+        .progress-node-h { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.8rem; flex-shrink: 0; }
+        .progress-line-h { flex: 1; height: 3px; }
+
+        /* Tier cards */
+        .tier-card { border-radius: 14px; padding: 1rem 1.2rem; transition: transform 0.2s, box-shadow 0.2s; }
+        .tier-card:hover { transform: translateY(-3px); box-shadow: 0 8px 28px rgba(0,0,0,0.1); }
+
+        /* Quiz card */
+        .quiz-option { padding: 10px 16px; border-radius: 10px; border: 2px solid rgba(37,99,235,0.15); background: #fff; cursor: pointer; font-weight: 600; transition: all 0.18s; font-size: 0.9rem; }
+        .quiz-option:hover { border-color: #2563eb; background: rgba(37,99,235,0.06); transform: translateX(3px); }
+        .quiz-option.correct { border-color: #16a34a; background: rgba(22,163,74,0.1); color: #15803d; }
+        .quiz-option.wrong { border-color: #ef4444; background: rgba(239,68,68,0.08); color: #b91c1c; }
+
+        /* Bar fill */
+        .hbar-track { background: rgba(37,99,235,0.1); border-radius: 999px; height: 14px; overflow: hidden; }
+        .hbar-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, #2563eb, #60a5fa); transition: width 0.8s ease; }
+
+        /* Confetti burst */
+        @keyframes confetti-fall { from{opacity:1; transform:translateY(-20px) rotate(0deg);} to{opacity:0; transform:translateY(60px) rotate(360deg);} }
+        .confetti-piece { position: absolute; width: 8px; height: 8px; border-radius: 2px; animation: confetti-fall 1.2s ease-out forwards; pointer-events: none; }
+
+        /* Ship it rocket */
+        @keyframes rocket-fly { 0%{transform:translateY(0) rotate(-5deg);} 50%{transform:translateY(-12px) rotate(5deg);} 100%{transform:translateY(0) rotate(-5deg);} }
+        .rocket-anim { animation: rocket-fly 2.5s ease-in-out infinite; display: inline-block; }
+
+        /* Mouse spotlight */
+        .mouse-spotlight { position:fixed; inset:0; z-index:99; pointer-events:none; }
+
+
+        /* Interactive: click-to-reveal cards */
+        .click-reveal { cursor: pointer; position: relative; }
+        .click-reveal::after { content: 'Tap to reveal ↓'; position: absolute; bottom: 6px; right: 10px; font-size: 0.65rem; font-weight: 700; color: #94a3b8; letter-spacing: 0.02em; }
+        .click-reveal.opened::after { content: 'Tap to hide ↑'; color: #2563eb; }
+        .reveal-answer { max-height: 0; overflow: hidden; opacity: 0; transition: max-height 0.4s ease, opacity 0.3s ease, margin-top 0.3s ease; margin-top: 0; }
+        .click-reveal.opened .reveal-answer { max-height: 200px; opacity: 1; margin-top: 8px; }
+        .click-reveal:hover { box-shadow: 0 8px 28px rgba(37,99,235,0.16); }
+
+        /* Interactive: checklist */
+        .check-item { cursor: pointer; user-select: none; transition: background 0.2s, opacity 0.2s; }
+        .check-item .checkbox { width: 22px; height: 22px; border-radius: 6px; border: 2.5px solid #94a3b8; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.2s; font-size: 0.85rem; color: #fff; }
+        .check-item.checked .checkbox { background: #16a34a; border-color: #16a34a; }
+        .check-item.checked { opacity: 0.6; }
+        .check-item.checked .check-label { text-decoration: line-through; }
+        .checklist-progress { font-size: 0.8rem; font-weight: 800; color: #15803d; }
+
+        /* Interactive: award select */
+        .award-pick { cursor: pointer; transition: transform 0.2s, box-shadow 0.2s, border 0.2s; border: 2px solid transparent; }
+        .award-pick:hover { transform: translateY(-4px) scale(1.03); }
+        .award-pick.selected { border: 2px solid #f59e0b; background: rgba(245,158,11,0.1); transform: translateY(-4px) scale(1.05); box-shadow: 0 8px 26px rgba(245,158,11,0.25); }
+        .award-pick.selected::before { content: '✓ Picked!'; position: absolute; top: -10px; right: -6px; background: #f59e0b; color: #fff; font-size: 0.62rem; font-weight: 800; padding: 2px 7px; border-radius: 999px; }
+        .award-pick { position: relative; }
+
+        /* Interactive: timeline node */
+        .progress-node-h.clickable { cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; }
+        .progress-node-h.clickable:hover, .progress-node-h.clickable.active-node { transform: scale(1.25); box-shadow: 0 0 0 4px rgba(37,99,235,0.18); }
+        .timeline-detail { transition: opacity 0.25s, transform 0.25s; }
+
+        /* Interactive: self-check pill toggle */
+        .toggle-pill { cursor: pointer; transition: all 0.2s; }
+        .toggle-pill.active { background: #16a34a !important; color: #fff !important; }
+
+        /* Interactive: confetti button */
+        .confetti-trigger { cursor: pointer; transition: transform 0.15s; }
+        .confetti-trigger:hover { transform: scale(1.08); }
+
+        @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.2s !important; } }
+    </style>
+</head>
+<body>
+
+<div class="mouse-spotlight" id="spotlight"></div>
+
+<div class="deck">
+
+    <!-- ===== SLIDE 1: TITLE ===== -->
+
+    <!-- ===== SLIDE 1: TITLE ===== -->
+    <div class="slide slide-1 active" data-slide="1">
+        <div class="gradient-mesh">
+            <div class="blob" style="width:520px;height:520px;top:-130px;right:-110px;background:#2563eb;opacity:0.09;"></div>
+            <div class="blob" style="width:400px;height:400px;bottom:-90px;left:-90px;background:#f97066;opacity:0.08;"></div>
+            <div class="blob" style="width:260px;height:260px;top:40%;left:45%;background:#16a34a;opacity:0.06;"></div>
+        </div>
+        <div class="content" style="text-align:center;">
+            <div class="reveal" style="font-size:3.4rem;margin-bottom:0.4rem;" class="rocket-anim">🎉</div>
+            <div class="pill pill-orange reveal" style="margin-bottom:0.9rem;">Session 23 · Wednesday, August 12</div>
+            <h1 class="reveal glow-pulse" style="font-family:'Nunito',sans-serif;font-weight:900;font-size:clamp(2.1rem,5vw,3.6rem);color:#1a2e50;line-height:1.08;margin-bottom:0.8rem;">Project Showcase</h1>
+            <p class="reveal" style="color:#3b5278;font-size:1.05rem;max-width:640px;margin:0 auto 1.4rem;">Today isn't a test. It's a celebration — you built something real, and now you get to share it.</p>
+            <div class="reveal" style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+                <div class="pill pill-blue">🎮 Games</div>
+                <div class="pill pill-green">🤖 AI Mini-Apps</div>
+                <div class="pill pill-yellow">📖 Stories</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== SLIDE 2: TODAY'S JOURNEY ===== -->
+    <div class="slide slide-2" data-slide="2">
+        <div class="gradient-mesh">
+            <div class="blob" style="width:400px;height:400px;top:-80px;left:-80px;background:#2563eb;opacity:0.08;"></div>
+        </div>
+        <div class="content">
+            <div class="pill pill-blue reveal" style="margin-bottom:0.6rem;">Where We've Been</div>
+            <h2 class="reveal" style="font-family:'Nunito',sans-serif;font-weight:900;font-size:clamp(1.5rem,3vw,2.2rem);color:#1a2e50;margin-bottom:1rem;">Think Back: What Did It Take to Get Here?</h2>
+            <p class="reveal" style="color:#3b5278;font-size:0.92rem;margin-bottom:1.2rem;">Before we open the doors — let's trace the path. Every session added one more piece.</p>
+            <div class="reveal" style="display:flex;align-items:center;gap:2px;margin-bottom:1.2rem;">
+                <div class="progress-track-h" style="width:100%;">
+                    <div class="progress-node-h clickable" data-group="t1" data-idx="0" onclick="showTimelineDetail(0,'t1')" style="background:#2563eb;color:#fff;">1</div>
+                    <div class="progress-line-h" style="background:#2563eb;"></div>
+                    <div class="progress-node-h clickable" data-group="t1" data-idx="1" onclick="showTimelineDetail(1,'t1')" style="background:#2563eb;color:#fff;">7</div>
+                    <div class="progress-line-h" style="background:#2563eb;"></div>
+                    <div class="progress-node-h clickable" data-group="t1" data-idx="2" onclick="showTimelineDetail(2,'t1')" style="background:#2563eb;color:#fff;">15</div>
+                    <div class="progress-line-h" style="background:#2563eb;"></div>
+                    <div class="progress-node-h clickable" data-group="t1" data-idx="3" onclick="showTimelineDetail(3,'t1')" style="background:#2563eb;color:#fff;">18</div>
+                    <div class="progress-line-h" style="background:#2563eb;"></div>
+                    <div class="progress-node-h clickable" data-group="t1" data-idx="4" onclick="showTimelineDetail(4,'t1')" style="background:#f97066;color:#fff;">25</div>
+                </div>
+            </div>
+            <div class="reveal" style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;">
+                <div class="card-light card-accent-left timeline-detail" data-group="t1" data-idx="0" style="padding:0.7rem;"><div style="font-weight:800;font-size:0.78rem;color:#1d4ed8;">Session 1</div><div style="font-size:0.75rem;color:#3b5278;">Welcome & first algorithm</div></div>
+                <div class="card-light card-accent-left timeline-detail" data-group="t1" data-idx="1" style="padding:0.7rem;"><div style="font-weight:800;font-size:0.78rem;color:#1d4ed8;">Session 7</div><div style="font-size:0.75rem;color:#3b5278;">Shipped first Scratch project</div></div>
+                <div class="card-light card-green timeline-detail" data-group="t1" data-idx="2" style="padding:0.7rem;"><div style="font-weight:800;font-size:0.78rem;color:#15803d;">Session 15</div><div style="font-size:0.75rem;color:#3b5278;">Trained a real AI model</div></div>
+                <div class="card-light card-yellow timeline-detail" data-group="t1" data-idx="3" style="padding:0.7rem;"><div style="font-weight:800;font-size:0.78rem;color:#b45309;">Session 18</div><div style="font-size:0.75rem;color:#3b5278;">Chose our capstone project</div></div>
+                <div class="card-light card-orange timeline-detail" data-group="t1" data-idx="4" style="padding:0.7rem;"><div style="font-weight:800;font-size:0.78rem;color:#c2410c;">Session 23</div><div style="font-size:0.75rem;color:#3b5278;">🎉 We show it off!</div></div>
+            </div>
+            <div class="card-light reveal" style="margin-top:1.1rem;padding:0.9rem 1.2rem;background:rgba(37,99,235,0.04);">
+                <div style="font-weight:800;font-size:0.88rem;color:#1a2e50;margin-bottom:4px;">Question to think about:</div>
+                <div style="font-size:0.85rem;color:#3b5278;">If a stranger walked up to your project right now and asked "what does this do?" — could you answer in one sentence? Let's find out what makes that sentence work.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== SLIDE 3: WHAT IS A SHOWCASE ===== -->
+    <div class="slide slide-3" data-slide="3">
+        <div class="gradient-mesh">
+            <div class="blob" style="width:380px;height:380px;bottom:-80px;right:-60px;background:#16a34a;opacity:0.08;"></div>
+        </div>
+        <div class="content">
+            <div class="pill pill-green reveal" style="margin-bottom:0.6rem;">Mini-Lesson</div>
+            <h2 class="reveal" style="font-family:'Nunito',sans-serif;font-weight:900;font-size:clamp(1.5rem,3vw,2.2rem);color:#1a2e50;margin-bottom:0.9rem;">What Actually Happens at a Gallery Walk?</h2>
+            <p class="reveal" style="color:#3b5278;font-size:0.92rem;margin-bottom:1.1rem;">A gallery walk isn't a lineup of speeches — it's a room full of little conversations, happening at the same time.</p>
+            <div class="reveal" style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:1.1rem;">
+                <div class="card-light tier-card" style="text-align:center;">
+                    <div style="font-size:1.9rem;margin-bottom:6px;">🖥️</div>
+                    <div style="font-weight:800;font-size:0.88rem;color:#1a2e50;">You set up</div>
+                    <div style="font-size:0.78rem;color:#3b5278;margin-top:4px;">Your project runs and waits at your spot, ready to demo.</div>
+                </div>
+                <div class="card-light tier-card" style="text-align:center;">
+                    <div style="font-size:1.9rem;margin-bottom:6px;">🚶</div>
+                    <div style="font-weight:800;font-size:0.88rem;color:#1a2e50;">Visitors walk around</div>
+                    <div style="font-size:0.78rem;color:#3b5278;margin-top:4px;">Families and classmates move table to table.</div>
+                </div>
+                <div class="card-light tier-card" style="text-align:center;">
+                    <div style="font-size:1.9rem;margin-bottom:6px;">🗣️</div>
+                    <div style="font-weight:800;font-size:0.88rem;color:#1a2e50;">You explain, one-on-one</div>
+                    <div style="font-size:0.78rem;color:#3b5278;margin-top:4px;">A relaxed, quiet conversation — not a stage speech.</div>
+                </div>
+            </div>
+            <div class="card-light card-accent-left reveal click-reveal" onclick="toggleReveal(this)" style="padding:1rem 1.3rem;">
+                <div style="font-weight:800;font-size:0.9rem;color:#1d4ed8;margin-bottom:5px;">Notice something?</div>
+                <div style="font-size:0.85rem;color:#3b5278;">Nobody said "stand up front and present to everyone." Why might explaining to one person at a time actually feel easier — and let you explain <i>better</i> — than a big speech?</div>
+                <div class="reveal-answer" style="font-size:0.82rem;color:#15803d;font-weight:700;border-top:1px dashed rgba(37,99,235,0.2);padding-top:8px;">One-on-one means no audience pressure, you can adjust your explanation to the listener, and mistakes are private, not public — exactly like presenting.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== SLIDE 4: VIDEO 1 - PRESENTATION SKILLS ===== -->
+    <div class="slide slide-4" data-slide="4">
+        <div class="gradient-mesh">
+            <div class="blob" style="width:420px;height:420px;top:-90px;right:-70px;background:#2563eb;opacity:0.08;"></div>
+            <div class="blob" style="width:300px;height:300px;bottom:-50px;left:-50px;background:#16a34a;opacity:0.07;"></div>
+        </div>
+        <div class="content">
+            <div style="display:flex;gap:10px;margin-bottom:0.7rem;align-items:center;" class="reveal">
+                <div class="pill pill-blue">Watch Together</div>
+                <div class="pill pill-green">Video 1 of 2</div>
+            </div>
+            <h2 class="reveal" style="font-family:'Nunito',sans-serif;font-size:clamp(1.4rem,2.8vw,2rem);font-weight:900;color:#1a2e50;margin-bottom:0.3rem;">How Do Coders Present Their Projects?</h2>
+            <p class="reveal" style="color:#3b5278;font-size:0.88rem;margin-bottom:1rem;">Watch how other young coders talk about what they built — notice their tone, their pace, and what they choose to explain first.</p>
+            <div style="display:grid;grid-template-columns:5fr 3fr;gap:14px;align-items:start;" class="reveal">
+                <div>
+                    <div class="video-container" style="height:240px;">
+                        <div style="position:relative;width:100%;height:100%;" id="vid1-wrap">
+                            <img class="video-thumb" src="https://img.youtube.com/vi/38nQbxkxmLA/hqdefault.jpg" alt="Project Presentation Skills for kids thumbnail">
+                            <div class="play-overlay" onclick="playVideo('vid1-wrap','38nQbxkxmLA')" style="cursor:pointer;">
+                                <div class="play-btn-circle"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div>
+                                <div class="video-label">Project Presentation Skills | Coding for Kids</div>
+                                <div class="video-source-link">youtube.com/watch?v=38nQbxkxmLA</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;">
+                        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                            <div class="pill pill-blue">Ages 6–12</div>
+                            <div class="pill pill-yellow">~4 min</div>
+                        </div>
+                        <a href="https://www.youtube.com/watch?v=38nQbxkxmLA" target="_blank" style="font-size:0.75rem;color:#2563eb;font-weight:700;text-decoration:none;">▶ Watch on YouTube ↗</a>
+                    </div>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:8px;">
+                    <div class="card-light card-accent-left" style="padding:0.8rem;">
+                        <div style="font-weight:800;font-size:0.85rem;color:#1d4ed8;margin-bottom:5px;">While You Watch, Think:</div>
+                        <div style="display:flex;flex-direction:column;gap:5px;">
+                            <div style="font-size:0.8rem;color:#3b5278;">→ What's the <b>first</b> thing they say about their project?</div>
+                            <div style="font-size:0.8rem;color:#3b5278;">→ Do they explain <b>what it does</b> before <b>how they built it</b>?</div>
+                            <div style="font-size:0.8rem;color:#3b5278;">→ How do they sound — nervous, excited, calm?</div>
+                        </div>
+                    </div>
+                    <div class="card-light card-green" style="padding:0.8rem;">
+                        <div style="font-weight:800;font-size:0.85rem;color:#15803d;margin-bottom:4px;">After the Video:</div>
+                        <div style="font-size:0.8rem;color:#3b5278;">Turn to a neighbor: what's <b>one</b> thing you'll copy from how they presented?</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== SLIDE 5: THE 3-SENTENCE FORMULA ===== -->
+    <div class="slide slide-5" data-slide="5">
+        <div class="gradient-mesh">
+            <div class="blob" style="width:380px;height:380px;top:-70px;left:-60px;background:#f97066;opacity:0.07;"></div>
+        </div>
+        <div class="content">
+            <div class="pill pill-orange reveal" style="margin-bottom:0.6rem;">Guided Build · Craft Your Pitch</div>
+            <h2 class="reveal" style="font-family:'Nunito',sans-serif;font-weight:900;font-size:clamp(1.5rem,3vw,2.2rem);color:#1a2e50;margin-bottom:0.9rem;">Could You Explain Your Project in 3 Sentences?</h2>
+            <p class="reveal" style="color:#3b5278;font-size:0.9rem;margin-bottom:1.1rem;">Every great demo answers three questions, in order. Try filling in your own right now — out loud, to yourself.</p>
+            <div class="reveal" style="display:flex;flex-direction:column;gap:10px;">
+                <div class="card-light card-accent-left" style="display:flex;gap:12px;align-items:flex-start;">
+                    <div class="step-num">1</div>
+                    <div><div style="font-weight:800;font-size:0.88rem;color:#1a2e50;">What is it?</div><div style="font-size:0.8rem;color:#3b5278;">"My project is a ___ that lets you ___."</div></div>
+                </div>
+                <div class="card-light card-green" style="display:flex;gap:12px;align-items:flex-start;">
+                    <div class="step-num" style="background:#16a34a;">2</div>
+                    <div><div style="font-weight:800;font-size:0.88rem;color:#1a2e50;">What's the AI or coding idea inside it?</div><div style="font-size:0.8rem;color:#3b5278;">"It uses ___ (a loop, a chatbot, a trained classifier) to ___."</div></div>
+                </div>
+                <div class="card-light card-yellow" style="display:flex;gap:12px;align-items:flex-start;">
+                    <div class="step-num" style="background:#d97706;">3</div>
+                    <div><div style="font-weight:800;font-size:0.88rem;color:#1a2e50;">What are you proudest of, or what would you add next?</div><div style="font-size:0.8rem;color:#3b5278;">"I'm proudest of ___" or "Next I'd add ___."</div></div>
+                </div>
+            </div>
+            <div class="card-light reveal click-reveal" onclick="toggleReveal(this)" style="margin-top:1rem;padding:0.85rem 1.2rem;background:rgba(37,99,235,0.04);">
+                <div style="font-size:0.85rem;color:#3b5278;"><b>Try it now:</b> whisper your 3 sentences to your neighbor. Did all three show up naturally, or did one feel harder to find?</div>
+                <div class="reveal-answer" style="font-size:0.8rem;color:#1d4ed8;font-weight:700;">Most people find sentence 2 (naming the AI idea) the hardest — that's normal! Practice it once more before showtime.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== SLIDE 6: WHAT VISITORS WILL ASK ===== -->
+    <div class="slide slide-6" data-slide="6">
+        <div class="gradient-mesh">
+            <div class="blob" style="width:400px;height:400px;bottom:-90px;right:-80px;background:#2563eb;opacity:0.08;"></div>
+        </div>
+        <div class="content">
+            <div class="pill pill-blue reveal" style="margin-bottom:0.6rem;">Get Ready for Questions</div>
+            <h2 class="reveal" style="font-family:'Nunito',sans-serif;font-weight:900;font-size:clamp(1.5rem,3vw,2.2rem);color:#1a2e50;margin-bottom:0.9rem;">What Might a Visitor Ask You?</h2>
+            <p class="reveal" style="color:#3b5278;font-size:0.9rem;margin-bottom:1.1rem;">Families walking by will be curious — some questions come up again and again. Which of these could you answer right now, and which needs practice?</p>
+            <div class="reveal" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                <div class="card-light card-accent-left click-reveal" onclick="toggleReveal(this)" style="padding:0.9rem;">"How does it work?"<div class="reveal-answer" style="font-size:0.76rem;color:#3b5278;">Walk through it step by step, like a recipe.</div></div>
+                <div class="card-light card-green click-reveal" onclick="toggleReveal(this)" style="padding:0.9rem;">"Where's the AI part?"<div class="reveal-answer" style="font-size:0.76rem;color:#3b5278;">Point to the one rule, classifier, or chatbot response that "decides" something.</div></div>
+                <div class="card-light card-yellow click-reveal" onclick="toggleReveal(this)" style="padding:0.9rem;">"What was the hardest bug?"<div class="reveal-answer" style="font-size:0.76rem;color:#3b5278;">Tell the story: what broke, how you found it, how you fixed it.</div></div>
+                <div class="card-light card-orange click-reveal" onclick="toggleReveal(this)" style="padding:0.9rem;">"What would you build next?"<div class="reveal-answer" style="font-size:0.76rem;color:#3b5278;">One honest idea — even "I'd add sound effects" counts!</div></div>
+            </div>
+            <div class="card-light reveal" style="margin-top:1.1rem;padding:0.9rem 1.3rem;border:2px solid rgba(249,112,102,0.3);background:rgba(249,112,102,0.05);">
+                <div style="font-weight:800;font-size:0.88rem;color:#c2410c;margin-bottom:4px;">The trickiest one is often "where's the AI part?"</div>
+                <div style="font-size:0.84rem;color:#3b5278;">Look at your own project: is it a chatbot answering keywords? A Teachable Machine classifier? An "AI character" that reacts differently based on rules? Find the one sentence that names it.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== SLIDE 7: VIDEO 2 - WHAT IS AI RECAP ===== -->
+    <div class="slide slide-7" data-slide="7">
+        <div class="gradient-mesh">
+            <div class="blob" style="width:420px;height:420px;top:-100px;left:-80px;background:#16a34a;opacity:0.08;"></div>
+        </div>
+        <div class="content">
+            <div style="display:flex;gap:10px;margin-bottom:0.7rem;align-items:center;" class="reveal">
+                <div class="pill pill-green">Watch Together</div>
+                <div class="pill pill-blue">Video 2 of 2</div>
+            </div>
+            <h2 class="reveal" style="font-family:'Nunito',sans-serif;font-size:clamp(1.4rem,2.8vw,2rem);font-weight:900;color:#1a2e50;margin-bottom:0.3rem;">Quick Recap: What Is AI, Again?</h2>
+            <p class="reveal" style="color:#3b5278;font-size:0.88rem;margin-bottom:1rem;">A fast refresher before showtime — so when a visitor asks about the AI in your project, the words are fresh.</p>
+            <div style="display:grid;grid-template-columns:5fr 3fr;gap:14px;align-items:start;" class="reveal">
+                <div>
+                    <div class="video-container" style="height:240px;">
+                        <div style="position:relative;width:100%;height:100%;" id="vid2-wrap">
+                            <img class="video-thumb" src="https://img.youtube.com/vi/OPWj3cxJIHw/hqdefault.jpg" alt="How to Explain AI to Kids in under 3 minutes thumbnail">
+                            <div class="play-overlay" onclick="playVideo('vid2-wrap','OPWj3cxJIHw')" style="cursor:pointer;">
+                                <div class="play-btn-circle"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div>
+                                <div class="video-label">How to Explain AI to Kids (Under 3 Min)</div>
+                                <div class="video-source-link">youtube.com/watch?v=OPWj3cxJIHw</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;">
+                        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                            <div class="pill pill-blue">Ages 6–12</div>
+                            <div class="pill pill-yellow">~3 min</div>
+                        </div>
+                        <a href="https://www.youtube.com/watch?v=OPWj3cxJIHw" target="_blank" style="font-size:0.75rem;color:#2563eb;font-weight:700;text-decoration:none;">▶ Watch on YouTube ↗</a>
+                    </div>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:8px;">
+                    <div class="card-light card-accent-left" style="padding:0.8rem;">
+                        <div style="font-weight:800;font-size:0.85rem;color:#1d4ed8;margin-bottom:5px;">While You Watch, Think:</div>
+                        <div style="display:flex;flex-direction:column;gap:5px;">
+                            <div style="font-size:0.8rem;color:#3b5278;">→ How do they define AI in <b>one sentence</b>?</div>
+                            <div style="font-size:0.8rem;color:#3b5278;">→ Does their explanation match how <b>your</b> project's AI works?</div>
+                        </div>
+                    </div>
+                    <div class="card-light card-green" style="padding:0.8rem;">
+                        <div style="font-weight:800;font-size:0.85rem;color:#15803d;margin-bottom:4px;">After the Video:</div>
+                        <div style="font-size:0.8rem;color:#3b5278;">Say your own "where's the AI" sentence out loud, one more time.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== SLIDE 8: SETUP CHECKLIST ===== -->
+    <div class="slide slide-8" data-slide="8">
+        <div class="gradient-mesh">
+            <div class="blob" style="width:360px;height:360px;bottom:-70px;left:-60px;background:#2563eb;opacity:0.08;"></div>
+        </div>
+        <div class="content">
+            <div class="pill pill-blue reveal" style="margin-bottom:0.6rem;">Before the Doors Open</div>
+            <h2 class="reveal" style="font-family:'Nunito',sans-serif;font-weight:900;font-size:clamp(1.5rem,3vw,2.2rem);color:#1a2e50;margin-bottom:0.9rem;">Is Your Station Ready?</h2>
+            <p class="reveal" style="color:#3b5278;font-size:0.9rem;margin-bottom:1.1rem;">Walk through this list at your own table. What would happen if you skipped one of these?</p>
+            <div class="reveal" style="display:flex;justify-content:flex-end;margin-bottom:6px;">
+                <span class="checklist-progress" id="progress-s8">0 / 4 ready</span>
+            </div>
+            <div class="reveal" style="display:flex;flex-direction:column;gap:8px;">
+                <div class="card-light card-accent-left check-item" data-group="s8" onclick="toggleCheck(this,'s8')" style="display:flex;align-items:center;gap:10px;padding:0.7rem 1rem;"><div class="checkbox">✓</div><span style="font-size:1.2rem;">🔌</span><span class="check-label" style="font-size:0.86rem;color:#1a2e50;font-weight:700;">Project is open and running — not just saved.</span></div>
+                <div class="card-light card-green check-item" data-group="s8" onclick="toggleCheck(this,'s8')" style="display:flex;align-items:center;gap:10px;padding:0.7rem 1rem;"><div class="checkbox">✓</div><span style="font-size:1.2rem;">🐛</span><span class="check-label" style="font-size:0.86rem;color:#1a2e50;font-weight:700;">You know your top bug and can show the fix (or the workaround).</span></div>
+                <div class="card-light card-yellow check-item" data-group="s8" onclick="toggleCheck(this,'s8')" style="display:flex;align-items:center;gap:10px;padding:0.7rem 1rem;"><div class="checkbox">✓</div><span style="font-size:1.2rem;">🏷️</span><span class="check-label" style="font-size:0.86rem;color:#1a2e50;font-weight:700;">A title card or label with your project's name is visible.</span></div>
+                <div class="card-light card-orange check-item" data-group="s8" onclick="toggleCheck(this,'s8')" style="display:flex;align-items:center;gap:10px;padding:0.7rem 1rem;"><div class="checkbox">✓</div><span style="font-size:1.2rem;">🗣️</span><span class="check-label" style="font-size:0.86rem;color:#1a2e50;font-weight:700;">You've said your 3 sentences out loud at least once today.</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== SLIDE 9: OPEN BUILD - REHEARSE & POLISH ===== -->
+    <div class="slide slide-9" data-slide="9">
+        <div class="gradient-mesh">
+            <div class="blob" style="width:400px;height:400px;top:-90px;right:-80px;background:#f97066;opacity:0.08;"></div>
+        </div>
+        <div class="content">
+            <div class="pill pill-orange reveal" style="margin-bottom:0.6rem;">Final Rehearsal Time</div>
+            <h2 class="reveal" style="font-family:'Nunito',sans-serif;font-weight:900;font-size:clamp(1.5rem,3vw,2.2rem);color:#1a2e50;margin-bottom:0.9rem;">One Last Run-Through, Table by Table</h2>
+            <p class="reveal" style="color:#3b5278;font-size:0.9rem;margin-bottom:1.1rem;">Pair up with a neighbor one final time. Practice your full explanation as if they were a visiting family member.</p>
+            <div class="reveal" style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">
+                <div class="card-light tier-card" style="text-align:center;"><div style="font-size:1.7rem;">1️⃣</div><div style="font-weight:800;font-size:0.85rem;color:#1a2e50;margin-top:4px;">Demo it</div><div style="font-size:0.78rem;color:#3b5278;margin-top:3px;">Actually click, play, or run it live.</div></div>
+                <div class="card-light tier-card" style="text-align:center;"><div style="font-size:1.7rem;">2️⃣</div><div style="font-weight:800;font-size:0.85rem;color:#1a2e50;margin-top:4px;">Say your 3 sentences</div><div style="font-size:0.78rem;color:#3b5278;margin-top:3px;">What, AI idea, proudest moment.</div></div>
+                <div class="card-light tier-card" style="text-align:center;"><div style="font-size:1.7rem;">3️⃣</div><div style="font-weight:800;font-size:0.85rem;color:#1a2e50;margin-top:4px;">Answer one question</div><div style="font-size:0.78rem;color:#3b5278;margin-top:3px;">Have your partner ask "where's the AI?"</div></div>
+            </div>
+            <div class="card-light reveal click-reveal" onclick="toggleReveal(this)" style="margin-top:1.1rem;padding:0.9rem 1.2rem;background:rgba(22,163,74,0.05);border-left:4px solid #16a34a;">
+                <div style="font-size:0.85rem;color:#3b5278;"><b>Swap roles</b> — then be the visitor for your partner. What's one thing that made their explanation click for you?</div>
+                <div class="reveal-answer" style="font-size:0.8rem;color:#15803d;font-weight:700;">Tip: the clearest explanations usually start with a demo, not a definition. Show it, then say it.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== SLIDE 10: WHY SHOWCASING MATTERS (AI reflection) ===== -->
+    <div class="slide slide-10" data-slide="10">
+        <div class="gradient-mesh">
+            <div class="blob" style="width:420px;height:420px;bottom:-100px;right:-90px;background:#2563eb;opacity:0.08;"></div>
+        </div>
+        <div class="content">
+            <div class="pill pill-blue reveal" style="margin-bottom:0.6rem;">🤖 Bigger Picture</div>
+            <h2 class="reveal" style="font-family:'Nunito',sans-serif;font-weight:900;font-size:clamp(1.5rem,3vw,2.2rem);color:#1a2e50;margin-bottom:0.9rem;">Why Do Even Professional AI Teams Do Showcases?</h2>
+            <p class="reveal" style="color:#3b5278;font-size:0.9rem;margin-bottom:1.1rem;">This isn't just a school thing. Real engineers and AI researchers demo their work constantly. Why might that be true?</p>
+            <div class="reveal" style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+                <div class="card-light card-accent-left" style="padding:1rem;">
+                    <div style="font-weight:800;font-size:0.88rem;color:#1d4ed8;margin-bottom:5px;">Explaining reveals gaps</div>
+                    <div style="font-size:0.82rem;color:#3b5278;">If you can't explain a part clearly, that's often the part you understand least — a great signal for what to learn next.</div>
+                </div>
+                <div class="card-light card-green" style="padding:1rem;">
+                    <div style="font-weight:800;font-size:0.88rem;color:#15803d;margin-bottom:5px;">Feedback makes things better</div>
+                    <div style="font-size:0.82rem;color:#3b5278;">A visitor's question ("what if it did X?") is often the seed of your very next project.</div>
+                </div>
+            </div>
+            <div class="card-light reveal click-reveal" onclick="toggleReveal(this)" style="margin-top:1.1rem;padding:0.9rem 1.3rem;background:rgba(37,99,235,0.04);">
+                <div style="font-size:0.85rem;color:#3b5278;">Same idea as an AI model: it gets better by being tested against new examples it hasn't seen. Today, <i>you</i> are the model, and your visitors are the new examples.</div>
+                <div class="reveal-answer" style="font-size:0.8rem;color:#1d4ed8;font-weight:700;">So each new visitor is basically a new "test example" — and every explanation you give makes the next one a little better.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== SLIDE 11: THE SHOWCASE STARTS ===== -->
+    <div class="slide slide-11" data-slide="11">
+        <div class="gradient-mesh">
+            <div class="blob" style="width:460px;height:460px;top:-100px;left:-90px;background:#f97066;opacity:0.08;"></div>
+            <div class="blob" style="width:320px;height:320px;bottom:-70px;right:-60px;background:#16a34a;opacity:0.07;"></div>
+        </div>
+        <div class="content">
+            <div class="pill pill-orange reveal" style="margin-bottom:0.6rem;">🎉 It's Showtime</div>
+            <h2 class="reveal" style="font-family:'Nunito',sans-serif;font-weight:900;font-size:clamp(1.6rem,3.2vw,2.3rem);color:#1a2e50;margin-bottom:1rem;">Doors Open — Welcome Your Visitors!</h2>
+            <div class="reveal" style="display:grid;grid-template-columns:3fr 2fr;gap:16px;align-items:center;">
+                <div style="display:flex;flex-direction:column;gap:8px;">
+                    <div class="card-light card-accent-left" style="padding:0.8rem 1rem;"><b style="color:#1a2e50;">Stay at your table</b> <span style="color:#3b5278;font-size:0.85rem;">— let visitors come to you.</span></div>
+                    <div class="card-light card-green" style="padding:0.8rem 1rem;"><b style="color:#1a2e50;">Demo, then explain</b> <span style="color:#3b5278;font-size:0.85rem;">— show it running before you talk.</span></div>
+                    <div class="card-light card-yellow" style="padding:0.8rem 1rem;"><b style="color:#1a2e50;">Between visitors</b> <span style="color:#3b5278;font-size:0.85rem;">— walk the room and see a friend's project!</span></div>
+                </div>
+                <img src="https://d2u1z1lopyfwlx.cloudfront.net/thumbnails/acff2437-6fdd-524b-a6e9-1dd83b104a7d/9822691e-a257-5153-9337-16db9ad6df9d.jpg" alt="students at a project showcase" style="width:100%;border-radius:14px;box-shadow:0 6px 24px rgba(37,99,235,0.15);">
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== SLIDE 12: RECOGNITION AWARDS ===== -->
+    <div class="slide slide-12" data-slide="12">
+        <div class="gradient-mesh">
+            <div class="blob" style="width:400px;height:400px;top:-80px;right:-70px;background:#f59e0b;opacity:0.08;"></div>
+        </div>
+        <div class="content">
+            <div class="pill pill-yellow reveal" style="margin-bottom:0.6rem;">Everyone Gets Celebrated</div>
+            <h2 class="reveal" style="font-family:'Nunito',sans-serif;font-weight:900;font-size:clamp(1.5rem,3vw,2.2rem);color:#1a2e50;margin-bottom:0.9rem;">Recognition Awards — Watch for Yours!</h2>
+            <p class="reveal" style="color:#3b5278;font-size:0.9rem;margin-bottom:1.1rem;">There's no single "best project" — every student earns a positive callout today. Which one sounds like you?</p>
+            <div class="reveal" style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">
+                <div class="card-light tier-card award-pick" data-group="awards" onclick="pickAward(this,'awards')" style="text-align:center;padding:1rem 0.6rem;"><div style="font-size:1.8rem;">🎨</div><div style="font-weight:800;font-size:0.82rem;color:#1a2e50;margin-top:5px;">Most Creative</div></div>
+                <div class="card-light tier-card award-pick" data-group="awards" onclick="pickAward(this,'awards')" style="text-align:center;padding:1rem 0.6rem;"><div style="font-size:1.8rem;">🐞</div><div style="font-weight:800;font-size:0.82rem;color:#1a2e50;margin-top:5px;">Best Debugger</div></div>
+                <div class="card-light tier-card award-pick" data-group="awards" onclick="pickAward(this,'awards')" style="text-align:center;padding:1rem 0.6rem;"><div style="font-size:1.8rem;">🤝</div><div style="font-weight:800;font-size:0.82rem;color:#1a2e50;margin-top:5px;">Kindest Teammate</div></div>
+                <div class="card-light tier-card award-pick" data-group="awards" onclick="pickAward(this,'awards')" style="text-align:center;padding:1rem 0.6rem;"><div style="font-size:1.8rem;">🔍</div><div style="font-weight:800;font-size:0.82rem;color:#1a2e50;margin-top:5px;">Most Curious About AI</div></div>
+                <div class="card-light tier-card award-pick" data-group="awards" onclick="pickAward(this,'awards')" style="text-align:center;padding:1rem 0.6rem;"><div style="font-size:1.8rem;">🚀</div><div style="font-weight:800;font-size:0.82rem;color:#1a2e50;margin-top:5px;">Biggest Leap Forward</div></div>
+                <div class="card-light tier-card award-pick" data-group="awards" onclick="pickAward(this,'awards')" style="text-align:center;padding:1rem 0.6rem;"><div style="font-size:1.8rem;">💡</div><div style="font-weight:800;font-size:0.82rem;color:#1a2e50;margin-top:5px;">Best Explainer</div></div>
+            </div>
+            <p class="reveal" style="color:#94a3b8;font-size:0.75rem;margin-top:0.8rem;text-align:center;">Tap the one that feels most like you today.</p>
+        </div>
+    </div>
+
+    <!-- ===== SLIDE 13: REFLECT ===== -->
+    <div class="slide slide-13" data-slide="13">
+        <div class="gradient-mesh">
+            <div class="blob" style="width:380px;height:380px;bottom:-80px;left:-70px;background:#2563eb;opacity:0.08;"></div>
+        </div>
+        <div class="content">
+            <div class="pill pill-blue reveal" style="margin-bottom:0.6rem;">Wind Down</div>
+            <h2 class="reveal" style="font-family:'Nunito',sans-serif;font-weight:900;font-size:clamp(1.5rem,3vw,2.2rem);color:#1a2e50;margin-bottom:0.9rem;">Before You Head Out — Three Quick Questions</h2>
+            <div class="reveal" style="display:flex;flex-direction:column;gap:10px;">
+                <div class="card-light card-accent-left toggle-pill" onclick="togglePill(this)" style="padding:0.9rem 1.2rem;"><div style="font-weight:800;font-size:0.86rem;color:#1a2e50;">What are you proudest of in your project? <span style="font-weight:400;font-size:0.75rem;color:#94a3b8;">(tap when answered)</span></div></div>
+                <div class="card-light card-green toggle-pill" onclick="togglePill(this)" style="padding:0.9rem 1.2rem;"><div style="font-weight:800;font-size:0.86rem;color:#1a2e50;">What was the hardest bug you beat this summer? <span style="font-weight:400;font-size:0.75rem;color:#94a3b8;">(tap when answered)</span></div></div>
+                <div class="card-light card-yellow toggle-pill" onclick="togglePill(this)" style="padding:0.9rem 1.2rem;"><div style="font-weight:800;font-size:0.86rem;color:#1a2e50;">One thing about AI you can now explain that you couldn't before? <span style="font-weight:400;font-size:0.75rem;color:#94a3b8;">(tap when answered)</span></div></div>
+            </div>
+            <p class="reveal" style="color:#3b5278;font-size:0.85rem;margin-top:1rem;">Hold these thoughts — you'll be putting them on paper very soon.</p>
+        </div>
+    </div>
+
+    <!-- ===== SLIDE 14: CLOSING CELEBRATION ===== -->
+    <div class="slide slide-14" data-slide="14">
+        <div class="gradient-mesh">
+            <div class="blob" style="width:480px;height:480px;top:-110px;right:-100px;background:#2563eb;opacity:0.09;"></div>
+            <div class="blob" style="width:360px;height:360px;bottom:-80px;left:-80px;background:#f97066;opacity:0.08;"></div>
+        </div>
+        <div class="content" style="text-align:center;">
+            <div class="reveal confetti-trigger" onclick="burstConfetti(this,24)" style="font-size:3rem;margin-bottom:0.5rem;" title="Tap for confetti!">🏆</div>
+            <h2 class="reveal glow-pulse" style="font-family:'Nunito',sans-serif;font-weight:900;font-size:clamp(1.7rem,3.4vw,2.5rem);color:#1a2e50;margin-bottom:0.9rem;">You Built It. You Explained It. You Showed Up.</h2>
+            <div class="reveal" style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:760px;margin:0 auto 1.1rem;">
+                <div class="card-light" style="padding:0.9rem;text-align:center;"><div style="font-size:1.8rem;">🎯</div><div style="font-weight:800;font-size:0.85rem;color:#1a2e50;margin-top:4px;">Today You Practiced</div><div style="font-size:0.78rem;color:#3b5278;margin-top:3px;">Explaining your own project clearly, from idea to AI to pride point.</div></div>
+                <div class="card-light" style="padding:0.9rem;text-align:center;"><div style="font-size:1.8rem;">🤖</div><div style="font-weight:800;font-size:0.85rem;color:#1a2e50;margin-top:4px;">AI Connection</div><div style="font-size:0.78rem;color:#3b5278;margin-top:3px;">Just like a model improves from new examples, you improve by explaining to new people.</div></div>
+                <div class="card-light" style="padding:0.9rem;text-align:center;"><div style="font-size:1.8rem;">💬</div><div style="font-weight:800;font-size:0.85rem;color:#1a2e50;margin-top:4px;">Tomorrow</div><div style="font-size:0.78rem;color:#3b5278;margin-top:3px;">We reflect on the whole journey and look at what's next in AI.</div></div>
+            </div>
+            <div class="card-light reveal" style="padding:0.8rem 1.4rem;max-width:560px;margin:0 auto;border:2px solid rgba(22,163,74,0.3);background:rgba(22,163,74,0.05);">
+                <div style="font-weight:800;color:#15803d;font-size:0.9rem;margin-bottom:3px;">Every single person here is a coder now. That doesn't go away.</div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+<!-- NAVIGATION -->
+<div class="nav-controls">
+    <button class="nav-btn" onclick="changeSlide(-1)">&#8249;</button>
+    <div class="slide-dots" id="dots"></div>
+    <button class="nav-btn" onclick="changeSlide(1)">&#8250;</button>
+    <span class="slide-counter" id="counter">1 / 14</span>
+</div>
+
+<script>
+    /* === Deck Navigation === */
+    let current = 1;
+    const total = document.querySelectorAll('.slide').length;
+    const dotsContainer = document.getElementById('dots');
+    const counter = document.getElementById('counter');
+    for (let i = 1; i <= total; i++) { const dot = document.createElement('div'); dot.className = 'dot' + (i === 1 ? ' active' : ''); dot.onclick = () => goToSlide(i); dotsContainer.appendChild(dot); }
+    function goToSlide(n) {
+        const prev = document.querySelector('.slide.active');
+        const next = document.querySelector('.slide[data-slide="' + n + '"]');
+        if (prev) prev.classList.remove('active');
+        if (next) { next.classList.add('active'); animateSlide(next); }
+        current = n; updateNav();
+    }
+    function changeSlide(dir) { let n = current + dir; if (n < 1) n = total; if (n > total) n = 1; goToSlide(n); }
+    function updateNav() { document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i + 1 === current)); counter.textContent = current + ' / ' + total; }
+    document.addEventListener('keydown', e => { if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); changeSlide(1); } if (e.key === 'ArrowLeft') { e.preventDefault(); changeSlide(-1); } });
+    let touchStartX = 0;
+    document.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; });
+    document.addEventListener('touchend', e => { const diff = touchStartX - e.changedTouches[0].clientX; if (Math.abs(diff) > 50) changeSlide(diff > 0 ? 1 : -1); });
+
+    /* === Reveal Animation === */
+    function animateSlide(slide) {
+        slide.querySelectorAll('.reveal').forEach((el, i) => {
+            el.style.transition = 'none'; el.style.opacity = '0'; el.style.transform = 'translateY(20px)';
+            el.offsetHeight;
+            const delay = i * 0.09;
+            el.style.transition = 'opacity 0.38s ease ' + delay + 's, transform 0.38s ease ' + delay + 's';
+            el.style.opacity = '1'; el.style.transform = 'translateY(0)';
+        });
+    }
+
+
+
+    /* === Interactive: click-to-reveal === */
+    function toggleReveal(el) {
+        el.classList.toggle('opened');
+    }
+
+    /* === Interactive: checklist === */
+    function toggleCheck(el, groupId) {
+        el.classList.toggle('checked');
+        const group = document.querySelectorAll('.check-item[data-group="' + groupId + '"]');
+        const checked = document.querySelectorAll('.check-item.checked[data-group="' + groupId + '"]').length;
+        const label = document.getElementById('progress-' + groupId);
+        if (label) label.textContent = checked + ' / ' + group.length + ' ready';
+        if (checked === group.length && group.length > 0) burstConfetti(el, 16);
+    }
+
+    /* === Interactive: award picker === */
+    function pickAward(el, groupId) {
+        document.querySelectorAll('.award-pick[data-group="' + groupId + '"]').forEach(a => a.classList.remove('selected'));
+        el.classList.add('selected');
+        burstConfetti(el, 10);
+    }
+
+    /* === Interactive: timeline node === */
+    function showTimelineDetail(idx, groupId) {
+        document.querySelectorAll('.progress-node-h[data-group="' + groupId + '"]').forEach(n => n.classList.remove('active-node'));
+        const node = document.querySelector('.progress-node-h[data-group="' + groupId + '"][data-idx="' + idx + '"]');
+        if (node) node.classList.add('active-node');
+        document.querySelectorAll('.timeline-detail[data-group="' + groupId + '"]').forEach(d => {
+            const match = d.getAttribute('data-idx') === String(idx);
+            d.style.opacity = match ? '1' : '0.35';
+            d.style.transform = match ? 'scale(1.03)' : 'scale(1)';
+            d.style.boxShadow = match ? '0 8px 24px rgba(37,99,235,0.18)' : '';
+        });
+    }
+
+    /* === Interactive: toggle pill (self-check) === */
+    function togglePill(el) {
+        el.classList.toggle('active');
+    }
+
+    /* === Interactive: confetti burst on demand === */
+    function burstConfetti(originEl, count) {
+        const rect = originEl.getBoundingClientRect();
+        const colors = ['#2563eb', '#f97066', '#16a34a', '#f59e0b'];
+        for (let i = 0; i < (count || 12); i++) {
+            const piece = document.createElement('div');
+            piece.className = 'confetti-piece';
+            piece.style.left = (rect.left + rect.width / 2) + 'px';
+            piece.style.top = (rect.top + rect.height / 2) + 'px';
+            piece.style.background = colors[i % colors.length];
+            piece.style.position = 'fixed';
+            piece.style.zIndex = 200;
+            piece.style.transform = 'translate(' + ((Math.random() - 0.5) * 160) + 'px,' + ((Math.random() - 0.5) * 100) + 'px)';
+            document.body.appendChild(piece);
+            setTimeout(() => piece.remove(), 1300);
+        }
+    }
+
+    /* === Inline Video Embed === */
+    function playVideo(wrapId, videoId) {
+        const wrap = document.getElementById(wrapId);
+        if (!wrap) return;
+        wrap.innerHTML = '<iframe width="100%" height="100%" style="position:absolute;inset:0;border:0;" src="https://www.youtube.com/embed/' + videoId + '?autoplay=1&rel=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
+    }
+
+    /* === Quiz Logic === */
+    const answered = {};
+    function handleQuiz(el, quizId, isCorrect) {
+        if (answered[quizId]) return;
+        answered[quizId] = true;
+        const container = document.getElementById('quiz' + quizId.replace('q',''));
+        if (!container) return;
+        container.querySelectorAll('.quiz-option').forEach(opt => {
+            opt.style.pointerEvents = 'none';
+            const wasClicked = opt === el;
+            if (wasClicked && isCorrect) opt.classList.add('correct');
+            else if (wasClicked && !isCorrect) opt.classList.add('wrong');
+        });
+        if (!isCorrect) {
+            container.querySelectorAll('.quiz-option').forEach(opt => {
+                if (opt.onclick && opt.onclick.toString().includes('true')) opt.classList.add('correct');
+            });
+        }
+    }
+
+    /* === Mouse Spotlight === */
+    document.addEventListener('mousemove', e => {
+        const s = document.getElementById('spotlight');
+        if (s) s.style.background = 'radial-gradient(600px circle at ' + e.clientX + 'px ' + e.clientY + 'px, rgba(37,99,235,0.05), transparent 40%)';
+    });
+
+    /* === Particle Canvas === */
+    window.initParticles = function(canvas, opts) {
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        canvas.width = canvas.offsetWidth || window.innerWidth;
+        canvas.height = canvas.offsetHeight || window.innerHeight;
+        const interactive = opts.interactive !== false;
+        const count = opts.count || (interactive ? 40 : 15);
+        let mx = -1000, my = -1000;
+        const particles = Array.from({length: count}, () => ({
+            x: Math.random() * canvas.width, y: Math.random() * canvas.height,
+            vx: (Math.random() - 0.5) * 0.3, vy: (Math.random() - 0.5) * 0.3,
+            size: Math.random() * 2.2 + 0.6, alpha: Math.random() * 0.25 + 0.08
+        }));
+        if (interactive) {
+            canvas.addEventListener('mousemove', e => { const r = canvas.getBoundingClientRect(); mx = e.clientX - r.left; my = e.clientY - r.top; });
+            canvas.addEventListener('mouseleave', () => { mx = -1000; my = -1000; });
+        }
+        (function anim() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                if (interactive) { const dx = p.x - mx, dy = p.y - my, dist = Math.sqrt(dx*dx+dy*dy); if (dist < 100) { const f = (100-dist)/100*1.5; p.vx += dx/dist*f*0.08; p.vy += dy/dist*f*0.08; } }
+                p.vx *= 0.98; p.vy *= 0.98; p.x += p.vx; p.y += p.vy;
+                if (p.x < 0) p.x = canvas.width; if (p.x > canvas.width) p.x = 0;
+                if (p.y < 0) p.y = canvas.height; if (p.y > canvas.height) p.y = 0;
+                ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2);
+                ctx.fillStyle = 'rgba(37,99,235,' + p.alpha + ')'; ctx.fill();
+            });
+            requestAnimationFrame(anim);
+        })();
+    };
+    document.querySelectorAll('.particle-canvas').forEach(c => window.initParticles(c, {interactive: true, count: 40}));
+    document.querySelectorAll('.particle-canvas-ambient').forEach(c => window.initParticles(c, {interactive: false, count: 15}));
+
+    /* Animate first slide on load */
+    try { animateSlide(document.querySelector('.slide.active')); } catch(e) {}
+</script>
+
+</body>
