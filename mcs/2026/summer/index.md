@@ -36,7 +36,8 @@
 | **6-3** | [Capstone Build Day 1](https://hue881.github.io/mcs/2026/summer/6/3) | [6-3 Activity](https://hue881.github.io/mcs/2026/summer/6/3/activity) |[6-3 Homework](https://hue881.github.io/mcs/2026/summer/6/3/homework)| -- ||
 | **6-4** | Final Exam |--  |--  | -- ||
 | **7-1** | [Capstone Build Day 2](https://hue881.github.io/mcs/2026/summer/7/1) | [7-1 Activity](https://hue881.github.io/mcs/2026/summer/7/1/activity) | [7-1 Homework](https://hue881.github.io/mcs/2026/summer/7/1/homework) | -- ||
-| **7-2** | [ Feature Freeze & Showcase Rehearsal](https://hue881.github.io/mcs/2026/summer/7/2) | [7-2 Activity](https://hue881.github.io/mcs/2026/summer/7/2/activity) | [7-2 Homework](https://hue881.github.io/mcs/2026/summer/7/2/homework) | -- ||
+| **7-2** | [Feature Freeze & Showcase Rehearsal](https://hue881.github.io/mcs/2026/summer/7/2) | [7-2 Activity](https://hue881.github.io/mcs/2026/summer/7/2/activity) | [7-2 Homework](https://hue881.github.io/mcs/2026/summer/7/2/homework) | -- ||
+| **7-3** | [Project Showcase](https://hue881.github.io/mcs/2026/summer/7/3) | [7-3 Activity](https://hue881.github.io/mcs/2026/summer/7/3/activity) | [7-2 Homework](https://hue881.github.io/mcs/2026/summer/7/3/homework) | -- ||
 
 
   
