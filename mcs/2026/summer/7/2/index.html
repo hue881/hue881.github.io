@@ -1,1 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="slides-format" content="viewport">
+<title>Sessions 22 & 24 · Feature Freeze &amp; Showcase Rehearsal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 
+<style type="text/tailwindcss">
+@theme {
+  --color-bg: #f4fbff;
+  --color-bg-deep: #e0f2ff;
+  --color-surface: rgba(255,255,255,0.95);
+  --color-text: #1f2a37;
+  --color-text-secondary: #374151;
+  --color-text-muted: #5b6b7e;
+  --color-accent-1: #0b63ce;
+  --color-accent-2: #10b981;
+  --color-accent-3: #f59e0b;
+  --color-glass-bg: rgba(255,255,255,0.88);
+  --color-glass-border: rgba(11,99,206,0.16);
+  --color-vignette: rgba(15,23,42,0.07);
+  --font-display: 'Fredoka', 'Trebuchet MS', sans-serif;
+  --font-body: 'Nunito', 'Arial', sans-serif;
+}
+</style>
+
+<style>
+:root { --color-bg: #f4fbff; --color-text: #1f2a37; --glow-color-rgb: 11,99,206; --a1: #0b63ce; --a2: #10b981; --a3: #f59e0b; --are: #e44; --fc: 'Fira Code', Consolas, monospace; }
+*, *::before, *::after { box-sizing: border-box; }
+html, body { background: var(--color-bg); margin: 0; }
+body { font-family: 'Nunito','Arial',sans-serif; color: var(--color-text); overflow: hidden; height: 100vh; width: 100vw; }
+.deck { width: 100vw; height: 100vh; position: relative; }
+.slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  background: radial-gradient(circle at top left, rgba(56,189,248,0.14), transparent 40%),
+              radial-gradient(circle at bottom right, rgba(16,185,129,0.10), transparent 40%),
+              var(--color-bg);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  opacity: 0; transform: scale(0.96); transition: opacity 0.55s ease, transform 0.55s ease;
+  pointer-events: none; overflow: hidden; }
+.slide.active { opacity: 1; transform: scale(1); pointer-events: all; }
+.slide > .content { position: relative; z-index: 2; width: 100%; max-width: 1080px; padding: clamp(1.2rem,3.5vw,3rem); }
+.slide.scrolly { align-items: flex-start; justify-content: flex-start; overflow-y: auto; }
+.slide.scrolly > .content { margin: auto; padding-top: clamp(1rem,2.5vw,2rem); padding-bottom: clamp(1rem,2.5vw,2rem); }
+
+.nav-controls { position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 14px; z-index: 100; background: rgba(255,255,255,0.92); backdrop-filter: blur(12px); padding: 9px 22px; border-radius: 999px; border: 1px solid rgba(148,163,184,0.4); box-shadow: 0 8px 28px rgba(15,23,42,0.13); }
+.nav-btn { width: 36px; height: 36px; border: none; background: rgba(15,23,42,0.06); color: #0b63ce; border-radius: 999px; font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s, transform 0.15s; }
+.nav-btn:hover { background: rgba(15,23,42,0.12); transform: translateY(-1px); }
+.slide-dots { display: flex; gap: 6px; flex-wrap: wrap; max-width: 420px; }
+.slide-dots .dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(148,163,184,0.6); cursor: pointer; transition: background 0.25s, transform 0.25s; }
+.slide-dots .dot.active { background: #0b63ce; transform: scale(1.4); }
+.slide-dots .dot.day2 { background: rgba(16,185,129,0.55); }
+.slide-dots .dot.day2.active { background: #10b981; }
+.slide-counter { font-size: 0.78rem; color: #64748b; min-width: 52px; text-align: center; font-weight: 700; }
+.reveal { opacity: 0; transform: translateY(16px); }
+.mouse-spotlight { position: fixed; inset: 0; z-index: 1; pointer-events: none; }
+
+.card { background: var(--color-surface); border-radius: 18px; padding: 16px 20px; box-shadow: 0 8px 24px rgba(15,23,42,0.07); border: 1px solid rgba(255,255,255,0.7); }
+.accent-card-blue { background: rgba(11,99,206,0.07); border: 1px solid rgba(11,99,206,0.18); }
+.accent-card-green { background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.20); }
+.accent-card-amber { background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.22); }
+.accent-card-red { background: rgba(239,68,68,0.07); border: 1px solid rgba(239,68,68,0.20); }
+.pill { display: inline-flex; align-items: center; gap: 7px; padding: 5px 14px; border-radius: 999px; border: 1px solid rgba(148,163,184,0.5); background: rgba(255,255,255,0.9); font-size: 0.76rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: #0b63ce; }
+.pill.green { color: #047857; }
+.pill.amber { color: #b45309; }
+.think-chip { display: inline-flex; align-items: center; gap: 9px; padding: 7px 13px; border-radius: 999px; background: rgba(11,99,206,0.08); color: #1e40af; font-size: 0.82rem; font-weight: 700; }
+.question-chip { display: inline-flex; align-items: center; gap: 9px; padding: 7px 13px; border-radius: 999px; background: rgba(245,158,11,0.09); color: #92400e; font-size: 0.82rem; font-weight: 700; }
+.question-chip .icon { display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px; border-radius: 999px; background: rgba(245,158,11,0.95); color: #fff; font-size: 0.78rem; }
+.big-text { font-size: clamp(1rem,1.7vw,1.25rem); line-height: 1.65; }
+
+.media-embed { position: relative; padding-top: 56.25%; border-radius: 13px; overflow: hidden; background: #1e293b; cursor: pointer; }
+.media-embed img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.media-embed .play-btn { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+.media-embed .play-btn div { width: 58px; height: 58px; background: rgba(255,0,0,0.88); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 18px rgba(0,0,0,0.38); transition: transform 0.2s; }
+.media-embed:hover .play-btn div { transform: scale(1.1); }
+.media-embed iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; border-radius: 13px; }
+
+.vocab-tag { display: inline-flex; align-items: center; padding: 5px 13px; border-radius: 999px; background: rgba(15,23,42,0.04); font-size: 0.85rem; font-weight: 800; color: #0b63ce; }
+
+.grid-cards { display: grid; gap: 16px; }
+@media (min-width:800px) { .grid-2 { grid-template-columns: repeat(2, minmax(0,1fr)); } .grid-3 { grid-template-columns: repeat(3, minmax(0,1fr)); } }
+
+.grad-text { background: linear-gradient(135deg, #0b63ce 0%, #10b981 50%, #f59e0b 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+
+.gradient-mesh { position: absolute; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+.blob { position: absolute; border-radius: 50%; filter: blur(72px); animation: float-slow 12s ease-in-out infinite; }
+.blob:nth-child(2) { animation: float-drift 16s ease-in-out infinite; }
+.blob:nth-child(3) { animation: float-slow 20s ease-in-out infinite reverse; }
+@keyframes float-slow { 0%{transform:translate(0,0) scale(1)} 25%{transform:translate(50px,-40px) scale(1.15)} 50%{transform:translate(-30px,35px) scale(0.9)} 75%{transform:translate(45px,18px) scale(1.07)} 100%{transform:translate(0,0) scale(1)} }
+@keyframes float-drift { 0%{transform:translate(0,0) scale(1) rotate(0deg)} 33%{transform:translate(-45px,-55px) scale(1.13) rotate(3deg)} 66%{transform:translate(38px,28px) scale(0.9) rotate(-2deg)} 100%{transform:translate(0,0) scale(1) rotate(0deg)} }
+@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-14px)} }
+.slide::after { content:''; position:absolute; inset:0; z-index:1; pointer-events:none; background:radial-gradient(ellipse at center, transparent 55%, rgba(15,23,42,0.06) 100%); }
+.particle-canvas { position:absolute; inset:0; width:100%; height:100%; z-index:1; }
+
+.slide.interior {
+  background:
+    radial-gradient(circle at 18% 12%, rgba(11,99,206,0.16), transparent 50%),
+    radial-gradient(circle at 82% 88%, rgba(16,185,129,0.14), transparent 50%),
+    linear-gradient(160deg, #aecbe8 0%, #b9d4ea 48%, #b3ddd0 100%);
+}
+.slide.interior::after { background: radial-gradient(ellipse at center, transparent 58%, rgba(15,23,42,0.12) 100%); }
+.slide.interior .pill { background: #fff; color: #0b4a9e; border: none; box-shadow: 0 4px 14px rgba(8,15,30,0.25); font-size: 0.8rem; }
+.slide.interior .pill.green { color: #067a55; }
+.slide.interior h2.font-display { color: #0f2747!important; text-shadow: 0 1px 2px rgba(255,255,255,0.55); font-size: clamp(1.7rem,3vw,2.45rem)!important; letter-spacing: 0.005em; }
+.slide.interior .grad-text { -webkit-text-fill-color: #0f2747; text-shadow: 0 1px 2px rgba(255,255,255,0.55); }
+.slide.interior .card { background: #fff; border: 1px solid rgba(15,23,42,0.06); box-shadow: 0 14px 34px rgba(15,23,42,0.20), 0 2px 6px rgba(15,23,42,0.10); border-radius: 20px; }
+.slide.interior .accent-card-blue { background: #eaf2fd; border: 1px solid rgba(11,99,206,0.22); box-shadow: 0 8px 24px rgba(15,23,42,0.10); }
+.slide.interior .accent-card-green { background: #e6f7f0; border: 1px solid rgba(5,150,105,0.22); box-shadow: 0 8px 24px rgba(15,23,42,0.10); }
+.slide.interior .accent-card-amber { background: #fdf4e3; border: 1px solid rgba(245,158,11,0.28); box-shadow: 0 8px 24px rgba(15,23,42,0.10); }
+.slide.interior .accent-card-red { background: #fdeceb; border: 1px solid rgba(239,68,68,0.24); box-shadow: 0 8px 24px rgba(15,23,42,0.10); }
+.slide.interior .card .big-text { color: #1e293b!important; }
+.slide.interior .card p, .slide.interior .card li { color: #2d3f55!important; }
+.slide.interior .card strong { color: #0f2747; }
+.slide.interior .think-chip { background: rgba(11,99,206,0.12); color: #0c2d6e; font-size: 0.88rem; font-weight: 700; }
+.slide.interior .question-chip { background: rgba(234,130,12,0.12); color: #7a3800; font-size: 0.88rem; }
+.slide.interior .vocab-tag { background: rgba(11,99,206,0.10); color: #0a3a8c; font-size: 0.88rem; font-weight: 800; }
+
+.tip { border-radius: 10px; padding: 8px 12px; font-size: 0.77rem; line-height: 1.5; margin-top: 8px; }
+.tip.b { background: rgba(11,99,206,.07); color: #1e40af; }
+.tip.g { background: rgba(16,185,129,.07); color: #065f46; }
+.tip.a { background: rgba(245,158,11,.07); color: #92400e; }
+
+.tier-badge-a { display:inline-flex; align-items:center; gap:5px; background:#e6f7f0; color:#047857; border:1px solid rgba(16,185,129,0.3); padding:3px 11px; border-radius:999px; font-size:.63rem; font-weight:800; letter-spacing:.07em; text-transform:uppercase; }
+.tier-badge-b { display:inline-flex; align-items:center; gap:5px; background:#eaf2fd; color:#0b63ce; border:1px solid rgba(11,99,206,0.3); padding:3px 11px; border-radius:999px; font-size:.63rem; font-weight:800; letter-spacing:.07em; text-transform:uppercase; }
+.tier-badge-c { display:inline-flex; align-items:center; gap:5px; background:#fdf4e3; color:#b45309; border:1px solid rgba(245,158,11,0.35); padding:3px 11px; border-radius:999px; font-size:.63rem; font-weight:800; letter-spacing:.07em; text-transform:uppercase; }
+
+.img-frame { border-radius: 16px; overflow: hidden; box-shadow: 0 10px 28px rgba(15,23,42,0.16); border: 1px solid rgba(255,255,255,0.7); }
+.img-frame img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+.bug-card { display:flex; gap:10px; align-items:flex-start; }
+.bug-num { flex-shrink:0; width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:0.85rem; color:#fff; }
+
+.flip-card { cursor: pointer; perspective: 1200px; height: 130px; }
+.flip-inner { position: relative; width: 100%; height: 100%; transition: transform 0.5s; transform-style: preserve-3d; }
+.flip-card.open .flip-inner { transform: rotateY(180deg); }
+.flip-front, .flip-back { position: absolute; inset: 0; backface-visibility: hidden; border-radius: 16px; padding: 14px 16px; display:flex; flex-direction:column; justify-content:center; }
+.flip-back { transform: rotateY(180deg); }
+</style>
+</head>
+<body>
+
+<div class="mouse-spotlight"></div>
+
+<div class="deck">
+
+<!-- SLIDE 1: TITLE -->
+<div class="slide active" data-slide="1" data-type="lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:480px;height:480px;top:-100px;right:-90px;background:#0b63ce;opacity:0.14;"></div>
+    <div class="blob" style="width:320px;height:320px;bottom:-80px;left:-60px;background:#10b981;opacity:0.12;"></div>
+    <div class="blob" style="width:220px;height:220px;top:40%;left:12%;background:#f59e0b;opacity:0.10;"></div>
+  </div>
+  <div class="content text-center">
+    <div class="text-[92px] mb-4 reveal" style="animation: float 3s ease-in-out infinite;">🐞🎤</div>
+    <p class="pill reveal mb-4" style="display:inline-flex;">Capstone Sprint · Week 7</p>
+    <h1 class="font-display reveal" style="font-weight:700;font-size:clamp(2rem,4.6vw,3.4rem);line-height:1.12;margin-bottom:0.6rem;">
+      <span class="grad-text">Feature Freeze</span> &amp; <span class="grad-text">Showcase Rehearsal</span>
+    </h1>
+  </div>
+</div>
+
+<!-- SLIDE 2: AGENDA -->
+<div class="slide interior" data-slide="2" data-type="lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:360px;height:360px;top:-60px;right:-60px;background:#0b63ce;opacity:0.09;"></div>
+    <div class="blob" style="width:240px;height:240px;bottom:-50px;left:-40px;background:#10b981;opacity:0.07;"></div>
+  </div>
+  <div class="content">
+    <p class="pill mb-3 reveal">Today's Map</p>
+    <h2 class="font-display reveal" style="font-weight:700;margin-bottom:1.2rem;">Two Big Days, One Big Goal: Ready to Show the World</h2>
+    <div class="grid-cards grid-2 reveal">
+      <div class="card accent-card-blue">
+        <div class="tier-badge-b mb-2">Session 22</div>
+        <h3 class="font-display" style="font-weight:700;font-size:1.1rem;margin-bottom:6px;">Feature Freeze &amp; Bug Hunt</h3>
+        <p class="big-text" style="color:#374151;">Stop adding new ideas. Make what already exists work every single time — that's what real engineers call "shipping."</p>
+      </div>
+      <div class="card accent-card-green">
+        <div class="tier-badge-a mb-2">Session 24</div>
+        <h3 class="font-display" style="font-weight:700;font-size:1.1rem;margin-bottom:6px;">Showcase Rehearsal</h3>
+        <p class="big-text" style="color:#374151;">Practice explaining your project out loud — low-stakes, partner first — so showcase day feels easy.</p>
+      </div>
+    </div>
+    <div class="think-chip reveal mt-4" style="display:inline-flex;">Question to carry all day: what does it mean for software to be "done"?</div>
+  </div>
+</div>
+
+<!-- SLIDE 3: WHY FREEZE FEATURES -->
+<div class="slide interior" data-slide="3" data-type="lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:340px;height:340px;top:-70px;left:-60px;background:#f59e0b;opacity:0.10;"></div>
+    <div class="blob" style="width:260px;height:260px;bottom:-60px;right:-50px;background:#0b63ce;opacity:0.08;"></div>
+  </div>
+  <div class="content">
+    <p class="pill amber mb-3 reveal">Big Idea</p>
+    <h2 class="font-display reveal" style="font-weight:700;margin-bottom:1rem;">Why Do Real Programmers "Freeze" Their Features?</h2>
+    <div class="grid-cards grid-2 reveal" style="align-items:start;">
+      <div class="img-frame" style="height:230px;">
+        <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/01e67dcda39161ec6c5c67ddbec8ca8c15aaec6c.jpg" alt="Two kids sitting together looking at a computer screen, working as a pair">
+      </div>
+      <div class="card" style="padding:18px 20px;">
+        <div class="question-chip mb-3"><span class="icon">?</span> Think about it</div>
+        <ul style="list-style:none;padding:0;margin:0;">
+          <li class="big-text" style="margin-bottom:9px;color:#374151;">If you keep adding new features right up until showcase day, what usually happens to the old features?</li>
+          <li class="big-text" style="color:#374151;">Would you rather show 3 features that work perfectly, or 6 features where half are broken?</li>
+        </ul>
+        <div class="tip a mt-3">Real software teams pick a "freeze date" — after that, no new features, only fixes. It protects the parts that already work.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 4: THE BUG HUNT PROCESS -->
+<div class="slide interior" data-slide="4" data-type="lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:320px;height:320px;top:-50px;right:-60px;background:#10b981;opacity:0.09;"></div>
+    <div class="blob" style="width:260px;height:260px;bottom:-70px;left:-50px;background:#0b63ce;opacity:0.07;"></div>
+  </div>
+  <div class="content">
+    <p class="pill green mb-3 reveal">Vocabulary + Process</p>
+    <h2 class="font-display reveal" style="font-weight:700;margin-bottom:1rem;">A Bug Hunter's Four Steps</h2>
+    <div class="grid-cards grid-2 reveal" style="gap:14px;">
+      <div class="card accent-card-blue bug-card">
+        <div class="bug-num" style="background:#0b63ce;">1</div>
+        <div><strong style="color:#0f2747;">Describe it.</strong><p class="big-text" style="color:#374151;margin:0;">What should happen? What actually happens instead?</p></div>
+      </div>
+      <div class="card accent-card-green bug-card">
+        <div class="bug-num" style="background:#10b981;">2</div>
+        <div><strong style="color:#0f2747;">Hunt it.</strong><p class="big-text" style="color:#374151;margin:0;">Read the code near where things went wrong — line by line.</p></div>
+      </div>
+      <div class="card accent-card-amber bug-card">
+        <div class="bug-num" style="background:#f59e0b;">3</div>
+        <div><strong style="color:#0f2747;">Test small fixes.</strong><p class="big-text" style="color:#374151;margin:0;">Change one thing at a time and re-run to see what changes.</p></div>
+      </div>
+      <div class="card accent-card-red bug-card">
+        <div class="bug-num" style="background:#ef4444;">4</div>
+        <div><strong style="color:#0f2747;">Document it.</strong><p class="big-text" style="color:#374151;margin:0;">Write down what was wrong and how you fixed it, for next time.</p></div>
+      </div>
+    </div>
+    <div class="vocab-tag reveal mt-3">🐛 <strong>&nbsp;debug</strong> — find and fix a mistake in code</div>
+  </div>
+</div>
+
+<!-- SLIDE 5: VIDEO 1 - DEBUGGING -->
+<div class="slide interior" data-slide="5" data-type="lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:360px;height:360px;top:-60px;right:-60px;background:#0b63ce;opacity:0.09;"></div>
+    <div class="blob" style="width:240px;height:240px;bottom:-50px;left:-40px;background:#10b981;opacity:0.07;"></div>
+  </div>
+  <div class="content">
+    <p class="pill mb-3 reveal">▶ Video 1 · Debugging Skills</p>
+    <h2 class="font-display reveal" style="font-weight:700;margin-bottom:1rem;">Watch: How to Debug Your Code in 4 Simple Steps <span style="font-size:0.65em;opacity:0.7;">(~3 min)</span></h2>
+    <div class="grid-cards grid-2 reveal" style="align-items:start;">
+      <div>
+        <div class="media-embed" id="player-EWOYoQJrni4" onclick="playVideo('EWOYoQJrni4')" title="Click to play">
+          <img src="https://img.youtube.com/vi/EWOYoQJrni4/hqdefault.jpg" alt="How to Debug your Code in 4 Simple Steps — STEM MC">
+          <div class="play-btn"><div><svg width="22" height="22" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div>
+        </div>
+        <p style="font-size:.66rem;color:#5b6b7e;margin-top:7px;">
+          <a href="https://www.youtube.com/watch?v=EWOYoQJrni4" target="_blank" rel="noopener" style="color:#0b63ce;text-decoration:underline;">YouTube · STEM MC — How to Debug your Code in 4 Simple Steps</a>
+        </p>
+      </div>
+      <div class="card" style="padding:18px 20px;">
+        <div class="question-chip mb-3"><span class="icon">?</span> Watch for these 4 things</div>
+        <ul style="list-style:none;padding:0;margin:0;">
+          <li class="big-text" style="margin-bottom:9px;color:#374151;">🔍 What's the very first step before you even touch the code?</li>
+          <li class="big-text" style="margin-bottom:9px;color:#374151;">👀 Where should your eyes search first when hunting a bug?</li>
+          <li class="big-text" style="color:#374151;">🖨️ What is "print debugging" — and why does it help?</li>
+        </ul>
+        <div class="tip b mt-3">After watching — finish this sentence: <em>"The bug in my project was hiding in ___, and I found it by ___."</em></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 6: PEER TESTING -->
+<div class="slide interior" data-slide="6" data-type="lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:320px;height:320px;top:-60px;left:-50px;background:#0b63ce;opacity:0.09;"></div>
+    <div class="blob" style="width:260px;height:260px;bottom:-60px;right:-50px;background:#f59e0b;opacity:0.07;"></div>
+  </div>
+  <div class="content">
+    <p class="pill mb-3 reveal">Peer Testing</p>
+    <h2 class="font-display reveal" style="font-weight:700;margin-bottom:1rem;">Why Does Someone ELSE Need to Test Your Project?</h2>
+    <div class="grid-cards grid-2 reveal" style="align-items:start;">
+      <div class="card accent-card-blue" style="padding:18px 20px;">
+        <div class="think-chip mb-3">Think like a scientist</div>
+        <p class="big-text" style="color:#374151;margin-bottom:8px;">You know exactly how to click your own project the "right" way — so you never trigger the hidden bug.</p>
+        <p class="big-text" style="color:#374151;">A partner doesn't know your secret shortcuts. They'll click the "wrong" button — and that's exactly how real bugs get found.</p>
+      </div>
+      <div class="img-frame" style="height:230px;">
+        <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/062e60c44056150f11c646329fbb82c26ddbbad5.jpg" alt="Two kids sitting at a table looking at a laptop together, testing a project">
+      </div>
+    </div>
+    <div class="tip g reveal mt-3">Today's job: swap projects with a partner. Each of you tries to break the other's project — then fix your <strong>top 2 bugs</strong>.</div>
+  </div>
+</div>
+
+<!-- SLIDE 7: BUG PRIORITY SORT (interactive) -->
+<div class="slide interior" data-slide="7" data-type="lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:300px;height:300px;top:-50px;right:-50px;background:#ef4444;opacity:0.08;"></div>
+    <div class="blob" style="width:260px;height:260px;bottom:-60px;left:-40px;background:#10b981;opacity:0.07;"></div>
+  </div>
+  <div class="content">
+    <p class="pill amber mb-3 reveal">Sort It Out</p>
+    <h2 class="font-display reveal" style="font-weight:700;margin-bottom:0.6rem;">Which Bugs Get Fixed First? (click a card to flip)</h2>
+    <p class="big-text reveal" style="color:#374151;margin-bottom:1rem;">You can't fix everything before showcase. Flip each card — is it a <strong>must-fix</strong> or a <strong>nice-to-have</strong>?</p>
+    <div class="grid-cards grid-3 reveal">
+      <div class="flip-card" id="s7c1" onclick="s7flip(1)">
+        <div class="flip-inner">
+          <div class="flip-front card accent-card-red"><p class="big-text" style="margin:0;color:#374151;">The whole program crashes when you click "Start"</p></div>
+          <div class="flip-back card" style="background:#ef4444;color:#fff;"><p style="margin:0;font-weight:800;">MUST-FIX 🚨<br><span style="font-weight:500;font-size:0.85rem;">Nothing works until this is solved.</span></p></div>
+        </div>
+      </div>
+      <div class="flip-card" id="s7c2" onclick="s7flip(2)">
+        <div class="flip-inner">
+          <div class="flip-front card accent-card-amber"><p class="big-text" style="margin:0;color:#374151;">The background color isn't your favorite shade of purple</p></div>
+          <div class="flip-back card" style="background:#f59e0b;color:#fff;"><p style="margin:0;font-weight:800;">NICE-TO-HAVE 🎨<br><span style="font-weight:500;font-size:0.85rem;">Looks fine — save it for polish day.</span></p></div>
+        </div>
+      </div>
+      <div class="flip-card" id="s7c3" onclick="s7flip(3)">
+        <div class="flip-inner">
+          <div class="flip-front card accent-card-red"><p class="big-text" style="margin:0;color:#374151;">The chatbot never replies, no matter what you type</p></div>
+          <div class="flip-back card" style="background:#ef4444;color:#fff;"><p style="margin:0;font-weight:800;">MUST-FIX 🚨<br><span style="font-weight:500;font-size:0.85rem;">The core feature has to actually work.</span></p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+  (function(){ window.s7flip = function(n){ document.getElementById('s7c'+n).classList.toggle('open'); }; })();
+  </script>
+</div>
+
+<!-- SLIDE 8: FAIR AND CLEAR AI CHECK -->
+<div class="slide interior" data-slide="8" data-type="lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:320px;height:320px;top:-60px;left:-60px;background:#0b63ce;opacity:0.09;"></div>
+    <div class="blob" style="width:240px;height:240px;bottom:-40px;right:-40px;background:#10b981;opacity:0.08;"></div>
+  </div>
+  <div class="content">
+    <p class="pill green mb-3 reveal">🤖 AI Moment</p>
+    <h2 class="font-display reveal" style="font-weight:700;margin-bottom:1rem;">Bug-Testing the AI Part Too</h2>
+    <div class="card accent-card-green reveal" style="padding:20px 22px;">
+      <p class="big-text" style="color:#374151;margin-bottom:10px;">A chatbot or classifier can have "bugs" that aren't about crashing — it can be <strong>confusing</strong> or <strong>unfair</strong> and still "work."</p>
+      <div class="question-chip mb-3"><span class="icon">?</span> Ask your partner while they test</div>
+      <ul style="list-style:none;padding:0;margin:0;">
+        <li class="big-text" style="margin-bottom:8px;color:#374151;">Could someone misunderstand what my AI part is trying to say?</li>
+        <li class="big-text" style="color:#374151;">Does it treat every kind of input fairly, or does it only work for certain examples?</li>
+      </ul>
+    </div>
+    <div class="tip b reveal mt-3">Fixing an AI "fairness bug" counts just as much as fixing a crash — write it on your bug list too.</div>
+  </div>
+</div>
+
+<!-- SLIDE 9: SESSION 22 HOMEWORK / INTRO -->
+<div class="slide interior" data-slide="9" data-type="lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:300px;height:300px;top:-50px;right:-40px;background:#f59e0b;opacity:0.09;"></div>
+    <div class="blob" style="width:260px;height:260px;bottom:-60px;left:-50px;background:#0b63ce;opacity:0.07;"></div>
+  </div>
+  <div class="content">
+    <p class="pill amber mb-3 reveal">Coming Up</p>
+    <h2 class="font-display reveal" style="font-weight:700;margin-bottom:1rem;">Write Your 30-Second "What My Project Does" Intro</h2>
+    <div class="card accent-card-amber reveal" style="padding:20px 22px;">
+      <p class="big-text" style="color:#374151;margin-bottom:10px;">Every great demo starts with a short, clear introduction. Yours should answer three things in about 30 seconds:</p>
+      <ul style="list-style:none;padding:0;margin:0;">
+        <li class="big-text" style="margin-bottom:8px;color:#374151;">1️⃣ What is my project called, and what does it do?</li>
+        <li class="big-text" style="margin-bottom:8px;color:#374151;">2️⃣ What's the AI part, in one sentence?</li>
+        <li class="big-text" style="color:#374151;">3️⃣ What's one thing I'm proud of?</li>
+      </ul>
+    </div>
+    <div class="think-chip reveal mt-3" style="display:inline-flex;">Say it out loud once before next class — even to a pet or a mirror counts!</div>
+  </div>
+</div>
+
+<!-- SLIDE 10: TRANSITION / DIVIDER -->
+<div class="slide" data-slide="10" data-type="lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:420px;height:420px;top:-100px;left:-80px;background:#10b981;opacity:0.14;"></div>
+    <div class="blob" style="width:300px;height:300px;bottom:-90px;right:-70px;background:#0b63ce;opacity:0.12;"></div>
+    <div class="blob" style="width:200px;height:200px;top:35%;right:20%;background:#f59e0b;opacity:0.10;"></div>
+  </div>
+  <canvas class="particle-canvas"></canvas>
+  <div class="content text-center">
+    <div class="text-[80px] mb-3 reveal" style="animation: float 3s ease-in-out infinite;">🎤</div>
+    <h2 class="font-display grad-text reveal" style="font-weight:700;font-size:clamp(1.9rem,4vw,2.8rem);">Session 24 · Showcase Rehearsal</h2>
+    <p class="reveal" style="color:var(--color-text-muted);margin-top:0.6rem;font-size:1.05rem;">Your project is polished. Now let's practice showing it off — the low-stakes way.</p>
+  </div>
+</div>
+
+<!-- SLIDE 11: WHY REHEARSE -->
+<div class="slide interior" data-slide="11" data-type="lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:340px;height:340px;top:-60px;right:-60px;background:#10b981;opacity:0.09;"></div>
+    <div class="blob" style="width:260px;height:260px;bottom:-50px;left:-40px;background:#0b63ce;opacity:0.07;"></div>
+  </div>
+  <div class="content">
+    <p class="pill green mb-3 reveal">Big Idea</p>
+    <h2 class="font-display reveal" style="font-weight:700;margin-bottom:1rem;">Why Practice Talking About Your Project Before the Real Showcase?</h2>
+    <div class="grid-cards grid-2 reveal" style="align-items:start;">
+      <div class="card" style="padding:18px 20px;">
+        <div class="question-chip mb-3"><span class="icon">?</span> Think about it</div>
+        <ul style="list-style:none;padding:0;margin:0;">
+          <li class="big-text" style="margin-bottom:9px;color:#374151;">Have you ever felt nervous doing something the very first time, but calmer the second time?</li>
+          <li class="big-text" style="color:#374151;">What's the difference between practicing alone and practicing with one friendly partner?</li>
+        </ul>
+      </div>
+      <div class="img-frame" style="height:230px;">
+        <img src="https://pplx-res.cloudinary.com/image/upload/pplx_search_images/71debfc20f542e15ebbb60c369d0dd6c5e45f4e4.jpg" alt="A young boy pointing at a chart while presenting to classmates seated on the floor">
+      </div>
+    </div>
+    <div class="tip g reveal mt-3">Rehearsal isn't a test — it's a warm-up. Every performer, athlete, and scientist practices before the "real thing."</div>
+  </div>
+</div>
+
+<!-- SLIDE 12: VIDEO 2 - PRESENTATION SKILLS -->
+<div class="slide interior" data-slide="12" data-type="lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:360px;height:360px;top:-60px;right:-60px;background:#0b63ce;opacity:0.09;"></div>
+    <div class="blob" style="width:240px;height:240px;bottom:-50px;left:-40px;background:#f59e0b;opacity:0.07;"></div>
+  </div>
+  <div class="content">
+    <p class="pill mb-3 reveal">▶ Video 2 · Presentation Skills</p>
+    <h2 class="font-display reveal" style="font-weight:700;margin-bottom:1rem;">Watch: Presentation Skills, Kid-Taught! <span style="font-size:0.65em;opacity:0.7;">(~2 min)</span></h2>
+    <div class="grid-cards grid-2 reveal" style="align-items:start;">
+      <div>
+        <div class="media-embed" id="player-8IbheB2-ixM" onclick="playVideo('8IbheB2-ixM')" title="Click to play">
+          <img src="https://img.youtube.com/vi/8IbheB2-ixM/hqdefault.jpg" alt="Schooled by Kids — Presentation Skills Part 1">
+          <div class="play-btn"><div><svg width="22" height="22" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg></div></div>
+        </div>
+        <p style="font-size:.66rem;color:#5b6b7e;margin-top:7px;">
+          <a href="https://www.youtube.com/watch?v=8IbheB2-ixM" target="_blank" rel="noopener" style="color:#0b63ce;text-decoration:underline;">YouTube · Green Ivy Schools — Schooled by Kids: Presentation Skills, Part 1</a>
+        </p>
+      </div>
+      <div class="card" style="padding:18px 20px;">
+        <div class="question-chip mb-3"><span class="icon">?</span> Watch for these 3 things</div>
+        <ul style="list-style:none;padding:0;margin:0;">
+          <li class="big-text" style="margin-bottom:9px;color:#374151;">😀 What does Kenneth say you should do the moment you walk in?</li>
+          <li class="big-text" style="margin-bottom:9px;color:#374151;">⏱️ How many seconds does he say you have to grab your audience's attention?</li>
+          <li class="big-text" style="color:#374151;">👀 What does he say about eye contact?</li>
+        </ul>
+        <div class="tip b mt-3">After watching — try his "hands above the belly button" pose while saying your 30-second intro!</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 13: PRESENTER TOOLKIT CARDS -->
+<div class="slide interior" data-slide="13" data-type="lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:320px;height:320px;top:-60px;left:-50px;background:#0b63ce;opacity:0.09;"></div>
+    <div class="blob" style="width:260px;height:260px;bottom:-50px;right:-50px;background:#10b981;opacity:0.07;"></div>
+  </div>
+  <div class="content">
+    <p class="pill mb-3 reveal">Presenter Toolkit</p>
+    <h2 class="font-display reveal" style="font-weight:700;margin-bottom:1rem;">Four Habits of a Calm, Clear Presenter</h2>
+    <div class="grid-cards grid-2 reveal" style="gap:14px;">
+      <div class="card accent-card-blue bug-card">
+        <div class="bug-num" style="background:#0b63ce;">😊</div>
+        <div><strong style="color:#0f2747;">Smile &amp; make eye contact.</strong><p class="big-text" style="color:#374151;margin:0;">It tells your audience "I'm ready and I'm friendly."</p></div>
+      </div>
+      <div class="card accent-card-green bug-card">
+        <div class="bug-num" style="background:#10b981;">🐢</div>
+        <div><strong style="color:#0f2747;">Slow down.</strong><p class="big-text" style="color:#374151;margin:0;">Nervous talkers speed up — pause between ideas instead.</p></div>
+      </div>
+      <div class="card accent-card-amber bug-card">
+        <div class="bug-num" style="background:#f59e0b;">🗂️</div>
+        <div><strong style="color:#0f2747;">Beginning, middle, end.</strong><p class="big-text" style="color:#374151;margin:0;">What it is → how it works → what you're proud of.</p></div>
+      </div>
+      <div class="card bug-card" style="background:rgba(11,99,206,0.07);border:1px solid rgba(11,99,206,0.18);">
+        <div class="bug-num" style="background:#6366f1;">🎯</div>
+        <div><strong style="color:#0f2747;">Show, don't just tell.</strong><p class="big-text" style="color:#374151;margin:0;">Click a button while you talk — let the project speak too.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 14: PAIRS-THEN-GROUPS RHYTHM -->
+<div class="slide interior" data-slide="14" data-type="lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:300px;height:300px;top:-40px;right:-40px;background:#10b981;opacity:0.08;"></div>
+    <div class="blob" style="width:260px;height:260px;bottom:-60px;left:-40px;background:#0b63ce;opacity:0.07;"></div>
+  </div>
+  <div class="content">
+    <p class="pill green mb-3 reveal">Rehearsal Ladder</p>
+    <h2 class="font-display reveal" style="font-weight:700;margin-bottom:0.5rem;">Start Small, Build Confidence — Never Cold-Called</h2>
+    <p class="big-text reveal" style="color:#374151;margin-bottom:1rem;">Presenting is always <strong>opt-in</strong>. You choose how far up the ladder you climb today.</p>
+    <div class="grid-cards grid-3 reveal">
+      <div class="card accent-card-green">
+        <div class="tier-badge-a mb-2">Step 1</div>
+        <p class="big-text" style="color:#374151;margin:0;">"Show your neighbor" — one partner, one project, no audience pressure.</p>
+      </div>
+      <div class="card accent-card-blue">
+        <div class="tier-badge-b mb-2">Step 2</div>
+        <p class="big-text" style="color:#374151;margin:0;">Swap roles — now you listen and give one kind, specific piece of feedback.</p>
+      </div>
+      <div class="card accent-card-amber">
+        <div class="tier-badge-c mb-2">Step 3 (optional)</div>
+        <p class="big-text" style="color:#374151;margin:0;">Volunteers show a whole table — practice with a slightly bigger, still-friendly audience.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 15: ONE-SENTENCE AI EXPLANATION -->
+<div class="slide interior" data-slide="15" data-type="lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:320px;height:320px;top:-60px;left:-60px;background:#0b63ce;opacity:0.09;"></div>
+    <div class="blob" style="width:240px;height:240px;bottom:-40px;right:-40px;background:#10b981;opacity:0.08;"></div>
+  </div>
+  <div class="content">
+    <p class="pill green mb-3 reveal">🤖 AI Moment</p>
+    <h2 class="font-display reveal" style="font-weight:700;margin-bottom:1rem;">Explain Your AI Idea in ONE Sentence</h2>
+    <div class="card accent-card-green reveal" style="padding:20px 22px;">
+      <p class="big-text" style="color:#374151;margin-bottom:10px;">The hardest part of any demo is explaining the "smart" part simply. Try filling in this sentence with your partner:</p>
+      <div class="tip b" style="font-size:0.95rem;padding:14px 16px;">"My project uses AI to <em>______</em>, by learning from <em>______</em>."</div>
+      <p class="big-text" style="color:#374151;margin-top:12px;margin-bottom:0;">Example: <em>"My project uses AI to guess if a message is happy or sad, by learning from example sentences I trained it on."</em></p>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 16: RECAP / CLOSING -->
+<div class="slide" data-slide="16" data-type="lesson">
+  <div class="gradient-mesh">
+    <div class="blob" style="width:440px;height:440px;top:-110px;right:-90px;background:#0b63ce;opacity:0.15;"></div>
+    <div class="blob" style="width:320px;height:320px;bottom:-90px;left:-70px;background:#10b981;opacity:0.13;"></div>
+    <div class="blob" style="width:220px;height:220px;top:30%;left:15%;background:#f59e0b;opacity:0.11;"></div>
+  </div>
+  <canvas class="particle-canvas"></canvas>
+  <div class="content text-center">
+    <div class="text-[80px] mb-3 reveal" style="animation: float 3s ease-in-out infinite;">🌟</div>
+    <h2 class="font-display grad-text reveal" style="font-weight:700;font-size:clamp(1.9rem,4vw,2.8rem);margin-bottom:0.8rem;">From Bug-Free to Stage-Ready</h2>
+    <div class="grid-cards grid-2 reveal" style="max-width:760px;margin:0 auto;text-align:left;">
+      <div class="card accent-card-blue"><p class="big-text" style="color:#374151;margin:0;"><strong>Session 22:</strong> A working project beats a big project. Freeze features, hunt bugs together, fix the top 2.</p></div>
+      <div class="card accent-card-green"><p class="big-text" style="color:#374151;margin:0;"><strong>Session 24:</strong> Confidence comes from practice. Show a neighbor, get feedback, say the AI idea in one sentence.</p></div>
+    </div>
+    <p class="reveal" style="color:var(--color-text-muted);margin-top:1rem;">Next stop: the Project Showcase — you've got this. 🎉</p>
+  </div>
+</div>
+
+</div>
+
+<div class="nav-controls">
+  <button class="nav-btn" onclick="changeSlide(-1)">&#8249;</button>
+  <div class="slide-dots" id="dots"></div>
+  <button class="nav-btn" onclick="changeSlide(1)">&#8250;</button>
+  <span class="slide-counter" id="counter">1 / 16</span>
+</div>
+
+<script>
+  let current = 1;
+  const total = document.querySelectorAll('.slide').length;
+  const dotsContainer = document.getElementById('dots');
+  const counter = document.getElementById('counter');
+
+  for (let i = 1; i <= total; i++) {
+    const s = document.querySelector(`.slide[data-slide="${i}"]`);
+    const dot = document.createElement('div');
+    dot.className = 'dot' + (i > 9 ? ' day2' : '') + (i === 1 ? ' active' : '');
+    dot.onclick = () => goToSlide(i);
+    dotsContainer.appendChild(dot);
+  }
+
+  function goToSlide(n) {
+    const prev = document.querySelector('.slide.active');
+    const next = document.querySelector(`.slide[data-slide="${n}"]`);
+    if (prev) prev.classList.remove('active');
+    if (next) { next.classList.add('active'); animateSlide(next); }
+    current = n; updateNav();
+  }
+  function changeSlide(dir) { let n = current + dir; if (n < 1) n = total; if (n > total) n = 1; goToSlide(n); }
+  function updateNav() {
+    document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i + 1 === current));
+    counter.textContent = current + ' / ' + total;
+  }
+  document.addEventListener('keydown', e => { if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); changeSlide(1); } if (e.key === 'ArrowLeft') { e.preventDefault(); changeSlide(-1); } });
+  let touchStartX = 0;
+  document.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; });
+  document.addEventListener('touchend', e => { const d = touchStartX - e.changedTouches[0].clientX; if (Math.abs(d) > 50) changeSlide(d > 0 ? 1 : -1); });
+
+  function animateSlide(slide) {
+    slide.querySelectorAll('.reveal').forEach((el, i) => {
+      el.style.transition = 'none';
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(16px)';
+      el.offsetHeight;
+      const d = i * 0.06;
+      el.style.transition = `opacity 0.32s ease ${d}s, transform 0.32s ease ${d}s`;
+      el.style.opacity = '1';
+      el.style.transform = 'translateY(0px)';
+    });
+  }
+
+  function playVideo(videoId) {
+    const container = document.getElementById('player-' + videoId);
+    if (!container) return;
+    container.onclick = null;
+    container.style.cursor = 'default';
+    container.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0" allowfullscreen allow="autoplay; encrypted-media" style="position:absolute;inset:0;width:100%;height:100%;border:0;border-radius:13px;"></iframe>`;
+  }
+
+  document.addEventListener('mousemove', e => {
+    const s = document.querySelector('.mouse-spotlight');
+    if (s) s.style.background = `radial-gradient(600px circle at ${e.clientX}px ${e.clientY}px, rgba(11,99,206,0.05), transparent 40%)`;
+  });
+
+  window.initParticles = function(canvas) {
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const count = 40;
+    let mx = -1000, my = -1000;
+    const [r,g,b] = [11,99,206];
+    function seed() { canvas.width = canvas.offsetWidth || window.innerWidth; canvas.height = canvas.offsetHeight || window.innerHeight; }
+    seed();
+    window.addEventListener('resize', seed);
+    const particles = Array.from({length: count}, () => ({
+      x: Math.random() * canvas.width, y: Math.random() * canvas.height,
+      vx: (Math.random() - .5) * .3, vy: (Math.random() - .5) * .3,
+      size: Math.random() * 2.2 + .7, alpha: Math.random() * .3 + .08
+    }));
+    document.addEventListener('mousemove', e => { const rc = canvas.getBoundingClientRect(); mx = e.clientX - rc.left; my = e.clientY - rc.top; });
+    const ownSlide = canvas.closest('.slide');
+    (function animate() {
+      if (!ownSlide || ownSlide.classList.contains('active')) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        particles.forEach(p => {
+          const dx = p.x - mx, dy = p.y - my, dist = Math.sqrt(dx*dx + dy*dy);
+          if (dist < 120) { const f = (120-dist)/120*1.5; p.vx += dx/dist*f*.1; p.vy += dy/dist*f*.1; }
+          p.vx *= .98; p.vy *= .98; p.x += p.vx; p.y += p.vy;
+          if (p.x < 0) p.x = canvas.width; if (p.x > canvas.width) p.x = 0;
+          if (p.y < 0) p.y = canvas.height; if (p.y > canvas.height) p.y = 0;
+          ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(${r},${g},${b},${p.alpha})`; ctx.fill();
+        });
+      }
+      requestAnimationFrame(animate);
+    })();
+  };
+
+  document.querySelectorAll('canvas.particle-canvas').forEach(c => initParticles(c));
+
+  try { animateSlide(document.querySelector('.slide.active')); } catch(e) { console.warn(e); }
+</script>
+
+</body>
+</html>
