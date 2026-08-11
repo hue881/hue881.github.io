@@ -1,1 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Activity Sheet &middot; Session 23 &middot; Project Showcase Prep</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f4fbff;--sur:rgba(255,255,255,.97);--tx:#1f2a37;--tx2:#374151;--txm:#5b6b7e;--a1:#2563eb;--a2:#16a34a;--a3:#f59e0b;--ar:#ef4444;--ap:#7c3aed;--fd:'Fredoka','Trebuchet MS',sans-serif;--fb:'Nunito',Arial,sans-serif;--fc:'Fira Code',Consolas,monospace}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+@media print{body{background:#fff!important}.no-print{display:none!important}.pb{page-break-before:always}.card{box-shadow:none!important;border:1.5px solid #d1d5db!important}}
+body{font-family:var(--fb);color:var(--tx);background:var(--bg);min-height:100vh}
+.pbar{background:rgba(255,255,255,.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(148,163,184,.3);padding:10px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;gap:12px;flex-wrap:wrap}
+.pbar-title{font-family:var(--fd);font-size:1.05rem;font-weight:700;color:var(--a1)}
+.pbar-sub{font-size:.78rem;color:var(--txm)}
+.btn-p{background:var(--a1);color:#fff;border:none;padding:8px 20px;border-radius:999px;font-family:var(--fb);font-size:.82rem;font-weight:800;cursor:pointer;letter-spacing:.06em;transition:.2s}
+.btn-p:hover{background:#1d4ed8;transform:translateY(-1px)}
+.page{max-width:920px;margin:0 auto;padding:32px 24px 60px}
+.shdr{background:linear-gradient(135deg,#2563eb 0%,#16a34a 60%,#f97066 100%);border-radius:20px;padding:28px 32px 24px;color:#fff;margin-bottom:28px;position:relative;overflow:hidden}
+.shdr::before{content:'';position:absolute;top:-60px;right:-60px;width:200px;height:200px;background:rgba(255,255,255,.08);border-radius:50%}
+.shdr::after{content:'';position:absolute;bottom:-40px;left:-40px;width:140px;height:140px;background:rgba(255,255,255,.06);border-radius:50%}
+.hday{font-size:.75rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;opacity:.85;margin-bottom:4px}
+.htitle{font-family:var(--fd);font-size:clamp(1.6rem,4vw,2.4rem);font-weight:700;line-height:1.1;margin-bottom:6px}
+.hsub{font-size:.88rem;opacity:.85;margin-bottom:14px}
+.hpills{display:flex;gap:8px;flex-wrap:wrap}
+.hpill{background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:4px 14px;font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+.sinfo{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:28px}
+@media(max-width:600px){.sinfo{grid-template-columns:1fr}}
+.ifield{background:var(--sur);border-radius:12px;padding:12px 14px;border:1.5px solid rgba(37,99,235,.14);box-shadow:0 2px 8px rgba(15,23,42,.05)}
+.ilabel{font-size:.65rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--a1);margin-bottom:6px}
+.iline{border:none;border-bottom:1.5px solid #cbd5e1;width:100%;font-family:var(--fb);font-size:.9rem;color:var(--tx);background:transparent;outline:none;padding:2px 0}
+.iline:focus{border-bottom-color:#2563eb}
+.slabel{display:inline-flex;align-items:center;gap:8px;padding:5px 16px;border-radius:999px;border:1px solid rgba(148,163,184,.4);background:rgba(255,255,255,.9);font-size:.72rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--a1);margin-bottom:10px}
+.stitle{font-family:var(--fd);font-size:clamp(1.3rem,2.5vw,1.8rem);font-weight:700;margin-bottom:16px;color:var(--tx);line-height:1.2}
+.card{background:var(--sur);border-radius:16px;padding:18px 20px;box-shadow:0 4px 18px rgba(15,23,42,.07);border:1px solid rgba(255,255,255,.7);margin-bottom:16px}
+.card.ab{border-left:4px solid var(--a1)}.card.ag{border-left:4px solid var(--a2)}.card.aa{border-left:4px solid var(--a3)}.card.ar{border-left:4px solid var(--ar)}.card.ap{border-left:4px solid var(--ap)}
+.clabel{font-size:.68rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;margin-bottom:8px}
+.cl-b{color:var(--a1)}.cl-g{color:#15803d}.cl-a{color:#b45309}.cl-r{color:#b91c1c}.cl-p{color:#6d28d9}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media(max-width:680px){.g2,.g3{grid-template-columns:1fr}}
+.wl{border:none;border-bottom:1.5px solid #cbd5e1;width:100%;margin-bottom:10px;height:28px;display:block;background:transparent;font-family:var(--fb);font-size:.88rem;color:var(--tx);outline:none;padding:2px 4px}
+.wl:focus{border-bottom-color:#2563eb}
+.wl::placeholder{color:#bdc5d1;font-style:italic}
+.wa{border:1.5px solid #cbd5e1;border-radius:8px;width:100%;min-height:70px;padding:8px;font-family:var(--fb);font-size:.85rem;color:var(--tx);resize:vertical;background:#f8fafc;outline:none;display:block}
+.wa:focus{outline:2px solid rgba(37,99,235,.3)}
+.wa::placeholder{color:#bdc5d1;font-style:italic}
+.tip{border-radius:10px;padding:10px 14px;font-size:.8rem;line-height:1.5;margin-top:10px}
+.tip.b{background:rgba(37,99,235,.07);color:#1e40af}.tip.g{background:rgba(22,163,74,.07);color:#14532d}.tip.a{background:rgba(245,158,11,.07);color:#92400e}.tip.p{background:rgba(124,58,237,.07);color:#5b21b6}
+.div{border:none;border-top:2px dashed #dde6f0;margin:28px 0}
+.chk{list-style:none;padding:0}
+.chk li{display:flex;align-items:flex-start;gap:8px;font-size:.85rem;color:var(--tx2);margin-bottom:8px;line-height:1.45}
+.chk li .bx{flex-shrink:0;width:17px;height:17px;border:2px solid #94a3b8;border-radius:4px;margin-top:1px;background:#fff;display:inline-block}
+.sb{display:inline-flex;align-items:center;gap:4px;padding:3px 10px 3px 8px;border-radius:6px;font-family:var(--fc);font-weight:700;font-size:.78rem;cursor:default;user-select:none;vertical-align:middle}
+.sbp{background:#9c27b0;color:#fff}.sbo{background:#ff9800;color:#fff}.sbb{background:#2196f3;color:#fff}.sby{background:#ffc107;color:#333}.sbt{background:#009688;color:#fff}.sbg{background:#4caf50;color:#fff}
+.lvl{display:inline-flex;align-items:center;gap:6px;padding:4px 14px;border-radius:999px;font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px}
+.la{background:linear-gradient(135deg,#2563eb,#60a5fa);color:#fff}
+.lb{background:linear-gradient(135deg,#16a34a,#4ade80);color:#fff}
+.lc{background:linear-gradient(135deg,#7c3aed,#f97066);color:#fff}
+.lx{background:linear-gradient(135deg,#f59e0b,#f97066);color:#fff}
+table.rub{width:100%;border-collapse:collapse;font-size:.82rem;margin-top:8px}
+table.rub th{background:#1e293b;color:#e2e8f0;padding:8px 10px;text-align:left;font-weight:700;letter-spacing:.05em}
+table.rub td{padding:8px 10px;border-bottom:1px solid #e2e8f0;vertical-align:top;color:var(--tx2)}
+table.rub tr:nth-child(even) td{background:rgba(241,245,249,.6)}
+table.rub td:first-child{font-weight:700;color:var(--tx)}
+table.rub .pts{font-family:var(--fc);font-size:.75rem;font-weight:800;color:var(--a1);white-space:nowrap}
+.sfooter{margin-top:40px;padding:16px 20px;border-radius:12px;background:rgba(37,99,235,.05);border:1px solid rgba(37,99,235,.12);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:.76rem;color:var(--txm)}
+.sfooter strong{color:var(--tx)}
+.gtext{background:linear-gradient(135deg,#2563eb,#16a34a,#f97066);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.mb1{margin-bottom:6px}.mb2{margin-bottom:10px}.mb3{margin-bottom:14px}.mt2{margin-top:10px}.mt3{margin-top:14px}
+.tmuted{color:var(--txm);font-size:.78rem}
+code{background:#e0f2ff;padding:1px 6px;border-radius:4px;font-family:var(--fc);font-size:.82em;color:#1d4ed8}
+.rbar{display:flex;border-radius:12px;overflow:hidden;margin-bottom:20px;border:2px solid rgba(37,99,235,.15)}
+.rb{flex:1;padding:8px 4px;text-align:center;font-size:.62rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase;line-height:1.3}
+.rw{background:#eff6ff;color:#1d4ed8;border-right:1px solid rgba(37,99,235,.15)}
+.rm{background:#f0fdf4;color:#15803d;border-right:1px solid rgba(22,163,74,.15)}
+.rg{background:#fefce8;color:#a16207;border-right:1px solid rgba(245,158,11,.15)}
+.rk{background:#fdf4ff;color:#7e22ce;border-right:1px solid rgba(124,58,237,.15)}
+.ro{background:#fff1f2;color:#be123c;border-right:1px solid rgba(249,112,102,.15)}
+.rs{background:#ecfdf5;color:#065f46}
+.sc-row{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border-radius:10px;margin-bottom:8px;border:1.5px solid transparent;transition:.2s}
+.sc-row:hover{border-color:#bfdbfe}
+.sc-row input[type=checkbox]{margin-top:2px;accent-color:#16a34a;width:18px;height:18px;flex-shrink:0;cursor:pointer}
+.sc-lbl{font-size:.88rem;color:var(--tx2);line-height:1.4}
+.sc-lbl strong{color:var(--tx)}
+</style>
+</head>
+<body>
+<div class="pbar no-print">
+  <div><div class="pbar-title">&#127942; Session 23 &middot; Activity Sheet</div><div class="pbar-sub">Project Showcase Prep &mdash; Differentiated &middot; Ages 7&ndash;13</div></div>
+  <button class="btn-p" onclick="window.print()">&#128438; Print / Save as PDF</button>
+</div>
+<div class="page">
 
+<div class="shdr">
+  <div style="font-size:2.8rem;margin-bottom:6px;">&#127881;&#127942;</div>
+  <div class="hday">Session 23 &middot; Wednesday, August 12 &middot; Week 7 &middot; Summer 2026 AI &amp; Coding Program</div>
+  <div class="htitle">Project Showcase &mdash; Gallery Walk Day!</div>
+  <div class="hsub">You built it. Now you get to show it off &mdash; and explain the AI idea inside it.</div>
+  <div class="hpills">
+    <span class="hpill">&#127942; Showcase</span><span class="hpill">&#8987; 110 min</span><span class="hpill">Ages 7&ndash;13</span><span class="hpill">3 Tiers</span><span class="hpill">Pitching &middot; AI Explaining &middot; Presenting</span>
+  </div>
+</div>
+
+<div class="sinfo">
+  <div class="ifield"><div class="ilabel">&#128100; Your Name</div><input class="iline" type="text" placeholder="First Last" /></div>
+  <div class="ifield"><div class="ilabel">&#128197; Date</div><input class="iline" type="text" value="August 12, 2026" /></div>
+  <div class="ifield"><div class="ilabel">&#127979; Section / Period</div><input class="iline" type="text" placeholder="Section 1 / 2 / 3" /></div>
+</div>
+
+<!-- DAILY RHYTHM -->
+<div class="slabel">&#8987; Today&rsquo;s Rhythm</div>
+<div class="stitle">Daily Schedule &mdash; Follow Along!</div>
+<div class="rbar">
+  <div class="rb rw">&#129504;<br>Warm-Up<br>10 min</div>
+  <div class="rb rm">&#128161;<br>Mini-Lesson<br>15&ndash;20 min</div>
+  <div class="rb rg">&#128296;<br>Guided Build<br>20 min</div>
+  <div class="rb rk">&#128131;<br>Move Break<br>5 min</div>
+  <div class="rb ro">&#128736;<br>Open Build<br>30&ndash;40 min</div>
+  <div class="rb rs">&#127908;<br>Share-Out<br>10 min</div>
+</div>
+
+<!-- PART 1: WARM-UP -->
+<div class="slabel">&#129504; Part 1 &middot; Warm-Up (10 min)</div>
+<div class="stitle">Think Back: What Did It Take to Get Here?</div>
+<div class="card ab mb2">
+  <div class="clabel cl-b">&#128506; Trace Your Path</div>
+  <p class="mb2">Look back at your whole summer. Fill in one moment from each milestone below &mdash; in your own project&rsquo;s story, not just the class&rsquo;s.</p>
+  <div class="g2 mb2">
+    <div><p style="font-size:.8rem;font-weight:700;color:#1d4ed8;margin-bottom:4px;">Session 1 &mdash; Welcome &amp; first algorithm</p><input class="wl" type="text" placeholder="What I remember..." /></div>
+    <div><p style="font-size:.8rem;font-weight:700;color:#1d4ed8;margin-bottom:4px;">Session 7 &mdash; Shipped first Scratch project</p><input class="wl" type="text" placeholder="What I remember..." /></div>
+    <div><p style="font-size:.8rem;font-weight:700;color:#15803d;margin-bottom:4px;">Session 15 &mdash; Trained a real AI model</p><input class="wl" type="text" placeholder="What I remember..." /></div>
+    <div><p style="font-size:.8rem;font-weight:700;color:#b45309;margin-bottom:4px;">Session 18 &mdash; Chose my capstone project</p><input class="wl" type="text" placeholder="What I remember..." /></div>
+  </div>
+  <p style="font-size:.83rem;font-weight:700;color:#374151;margin-bottom:6px;">If a stranger walked up to your project right now and asked &ldquo;what does this do?&rdquo; &mdash; could you answer in ONE sentence?</p>
+  <input class="wl" type="text" placeholder="My one-sentence answer is..." />
+</div>
+<div class="card ap mb3">
+  <div class="clabel cl-p">&#129302; AI Moment &mdash; Warm-Up</div>
+  <p class="mb2">Today&rsquo;s AI Moment is woven through the whole session: practicing how you&rsquo;ll explain the AI part of your own project to a visitor who has never seen it.</p>
+  <div class="tip p">&#129302; Keep this question in your head all day: &ldquo;Where&rsquo;s the AI in MY project, and can I say it in one sentence?&rdquo;</div>
+</div>
+
+<hr class="div">
+
+<!-- PART 2: MINI-LESSON -->
+<div class="slabel">&#128161; Part 2 &middot; Mini-Lesson (15&ndash;20 min)</div>
+<div class="stitle">What Actually Happens at a Gallery Walk?</div>
+<div class="card ag mb2">
+  <div class="clabel cl-g">&#127917; Three Simple Moves</div>
+  <p class="mb2">A gallery walk isn&rsquo;t a lineup of speeches &mdash; it&rsquo;s a room full of little conversations, happening at the same time. Check each off as your teacher explains it:</p>
+  <div class="g3">
+    <div style="background:#f0fdf4;border-radius:12px;padding:14px;text-align:center;">
+      <div style="font-size:1.8rem;margin-bottom:6px;">&#128421;&#65039;</div>
+      <div style="font-weight:800;font-size:.85rem;color:#15803d;margin-bottom:4px;">You set up</div>
+      <div style="font-size:.78rem;color:#374151;">Your project runs and waits at your spot, ready to demo.</div>
+      <div style="margin-top:10px;"><input type="checkbox" style="accent-color:#16a34a;width:18px;height:18px;" /> <span style="font-size:.75rem;color:#15803d;font-weight:700;">Got it!</span></div>
+    </div>
+    <div style="background:#eff6ff;border-radius:12px;padding:14px;text-align:center;">
+      <div style="font-size:1.8rem;margin-bottom:6px;">&#128694;</div>
+      <div style="font-weight:800;font-size:.85rem;color:#1d4ed8;margin-bottom:4px;">Visitors walk around</div>
+      <div style="font-size:.78rem;color:#374151;">Families and classmates move table to table.</div>
+      <div style="margin-top:10px;"><input type="checkbox" style="accent-color:#2563eb;width:18px;height:18px;" /> <span style="font-size:.75rem;color:#1d4ed8;font-weight:700;">Got it!</span></div>
+    </div>
+    <div style="background:#fff1f2;border-radius:12px;padding:14px;text-align:center;">
+      <div style="font-size:1.8rem;margin-bottom:6px;">&#128483;&#65039;</div>
+      <div style="font-weight:800;font-size:.85rem;color:#be123c;margin-bottom:4px;">You explain, one-on-one</div>
+      <div style="font-size:.78rem;color:#374151;">A relaxed, quiet conversation &mdash; not a stage speech.</div>
+      <div style="margin-top:10px;"><input type="checkbox" style="accent-color:#ef4444;width:18px;height:18px;" /> <span style="font-size:.75rem;color:#be123c;font-weight:700;">Got it!</span></div>
+    </div>
+  </div>
+</div>
+<div class="card aa mb3">
+  <div class="clabel cl-a">&#128172; Craft Your 3-Sentence Pitch</div>
+  <p class="mb2">Every great demo answers three questions, in order. Fill in your own right now &mdash; then whisper it out loud to yourself:</p>
+  <p style="font-size:.83rem;font-weight:700;color:#374151;margin-bottom:4px;">1. What is it? ("My project is a ___ that lets you ___.")</p>
+  <input class="wl" type="text" placeholder="My project is a..." />
+  <p style="font-size:.83rem;font-weight:700;color:#374151;margin:10px 0 4px;">2. What&rsquo;s the AI or coding idea inside it? ("It uses ___ to ___.")</p>
+  <input class="wl" type="text" placeholder="It uses..." />
+  <p style="font-size:.83rem;font-weight:700;color:#374151;margin:10px 0 4px;">3. What are you proudest of, or what would you add next?</p>
+  <input class="wl" type="text" placeholder="I'm proudest of... / Next I'd add..." />
+  <div class="tip a">Most people find sentence 2 (naming the AI idea) hardest &mdash; that&rsquo;s normal! Practice it once more before showtime.</div>
+</div>
+
+<hr class="div">
+
+<!-- PART 3: GUIDED BUILD -->
+<div class="slabel">&#128296; Part 3 &middot; Guided Build (20 min)</div>
+<div class="stitle">Get Ready for Visitor Questions</div>
+<div class="card ab mb2">
+  <div class="clabel cl-b">&#10067; Practice the Big Four</div>
+  <p class="mb2">Families walking by will be curious &mdash; some questions come up again and again. Answer each one for YOUR project:</p>
+  <div class="g2 mb2">
+    <div style="background:#eff6ff;border-radius:10px;padding:12px;">
+      <p style="font-size:.8rem;font-weight:700;color:#1d4ed8;margin-bottom:4px;">&ldquo;How does it work?&rdquo;</p>
+      <input class="wl" type="text" placeholder="I'll walk through it step by step: ..." />
+    </div>
+    <div style="background:#f0fdf4;border-radius:10px;padding:12px;">
+      <p style="font-size:.8rem;font-weight:700;color:#15803d;margin-bottom:4px;">&ldquo;Where&rsquo;s the AI part?&rdquo;</p>
+      <input class="wl" type="text" placeholder="I'll point to..." />
+    </div>
+    <div style="background:#fefce8;border-radius:10px;padding:12px;">
+      <p style="font-size:.8rem;font-weight:700;color:#a16207;margin-bottom:4px;">&ldquo;What was the hardest bug?&rdquo;</p>
+      <input class="wl" type="text" placeholder="It broke when... I fixed it by..." />
+    </div>
+    <div style="background:#fff1f2;border-radius:10px;padding:12px;">
+      <p style="font-size:.8rem;font-weight:700;color:#be123c;margin-bottom:4px;">&ldquo;What would you build next?&rdquo;</p>
+      <input class="wl" type="text" placeholder="Next I'd add..." />
+    </div>
+  </div>
+  <div class="tip b">Look at your own project: is it a chatbot answering keywords? A Teachable Machine classifier? An &ldquo;AI character&rdquo; that reacts differently based on rules? Find the one sentence that names it.</div>
+</div>
+<div class="card ag mb3">
+  <div class="clabel cl-g">&#9989; Setup Checklist &mdash; Is Your Station Ready?</div>
+  <div class="sc-row"><input type="checkbox" /><span class="sc-lbl"><strong>Project is open</strong> and running, ready to demo without extra clicks.</span></div>
+  <div class="sc-row"><input type="checkbox" /><span class="sc-lbl"><strong>Title screen or label</strong> is visible so visitors know what they're looking at.</span></div>
+  <div class="sc-row"><input type="checkbox" /><span class="sc-lbl"><strong>Instructions</strong> are ready in case a visitor wants to try it themselves.</span></div>
+  <div class="sc-row"><input type="checkbox" /><span class="sc-lbl">I have practiced my <strong>3-sentence pitch</strong> at least once out loud.</span></div>
+  <div class="sc-row"><input type="checkbox" /><span class="sc-lbl">I know my answer to <strong>&ldquo;where&rsquo;s the AI?&rdquo;</strong></span></div>
+</div>
+
+<hr class="div">
+
+<!-- PART 4: MOVEMENT BREAK -->
+<div class="slabel">&#128131; Part 4 &middot; Movement Break (5 min)</div>
+<div class="stitle">Shake It Out Before Showtime</div>
+<div class="card aa mb3">
+  <div class="clabel cl-a">&#127940; Stand, Stretch, Reset</div>
+  <p class="mb2">Stand up, shake out your hands, take 3 deep breaths. Then answer quickly:</p>
+  <p style="font-size:.85rem;font-weight:700;color:#374151;margin-bottom:6px;">How are you feeling about presenting right now &mdash; excited, nervous, or both? One word:</p>
+  <input class="wl" type="text" placeholder="I feel..." />
+  <div class="tip a">Nervous AND excited at the same time is totally normal &mdash; that just means this matters to you!</div>
+</div>
+
+<hr class="div">
+
+<!-- PART 5: OPEN BUILD / TIERED SHOWCASE PREP -->
+<div class="slabel">&#128736; Part 5 &middot; Open Build (30&ndash;40 min)</div>
+<div class="stitle">Find Your Tier and Polish!</div>
+<p style="font-size:.88rem;color:#374151;margin-bottom:14px;">Find your tier below. Start there &mdash; then climb! Fast finishers: grab a Challenge Card or help a neighbor rehearse.</p>
+
+<!-- Tier A -->
+<div class="card mb2" style="border:2px solid #bfdbfe;background:#f8faff;">
+  <div style="margin-bottom:8px;"><span class="lvl la">Tier A &mdash; Foundations &middot; Grades 1&ndash;3</span></div>
+  <div class="clabel cl-b">&#127374; Goal: A working, ready station + a simple sentence</div>
+  <p class="mb2" style="font-size:.85rem;color:#374151;">Make sure your project starts cleanly, and practice ONE clear sentence with a buddy.</p>
+  <div class="g2 mb2">
+    <div style="background:#eff6ff;border-radius:10px;padding:12px;">
+      <p style="font-size:.78rem;font-weight:800;color:#1d4ed8;margin-bottom:8px;">Your checklist:</p>
+      <div class="chk">
+        <li><span class="bx"></span> Project opens and runs without help</li>
+        <li><span class="bx"></span> I can say &ldquo;My project is about ___&rdquo;</li>
+        <li><span class="bx"></span> I practiced with a buddy at least once</li>
+        <li><span class="bx"></span> I know one thing I'm proud of</li>
+      </div>
+    </div>
+    <div style="background:#f0f9ff;border-radius:10px;padding:12px;">
+      <p style="font-size:.78rem;font-weight:800;color:#0369a1;margin-bottom:6px;">Sentence starters to borrow:</p>
+      <div style="display:flex;flex-direction:column;gap:6px;font-size:.78rem;color:#374151;">
+        <span>&ldquo;My project is about ___.&rdquo;</span>
+        <span>&ldquo;You play by doing ___.&rdquo;</span>
+        <span>&ldquo;I'm proud of ___.&rdquo;</span>
+      </div>
+    </div>
+  </div>
+  <p style="font-size:.8rem;font-weight:700;color:#1d4ed8;margin-bottom:4px;">Write your one sentence here:</p>
+  <input class="wl" type="text" placeholder="My project is about..." />
+  <div class="tip b">Buddy tip: Practice saying it to one partner twice before showtime &mdash; it gets easier every time!</div>
+</div>
+
+<!-- Tier B -->
+<div class="card mb2" style="border:2px solid #bbf7d0;background:#f8fff9;">
+  <div style="margin-bottom:8px;"><span class="lvl lb">Tier B &mdash; Core &middot; Grades 3&ndash;5</span></div>
+  <div class="clabel cl-g">&#9989; Goal: Full 3-sentence pitch + one polish pass</div>
+  <p class="mb2" style="font-size:.85rem;color:#374151;">Deliver all three pitch sentences smoothly, and make one small visual or instruction improvement.</p>
+  <div class="g2 mb2">
+    <div>
+      <p style="font-size:.78rem;font-weight:800;color:#15803d;margin-bottom:8px;">Your checklist:</p>
+      <div class="chk">
+        <li><span class="bx"></span> All 3 pitch sentences ready (what / AI idea / proudest)</li>
+        <li><span class="bx"></span> Title or instructions added to the project</li>
+        <li><span class="bx"></span> Practiced full pitch with a partner, out loud</li>
+        <li><span class="bx"></span> Answered at least 2 of the &ldquo;visitor questions&rdquo;</li>
+        <li><span class="bx"></span> Project restarts cleanly if something breaks</li>
+      </div>
+    </div>
+    <div style="background:#f0fdf4;border-radius:10px;padding:12px;font-size:.78rem;color:#374151;">
+      <p style="font-size:.78rem;font-weight:800;color:#15803d;margin-bottom:6px;">Pitch pattern to follow:</p>
+      <span class="sb sbp" style="font-size:.65rem;">Sentence 1</span> What it is<br>
+      <span class="sb sbt" style="font-size:.65rem;">Sentence 2</span> The AI/coding idea inside<br>
+      <span class="sb sbg" style="font-size:.65rem;">Sentence 3</span> Proudest moment / what's next
+    </div>
+  </div>
+  <div class="g2">
+    <div><p style="font-size:.8rem;font-weight:700;color:#15803d;margin-bottom:4px;">One thing I polished today:</p><input class="wl" type="text" placeholder="I improved..." /></div>
+    <div><p style="font-size:.8rem;font-weight:700;color:#15803d;margin-bottom:4px;">My partner's feedback:</p><input class="wl" type="text" placeholder="They said..." /></div>
+  </div>
+</div>
+
+<!-- Tier C -->
+<div class="card mb2" style="border:2px solid #e9d5ff;background:#fdf9ff;">
+  <div style="margin-bottom:8px;"><span class="lvl lc">Tier C &mdash; Accelerated &middot; Grades 6&ndash;9</span></div>
+  <div class="clabel cl-p">&#128995; Goal: Polished pitch + anticipate hard questions</div>
+  <p class="mb2" style="font-size:.85rem;color:#374151;">Add a stretch answer for a tough visitor question, and organize your files/README so anyone could pick up your project.</p>
+  <div class="g2 mb2">
+    <div>
+      <p style="font-size:.78rem;font-weight:800;color:#6d28d9;margin-bottom:8px;">Your checklist:</p>
+      <div class="chk">
+        <li><span class="bx"></span> All Tier B goals complete</li>
+        <li><span class="bx"></span> Prepared a specific bug story (what broke, how I found it, how I fixed it)</li>
+        <li><span class="bx"></span> Files/project organized cleanly (or README written)</li>
+        <li><span class="bx"></span> Practiced explaining the AI idea a non-technical way AND a technical way</li>
+        <li><span class="bx"></span> Have a real answer for &ldquo;what would you build next?&rdquo;</li>
+      </div>
+    </div>
+    <div>
+      <p style="font-size:.78rem;font-weight:800;color:#6d28d9;margin-bottom:6px;">Think through:</p>
+      <p style="font-size:.75rem;color:#374151;margin-bottom:2px;">If a visitor asks a follow-up question you didn't expect, what's your plan?</p>
+      <input class="wl" type="text" placeholder="I'll say..." />
+      <p style="font-size:.75rem;color:#374151;margin-bottom:2px;margin-top:6px;">What's one thing a professional AI team does before a demo that you're also doing today?</p>
+      <input class="wl" type="text" placeholder="They..." />
+    </div>
+  </div>
+  <div class="tip p">Stretch: Practice your pitch to TWO different people and ask each one what confused them. Adjust one sentence based on what you hear.</div>
+</div>
+
+<!-- Challenge Card -->
+<div class="card mb3" style="border:2px solid #fde68a;background:#fffbeb;">
+  <div style="margin-bottom:8px;"><span class="lvl lx">&#11088; Challenge Card &mdash; All Tiers</span></div>
+  <div class="clabel cl-a">&#127775; Why Do Even Pro AI Teams Do Showcases?</div>
+  <div class="g2">
+    <div>
+      <p style="font-size:.83rem;color:#374151;margin-bottom:6px;">Think of a reason a real company would want to show visitors their AI project before it's "finished."</p>
+      <input class="wl" type="text" placeholder="One reason is..." />
+    </div>
+    <div>
+      <p style="font-size:.83rem;color:#374151;margin-bottom:6px;">Try presenting your pitch to a grown-up (not your teacher) and see if they understand the AI part.</p>
+      <label style="font-size:.8rem;display:flex;align-items:center;gap:6px;cursor:pointer;"><input type="checkbox" style="accent-color:#f59e0b;"> Tried it!</label>
+      <input class="wl" type="text" placeholder="Did they understand? What did they say?" />
+    </div>
+  </div>
+</div>
+
+<hr class="div">
+
+<!-- PART 6: SHARE-OUT -->
+<div class="slabel">&#127908; Part 6 &middot; Share-Out (10 min)</div>
+<div class="stitle">Recognition &amp; Reflection</div>
+<div class="card ag mb2">
+  <div class="clabel cl-g">&#127942; Recognition Awards</div>
+  <p class="mb2">Every student is celebrated today &mdash; watch for yours! Circle or write the award you'd give a classmate:</p>
+  <div class="g2 mb2">
+    <div style="background:#f0fdf4;border-radius:10px;padding:12px;">
+      <p style="font-size:.78rem;font-weight:800;color:#15803d;margin-bottom:6px;">Award ideas:</p>
+      <p style="font-size:.82rem;color:#374151;">Most Creative &middot; Best Debugger &middot; Kindest Teammate &middot; Most Curious About AI</p>
+    </div>
+    <div style="background:#eff6ff;border-radius:10px;padding:12px;">
+      <p style="font-size:.78rem;font-weight:800;color:#1d4ed8;margin-bottom:6px;">I'd give this classmate the award of:</p>
+      <input class="wl" type="text" placeholder="Name + award..." />
+    </div>
+  </div>
+</div>
+<div class="card ap mb2">
+  <div class="clabel cl-p">&#128172; Before You Head Out &mdash; Three Quick Questions</div>
+  <p style="font-size:.8rem;font-weight:700;color:#6d28d9;margin-bottom:4px;">What are you proudest of from your whole project?</p>
+  <input class="wl" type="text" placeholder="I'm proudest of..." />
+  <p style="font-size:.8rem;font-weight:700;color:#6d28d9;margin:10px 0 4px;">What was the hardest bug you beat?</p>
+  <input class="wl" type="text" placeholder="The hardest bug was..." />
+  <p style="font-size:.8rem;font-weight:700;color:#6d28d9;margin:10px 0 4px;">What's one thing about AI you can now explain that you couldn't before this summer?</p>
+  <input class="wl" type="text" placeholder="Now I can explain..." />
+</div>
+
+<hr class="div">
+
+<!-- RUBRIC -->
+<div class="slabel">&#128202; Scoring</div>
+<div class="stitle">Rubric &amp; Points</div>
+<div class="card mb3">
+  <table class="rub">
+    <thead><tr><th>Section</th><th>What to Look For</th><th>Points</th></tr></thead>
+    <tbody>
+      <tr><td>Part 1 &mdash; Warm-Up</td><td>Path traced across 4 milestones; one-sentence answer written</td><td class="pts">3 pts</td></tr>
+      <tr><td>Part 2 &mdash; Mini-Lesson</td><td>3 gallery-walk moves checked; full 3-sentence pitch drafted</td><td class="pts">3 pts</td></tr>
+      <tr><td>Part 3 &mdash; Guided Build</td><td>Big Four questions answered; setup checklist complete</td><td class="pts">3 pts</td></tr>
+      <tr><td>Part 4 &mdash; Movement Break</td><td>Reset reflection answered (participation check)</td><td class="pts">1 pt</td></tr>
+      <tr><td>Part 5A &mdash; Tier A Prep</td><td>Station ready; one clear sentence practiced with a buddy</td><td class="pts">4 pts</td></tr>
+      <tr><td>Part 5B &mdash; Tier B Prep</td><td>Full 3-sentence pitch; one polish pass; partner feedback recorded</td><td class="pts">5 pts</td></tr>
+      <tr><td>Part 5C &mdash; Tier C Prep</td><td>All Tier B goals + bug story + organized files + stretch practice</td><td class="pts">6 pts</td></tr>
+      <tr><td>Part 6 &mdash; Share-Out &amp; Reflection</td><td>Award given; three reflection questions answered</td><td class="pts">3 pts</td></tr>
+      <tr><td>&#11088; Challenge Card</td><td>Real-world reasoning AND grown-up test both documented</td><td class="pts">+2</td></tr>
+    </tbody>
+  </table>
+  <div style="display:flex;justify-content:flex-end;margin-top:10px;gap:24px;font-size:.82rem;color:#374151;">
+    <span>Tier A: <strong style="font-family:var(--fc);color:#2563eb;">____ / 17</strong></span>
+    <span>Tier B: <strong style="font-family:var(--fc);color:#16a34a;">____ / 18</strong></span>
+    <span>Tier C: <strong style="font-family:var(--fc);color:#7c3aed;">____ / 19</strong></span>
+  </div>
+</div>
+
+<div class="sfooter">
+  <div><strong>Session 23 &middot; Project Showcase</strong> &middot; Differentiated Activity Sheet &middot; Mr. Hsiao &ldquo;Hue&rdquo; Weng &middot; Summer 2026<br>
+  <span class="gtext" style="font-weight:800;">Pitching &middot; AI Explaining &middot; Presenting &middot; Reflection &middot; Celebration</span></div>
+  <div style="text-align:right;">Ages 7&ndash;13 &middot; Grades 1&ndash;9<br><span style="font-size:.7rem;">&#127942; Every student is celebrated today &mdash; you built something real!</span></div>
+</div>
+
+</div>
+</body>
+</html>
