@@ -1,1 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Activity Sheet &middot; Sessions 22 &middot; Feature Freeze &amp; Showcase Rehearsal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f4fbff;--sur:rgba(255,255,255,.97);--tx:#1f2a37;--tx2:#374151;--txm:#5b6b7e;--a1:#0b63ce;--a2:#10b981;--a3:#f59e0b;--ar:#ef4444;--ap:#7c3aed;--fd:'Fredoka','Trebuchet MS',sans-serif;--fb:'Nunito',Arial,sans-serif;--fc:'Fira Code',Consolas,monospace}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+@media print{body{background:#fff!important}.no-print{display:none!important}.pb{page-break-before:always}.card{box-shadow:none!important;border:1.5px solid #d1d5db!important}}
+body{font-family:var(--fb);color:var(--tx);background:var(--bg);min-height:100vh}
+.pbar{background:rgba(255,255,255,.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(148,163,184,.3);padding:10px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;gap:12px;flex-wrap:wrap}
+.pbar-title{font-family:var(--fd);font-size:1.05rem;font-weight:700;color:var(--a1)}
+.pbar-sub{font-size:.78rem;color:var(--txm)}
+.btn-p{background:var(--a1);color:#fff;border:none;padding:8px 20px;border-radius:999px;font-family:var(--fb);font-size:.82rem;font-weight:800;cursor:pointer;letter-spacing:.06em;transition:.2s}
+.btn-p:hover{background:#084ea0;transform:translateY(-1px)}
+.page{max-width:920px;margin:0 auto;padding:32px 24px 60px}
+.shdr{background:linear-gradient(135deg,#0b63ce 0%,#10b981 60%,#f59e0b 100%);border-radius:20px;padding:28px 32px 24px;color:#fff;margin-bottom:28px;position:relative;overflow:hidden}
+.shdr::before{content:'';position:absolute;top:-60px;right:-60px;width:200px;height:200px;background:rgba(255,255,255,.08);border-radius:50%}
+.shdr::after{content:'';position:absolute;bottom:-40px;left:-40px;width:140px;height:140px;background:rgba(255,255,255,.06);border-radius:50%}
+.hday{font-size:.75rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;opacity:.85;margin-bottom:4px}
+.htitle{font-family:var(--fd);font-size:clamp(1.6rem,4vw,2.4rem);font-weight:700;line-height:1.1;margin-bottom:6px}
+.hsub{font-size:.88rem;opacity:.85;margin-bottom:14px}
+.hpills{display:flex;gap:8px;flex-wrap:wrap}
+.hpill{background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:4px 14px;font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+.sinfo{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:28px}
+@media(max-width:600px){.sinfo{grid-template-columns:1fr}}
+.ifield{background:var(--sur);border-radius:12px;padding:12px 14px;border:1.5px solid rgba(11,99,206,.14);box-shadow:0 2px 8px rgba(15,23,42,.05)}
+.ilabel{font-size:.65rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--a1);margin-bottom:6px}
+.iline{border:none;border-bottom:1.5px solid #cbd5e1;width:100%;font-family:var(--fb);font-size:.9rem;color:var(--tx);background:transparent;outline:none;padding:2px 0}
+.iline:focus{border-bottom-color:#0b63ce}
+.slabel{display:inline-flex;align-items:center;gap:8px;padding:5px 16px;border-radius:999px;border:1px solid rgba(148,163,184,.4);background:rgba(255,255,255,.9);font-size:.72rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--a1);margin-bottom:10px}
+.stitle{font-family:var(--fd);font-size:clamp(1.3rem,2.5vw,1.8rem);font-weight:700;margin-bottom:16px;color:var(--tx);line-height:1.2}
+.card{background:var(--sur);border-radius:16px;padding:18px 20px;box-shadow:0 4px 18px rgba(15,23,42,.07);border:1px solid rgba(255,255,255,.7);margin-bottom:16px}
+.card.ab{border-left:4px solid var(--a1)}.card.ag{border-left:4px solid var(--a2)}.card.aa{border-left:4px solid var(--a3)}.card.ar{border-left:4px solid var(--ar)}.card.ap{border-left:4px solid var(--ap)}
+.clabel{font-size:.68rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;margin-bottom:8px}
+.cl-b{color:var(--a1)}.cl-g{color:#047857}.cl-a{color:#b45309}.cl-r{color:#b91c1c}.cl-p{color:#6d28d9}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media(max-width:680px){.g2,.g3{grid-template-columns:1fr}}
+.wl{border:none;border-bottom:1.5px solid #cbd5e1;width:100%;margin-bottom:10px;height:28px;display:block;background:transparent;font-family:var(--fb);font-size:.88rem;color:var(--tx);outline:none;padding:2px 4px}
+.wl:focus{border-bottom-color:#0b63ce}
+.wl::placeholder{color:#bdc5d1;font-style:italic}
+.wa{border:1.5px solid #cbd5e1;border-radius:8px;width:100%;min-height:70px;padding:8px;font-family:var(--fb);font-size:.85rem;color:var(--tx);resize:vertical;background:#f8fafc;outline:none;display:block}
+.wa:focus{outline:2px solid rgba(11,99,206,.3)}
+.wa::placeholder{color:#bdc5d1;font-style:italic}
+.tip{border-radius:10px;padding:10px 14px;font-size:.8rem;line-height:1.5;margin-top:10px}
+.tip.b{background:rgba(11,99,206,.07);color:#1e40af}.tip.g{background:rgba(16,185,129,.07);color:#065f46}.tip.a{background:rgba(245,158,11,.07);color:#92400e}.tip.p{background:rgba(124,58,237,.07);color:#5b21b6}
+.div{border:none;border-top:2px dashed #dde6f0;margin:28px 0}
+.chk{list-style:none;padding:0}
+.chk li{display:flex;align-items:flex-start;gap:8px;font-size:.85rem;color:var(--tx2);margin-bottom:8px;line-height:1.45}
+.chk li .bx{flex-shrink:0;width:17px;height:17px;border:2px solid #94a3b8;border-radius:4px;margin-top:1px;background:#fff;display:inline-block}
+.sb{display:inline-flex;align-items:center;gap:4px;padding:3px 10px 3px 8px;border-radius:6px;font-family:var(--fc);font-weight:700;font-size:.78rem;cursor:default;user-select:none;vertical-align:middle}
+.sbp{background:#9c27b0;color:#fff}.sbo{background:#ff9800;color:#fff}.sbb{background:#2196f3;color:#fff}.sby{background:#ffc107;color:#333}.sbt{background:#009688;color:#fff}.sbg{background:#4caf50;color:#fff}.sbr{background:#ef4444;color:#fff}
+.lvl{display:inline-flex;align-items:center;gap:6px;padding:4px 14px;border-radius:999px;font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px}
+.la{background:linear-gradient(135deg,#0b63ce,#60a5fa);color:#fff}
+.lb{background:linear-gradient(135deg,#10b981,#4ade80);color:#fff}
+.lc{background:linear-gradient(135deg,#7c3aed,#f59e0b);color:#fff}
+.lx{background:linear-gradient(135deg,#f59e0b,#f97066);color:#fff}
+table.rub{width:100%;border-collapse:collapse;font-size:.82rem;margin-top:8px}
+table.rub th{background:#1e293b;color:#e2e8f0;padding:8px 10px;text-align:left;font-weight:700;letter-spacing:.05em}
+table.rub td{padding:8px 10px;border-bottom:1px solid #e2e8f0;vertical-align:top;color:var(--tx2)}
+table.rub tr:nth-child(even) td{background:rgba(241,245,249,.6)}
+table.rub td:first-child{font-weight:700;color:var(--tx)}
+table.rub .pts{font-family:var(--fc);font-size:.75rem;font-weight:800;color:var(--a1);white-space:nowrap}
+.sfooter{margin-top:40px;padding:16px 20px;border-radius:12px;background:rgba(11,99,206,.05);border:1px solid rgba(11,99,206,.12);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:.76rem;color:var(--txm)}
+.sfooter strong{color:var(--tx)}
+.gtext{background:linear-gradient(135deg,#0b63ce,#10b981,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.mb1{margin-bottom:6px}.mb2{margin-bottom:10px}.mb3{margin-bottom:14px}.mt2{margin-top:10px}.mt3{margin-top:14px}
+.tmuted{color:var(--txm);font-size:.78rem}
+code{background:#e0f2ff;padding:1px 6px;border-radius:4px;font-family:var(--fc);font-size:.82em;color:#0b63ce}
+.rbar{display:flex;border-radius:12px;overflow:hidden;margin-bottom:20px;border:2px solid rgba(11,99,206,.15)}
+.rb{flex:1;padding:8px 4px;text-align:center;font-size:.62rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase;line-height:1.3}
+.rw{background:#eff6ff;color:#0b63ce;border-right:1px solid rgba(11,99,206,.15)}
+.rm{background:#f0fdf4;color:#047857;border-right:1px solid rgba(16,185,129,.15)}
+.rg{background:#fefce8;color:#a16207;border-right:1px solid rgba(245,158,11,.15)}
+.rk{background:#fdf4ff;color:#7e22ce;border-right:1px solid rgba(124,58,237,.15)}
+.ro{background:#fff1f2;color:#be123c;border-right:1px solid rgba(249,112,102,.15)}
+.rs{background:#ecfdf5;color:#065f46}
+.sc-row{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border-radius:10px;margin-bottom:8px;border:1.5px solid transparent;transition:.2s}
+.sc-row:hover{border-color:#bfdbfe}
+.sc-row input[type=checkbox]{margin-top:2px;accent-color:#10b981;width:18px;height:18px;flex-shrink:0;cursor:pointer}
+.sc-lbl{font-size:.88rem;color:var(--tx2);line-height:1.4}
+.sc-lbl strong{color:var(--tx)}
+.tl{position:relative;padding-left:22px}
+.tl::before{content:'';position:absolute;left:8px;top:4px;bottom:4px;width:3px;border-radius:999px;background:linear-gradient(to bottom,#0b63ce,#10b981,#f59e0b)}
+.tls{position:relative;margin-bottom:12px}
+.tld{position:absolute;left:-15px;top:4px;width:12px;height:12px;border-radius:999px;border:2px solid #f4fbff;background:#0b63ce;box-shadow:0 0 0 3px rgba(11,99,206,.2)}
+.tld.g{background:#10b981}.tld.p{background:#7c3aed}.tld.a{background:#f59e0b}.tld.r{background:#ef4444}
+</style>
+</head>
+<body>
+<div class="pbar no-print">
+  <div><div class="pbar-title">&#128027;&#127908; Sessions 22 &middot; Activity Sheet</div><div class="pbar-sub">Feature Freeze &amp; Bug Hunt / Showcase Rehearsal &mdash; Differentiated &middot; Ages 7&ndash;13</div></div>
+  <button class="btn-p" onclick="window.print()">&#128438; Print / Save as PDF</button>
+</div>
+<div class="page">
 
+<div class="shdr">
+  <div style="font-size:2.8rem;margin-bottom:6px;">&#128027;&#127908;</div>
+  <div class="hday">Sessions 22 &middot; Capstone Sprint, Week 7 &middot; Summer 2026 AI &amp; Coding Program</div>
+  <div class="htitle">Feature Freeze &amp; Showcase Rehearsal</div>
+  <div class="hsub">Stop adding, start shipping &mdash; then practice showing your project off with confidence.</div>
+  <div class="hpills">
+    <span class="hpill">&#128187; Capstone</span><span class="hpill">&#8987; 110 min</span><span class="hpill">Ages 7&ndash;13</span><span class="hpill">3 Tiers</span><span class="hpill">Debugging &middot; Presenting</span>
+  </div>
+</div>
+
+<div class="sinfo">
+  <div class="ifield"><div class="ilabel">&#128100; Your Name</div><input class="iline" type="text" placeholder="First Last" /></div>
+  <div class="ifield"><div class="ilabel">&#128197; Date</div><input class="iline" type="text" placeholder="Session 22 date" /></div>
+  <div class="ifield"><div class="ilabel">&#127979; Section / Period</div><input class="iline" type="text" placeholder="Section 1 / 2 / 3" /></div>
+</div>
+
+<!-- DAILY RHYTHM -->
+<div class="slabel">&#8987; Today&rsquo;s Rhythm</div>
+<div class="stitle">Daily Schedule &mdash; Follow Along!</div>
+<div class="rbar">
+  <div class="rb rw">&#129504;<br>Warm-Up<br>10 min</div>
+  <div class="rb rm">&#128161;<br>Mini-Lesson<br>15&ndash;20 min</div>
+  <div class="rb rg">&#128296;<br>Guided Build<br>20 min</div>
+  <div class="rb rk">&#128131;<br>Move Break<br>5 min</div>
+  <div class="rb ro">&#128736;<br>Open Build<br>30&ndash;40 min</div>
+  <div class="rb rs">&#127908;<br>Share-Out<br>10 min</div>
+</div>
+
+<!-- PART 1: WARM-UP -->
+<div class="slabel">&#129504; Part 1 &middot; Warm-Up (10 min)</div>
+<div class="stitle">Unplugged Logic: &ldquo;Are You Smarter Than a Bug?&rdquo;</div>
+<div class="card ab mb2">
+  <div class="clabel cl-b">&#127942; No-Screen Puzzle</div>
+  <p class="mb2">Before we open our laptops: think back to a time your OWN project (in Scratch or Python) did something you didn&rsquo;t expect.</p>
+  <p style="font-size:.83rem;font-weight:700;color:#374151;margin-bottom:6px;">1. What was the weirdest bug you&rsquo;ve ever seen in your project?</p>
+  <input class="wl" type="text" placeholder="One time my project..." />
+  <p style="font-size:.83rem;font-weight:700;color:#374151;margin:10px 0 6px;">2. What do you think caused it &mdash; before you even check the code?</p>
+  <input class="wl" type="text" placeholder="I think it happened because..." />
+</div>
+<div class="card ap mb3">
+  <div class="clabel cl-p">&#129302; AI Moment &mdash; Before You Debug</div>
+  <p class="mb2">Question to carry all day: what does it mean for software to be &ldquo;done&rdquo;?</p>
+  <div class="g2">
+    <div>
+      <p style="font-size:.8rem;font-weight:700;color:#6d28d9;margin-bottom:4px;">Can AI programs have &ldquo;bugs&rdquo; too?</p>
+      <input class="wl" type="text" placeholder="Yes/No, because..." />
+    </div>
+    <div>
+      <p style="font-size:.8rem;font-weight:700;color:#6d28d9;margin-bottom:4px;">Give one example of an AI mistake you&rsquo;ve seen (autocomplete, recommendations, etc.):</p>
+      <input class="wl" type="text" placeholder="One time an AI got it wrong..." />
+    </div>
+  </div>
+  <div class="tip p">&#129302; Even AI that &ldquo;works&rdquo; can still be confusing or unfair. Testing isn&rsquo;t just about crashes &mdash; it&rsquo;s about making sure things behave the way people expect.</div>
+</div>
+
+<hr class="div">
+
+<!-- PART 2: MINI-LESSON -->
+<div class="slabel">&#128161; Part 2 &middot; Mini-Lesson (15&ndash;20 min)</div>
+<div class="stitle">Why Real Programmers &ldquo;Freeze&rdquo; Features</div>
+<div class="card ag mb2">
+  <div class="clabel cl-g">&#9989; The Big Idea</div>
+  <p class="mb2">If you keep adding new features right up until showcase day, the old features often break. Real software teams pick a <strong>freeze date</strong> &mdash; after that, no new features, only fixes.</p>
+  <div class="question-chip" style="display:inline-flex;align-items:center;gap:9px;padding:7px 13px;border-radius:999px;background:rgba(245,158,11,.09);color:#92400e;font-size:.82rem;font-weight:700;margin-bottom:10px;"><span style="display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:999px;background:rgba(245,158,11,.95);color:#fff;font-size:.78rem;">?</span> Think about it</div>
+  <p style="font-size:.83rem;font-weight:700;color:#374151;margin-bottom:6px;">Would you rather show 3 features that work perfectly, or 6 features where half are broken? Why?</p>
+  <input class="wl" type="text" placeholder="I would rather show..." />
+</div>
+<div class="card aa mb3">
+  <div class="clabel cl-a">&#128027; A Bug Hunter&rsquo;s Four Steps</div>
+  <div class="g2 mb2">
+    <div style="background:#eff6ff;border-radius:10px;padding:12px;">
+      <p style="font-size:.85rem;font-weight:800;color:#0b63ce;margin-bottom:4px;">1&#65039;&#8419; Describe it.</p>
+      <p style="font-size:.78rem;color:#374151;">What should happen? What actually happens instead?</p>
+    </div>
+    <div style="background:#e6f7f0;border-radius:10px;padding:12px;">
+      <p style="font-size:.85rem;font-weight:800;color:#047857;margin-bottom:4px;">2&#65039;&#8419; Hunt it.</p>
+      <p style="font-size:.78rem;color:#374151;">Read the code near where things went wrong &mdash; line by line.</p>
+    </div>
+    <div style="background:#fdf4e3;border-radius:10px;padding:12px;">
+      <p style="font-size:.85rem;font-weight:800;color:#b45309;margin-bottom:4px;">3&#65039;&#8419; Test small fixes.</p>
+      <p style="font-size:.78rem;color:#374151;">Change one thing at a time and re-run to see what changes.</p>
+    </div>
+    <div style="background:#fdeceb;border-radius:10px;padding:12px;">
+      <p style="font-size:.85rem;font-weight:800;color:#b91c1c;margin-bottom:4px;">4&#65039;&#8419; Document it.</p>
+      <p style="font-size:.78rem;color:#374151;">Write down what was wrong and how you fixed it, for next time.</p>
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;gap:8px;padding:5px 13px;border-radius:999px;background:rgba(15,23,42,.04);font-size:.85rem;font-weight:800;color:#0b63ce;width:fit-content;">&#128027; <strong>&nbsp;debug</strong> &mdash; find and fix a mistake in code</div>
+  <div class="tip b mt2">Watch: &ldquo;How to Debug your Code in 4 Simple Steps&rdquo; &mdash; write one sentence after: <em>&ldquo;The bug in my project was hiding in ____, and I found it by ____.&rdquo;</em></div>
+  <input class="wl mt2" type="text" placeholder="The bug in my project was hiding in ___, and I found it by ___." />
+</div>
+
+<hr class="div">
+
+<!-- PART 3: GUIDED BUILD -->
+<div class="slabel">&#128296; Part 3 &middot; Guided Build (20 min)</div>
+<div class="stitle">Peer Testing &amp; the Bug Priority Sort</div>
+<p style="font-size:.88rem;color:#374151;margin-bottom:14px;">Follow along with your teacher, then work through the steps below together.</p>
+<div class="card ab mb3">
+  <div class="clabel cl-b">&#128101; Peer Testing Checklist</div>
+  <div class="tl">
+    <div class="tls"><div class="tld"></div>
+      <div class="mb1"><strong>Step 1 &mdash; Swap projects with a partner</strong></div>
+      <p style="font-size:.8rem;color:#374151;margin-bottom:4px;">You know your project&rsquo;s secret shortcuts, so you never trigger the hidden bug. A partner will find bugs you can&rsquo;t.</p>
+      <label style="font-size:.8rem;display:flex;align-items:center;gap:6px;"><input type="checkbox" style="accent-color:#0b63ce;"> Swapped with: <input type="text" style="border:none;border-bottom:1px solid #cbd5e1;font-size:.8rem;background:transparent;outline:none;width:130px;" placeholder="partner's name" /></label>
+    </div>
+    <div class="tls"><div class="tld g"></div>
+      <div class="mb1"><strong>Step 2 &mdash; Try to break it</strong></div>
+      <p style="font-size:.8rem;color:#374151;margin-bottom:4px;">Click the &ldquo;wrong&rdquo; buttons on purpose. Write down every bug you find, even small ones.</p>
+      <div class="wa" contenteditable="true" placeholder="Bug 1: ...&#10;Bug 2: ...&#10;Bug 3: ..." style="min-height:60px;"></div>
+    </div>
+    <div class="tls"><div class="tld a"></div>
+      <div class="mb1"><strong>Step 3 &mdash; Sort the bugs: must-fix or nice-to-have?</strong></div>
+      <table style="width:100%;font-size:.77rem;border-collapse:collapse;margin-top:6px;">
+        <tr style="background:#fee2e2;"><td style="padding:5px 8px;font-weight:700;color:#b91c1c;width:50%;">MUST-FIX &#128680;</td><td style="padding:5px 8px;font-weight:700;color:#374151;">NICE-TO-HAVE &#127912;</td></tr>
+        <tr><td style="padding:5px 8px;color:#374151;">Nothing works until this is solved (e.g., crashes, core feature doesn't respond)</td><td style="padding:5px 8px;color:#374151;">Looks fine but could be prettier &mdash; save for polish day</td></tr>
+      </table>
+      <div class="g2 mt2">
+        <div><input class="wl" type="text" placeholder="Must-fix bug: ..." /></div>
+        <div><input class="wl" type="text" placeholder="Nice-to-have: ..." /></div>
+      </div>
+    </div>
+    <div class="tls"><div class="tld r"></div>
+      <div class="mb1"><strong>Step 4 &mdash; Fix your top 2 bugs</strong></div>
+      <p style="font-size:.8rem;color:#374151;margin-bottom:4px;">Use the four-step process from Part 2. Fix the two most important bugs your partner found.</p>
+      <label style="font-size:.8rem;display:flex;align-items:center;gap:6px;"><input type="checkbox" style="accent-color:#ef4444;"> Bug #1 fixed!</label>
+      <label style="font-size:.8rem;display:flex;align-items:center;gap:6px;margin-top:4px;"><input type="checkbox" style="accent-color:#ef4444;"> Bug #2 fixed!</label>
+    </div>
+  </div>
+  <div class="tip p mt2">&#129302; <strong>AI fairness check:</strong> if your project has a chatbot or classifier, ask your partner &mdash; could someone misunderstand what it says? Does it treat every input fairly? Fixing an AI &ldquo;fairness bug&rdquo; counts just as much as fixing a crash!</div>
+</div>
+
+<hr class="div pb">
+
+<!-- PART 4: MOVEMENT BREAK -->
+<div class="slabel">&#128131; Movement Break (5 min)</div>
+<div class="stitle">Shake Off the Bugs!</div>
+<div class="card ap mb3">
+  <div class="clabel cl-p">&#128121; Bug Squash Stretch</div>
+  <p class="mb2">Stand up! When your teacher calls out a &ldquo;bug,&rdquo; act it out with your body, then squash it and reset.</p>
+  <div class="g2">
+    <div><div class="chk">
+      <li><span class="bx"></span> &ldquo;Infinite loop!&rdquo; &rarr; jog in place until &ldquo;break!&rdquo; is called</li>
+      <li><span class="bx"></span> &ldquo;Crash!&rdquo; &rarr; freeze completely, arms up</li>
+    </div></div>
+    <div><div class="chk">
+      <li><span class="bx"></span> &ldquo;Bug found!&rdquo; &rarr; stomp once and shout &ldquo;squashed!&rdquo;</li>
+      <li><span class="bx"></span> &ldquo;Ship it!&rdquo; &rarr; jump and cheer</li>
+    </div></div>
+  </div>
+</div>
+
+<!-- PART 5: OPEN BUILD -->
+<div class="slabel">&#128736; Part 5 &middot; Open Build (30&ndash;40 min)</div>
+<div class="stitle">Find Your Tier &amp; Get Showcase-Ready</div>
+<p style="font-size:.88rem;color:#374151;margin-bottom:14px;">Find your tier below. Freeze features, hunt bugs, and get your 30-second intro ready. Fast finishers: grab a Challenge Card or help a neighbor.</p>
+
+<!-- Tier A -->
+<div class="card mb2" style="border:2px solid #bfdbfe;background:#f8faff;">
+  <div style="margin-bottom:8px;"><span class="lvl la">Tier A &mdash; Foundations &middot; Grades 1&ndash;3</span></div>
+  <div class="clabel cl-b">&#127374; Goal: 1 fixed bug + a simple spoken intro</div>
+  <p class="mb2" style="font-size:.85rem;color:#374151;">With your buddy, find ONE bug together and fix it. Then practice saying what your project does out loud.</p>
+  <div class="g2 mb2">
+    <div style="background:#eff6ff;border-radius:10px;padding:12px;">
+      <p style="font-size:.78rem;font-weight:800;color:#0b63ce;margin-bottom:8px;">Your checklist:</p>
+      <div class="chk">
+        <li><span class="bx"></span> Buddy tried clicking everything</li>
+        <li><span class="bx"></span> We found one thing that didn&rsquo;t work</li>
+        <li><span class="bx"></span> We fixed it (or asked for help)</li>
+        <li><span class="bx"></span> I can say what my project does in 1 sentence</li>
+      </div>
+    </div>
+    <div style="background:#f0f9ff;border-radius:10px;padding:12px;">
+      <p style="font-size:.78rem;font-weight:800;color:#0369a1;margin-bottom:6px;">Sentence starter:</p>
+      <p style="font-size:.8rem;color:#374151;">&ldquo;My project is called ___ and you play by ___.&rdquo;</p>
+      <input class="wl mt2" type="text" placeholder="My project is called..." />
+    </div>
+  </div>
+  <div class="tip b">Buddy tip: one person clicks and points, the other watches carefully for anything weird. Switch roles!</div>
+</div>
+
+<!-- Tier B -->
+<div class="card mb2" style="border:2px solid #bbf7d0;background:#f8fff9;">
+  <div style="margin-bottom:8px;"><span class="lvl lb">Tier B &mdash; Core &middot; Grades 3&ndash;5</span></div>
+  <div class="clabel cl-g">&#9989; Goal: Top 2 bugs fixed + 30-second intro drafted</div>
+  <p class="mb2" style="font-size:.85rem;color:#374151;">Freeze new features. Fix your top 2 must-fix bugs from the Peer Testing step, then write your intro.</p>
+  <div class="g2 mb2">
+    <div>
+      <p style="font-size:.78rem;font-weight:800;color:#047857;margin-bottom:8px;">Your checklist:</p>
+      <div class="chk">
+        <li><span class="bx"></span> No new features added today</li>
+        <li><span class="bx"></span> Must-fix bug #1 resolved</li>
+        <li><span class="bx"></span> Must-fix bug #2 resolved</li>
+        <li><span class="bx"></span> Project starts cleanly every time</li>
+        <li><span class="bx"></span> 30-second intro written below</li>
+      </div>
+    </div>
+    <div style="background:#f0fdf4;border-radius:10px;padding:12px;">
+      <p style="font-size:.78rem;font-weight:800;color:#047857;margin-bottom:6px;">Your 30-second intro (3 parts):</p>
+      <input class="wl" type="text" placeholder="1&#65039;&#8419; What is my project called & what does it do?" />
+      <input class="wl" type="text" placeholder="2&#65039;&#8419; What's the AI part, in one sentence?" />
+      <input class="wl" type="text" placeholder="3&#65039;&#8419; What's one thing I'm proud of?" />
+    </div>
+  </div>
+</div>
+
+<!-- Tier C -->
+<div class="card mb2" style="border:2px solid #e9d5ff;background:#fdf9ff;">
+  <div style="margin-bottom:8px;"><span class="lvl lc">Tier C &mdash; Accelerated &middot; Grades 6&ndash;9</span></div>
+  <div class="clabel cl-p">&#128995; Goal: Full polish pass + documented bug log</div>
+  <p class="mb2" style="font-size:.85rem;color:#374151;">Fix your top bugs, write a real bug log (what was wrong &rarr; how you found it &rarr; how you fixed it), and prep your intro with one AI-fairness note.</p>
+  <div class="g2 mb2">
+    <div>
+      <p style="font-size:.78rem;font-weight:800;color:#6d28d9;margin-bottom:8px;">Your checklist:</p>
+      <div class="chk">
+        <li><span class="bx"></span> All Tier B goals complete</li>
+        <li><span class="bx"></span> Bug log documented (below)</li>
+        <li><span class="bx"></span> Checked project for edge cases (empty input, double-click, etc.)</li>
+        <li><span class="bx"></span> AI fairness check done, if applicable</li>
+        <li><span class="bx"></span> 30-second intro rehearsed once out loud</li>
+      </div>
+    </div>
+    <div style="background:#fdf4ff;border-radius:10px;padding:12px;">
+      <p style="font-size:.78rem;font-weight:800;color:#6d28d9;margin-bottom:6px;">Bug log:</p>
+      <div class="wa" contenteditable="true" placeholder="Bug: ...&#10;How I found it: ...&#10;How I fixed it: ..." style="min-height:70px;"></div>
+    </div>
+  </div>
+  <div class="tip p">Stretch: try to break your OWN project a third way &mdash; what happens if a user does something totally unexpected?</div>
+</div>
+
+<!-- Challenge Card -->
+<div class="card mb3" style="border:2px solid #fde68a;background:#fffbeb;">
+  <div style="margin-bottom:8px;"><span class="lvl lx">&#11088; Challenge Card &mdash; All Tiers</span></div>
+  <div class="clabel cl-a">&#127916; Explain Your AI Idea in One Sentence</div>
+  <p style="font-size:.83rem;color:#374151;margin-bottom:8px;">Fill in the blank with your partner:</p>
+  <div class="tip a" style="font-size:.9rem;">&ldquo;My project uses AI to <em>______</em>, by learning from <em>______</em>.&rdquo;</div>
+  <input class="wl mt2" type="text" placeholder="My project uses AI to ___, by learning from ___." />
+</div>
+
+<hr class="div">
+
+<!-- PART 6: SHARE-OUT -->
+<div class="slabel">&#127908; Part 6 &middot; Share-Out (10 min)</div>
+<div class="stitle">Show Your Neighbor &mdash; Rehearsal Ladder</div>
+<div class="card ag mb2">
+  <div class="clabel cl-g">&#128170; Start Small, Build Confidence</div>
+  <p class="mb2">Presenting is always <strong>opt-in</strong>. Climb the ladder as far as feels comfortable today.</p>
+  <div class="g3 mb2">
+    <div style="background:#f0fdf4;border-radius:10px;padding:12px;text-align:center;">
+      <p style="font-size:.78rem;font-weight:800;color:#047857;margin-bottom:4px;">Step 1</p>
+      <p style="font-size:.78rem;color:#374151;">Show your neighbor &mdash; one partner, no audience pressure</p>
+      <label style="font-size:.75rem;display:flex;align-items:center;justify-content:center;gap:6px;margin-top:6px;"><input type="checkbox" style="accent-color:#10b981;"> Done</label>
+    </div>
+    <div style="background:#eff6ff;border-radius:10px;padding:12px;text-align:center;">
+      <p style="font-size:.78rem;font-weight:800;color:#0b63ce;margin-bottom:4px;">Step 2</p>
+      <p style="font-size:.78rem;color:#374151;">Swap roles &mdash; give one kind, specific piece of feedback</p>
+      <label style="font-size:.75rem;display:flex;align-items:center;justify-content:center;gap:6px;margin-top:6px;"><input type="checkbox" style="accent-color:#0b63ce;"> Done</label>
+    </div>
+    <div style="background:#fdf4e3;border-radius:10px;padding:12px;text-align:center;">
+      <p style="font-size:.78rem;font-weight:800;color:#b45309;margin-bottom:4px;">Step 3 (optional)</p>
+      <p style="font-size:.78rem;color:#374151;">Volunteers show a whole table</p>
+      <label style="font-size:.75rem;display:flex;align-items:center;justify-content:center;gap:6px;margin-top:6px;"><input type="checkbox" style="accent-color:#f59e0b;"> Done</label>
+    </div>
+  </div>
+  <div class="g2">
+    <div><p style="font-size:.8rem;font-weight:700;color:#374151;margin-bottom:4px;">One piece of feedback you gave your partner:</p><input class="wl" type="text" placeholder="I told them..." /></div>
+    <div><p style="font-size:.8rem;font-weight:700;color:#374151;margin-bottom:4px;">One piece of feedback you got:</p><input class="wl" type="text" placeholder="They told me..." /></div>
+  </div>
+</div>
+
+<div class="card ab mb3">
+  <div class="clabel cl-b">&#128027; Bug-Free &amp; Stage-Ready Checklist</div>
+  <p style="font-size:.83rem;color:#374151;margin-bottom:12px;">Before you finish, check all three boxes:</p>
+  <div style="background:#f0f9ff;border-radius:12px;padding:14px;">
+    <div class="sc-row"><input type="checkbox"><div class="sc-lbl"><strong>Features frozen</strong> &mdash; I stopped adding new ideas and focused on fixing what exists.</div></div>
+    <div class="sc-row"><input type="checkbox"><div class="sc-lbl"><strong>Top bugs fixed</strong> &mdash; My partner tested it and my must-fix bugs are resolved.</div></div>
+    <div class="sc-row"><input type="checkbox"><div class="sc-lbl"><strong>Intro ready</strong> &mdash; I can say my 30-second intro out loud, smoothly.</div></div>
+  </div>
+</div>
+
+<!-- REFLECTION -->
+<div class="slabel">&#128172; Reflection</div>
+<div class="stitle">Exit Ticket &amp; Growth Check</div>
+<div class="card mb3">
+  <div class="g2">
+    <div>
+      <div class="clabel cl-b">&#129504; Exit Ticket</div>
+      <p style="font-size:.8rem;font-weight:700;color:#374151;margin:8px 0 3px;">1. What does &ldquo;done&rdquo; mean for software, in your own words?</p>
+      <input class="wl" type="text" placeholder="Software is 'done' when..." />
+      <p style="font-size:.8rem;font-weight:700;color:#374151;margin:8px 0 3px;">2. What was the trickiest bug you fixed today &amp; how did you find it?</p>
+      <div><input class="wl" type="text" placeholder="The trickiest bug was..." /><input class="wl" type="text" placeholder="I found it by..." /></div>
+      <p style="font-size:.8rem;font-weight:700;color:#374151;margin:8px 0 3px;">3. How ready do you feel for the showcase (1&ndash;5)?</p>
+      <input class="wl" type="text" placeholder="I feel..." />
+    </div>
+    <div>
+      <div class="clabel cl-g">&#127807; Growth Mindset Check</div>
+      <p style="font-size:.8rem;color:#374151;margin-bottom:8px;">Circle the one that describes you today:</p>
+      <div style="display:flex;flex-direction:column;gap:7px;font-size:.83rem;color:#374151;">
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;"><input type="radio" name="mood" style="accent-color:#0b63ce;"> I found a bug I couldn&rsquo;t see before</label>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;"><input type="radio" name="mood" style="accent-color:#10b981;"> I fixed something all by myself</label>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;"><input type="radio" name="mood" style="accent-color:#7c3aed;"> I helped a classmate find their bug</label>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;"><input type="radio" name="mood" style="accent-color:#f59e0b;"> I practiced my intro and felt more confident</label>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;"><input type="radio" name="mood" style="accent-color:#ef4444;"> I&rsquo;m ready to show the world!</label>
+      </div>
+      <p style="font-size:.8rem;font-weight:700;color:#6d28d9;margin:12px 0 4px;">One thing I still want to fix or improve before showcase:</p>
+      <input class="wl" type="text" placeholder="..." />
+    </div>
+  </div>
+</div>
+
+<!-- RUBRIC -->
+<div class="slabel">&#128202; Scoring</div>
+<div class="stitle">Rubric &amp; Points</div>
+<div class="card mb3">
+  <table class="rub">
+    <thead><tr><th>Section</th><th>What to Look For</th><th>Points</th></tr></thead>
+    <tbody>
+      <tr><td>Part 1 &mdash; Warm-Up</td><td>Bug story and AI question answered</td><td class="pts">2 pts</td></tr>
+      <tr><td>Part 2 &mdash; Mini-Lesson</td><td>Freeze reasoning answered; 4-step bug hunter process reviewed; video reflection sentence complete</td><td class="pts">3 pts</td></tr>
+      <tr><td>Part 3 &mdash; Guided Build</td><td>Peer testing done; bugs sorted must-fix vs. nice-to-have; top 2 bugs fixed</td><td class="pts">4 pts</td></tr>
+      <tr><td>Part 4 &mdash; Movement Break</td><td>Participation check</td><td class="pts">1 pt</td></tr>
+      <tr><td>Part 5A &mdash; Tier A Build</td><td>One bug fixed with buddy; can say 1-sentence intro</td><td class="pts">3 pts</td></tr>
+      <tr><td>Part 5B &mdash; Tier B Build</td><td>Top 2 bugs fixed; features frozen; 30-second intro drafted (all 3 parts)</td><td class="pts">5 pts</td></tr>
+      <tr><td>Part 5C &mdash; Tier C Build</td><td>All Tier B goals + documented bug log + edge-case testing + AI fairness note</td><td class="pts">6 pts</td></tr>
+      <tr><td>Part 6 &mdash; Share-Out &amp; Reflection</td><td>Rehearsal ladder attempted; feedback recorded; stage-ready checklist signed off; exit ticket complete</td><td class="pts">4 pts</td></tr>
+      <tr><td>&#11088; Challenge Card</td><td>AI one-sentence explanation completed</td><td class="pts">+2</td></tr>
+    </tbody>
+  </table>
+  <div style="display:flex;justify-content:flex-end;margin-top:10px;gap:24px;font-size:.82rem;color:#374151;">
+    <span>Tier A: <strong style="font-family:var(--fc);color:#0b63ce;">____ / 17</strong></span>
+    <span>Tier B: <strong style="font-family:var(--fc);color:#10b981;">____ / 19</strong></span>
+    <span>Tier C: <strong style="font-family:var(--fc);color:#7c3aed;">____ / 20</strong></span>
+  </div>
+</div>
+
+<div class="sfooter">
+  <div><strong>Sessions 22 &middot; Feature Freeze &amp; Showcase Rehearsal</strong> &middot; Differentiated Activity Sheet &middot; Mr. Hsiao &ldquo;Hue&rdquo; Weng &middot; Summer 2026<br>
+  <span class="gtext" style="font-weight:800;">Debugging &middot; Peer Testing &middot; Presenting &middot; Growth Mindset &middot; Ship It!</span></div>
+  <div style="text-align:right;">Ages 7&ndash;13 &middot; Grades 1&ndash;9<br><span style="font-size:.7rem;">&#127908; Confidence comes from practice &mdash; you&rsquo;ve got this!</span></div>
+</div>
+
+</div>
+</body>
+</html>
