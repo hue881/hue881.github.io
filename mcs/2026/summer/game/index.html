@@ -1,1 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Braincade — AI & Coding Quiz Battle</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --color-bg:#171426; --color-surface:#1f1b34; --color-surface-2:#241f3d;
+  --color-surface-offset:#2a2447; --color-divider:#352e57; --color-border:#3c3563;
+  --color-text:#f2f0fb; --color-text-muted:#a89fd1; --color-text-faint:#6e6499;
+  --color-primary:#ffd60a; --color-primary-hover:#ffcf00; --color-primary-active:#e6b800;
+  --color-error:#ff405b; --color-success:#2ecc71;
+  --radius-sm:.5rem; --radius-md:.85rem; --radius-lg:1.25rem; --radius-xl:1.75rem; --radius-full:9999px;
+  --font-display:'Baloo 2','Nunito',sans-serif; --font-body:'Nunito','Baloo 2',sans-serif;
+  --shadow-md:0 8px 24px rgba(0,0,0,.35); --shadow-lg:0 20px 50px rgba(0,0,0,.45);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased;}
+body{
+  min-height:100dvh; font-family:var(--font-body); color:var(--color-text);
+  background:radial-gradient(1200px 700px at 20% -10%, #2a2153 0%, transparent 60%),
+             radial-gradient(1000px 700px at 100% 0%, #1c3a52 0%, transparent 55%),
+             var(--color-bg);
+  overflow-x:hidden; position:relative;
+}
+h1,h2,h3{font-family:var(--font-display); font-weight:800; line-height:1.1;}
+button{font:inherit; color:inherit; cursor:pointer; background:none; border:none;}
+img,canvas,svg{display:block; max-width:100%;}
+::selection{background:rgba(255,214,10,.35);}
+:focus-visible{outline:2px solid var(--color-primary); outline-offset:3px; border-radius:var(--radius-sm);}
 
+#confetti,#themebg{position:fixed; inset:0; width:100vw; height:100vh; pointer-events:none; z-index:5;}
+#themebg{opacity:0; transition:opacity .6s ease; z-index:0;}
+#themebg.show{opacity:1;}
+
+.screen{display:none; min-height:100dvh; position:relative; z-index:1; padding:clamp(1rem,4vw,3rem); align-items:center; justify-content:center; flex-direction:column;}
+.screen.active{display:flex;}
+
+.wrap{width:100%; max-width:920px; margin-inline:auto;}
+.card{background:color-mix(in oklab, var(--color-surface) 92%, transparent); border:1px solid var(--color-border); border-radius:var(--radius-xl); padding:clamp(1.25rem,3vw,2.5rem); box-shadow:var(--shadow-md);}
+
+.logo{display:flex; align-items:center; gap:.6rem; justify-content:center; margin-bottom:.75rem;}
+.logo svg{width:44px;height:44px;}
+.logo-text{font-size:clamp(1.75rem,4vw,2.5rem); font-weight:800; letter-spacing:-.02em;
+  background:linear-gradient(135deg,#ffd60a,#ff8a3d); -webkit-background-clip:text; background-clip:text; color:transparent;}
+.tagline{text-align:center; color:var(--color-text-muted); font-size:1rem; max-width:52ch; margin:0 auto 1.75rem;}
+
+.feature-row{display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:1rem; margin:1.75rem 0;}
+.feature{background:var(--color-surface-2); border:1px solid var(--color-border); border-radius:var(--radius-lg); padding:1.1rem; text-align:left;}
+.feature .num{font-family:var(--font-display); font-weight:800; color:var(--color-primary); font-size:1.4rem; display:block; margin-bottom:.3rem;}
+.feature p{color:var(--color-text-muted); font-size:.92rem;}
+
+.btn{display:inline-flex; align-items:center; justify-content:center; gap:.5rem; padding:.9rem 1.6rem; border-radius:var(--radius-full); font-weight:700; font-size:1.05rem; transition:transform .15s ease, background .15s ease, box-shadow .15s ease;}
+.btn-primary{background:var(--color-primary); color:#231a00; box-shadow:0 6px 0 var(--color-primary-active);}
+.btn-primary:hover{background:var(--color-primary-hover); transform:translateY(-2px);}
+.btn-primary:active{transform:translateY(2px); box-shadow:0 2px 0 var(--color-primary-active);}
+.btn-primary:disabled{opacity:.4; cursor:not-allowed; transform:none; box-shadow:0 6px 0 rgba(255,255,255,.08);}
+.btn-ghost{background:transparent; color:var(--color-text-muted); border:1px solid var(--color-border); padding:.7rem 1.3rem;}
+.btn-ghost:hover{color:var(--color-text); border-color:var(--color-text-faint);}
+.center{text-align:center;}
+.row-actions{display:flex; gap:.75rem; justify-content:center; flex-wrap:wrap; margin-top:1.5rem;}
+
+/* players screen */
+.name-row{display:flex; gap:.6rem; margin-bottom:1.25rem;}
+.name-row input{flex:1; padding:.85rem 1rem; border-radius:var(--radius-md); border:1px solid var(--color-border); background:var(--color-surface-2); color:var(--color-text); font-size:1rem;}
+.name-row input:focus{border-color:var(--color-primary);}
+#players{display:flex; flex-wrap:wrap; gap:.6rem; min-height:3rem; margin-bottom:1rem;}
+.player-card{display:flex; align-items:center; gap:.5rem; padding:.5rem .8rem; border-radius:var(--radius-full); font-weight:700; color:#1a1326; box-shadow:0 4px 0 rgba(0,0,0,.2);}
+.player-card .rm{background:rgba(0,0,0,.18); border-radius:50%; width:22px; height:22px; display:flex; align-items:center; justify-content:center; font-size:.75rem; color:#1a1326;}
+.player-card .rm:hover{background:rgba(0,0,0,.32);}
+#emptyHint{color:var(--color-text-faint); text-align:center; padding:1rem 0;}
+
+/* decks */
+.deck-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:1rem; margin:1.5rem 0;}
+.deck{border-radius:var(--radius-lg); padding:1.25rem; cursor:pointer; border:3px solid transparent; transition:transform .15s ease, border-color .15s ease; color:#fff; position:relative; box-shadow:var(--shadow-md);}
+.deck:hover{transform:translateY(-4px);}
+.deck.sel{border-color:#fff;}
+.deck .day{font-size:.72rem; text-transform:uppercase; letter-spacing:.08em; opacity:.85; font-weight:700;}
+.deck .em{font-size:2.2rem; margin:.4rem 0;}
+.deck h3{font-size:1.15rem; margin-bottom:.35rem;}
+.deck p{font-size:.85rem; opacity:.92; margin-bottom:.6rem;}
+.deck .cnt{font-size:.78rem; font-weight:700; opacity:.85;}
+.deck.mixed{background:linear-gradient(135deg,#7209b7,#3d0f66);}
+
+.opt-group{margin:1.25rem 0;}
+.opt-group label{display:block; font-weight:700; margin-bottom:.5rem; color:var(--color-text-muted); font-size:.9rem; text-transform:uppercase; letter-spacing:.05em;}
+.seg{display:flex; gap:.5rem; flex-wrap:wrap;}
+.seg button{padding:.6rem 1.1rem; border-radius:var(--radius-full); background:var(--color-surface-2); border:1px solid var(--color-border); font-weight:700;}
+.seg button.on{background:var(--color-primary); color:#231a00; border-color:var(--color-primary);}
+
+/* play screen */
+.play-top{display:flex; justify-content:space-between; align-items:center; gap:1rem; flex-wrap:wrap; width:100%; max-width:920px; margin-bottom:1rem;}
+.pill{padding:.45rem .95rem; border-radius:var(--radius-full); background:var(--color-surface-2); border:1px solid var(--color-border); font-size:.85rem; font-weight:700;}
+.turn-who{padding:.5rem 1rem; border-radius:var(--radius-full); font-weight:800; color:#1a1326;}
+#qnLabel{color:var(--color-text-muted); font-size:.85rem; text-align:center; margin-bottom:.5rem;}
+.q-tag{display:inline-block; padding:.35rem .8rem; border-radius:var(--radius-full); font-size:.8rem; font-weight:700; margin-bottom:.85rem;}
+#qText{font-size:clamp(1.25rem,3vw,1.75rem); font-weight:800; text-align:center; margin-bottom:1.5rem; line-height:1.3;}
+.timer-wrap{position:relative; width:64px; height:64px;}
+.timer-wrap svg{transform:rotate(-90deg);}
+#timerNum{position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:1.1rem;}
+
+.answers{display:grid; grid-template-columns:1fr 1fr; gap:1rem; width:100%;}
+@media (max-width:600px){.answers{grid-template-columns:1fr;}}
+.ans{display:flex; align-items:center; gap:.75rem; padding:1.1rem 1.25rem; border-radius:var(--radius-md); font-weight:700; font-size:1.05rem; text-align:left; color:#fff; transition:transform .12s ease, filter .12s ease;}
+.ans.a0{background:#e21b3c;} .ans.a1{background:#1368ce;} .ans.a2{background:#d89e00;} .ans.a3{background:#26890c;}
+.ans:hover:not(:disabled){transform:scale(1.02); filter:brightness(1.08);}
+.ans:disabled{cursor:default;}
+.ans.correct{outline:3px solid #fff; filter:brightness(1.15);}
+.ans.wrong-pick{outline:3px solid #fff; opacity:.55;}
+.ans.wrong{opacity:.35;}
+.ans .shape{font-size:1.2rem;}
+
+.feedback{width:100%; margin-top:1.25rem; padding:1.25rem; border-radius:var(--radius-lg); background:var(--color-surface-2); border:1px solid var(--color-border); display:none;}
+.feedback.show{display:block;}
+.verdict{font-family:var(--font-display); font-weight:800; font-size:1.3rem; margin-bottom:.25rem;}
+.verdict.good{color:var(--color-success);}
+.verdict.bad{color:var(--color-error);}
+#fbPts{font-weight:700; color:var(--color-text-muted); margin-bottom:.75rem;}
+#fbWhy{color:var(--color-text-muted); font-size:.95rem; line-height:1.55;}
+#fbWhy b{color:var(--color-text);}
+.wrong-line{margin-bottom:.5rem;} .wrong-note{color:var(--color-text-faint); font-size:.88rem;}
+.right-line{margin-bottom:.4rem;} .why-note{font-style:italic;}
+
+#miniLb{display:flex; gap:.5rem; flex-wrap:wrap; margin-top:1.25rem; width:100%;}
+.chip{display:flex; align-items:center; gap:.4rem; background:var(--color-surface-2); border:1px solid var(--color-border); border-radius:var(--radius-full); padding:.35rem .75rem; font-size:.82rem; font-weight:700;}
+.chip .sc{color:var(--color-primary);}
+
+/* scores/leaderboard */
+.lb-row{display:grid; grid-template-columns:2.2rem 2.2rem 1fr auto; align-items:center; gap:.75rem; padding:.7rem .5rem; border-bottom:1px solid var(--color-divider);}
+.lb-row.lead{background:rgba(255,214,10,.08); border-radius:var(--radius-md);}
+.lb-row .rk{font-weight:800; text-align:center;}
+.lb-row .sc{font-weight:800; color:var(--color-primary);}
+.delta{color:var(--color-success); font-size:.8rem; margin-left:.4rem;}
+
+/* podium */
+.podium{display:flex; align-items:flex-end; justify-content:center; gap:1rem; margin:2rem 0 1rem;}
+.pod{text-align:center; padding:1rem; border-radius:var(--radius-lg) var(--radius-lg) 0 0; width:140px;}
+.pod .ava{font-size:2.2rem;}
+.pod .pname{font-weight:800; margin:.3rem 0;}
+.pod .pscore{color:var(--color-text-muted); font-size:.85rem; margin-bottom:.5rem;}
+.pod.first{background:linear-gradient(180deg,#ffd60a,#c99f00); height:220px;}
+.pod.second{background:linear-gradient(180deg,#c9c9d6,#8f8fa3); height:180px;}
+.pod.third{background:linear-gradient(180deg,#e0975a,#a5623a); height:150px;}
+.pod .bar{font-size:1.5rem;}
+
+/* modal */
+.modal-overlay{position:fixed; inset:0; background:rgba(10,8,20,.75); display:none; align-items:center; justify-content:center; z-index:50;}
+.modal-overlay.show{display:flex;}
+.modal-box{background:var(--color-surface); border:1px solid var(--color-border); border-radius:var(--radius-lg); padding:1.75rem; max-width:380px; text-align:center;}
+.modal-box h3{margin-bottom:.6rem;}
+.modal-box p{color:var(--color-text-muted); margin-bottom:1.25rem;}
+
+/* sound controls */
+.sound-bar{position:fixed; top:1rem; right:1rem; display:flex; gap:.5rem; z-index:20;}
+.sound-bar button{width:42px; height:42px; border-radius:50%; background:var(--color-surface-2); border:1px solid var(--color-border); font-size:1.1rem; display:flex; align-items:center; justify-content:center;}
+.sound-bar button.off{opacity:.4;}
+.vol-wrap{position:relative;}
+.vol-panel{position:absolute; top:50px; right:0; background:var(--color-surface); border:1px solid var(--color-border); border-radius:var(--radius-md); padding:.9rem; display:none; width:160px; box-shadow:var(--shadow-md);}
+.vol-panel.show{display:block;}
+.vol-panel input[type=range]{width:100%;}
+.vol-panel .pct{font-size:.8rem; color:var(--color-text-muted); text-align:center; margin-top:.4rem;}
+
+.quit-fab{position:fixed; top:1rem; left:1rem; z-index:20;}
+</style>
+</head>
+<body>
+
+<canvas id="themebg"></canvas>
+<canvas id="confetti"></canvas>
+
+<div class="sound-bar">
+  <button id="musicBtn" onclick="toggleMusic()" aria-label="Toggle music">🎵</button>
+  <button id="sfxBtn" onclick="toggleSfx()" aria-label="Toggle sound effects">🔊</button>
+  <div class="vol-wrap">
+    <button id="volBtn" onclick="toggleVolPanel()" aria-label="Volume">🔊</button>
+    <div class="vol-panel" id="volPanel">
+      <button id="muteBtn" onclick="toggleMute()" style="width:100%;text-align:left;font-size:.85rem;font-weight:700;">🔊 Mute</button>
+      <input type="range" id="volSlider" min="0" max="100" value="90" oninput="setVolumePct(this.value)">
+      <div class="pct" id="volPct">90%</div>
+    </div>
+  </div>
+</div>
+
+<!-- HOME -->
+<section class="screen active" id="screen-home">
+  <div class="wrap card">
+    <div class="logo">
+      <svg viewBox="0 0 48 48" fill="none" aria-label="Braincade logo">
+        <rect x="4" y="4" width="40" height="40" rx="12" fill="#ffd60a"/>
+        <circle cx="17" cy="20" r="4" fill="#231a00"/>
+        <circle cx="31" cy="20" r="4" fill="#231a00"/>
+        <path d="M14 30c4 5 16 5 20 0" stroke="#231a00" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+      </svg>
+      <span class="logo-text">Braincade</span>
+    </div>
+    <p class="tagline">A fast, fun quiz battle covering six AI & coding lessons. Add your players, pick a topic, and find out who's the class champion.</p>
+    <div class="feature-row">
+      <div class="feature"><span class="num">2+</span><p>2 or more. Everyone gets a colorful avatar.</p></div>
+      <div class="feature"><span class="num">1:1</span><p>Each player gets a different question on their turn.</p></div>
+      <div class="feature"><span class="num">🏆</span><p>Live leaderboard and a winners' podium.</p></div>
+      <div class="feature"><span class="num">📺</span><p>It works great on one shared screen — a projector, smartboard, or laptop the class can see.</p></div>
+    </div>
+    <div class="center">
+      <button class="btn btn-primary" onclick="go('players')">Start a Game</button>
+    </div>
+  </div>
+</section>
+
+<!-- PLAYERS -->
+<section class="screen" id="screen-players">
+  <div class="wrap card">
+    <h2 class="center" style="margin-bottom:.4rem;">Who's Playing?</h2>
+    <p class="tagline">Type a name and press Add (or hit Enter). You need at least 2 players.</p>
+    <div class="name-row">
+      <input type="text" id="nameInput" maxlength="16" placeholder="Enter player name" aria-label="Player name">
+      <button class="btn btn-primary" onclick="addPlayer()">Add</button>
+    </div>
+    <div id="players"></div>
+    <p id="emptyHint">No players yet — add your first one above.</p>
+    <div class="row-actions">
+      <button class="btn btn-ghost" onclick="go('home')">Back</button>
+      <button class="btn btn-primary" id="toDeckBtn" disabled onclick="go('decks')">Choose a Lesson →</button>
+    </div>
+  </div>
+</section>
+
+<!-- DECKS -->
+<section class="screen" id="screen-decks">
+  <div class="wrap card">
+    <h2 class="center" style="margin-bottom:.4rem;">Choose a Lesson</h2>
+    <p class="tagline">Choose one lesson, or take on "All Lessons" for the ultimate mix.</p>
+    <div class="deck-grid" id="deckGrid"></div>
+    <div class="opt-group">
+      <label>Questions per player</label>
+      <div class="seg" id="segCount">
+        <button data-n="5">5</button>
+        <button data-n="8" class="on">8</button>
+        <button data-n="10">10</button>
+        <button data-n="0">Max</button>
+      </div>
+    </div>
+    <div class="opt-group">
+      <label>Time per question</label>
+      <div class="seg" id="segTime">
+        <button data-t="10">10s</button>
+        <button data-t="20" class="on">20s</button>
+        <button data-t="30">30s</button>
+        <button data-t="0">Off</button>
+      </div>
+    </div>
+    <div class="row-actions">
+      <button class="btn btn-ghost" onclick="go('players')">Back</button>
+      <button class="btn btn-primary" id="startBtn" disabled onclick="startGame()">Start Game</button>
+    </div>
+  </div>
+</section>
+
+<!-- PLAY -->
+<section class="screen" id="screen-play">
+  <button class="btn btn-ghost quit-fab" onclick="quitToHome()" aria-label="Quit to main menu">✕ Quit</button>
+  <div class="play-top">
+    <span class="pill" id="deckPill">Deck</span>
+    <span class="turn-who" id="turnWho">Player</span>
+    <div class="timer-wrap" id="timerRing">
+      <svg width="64" height="64">
+        <circle cx="32" cy="32" r="28" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="6"/>
+        <circle id="timerArc" cx="32" cy="32" r="28" fill="none" stroke="#ffd60a" stroke-width="6" stroke-dasharray="175.9" stroke-dashoffset="0" stroke-linecap="round"/>
+      </svg>
+      <span id="timerNum">20</span>
+    </div>
+    <span class="pill" id="progPill">Round 1 / 8</span>
+  </div>
+  <div class="wrap">
+    <p id="qnLabel">Player 1 of 2 — their question</p>
+    <div class="center"><span class="q-tag" id="qTag">Topic</span></div>
+    <h3 id="qText">Question text goes here</h3>
+    <div class="answers" id="answers"></div>
+    <div class="feedback" id="feedback">
+      <div class="verdict" id="fbVerdict">Correct!</div>
+      <div id="fbPts">+800 points</div>
+      <div id="fbWhy"></div>
+      <div class="row-actions" style="justify-content:flex-end;margin-top:1rem;">
+        <button class="btn btn-primary" id="nextBtn" onclick="nextStep()">Next Player</button>
+      </div>
+    </div>
+    <div id="miniLb"></div>
+  </div>
+</section>
+
+<!-- SCORES -->
+<section class="screen" id="screen-scores">
+  <div class="wrap card">
+    <h2 class="center" id="scoresTitle">Leaderboard</h2>
+    <p class="tagline" id="scoresSub">After question 1</p>
+    <div id="lbList"></div>
+    <div class="row-actions">
+      <button class="btn btn-primary" id="continueBtn" onclick="afterScores()">Next Round</button>
+    </div>
+  </div>
+</section>
+
+<!-- RESULTS -->
+<section class="screen" id="screen-results">
+  <div class="wrap card">
+    <h2 class="center">And the champion is…</h2>
+    <p class="tagline" id="winnerLine"></p>
+    <div class="podium" id="podium"></div>
+    <div id="restList"></div>
+    <div class="row-actions">
+      <button class="btn btn-ghost" onclick="fullReset()">Main Menu</button>
+      <button class="btn btn-primary" onclick="playAgainSameDeck()">Play Again</button>
+    </div>
+  </div>
+</section>
+
+<!-- QUIT MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal-box">
+    <h3>Quit to Main Menu?</h3>
+    <p>Your current game progress will be lost. Players stay saved.</p>
+    <div class="row-actions">
+      <button class="btn btn-ghost" onclick="closeQuitModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="confirmQuit()">Quit Game</button>
+    </div>
+  </div>
+</div>
+
+<script src="questions.js"></script>
+<script src="audio.js"></script>
+<script src="game.js"></script>
+</body>
+</html>
