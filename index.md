@@ -1,2 +1,2 @@
-This is the repository for Modern Chinese School A.I. Coding Program 
+This is the repository for Hue's Modern Chinese School Materials
 
