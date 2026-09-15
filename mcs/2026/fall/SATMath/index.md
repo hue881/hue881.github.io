@@ -1,8 +1,6 @@
 # Digital SAT Math — Saturday Program Syllabus
 **Fall 2026 – Spring 2027 | 80 minutes per session | 34 total sessions**
 
----
-
 ## 1. Program Overview
 
 | Item | Detail |
@@ -29,7 +27,6 @@
 - Full-length Math sections: 5 across the year (9/19, 12/19, 4/10, 5/22, 6/19).
 - Domain checkpoints: 22-question single-module quizzes after each domain block.
 
----
 
 ## 2. Fall Term — Diagnostic, Algebra, and Data Analysis
 
@@ -50,8 +47,6 @@ Fall builds the two highest-yield foundations: Algebra (largest domain) and Prob
 | 11 | 12/5 | Two-variable data and probability | Scatterplots, line and curve of best fit, model prediction and residual reasoning; simple and conditional probability, two-way tables. *(Note: December 5 national SAT — students testing that day complete this session asynchronously.)* |
 | 12 | 12/12 | Inference and study design + **PSDA checkpoint** | Sampling, margin of error, confidence-interval interpretation, valid conclusions; 22-question PSDA-weighted module. |
 | 13 | 12/19 | **Full-length Math section #2** | Bluebook practice test under time; fall progress report, winter-break plan, spring goal contract. |
-
----
 
 ## 3. Spring Term — Advanced Math, Geometry/Trig, and Test Peaking
 
@@ -81,8 +76,6 @@ Spring completes the content map by early April, then converts content mastery i
 | 33 | 6/19 | **Full-length Math section #5** | Final assessment; growth analytics across all five sections. |
 | 34 | 6/26 | Capstone and forward plan | Score-report walkthrough, retake decision framework (August/September/October 2027), individualized summer maintenance plan. |
 
----
-
 ## 4. Assessment and Reporting
 
 | Instrument | Frequency | Purpose |
@@ -94,8 +87,6 @@ Spring completes the content map by early April, then converts content mastery i
 | Parent/student progress report | End of each term (12/19, 6/26) | Score movement by domain, homework completion, next steps |
 
 **Mastery bar for advancing a domain:** ≥80% accuracy on the checkpoint module with no more than one timing-driven error.
-
----
 
 ## 5. Calendar Notes and Flags
 
