@@ -67,7 +67,7 @@ The class mirrors the actual Digital SAT Math section: **44 questions in two 35-
 
 **Bring every week:** a three-ring binder or folder for handouts, lined and graph paper, two pencils with erasers, and a printed copy of the SAT reference sheet (provided in week 1).
 
-**Google Drive:** Every student receives access to a shared class folder holding lesson slides, homework sets, answer keys with full solutions, the error-log template, and the score tracker. Please make sure your student can sign in to Google Drive with their school account before the first class — that folder is where all assignments live.
+**Google Drive:** Every student receives access to their own folder where they can keep track of their homework assignments and tests. Please make sure your student can sign in to Google Drive before the first class — that folder is where all their work will live.
 
 ### Bring Your Own Device — Please Read
 
