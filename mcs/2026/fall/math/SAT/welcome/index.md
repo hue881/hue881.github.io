@@ -71,7 +71,7 @@ The class mirrors the actual Digital SAT Math section: **44 questions in two 35-
 
 ### Bring Your Own Device — Please Read
 
-The SAT is now fully digital, so this class uses digital practice that mirrors the real exam whenever possible. **Students bring their own device. The school does not provide loaner laptops or tablets for this class** — there are none available to lend, so a device left at home cannot be replaced on the spot. School Wi-Fi is available and the bring-your-own-device policy is approved.
+The SAT is now fully digital, so this class uses digital practice that mirrors the real exam whenever possible. **Students bring their own device. The school does not provide loaner laptops or tablets for this class** — there are only a few available for class, so a device left at home cannot be replaced on the spot. School Wi-Fi is available and the bring-your-own-device policy is approved.
 
 **Devices that run Bluebook**, College Board's official testing app: a Windows laptop or tablet, a Mac laptop, an iPad, or a **school-managed** Chromebook. A personal Chromebook or a phone will not work — Bluebook does not run on either. Screens must be at least 10 inches for laptops and 8 inches for tablets, and the battery should hold a 3-hour charge, since outlets in our room are limited.
 
