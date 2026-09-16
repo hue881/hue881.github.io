@@ -17,4 +17,7 @@
 15. Dress properly and safely - no slippers, flip flops, or wheeled sneakers.  Sandals are acceptable
 16. Respect your teachers and elders.  Respect others' traditions and cultures
 
+[Digital SAT Math](https://hue881.github.io/mcs/2026/fall/math/SAT)
+[CAT SHSAT Math](https://hue881.github.io/mcs/2026/fall/math/7th-grade)
+
 [A.I. Coding Program 2026 Summer: Python, Scratch](https://hue881.github.io/mcs/2026/summer/)
