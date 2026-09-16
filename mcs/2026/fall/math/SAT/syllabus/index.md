@@ -1,5 +1,5 @@
-# Digital SAT Math — Saturday Program Syllabus (Subject to revision)
-**Fall 2026 – Spring 2027 | 80 minutes per session | 34 total sessions**
+# Digital SAT Math — Saturday Program Syllabus 
+**Fall 2026 – Spring 2027 | 80 minutes per session | 34 total sessions** (Subject to revision)
 
 ## 1. Program Overview
 
