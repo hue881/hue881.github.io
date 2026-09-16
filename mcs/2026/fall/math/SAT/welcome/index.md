@@ -96,4 +96,4 @@ Device use in class is **limited to the assigned activity** — no browsing, mes
 
 ---
 
-Thank you for joining. Please email me at **weng.hsiao@gmail.com** with your student's target score and test date, and let me know whether your student will bring a device, so I can plan paper copies and partner pairings for 9/19.
+Thank you for joining. Please email me with your student's target score and test date, and let me know whether your student will bring a device, so I can plan paper copies and partner pairings for 9/19.
