@@ -43,7 +43,7 @@ Every 80-minute class follows the same rhythm: 10 minutes of homework and error-
 ### Student responsibilities
 
 - Arrive on time and ready to start; the warm-up begins at minute zero.
-- Complete weekly homework — 25 items, roughly 35–45 minutes, including 5 grid-in items on alternating weeks.
+- Complete weekly homework.
 - Log **every** missed question: the question, the correct answer, the error type (careless, conceptual, procedural, or misread), and one sentence on the fix. Error logs are reviewed at the start of each session and collected on quiz days.
 - Write out full solution steps rather than mental math; unsupported answers cannot be diagnosed.
 - Show quiz corrections in writing, with an explanation for each miss, at the session after a quiz.
