@@ -76,7 +76,7 @@ Every student receives access to their own folder where they can keep track of t
 
 ### Bring Your Own Device — Please Read
 
-Because the SHSAT has moved to a digital format, I would like students to practice on screen with adaptive materials that mirror the real test.  **Students bring their own device. The school does not provide loaner laptops or tablets for this class** — there are none available to lend, so a device left at home cannot be replaced on the spot. School Wi-Fi is available and the bring-your-own-device policy is approved.
+Because the SHSAT has moved to a digital format, I would like students to practice on screen with adaptive materials that mirror the real test.  **Students bring their own device. The school does not provide loaner laptops or tablets for this class** — there are only a few available to lend, so a device left at home cannot be replaced on the spot. School Wi-Fi is available and the bring-your-own-device policy is approved.
 
 
 Paper practice remains part of the course. The goal is comfort with both formats, especially typed numeric entry, where elimination and backsolving are unavailable.
