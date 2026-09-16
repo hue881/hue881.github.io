@@ -12,8 +12,6 @@
 
 Parents: please email for anything involving grades, attendance, homework concerns, or score goals so we have a written record. Urgent same-day issues (absence, late pickup) are best handled by text.
 
----
-
 ## What We Cover This Year
 
 The class mirrors the actual Digital SAT Math section: **44 questions in two 35-minute adaptive modules**, with the Desmos graphing calculator permitted throughout. We target the real domain weights — Algebra ~35%, Advanced Math ~35%, Problem-Solving & Data Analysis ~15%, Geometry & Trigonometry ~15% — and practice both multiple-choice and student-produced response (fill-in) formats.
@@ -49,8 +47,6 @@ The class mirrors the actual Digital SAT Math section: **44 questions in two 35-
 4. **65–75 min** — Debrief: answer-choice autopsy, Desmos alternate paths, fill-in entry rules.
 5. **75–80 min** — Homework assignment and error-log entry.
 
----
-
 ## Expectations and Procedures
 
 **Students will:**
@@ -66,7 +62,6 @@ The class mirrors the actual Digital SAT Math section: **44 questions in two 35-
 
 **Advancing a domain:** ≥80% accuracy on the checkpoint module with no more than one timing-driven error. Students below the bar receive targeted remediation sets instead of moving on.
 
----
 
 ## Materials and Devices
 
