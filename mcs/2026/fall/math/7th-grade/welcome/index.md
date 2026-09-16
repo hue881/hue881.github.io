@@ -54,7 +54,7 @@ Every 80-minute class follows the same rhythm: 10 minutes of homework and error-
 
 ### Procedures and rules
 
-- **Absences:** materials and homework are posted to the shared Google Drive folder; missed quizzes are made up by arrangement.
+- **Absences:** materials and homework are posted to the course website; missed quizzes are made up by arrangement.
 - **Late work:** accepted, but the value of homework is in the feedback loop, so submit before the next session whenever possible.
 - **Phones:** silenced and away for the entire session, with no exceptions during timed drills or quizzes.
 - **Timed work:** when the timer starts, work is independent and silent. Pacing target is about 85 seconds per question.
