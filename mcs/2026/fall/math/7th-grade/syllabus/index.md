@@ -3,7 +3,7 @@
 **Fall term:** September 19, 2026 – December 19, 2026 (no class 11/28)
 **Spring term:** January 2, 2027 – June 26, 2027 (no class 2/6, 2/13, 4/24, 5/1, 5/29)
 **Total sessions:** 34 (13 fall + 21 spring) ≈ 45.3 instructional hours
-**Target exam:** SHSAT, October 2027 (students test as Grade 8)
+**Target exam:** SHSAT, October 2027 (students test as Grade 8)  (Subject to revision)
 
 ## 1. Course Description
 
