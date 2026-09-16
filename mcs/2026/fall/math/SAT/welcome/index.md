@@ -10,7 +10,7 @@
 | In person | 10 minutes before and after each Saturday session |
 | Conferences | By appointment, in person or by video call |
 
-Parents: please email for anything involving grades, attendance, homework concerns, or score goals so we have a written record. Urgent same-day issues (absence, late pickup) are best handled by text.
+Parents: please email for anything involving grades, attendance, homework concerns, or score goals so we have a written record. Urgent same-day issues (absence) are best handled by text.
 
 ## What We Cover This Year
 
