@@ -9,4 +9,5 @@
 
 | No. | Lesson | Activity | Homework | Challenge | Notes |
 |:-----:|:----------|:---------------:|:-------|:-------|:----------|
-| **01** | [Welcome! What is Computer Thinking?](https://hue881.github.io/mcs/2026/summer/1/1) | [1 Activity](https://hue881.github.io/mcs/2026/summer/1/1/activity) | [1-1 Homework](https://hue881.github.io/mcs/2026/summer/1/1/homework) | -- ||
+| **01** | [Welcome!](https://hue881.github.io/mcs/2026/fall/math/7th-grade/lessons/01) |  | [Homework](https://hue881.github.io/mcs/2026/fall/math/7th-grade/lessons/01/homework) | -- ||
+
