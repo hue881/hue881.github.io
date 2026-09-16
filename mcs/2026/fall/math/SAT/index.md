@@ -1,4 +1,4 @@
-### 🏖️ Fall 2026 - Spring 2027: Digital SAT Math Program
+### 🍁 Fall 2026 - Spring 2027: Digital SAT Math Program
 
 ![Level](https://img.shields.io/badge/level-beginner%20to%20advanced-brightgreen)
 ![Updated](https://img.shields.io/badge/updated-Fall%202026-lightyellow)
