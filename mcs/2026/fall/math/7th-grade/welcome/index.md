@@ -12,7 +12,6 @@
 Parents: please email for anything involving grades, attendance, homework concerns, or score goals so we have a written record. Urgent same-day issues (absence) are best handled by text.
 Parents are welcome to reach out any time with questions about progress, homework, absences, or scheduling. Please email rather than text for anything requiring a record.
 
----
 
 ## 2. Syllabus of Planned Topics
 
@@ -31,8 +30,6 @@ The year runs 34 sessions (13 fall + 21 spring), roughly 45 instructional hours.
 **No class:** 11/28/26, 2/6/27, 2/13/27, 4/24/27, 5/1/27, 5/29/27. An optional 30-item review packet is issued before most breaks to prevent skill decay.
 
 **Assessments:** Initial Diagnostic 9/19/26 · Quiz 1 on 11/21/26 · Fall Benchmark 12/19/26 · Quiz 2 on 2/27/27 · Quiz 3 on 4/17/27 · Full-Length Practice 6/19/27. Progress reports weight quizzes 45%, fall benchmark 20%, full-length practice 25%, and homework plus error-log upkeep 10%; the diagnostic counts 0% and serves only as a baseline. Growth targets are +15 percentage points in accuracy from the September diagnostic to the December benchmark and +30 points by the June full-length section.
-
----
 
 ## 3. Expectations, Responsibilities, and Procedures
 
@@ -64,7 +61,6 @@ Every 80-minute class follows the same rhythm: 10 minutes of homework and error-
 - **Respect:** one voice at a time, no dismissing a classmate's question, and no comparing scores aloud.
 - **Academic honesty:** homework and quizzes are the student's own work. Copied answers hide exactly the gaps this course exists to close.
 
----
 
 ## 4. Materials and Class Requirements
 
@@ -85,6 +81,5 @@ Because the SHSAT has moved to a digital format, I would like students to practi
 
 Paper practice remains part of the course. The goal is comfort with both formats, especially typed numeric entry, where elimination and backsolving are unavailable.
 
----
 
 *Questions before our first session on Saturday, September 19?  Let me know. I am looking forward to a strong year with your student.*
