@@ -158,3 +158,4 @@ Assessment days replace the instruction and guided-practice blocks with testing,
 
 The summer 2027 bridge packet, issued 6/26/27, is built from each student's ranked weakness list from Session 34. Grade 8 instruction resuming in September 2027 should be pure full-length test simulation and pacing refinement — one section per week with item-level review — since the October 2027 administration leaves only about six weeks of runway. Any student finishing this course below 60% accuracy on the 6/19 full-length section should be flagged for additional summer intensive support rather than moving straight into simulation-only work.
 
+[Grade 7 SHSAT Math Program ](https://hue881.github.io/mcs/2026/fall/math/7th-grade)
