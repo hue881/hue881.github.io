@@ -95,5 +95,5 @@ Spring completes the content map by early April, then converts content mastery i
 - **Longest gap:** 1/30 → 2/20 (three weeks, spanning the 2/6 and 2/13 closures). This lands mid–Advanced Math, so an independent problem set plus a midweek virtual check-in is scheduled.
 - **Peak windows:** content coverage completes 4/3, leaving nine sessions of testing, error analysis, and pacing work ahead of the June 5 administration.
 
-[SAT Math Program ](https://hue881.github.io/mcs/2026/fall/math/SAT)
+[Digital SAT Math Program ](https://hue881.github.io/mcs/2026/fall/math/SAT)
 
