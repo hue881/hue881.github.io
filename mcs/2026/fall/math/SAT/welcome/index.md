@@ -89,6 +89,5 @@ No device means no disadvantage in this class. Nothing in the curriculum is devi
 
 Device use in class is **limited to the assigned activity** — no browsing, messaging, games, or off-task apps. Misuse ends device privileges for the rest of the term.
 
----
 
 Thank you for joining. Please email me with your student's target score and test date, and let me know whether your student will bring a device, so I can plan paper copies and partner pairings for 9/19.
