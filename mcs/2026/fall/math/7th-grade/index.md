@@ -6,6 +6,8 @@
 [Instructor](https://hue881.github.io/mcs/2026/fall/math/hue)  
 [Syllabus](https://hue881.github.io/mcs/2026/fall/math/7th-grade/syllabus)  
 [Rules and Regulations](https://hue881.github.io/mcs/2026/fall/math/rules)  
+  
+[Welcome!](https://hue881.github.io/mcs/2026/fall/math/7th-grade/welcome)    
 
 | No. | Lesson | Activity | Homework | Challenge | Notes |
 |:-----:|:----------|:---------------:|:-------|:-------|:----------|
