@@ -83,3 +83,5 @@ Paper practice remains part of the course. The goal is comfort with both formats
 
 
 *Questions before our first session on Saturday, September 19?  Let me know. I am looking forward to a strong year with your student.*
+
+[Grade 7 SHSAT Math Program ](https://hue881.github.io/mcs/2026/fall/math/7th-grade)
