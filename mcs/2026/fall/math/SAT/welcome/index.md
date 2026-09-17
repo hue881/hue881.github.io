@@ -91,3 +91,5 @@ Device use in class is **limited to the assigned activity** — no browsing, mes
 
 
 Thank you for joining. Please email me with your student's target score and test date, and let me know whether your student will bring a device, so I can plan paper copies and partner pairings for 9/19.
+
+[Digital SAT Math Program ](https://hue881.github.io/mcs/2026/fall/math/SAT)
