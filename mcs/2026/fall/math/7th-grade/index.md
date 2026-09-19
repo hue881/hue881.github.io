@@ -9,7 +9,7 @@
   
 [Welcome!](https://hue881.github.io/mcs/2026/fall/math/7th-grade/welcome)    
 
-| No. | Lesson | Activity | Homework | Challenge | Notes |
+| No. | Lesson | Activity | Homework | Practice | Notes |
 |:-----:|:----------|:---------------:|:-------|:-------|:----------|
-| **01** | [Welcome!](https://hue881.github.io/mcs/2026/fall/math/7th-grade/lessons/01) |  | [Homework](https://hue881.github.io/mcs/2026/fall/math/7th-grade/lessons/01/homework) | -- ||
+| **01** | [Welcome!](https://hue881.github.io/mcs/2026/fall/math/7th-grade/lessons/01) |[Test](https://hue881.github.io/mcs/2026/fall/math/7th-grade/test)  | [Homework](https://hue881.github.io/mcs/2026/fall/math/7th-grade/lessons/01/homework) | -- ||
 
