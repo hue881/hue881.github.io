@@ -13,3 +13,4 @@
 |:-----:|:----------|:---------------:|:-------|:-------|:----------|
 | **01** | [Welcome!](https://hue881.github.io/mcs/2026/fall/math/SAT/lesson/01) | [Test](https://hue881.github.io/mcs/2026/fall/math/SAT/test) | [Homework](https://hue881.github.io/mcs/2026/fall/math/SAT/lesson/01/homework) | -- ||
 | **02** | [Diagnostic Debrief + Test Mechanics](https://hue881.github.io/mcs/2026/fall/math/SAT/lesson/02) |  | [Homework](https://hue881.github.io/mcs/2026/fall/math/SAT/lesson/02/homework) | -- ||
+| **03** | [Linear Expressions & Equations](https://hue881.github.io/mcs/2026/fall/math/SAT/lesson/03) |  | [Homework](https://hue881.github.io/mcs/2026/fall/math/SAT/lesson/03/homework) | -- ||
