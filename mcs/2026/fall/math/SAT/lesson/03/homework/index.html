@@ -1,1 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Digital SAT Math — Session 3 Homework</title>
+<link rel="preconnect" href="https://api.fontshare.com">
+<link href="https://api.fontshare.com/v2/css?f[]=chillax@400,500,600,700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300..800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f4f4f4;--surface:#fff;--ink:#1f1f1f;--ink-2:#4a4a4a;--ink-3:#767676;
+  --line:rgba(201,212,228,.72);--soft:#f1f6fd;--soft-2:#f9fbfe;--dark:#3d4c63;
+  --blue:#2563eb;--blue-dark:#1d4ed8;--blue-soft:#dcebfb;--gold:#b45309;--gold-soft:#fbebcf;
+  --rose:#be123c;--rose-soft:#fff7f8;--green:#15803d;--green-soft:#f4fbf5;
+  --display:'Chillax','Lexend',sans-serif;--body:'Lexend',sans-serif;
+  --shadow:0 12px 30px rgba(120,145,180,.14),0 2px 7px rgba(31,31,31,.05)
+}
+html{background:#e9edf2;scroll-behavior:smooth}
+body{font-family:var(--body);color:var(--ink);background:var(--bg);max-width:920px;margin:0 auto;-webkit-print-color-adjust:exact;print-color-adjust:exact;font-size:15px;line-height:1.55}
+button,input,textarea{font:inherit}.skip{position:absolute;left:-9999px}.skip:focus{left:1rem;top:1rem;z-index:99;background:#fff;padding:.6rem;border:2px solid var(--blue)}
+.toolbar{position:sticky;top:0;z-index:20;display:flex;justify-content:flex-end;gap:.65rem;padding:.7rem max(1rem,calc((100vw - 900px)/2));background:rgba(244,244,244,.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.action{min-height:44px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);font-weight:650;padding:.62rem 1rem;cursor:pointer;box-shadow:0 4px 12px rgba(120,145,180,.14);transition:transform .16s ease,box-shadow .16s ease,background .16s ease}.action:hover{background:var(--soft);box-shadow:0 7px 18px rgba(120,145,180,.2)}.action:active{transform:translateY(1px)}.action.clear{background:var(--dark);color:#fff;border-color:var(--dark)}.action.clear:hover{background:#26364d}
+.sheet{background:var(--surface);margin:2rem auto;padding:2.1rem 2.35rem;border-radius:16px;box-shadow:var(--shadow)}
+.hw-header{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;flex-wrap:wrap;padding-bottom:1rem;border-bottom:3px solid var(--dark);margin-bottom:1.2rem}.eyebrow{font-size:.68rem;font-weight:750;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);margin-bottom:.25rem}h1,h2,h3{font-family:var(--display)}h1{font-size:clamp(1.7rem,4vw,2.25rem);line-height:1.08;font-weight:650;letter-spacing:-.01em}h1 .tint{color:var(--blue)}.subtitle{margin-top:.35rem;color:var(--ink-2);font-size:.84rem;font-weight:550;text-transform:uppercase;letter-spacing:.055em}
+.meta{min-width:240px;display:grid;gap:.5rem}.meta-row{display:flex;align-items:center;gap:.55rem;font-size:.78rem;font-weight:650;color:var(--ink-2)}.meta-row label{min-width:64px;padding:.18rem .55rem;text-align:center;border-radius:7px;background:var(--blue-soft);font-size:.67rem;text-transform:uppercase;letter-spacing:.08em}.line-input{width:100%;border:0;border-bottom:1.5px solid #9aa9bf;background:transparent;outline:0;padding:.2rem .3rem;color:var(--ink)}.line-input:focus{border-bottom-color:var(--blue)}
+.score-banner{display:flex;align-items:center;justify-content:space-between;gap:1rem;background:var(--dark);color:#fff;border-radius:13px;padding:.8rem 1rem;margin:1rem 0 1.35rem}.score-title{font-family:var(--display);font-weight:650}.score-sub{font-size:.7rem;color:#dce5f1}.score-cells{display:flex;gap:.55rem;flex-wrap:wrap}.score-cell{text-align:center;padding:.15rem .7rem;border-left:1px solid rgba(255,255,255,.2)}.score-cell input{width:2.2rem;color:#fff;text-align:center;background:transparent;border:0;border-bottom:1px solid #afc4e2;outline:0;font-weight:750}.score-lbl{font-size:.58rem;text-transform:uppercase;letter-spacing:.06em;color:#dce5f1}
+.section-hd{display:flex;align-items:center;gap:.6rem;margin:1.55rem 0 .75rem}.section-hd h2{font-size:1.16rem;font-weight:650}.num-dot{display:grid;place-items:center;width:28px;height:28px;border-radius:9px;color:#fff;background:var(--blue);font-family:var(--display);font-size:.75rem;font-weight:700;flex:none}.bridge .num-dot{background:var(--gold)}.timed .num-dot{background:var(--rose)}.review .num-dot{background:var(--green)}.badge{margin-left:auto;border:1px solid var(--line);border-radius:999px;background:var(--soft);color:var(--ink-2);padding:.18rem .65rem;font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;white-space:nowrap}.instr{font-size:.79rem;color:var(--ink-2);font-style:italic;background:var(--soft);border-radius:9px;padding:.48rem .75rem;margin-bottom:.85rem}.strategy-strip{display:flex;gap:.45rem;flex-wrap:wrap;margin-bottom:.9rem}.chip{font-size:.68rem;font-weight:650;color:var(--ink-2);border:1px solid var(--line);border-radius:999px;background:var(--soft-2);padding:.25rem .65rem}
+.grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:.85rem}.grid>*{min-width:0}.grid.one{grid-template-columns:1fr}.card{background:var(--soft-2);border:1px solid var(--line);border-radius:14px;padding:.85rem .95rem;break-inside:avoid}.card.span{grid-column:1/-1}.card-head{display:flex;justify-content:space-between;align-items:center;gap:.5rem;margin-bottom:.38rem}.qnum{font-family:var(--display);font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-3)}.lvl{border-radius:999px;padding:.08rem .5rem;font-size:.61rem;font-weight:750;text-transform:uppercase}.l1{background:#dcebfb;color:#1d4ed8}.l2{background:#e8edf5;color:#244c86}.l3{background:#fbebcf;color:#8a4307}.l4{background:#be123c;color:#fff}.stem{font-size:.83rem;font-weight:520;line-height:1.58;color:var(--ink)}.stem strong{font-weight:750}.math{font-weight:700;letter-spacing:.01em}.choices{display:grid;grid-template-columns:1fr 1fr;gap:.36rem;margin-top:.58rem}.choice{position:relative}.choice input{position:absolute;opacity:0;pointer-events:none}.choice label{display:flex;align-items:flex-start;gap:.42rem;min-height:38px;border:1px solid var(--line);background:#fff;border-radius:9px;padding:.42rem .52rem;font-size:.75rem;line-height:1.35;cursor:pointer}.choice label::before{content:attr(data-letter);font-weight:750;color:var(--blue);flex:none}.choice input:checked+label{background:var(--blue-soft);border-color:#2563eb;box-shadow:inset 0 0 0 1px #2563eb}.choice input:focus-visible+label{outline:2px solid var(--blue);outline-offset:2px}
+.work{width:100%;min-height:60px;margin-top:.55rem;border:1px dashed #9aa9bf;border-radius:8px;background:#fff;padding:.48rem .58rem;resize:vertical;outline:none;color:var(--ink);font-size:.76rem}.work:focus{border-style:solid;border-color:var(--blue);box-shadow:0 0 0 2px rgba(37,99,235,.12)}.work.tall{min-height:92px}.answer-row{display:flex;align-items:center;gap:.4rem;margin-top:.45rem;font-size:.72rem;font-weight:700;color:var(--ink-2)}.answer-row input{flex:1;min-width:0;border:0;border-bottom:1.5px solid #9aa9bf;background:transparent;outline:0;padding:.16rem .25rem}.answer-row input:focus{border-bottom-color:var(--blue)}.note{font-size:.68rem;color:var(--ink-3);margin-top:.35rem}
+.error-table{width:100%;border-collapse:collapse;font-size:.72rem}.error-table th,.error-table td{border:1px solid var(--line);padding:.42rem;vertical-align:top}.error-table th{background:var(--soft);text-transform:uppercase;letter-spacing:.04em;font-size:.62rem}.error-table input,.error-table textarea{width:100%;border:0;outline:0;background:transparent;font-size:.7rem;resize:vertical;min-height:26px}.checklist{display:grid;grid-template-columns:1fr 1fr;gap:.42rem}.check-item{display:flex;align-items:flex-start;gap:.5rem;padding:.48rem .6rem;border:1px solid var(--line);border-radius:9px;background:var(--soft-2);font-size:.75rem}.check-item input{margin-top:.2rem;accent-color:var(--blue)}.reflection{display:grid;gap:.5rem}.reflection label{font-size:.74rem;font-weight:650}.reflection textarea{width:100%;min-height:58px;border:1px dashed #9aa9bf;border-radius:8px;padding:.45rem;background:#fff;resize:vertical;outline:0;font-size:.75rem}.reflection textarea:focus{border-style:solid;border-color:var(--blue);outline:2px solid rgba(37,99,235,.12)}.footer-note{text-align:center;color:var(--ink-3);font-size:.63rem;margin-top:1.3rem}.toast{position:fixed;left:50%;bottom:22px;transform:translate(-50%,20px);background:var(--dark);color:#fff;border-radius:999px;padding:.55rem .9rem;font-size:.75rem;opacity:0;pointer-events:none;transition:.2s;z-index:30}.toast.show{opacity:1;transform:translate(-50%,0)}
+@media(max-width:700px){body{font-size:14px}.toolbar{justify-content:center}.sheet{margin:1rem .65rem;padding:1.25rem;border-radius:13px}.grid,.choices,.checklist{grid-template-columns:1fr}.card.span{grid-column:auto}.meta{width:100%;min-width:0}.score-banner{align-items:flex-start;flex-direction:column}.score-cell:first-child{border-left:0;padding-left:0}.section-hd{align-items:flex-start}.badge{white-space:normal;text-align:center}.error-wrap{width:100%;max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}.error-table{min-width:680px}}
+@media print{@page{size:letter;margin:.45in}html,body{background:#fff;max-width:none}.toolbar,.toast,.skip{display:none!important}.sheet{box-shadow:none!important;border-radius:0!important;margin:0!important;padding:.18in .25in!important}.page-break{break-before:page;page-break-before:always}.card{break-inside:avoid}.work,.reflection textarea{resize:none}.work{min-height:44px}.work.tall{min-height:70px}.section-hd{margin-top:1rem}.score-banner{background:#3d4c63!important}.choice input:checked+label{background:#dcebfb!important}.footer-note{margin-top:.7rem}}
+</style>
+</head>
+<body>
+<a class="skip" href="#homework">Skip to homework</a>
+<div class="toolbar no-print" aria-label="Homework controls">
+  <button class="action" type="button" onclick="window.print()">Print / Save as PDF</button>
+  <button class="action clear" type="button" onclick="clearAll()">Clear All</button>
+</div>
+<main id="homework">
+<section class="sheet" aria-labelledby="title">
+<header class="hw-header">
+  <div><div class="eyebrow">Digital SAT Math · Session 3</div><h1 id="title">Linear Expressions <span class="tint">+ Equations</span></h1><div class="subtitle">Distribute Fully · Isolate Precisely · Homework Activity Sheet</div></div>
+  <div class="meta"><div class="meta-row"><label for="student-name">Name</label><input class="line-input" id="student-name" type="text" autocomplete="name"></div><div class="meta-row"><label for="homework-date">Date</label><input class="line-input" id="homework-date" type="text"></div></div>
+</header>
+<div class="score-banner"><div><div class="score-title">Completion Check</div><div class="score-sub">Score after review; justify every correction in the error log.</div></div><div class="score-cells"><div class="score-cell"><div><input type="number" min="0" max="18" aria-label="Core score"> / 18</div><div class="score-lbl">Core</div></div><div class="score-cell"><div><input type="number" min="0" max="6" aria-label="Bridge score"> / 6</div><div class="score-lbl">Bridge</div></div><div class="score-cell"><div><input type="number" min="0" max="24" aria-label="Total score"> / 24</div><div class="score-lbl">Total</div></div></div></div>
+<div class="section-hd"><span class="num-dot">A</span><h2>Structure Before Symbols</h2><span class="badge">4 prompts · 7 min</span></div>
+<p class="instr">Do not solve unless asked. Name the legal move and explain what it preserves.</p>
+<div class="grid">
+<article class="card"><div class="card-head"><span class="qnum">A1 · Distribution</span><span class="lvl l1">Explain</span></div><p class="stem">For <span class="math">−4(2x + 7)</span>, describe exactly how the factor <span class="math">−4</span> changes <strong>both</strong> terms. Why must the constant change sign?</p><textarea class="work" placeholder="State the two products and the sign logic."></textarea></article>
+<article class="card"><div class="card-head"><span class="qnum">A2 · Like Terms</span><span class="lvl l1">Classify</span></div><p class="stem">From <span class="math">5x², −3x, 8, 11x², 2x</span>, list the groups that may legally combine. Explain why <span class="math">x²</span>-terms and <span class="math">x</span>-terms are not alike.</p><textarea class="work" placeholder="Group first; then defend the boundary."></textarea></article>
+<article class="card"><div class="card-head"><span class="qnum">A3 · Equality</span><span class="lvl l2">Audit</span></div><p class="stem">A student changes <span class="math">6x − 11 = 31</span> to <span class="math">6x = 31</span>. Identify the first invalid step and write the correct next line.</p><textarea class="work" placeholder="Name what must happen to both sides."></textarea></article>
+<article class="card"><div class="card-head"><span class="qnum">A4 · Invariant</span><span class="lvl l2">Explain</span></div><p class="stem">In one precise sentence, distinguish <strong>rewriting one side equivalently</strong> from <strong>performing an operation on both sides</strong>.</p><textarea class="work" placeholder="Use the phrase “solution set.”"></textarea></article>
+</div>
+<div class="section-hd"><span class="num-dot">B</span><h2>Translate and Defend</h2><span class="badge">4 prompts · 9 min</span></div>
+<p class="instr">Define the variable with units, write an equation, solve, and interpret the result.</p>
+<div class="grid">
+<article class="card span"><div class="card-head"><span class="qnum">B1 · Context Model</span><span class="lvl l2">Construct</span></div><p class="stem">A bicycle rental costs a one-time safety fee of <strong>$9</strong> plus the same hourly rate. A 6-hour rental costs <strong>$57</strong>. Let <span class="math">r</span> be the hourly rate in dollars per hour. Write and solve an equation for <span class="math">r</span>.</p><textarea class="work tall" placeholder="Define → model → solve → check units."></textarea><div class="answer-row"><label>Hourly rate:</label><input type="text" aria-label="B1 answer"></div></article>
+<article class="card"><div class="card-head"><span class="qnum">B2 · Meaning</span><span class="lvl l2">Explain</span></div><p class="stem">In your equation from B1, explain which amount occurs once, which amount repeats, and why the coefficient is 6.</p><textarea class="work"></textarea></article>
+<article class="card"><div class="card-head"><span class="qnum">B3 · Representation</span><span class="lvl l2">Choose</span></div><p class="stem">Which equation represents: “Seven less than three times a number is 20”?</p><div class="choices"><span class="choice"><input id="b3a" name="b3" type="radio"><label for="b3a" data-letter="A">7 − 3x = 20</label></span><span class="choice"><input id="b3b" name="b3" type="radio"><label for="b3b" data-letter="B">3(x − 7) = 20</label></span><span class="choice"><input id="b3c" name="b3" type="radio"><label for="b3c" data-letter="C">3x − 7 = 20</label></span><span class="choice"><input id="b3d" name="b3" type="radio"><label for="b3d" data-letter="D">7x − 3 = 20</label></span></div></article>
+<article class="card span"><div class="card-head"><span class="qnum">B4 · Distractor Autopsy</span><span class="lvl l3">Analyze</span></div><p class="stem">For B3, choose one incorrect option and describe the exact language error that would produce it.</p><textarea class="work" placeholder="Do not merely say “wrong order.” Connect words to symbols."></textarea></article>
+</div>
+<div class="footer-note">Page 1 of 4 · Name, date, and title appear on the first page only.</div>
+</section>
 
+<section class="sheet page-break" aria-label="Linear equation practice">
+<div class="section-hd"><span class="num-dot">C</span><h2>Linear Fluency Lab</h2><span class="badge">8 questions · 14 min</span></div>
+<p class="instr">Write one legal move per line. Substitute every answer into the original equation before moving on.</p>
+<div class="strategy-strip"><span class="chip">Distribute completely</span><span class="chip">Combine within each side</span><span class="chip">Create one variable side</span><span class="chip">Plug back</span></div>
+<div class="grid">
+<article class="card"><div class="card-head"><span class="qnum">C1</span><span class="lvl l1">Level 1</span></div><p class="stem math">8x + 13 = 61</p><textarea class="work" aria-label="C1 work"></textarea><div class="answer-row"><label>x =</label><input type="text" aria-label="C1 answer"></div></article>
+<article class="card"><div class="card-head"><span class="qnum">C2</span><span class="lvl l1">Level 1</span></div><p class="stem math">4(3x − 2) = 52</p><textarea class="work" aria-label="C2 work"></textarea><div class="answer-row"><label>x =</label><input type="text" aria-label="C2 answer"></div></article>
+<article class="card"><div class="card-head"><span class="qnum">C3</span><span class="lvl l2">Level 2</span></div><p class="stem math">15 − 2(4x + 1) = −19</p><textarea class="work" aria-label="C3 work"></textarea><div class="answer-row"><label>x =</label><input type="text" aria-label="C3 answer"></div></article>
+<article class="card"><div class="card-head"><span class="qnum">C4</span><span class="lvl l2">Level 2</span></div><p class="stem math">7x + 18 = 3x − 10</p><textarea class="work" aria-label="C4 work"></textarea><div class="answer-row"><label>x =</label><input type="text" aria-label="C4 answer"></div></article>
+<article class="card"><div class="card-head"><span class="qnum">C5</span><span class="lvl l2">Level 2</span></div><p class="stem math">5(2x + 3) − 4 = 3(x + 9)</p><textarea class="work" aria-label="C5 work"></textarea><div class="answer-row"><label>x =</label><input type="text" aria-label="C5 answer"></div></article>
+<article class="card"><div class="card-head"><span class="qnum">C6</span><span class="lvl l3">Level 3</span></div><p class="stem math">4 − 3(2x − 5) = 5(x + 1) + 3</p><textarea class="work" aria-label="C6 work"></textarea><div class="answer-row"><label>x =</label><input type="text" aria-label="C6 answer"></div></article>
+<article class="card"><div class="card-head"><span class="qnum">C7</span><span class="lvl l3">Classify</span></div><p class="stem">Determine whether the equation has <strong>one solution, no solution, or infinitely many solutions</strong>.</p><p class="stem math">6(x − 2) + 4 = 2(3x − 4)</p><textarea class="work" aria-label="C7 work"></textarea><div class="answer-row"><label>Classification:</label><input type="text" aria-label="C7 answer"></div></article>
+<article class="card"><div class="card-head"><span class="qnum">C8</span><span class="lvl l3">Classify</span></div><p class="stem">Determine whether the equation has <strong>one solution, no solution, or infinitely many solutions</strong>.</p><p class="stem math">9 − 4(2x + 1) = 5 − 8x</p><textarea class="work" aria-label="C8 work"></textarea><div class="answer-row"><label>Classification:</label><input type="text" aria-label="C8 answer"></div></article>
+</div>
+<div class="section-hd"><span class="num-dot">D</span><h2>Equivalent or Not?</h2><span class="badge">3 audits · 6 min</span></div>
+<p class="instr">For each proposed step, mark Valid or Invalid. If invalid, repair only that step.</p>
+<div class="grid">
+<article class="card"><div class="card-head"><span class="qnum">D1 · Distribution</span><span class="lvl l2">Audit</span></div><p class="stem"><span class="math">−3(5x − 4) → −15x − 12</span></p><div class="choices"><span class="choice"><input id="d1a" name="d1" type="radio"><label for="d1a" data-letter="A">Valid</label></span><span class="choice"><input id="d1b" name="d1" type="radio"><label for="d1b" data-letter="B">Invalid</label></span></div><textarea class="work" placeholder="Repair or justify."></textarea></article>
+<article class="card"><div class="card-head"><span class="qnum">D2 · Both Sides</span><span class="lvl l2">Audit</span></div><p class="stem"><span class="math">2x + 9 = 17 → 2x = 8</span></p><div class="choices"><span class="choice"><input id="d2a" name="d2" type="radio"><label for="d2a" data-letter="A">Valid</label></span><span class="choice"><input id="d2b" name="d2" type="radio"><label for="d2b" data-letter="B">Invalid</label></span></div><textarea class="work" placeholder="Name the operation."></textarea></article>
+<article class="card span"><div class="card-head"><span class="qnum">D3 · Combining</span><span class="lvl l3">Audit</span></div><p class="stem"><span class="math">4x² + 7x − 3x² → 8x²</span></p><div class="choices"><span class="choice"><input id="d3a" name="d3" type="radio"><label for="d3a" data-letter="A">Valid</label></span><span class="choice"><input id="d3b" name="d3" type="radio"><label for="d3b" data-letter="B">Invalid</label></span></div><textarea class="work" placeholder="Rewrite the expression correctly and explain the variable parts."></textarea></article>
+</div>
+<div class="footer-note">Page 2 of 4 · Every new line must preserve the original solution set.</div>
+</section>
+
+<section class="sheet page-break" aria-label="Advanced bridge and timed Digital SAT practice">
+<div class="section-hd bridge"><span class="num-dot">E</span><h2>Guardrail Bridge</h2><span class="badge">6 questions · 12 min</span></div>
+<p class="instr">Use the shortcut only when its condition is satisfied. For radicals, generate candidates and then return to the original equation.</p>
+<div class="grid">
+<article class="card"><div class="card-head"><span class="qnum">E1 · Proportion</span><span class="lvl l3">Solve</span></div><p class="stem math">(x + 5)/6 = (3x − 1)/10</p><textarea class="work" aria-label="E1 work"></textarea><div class="answer-row"><label>x =</label><input type="text" aria-label="E1 answer"></div></article>
+<article class="card"><div class="card-head"><span class="qnum">E2 · Permission</span><span class="lvl l3">Explain</span></div><p class="stem">A student wants to “cross-multiply” in <span class="math">(x + 2)/3 + 4 = 7</span>. Explain why the diagonal shortcut does not apply as written, then give a legal first move.</p><textarea class="work"></textarea></article>
+<article class="card"><div class="card-head"><span class="qnum">E3 · Radical</span><span class="lvl l4">Solve + Check</span></div><p class="stem math">√(3x + 4) = x</p><textarea class="work tall" aria-label="E3 work"></textarea><div class="answer-row"><label>Valid solution(s):</label><input type="text" aria-label="E3 answer"></div></article>
+<article class="card"><div class="card-head"><span class="qnum">E4 · Domain</span><span class="lvl l3">Reason</span></div><p class="stem">Before squaring <span class="math">√(5x − 6) = x − 4</span>, what two conditions must be true? State each as an inequality.</p><textarea class="work" placeholder="Check the radicand and the right side."></textarea></article>
+<article class="card"><div class="card-head"><span class="qnum">E5 · Candidate Trial</span><span class="lvl l4">Verify</span></div><p class="stem">Algebra produces candidates <span class="math">x = 2</span> and <span class="math">x = 7</span> for <span class="math">√(x + 2) = x − 4</span>. Test both in the <strong>original</strong> equation and report the verdict.</p><textarea class="work tall"></textarea></article>
+<article class="card"><div class="card-head"><span class="qnum">E6 · Error Mechanism</span><span class="lvl l4">Explain</span></div><p class="stem">Why can squaring both sides create a solution that was not valid before squaring? Use sign information in your explanation.</p><textarea class="work"></textarea></article>
+</div>
+<div class="section-hd timed"><span class="num-dot">F</span><h2>Digital SAT Timed Set</h2><span class="badge">6 questions · 9 min</span></div>
+<p class="instr">Set a 9-minute timer. Answer every item. For graph verification, identify the requested coordinate before opening Desmos.</p>
+<div class="strategy-strip"><span class="chip">Box the deliverable</span><span class="chip">Choose algebra or graph</span><span class="chip">Audit signs</span><span class="chip">Zero blanks</span></div>
+<div class="grid">
+<article class="card"><div class="card-head"><span class="qnum">F1</span><span class="lvl l1">Level 1</span></div><p class="stem">Which expression is equivalent to <span class="math">3(4x − 5) + 2x</span>?</p><div class="choices"><span class="choice"><input id="f1a" name="f1" type="radio"><label for="f1a" data-letter="A">14x − 5</label></span><span class="choice"><input id="f1b" name="f1" type="radio"><label for="f1b" data-letter="B">14x − 15</label></span><span class="choice"><input id="f1c" name="f1" type="radio"><label for="f1c" data-letter="C">12x − 13</label></span><span class="choice"><input id="f1d" name="f1" type="radio"><label for="f1d" data-letter="D">6x − 15</label></span></div></article>
+<article class="card"><div class="card-head"><span class="qnum">F2</span><span class="lvl l2">Level 2</span></div><p class="stem">If <span class="math">11 − 3(2x − 1) = −22</span>, what is the value of <span class="math">x</span>?</p><div class="answer-row"><label>SPR:</label><input type="text" aria-label="F2 answer"></div><textarea class="work" aria-label="F2 work"></textarea></article>
+<article class="card"><div class="card-head"><span class="qnum">F3</span><span class="lvl l2">Level 2</span></div><p class="stem">A meal-delivery plan charges a one-time cooler deposit of <strong>$24</strong> and <strong>$11</strong> per meal. A customer's first order costs <strong>$101</strong>. How many meals were ordered?</p><div class="answer-row"><label>SPR:</label><input type="text" aria-label="F3 answer"></div><textarea class="work" aria-label="F3 work"></textarea></article>
+<article class="card"><div class="card-head"><span class="qnum">F4</span><span class="lvl l3">Level 3</span></div><p class="stem">For what value of <span class="math">k</span> does <span class="math">k(2x − 3) = 10x − 15</span> have infinitely many solutions?</p><div class="choices"><span class="choice"><input id="f4a" name="f4" type="radio"><label for="f4a" data-letter="A">2</label></span><span class="choice"><input id="f4b" name="f4" type="radio"><label for="f4b" data-letter="B">3</label></span><span class="choice"><input id="f4c" name="f4" type="radio"><label for="f4c" data-letter="C">5</label></span><span class="choice"><input id="f4d" name="f4" type="radio"><label for="f4d" data-letter="D">15</label></span></div></article>
+<article class="card"><div class="card-head"><span class="qnum">F5</span><span class="lvl l3">Level 3</span></div><p class="stem">The lines <span class="math">y = 4x − 9</span> and <span class="math">y = −2x + 15</span> intersect at <span class="math">(a, b)</span>. What is the value of <span class="math">a</span>?</p><div class="answer-row"><label>SPR:</label><input type="text" aria-label="F5 answer"></div><textarea class="work" placeholder="Algebra or Desmos verification."></textarea></article>
+<article class="card"><div class="card-head"><span class="qnum">F6</span><span class="lvl l4">Level 4</span></div><p class="stem">If <span class="math">(m + 2)x + 7 = 9x + 7</span> is true for every value of <span class="math">x</span>, what is <span class="math">m</span>?</p><div class="answer-row"><label>SPR:</label><input type="text" aria-label="F6 answer"></div><textarea class="work" aria-label="F6 work"></textarea></article>
+</div>
+<div class="footer-note">Page 3 of 4 · These questions are new and do not repeat the attached lesson-deck items.</div>
+</section>
+
+<section class="sheet page-break" aria-label="Homework review and reflection">
+<div class="section-hd review"><span class="num-dot">G</span><h2>Verification Record</h2><span class="badge">Evidence before answers</span></div>
+<p class="instr">Complete this section before checking an answer key or discussing solutions.</p>
+<div class="checklist">
+<label class="check-item"><input type="checkbox">I distributed to every term, including constants.</label>
+<label class="check-item"><input type="checkbox">I combined only terms with identical variable parts.</label>
+<label class="check-item"><input type="checkbox">I kept equations equivalent one line at a time.</label>
+<label class="check-item"><input type="checkbox">I checked each linear solution in the original equation.</label>
+<label class="check-item"><input type="checkbox">I stated conditions before using an advanced shortcut.</label>
+<label class="check-item"><input type="checkbox">I tested every radical candidate in the original equation.</label>
+<label class="check-item"><input type="checkbox">I answered the requested quantity, coordinate, or unit.</label>
+<label class="check-item"><input type="checkbox">I finished the timed set with zero blanks.</label>
+</div>
+<div class="grid" style="margin-top:.85rem">
+<article class="card"><div class="card-head"><span class="qnum">Timing Evidence</span><span class="lvl l2">Record</span></div><p class="stem">How long did F1–F6 take? Which question consumed the most time, and what observable trigger should have made you flag it?</p><textarea class="work tall"></textarea></article>
+<article class="card"><div class="card-head"><span class="qnum">Tool Evidence</span><span class="lvl l2">Record</span></div><p class="stem">If you used Desmos, state the two expressions entered, the graph feature inspected, and the exact value read. If not, identify one item it could verify.</p><textarea class="work tall"></textarea></article>
+</div>
+<div class="section-hd review"><span class="num-dot">H</span><h2>Error Log</h2><span class="badge">Up to 5 corrections</span></div>
+<p class="instr">Choose one primary error type: Distribution, Like Terms, Equality, Translation, Condition, Checking, Reading, or Timing.</p>
+<div class="error-wrap"><table class="error-table"><thead><tr><th>#</th><th>Problem</th><th>My original thought</th><th>Primary error type</th><th>Correction rule</th></tr></thead><tbody>
+<tr><td>1</td><td><input aria-label="Error 1 problem"></td><td><textarea aria-label="Error 1 thought"></textarea></td><td><input aria-label="Error 1 type"></td><td><textarea aria-label="Error 1 rule"></textarea></td></tr>
+<tr><td>2</td><td><input aria-label="Error 2 problem"></td><td><textarea aria-label="Error 2 thought"></textarea></td><td><input aria-label="Error 2 type"></td><td><textarea aria-label="Error 2 rule"></textarea></td></tr>
+<tr><td>3</td><td><input aria-label="Error 3 problem"></td><td><textarea aria-label="Error 3 thought"></textarea></td><td><input aria-label="Error 3 type"></td><td><textarea aria-label="Error 3 rule"></textarea></td></tr>
+<tr><td>4</td><td><input aria-label="Error 4 problem"></td><td><textarea aria-label="Error 4 thought"></textarea></td><td><input aria-label="Error 4 type"></td><td><textarea aria-label="Error 4 rule"></textarea></td></tr>
+<tr><td>5</td><td><input aria-label="Error 5 problem"></td><td><textarea aria-label="Error 5 thought"></textarea></td><td><input aria-label="Error 5 type"></td><td><textarea aria-label="Error 5 rule"></textarea></td></tr>
+</tbody></table></div>
+<div class="section-hd review"><span class="num-dot">I</span><h2>Transfer Reflection</h2><span class="badge">Complete sentences</span></div>
+<div class="reflection">
+<label for="r1">1. The first visible sign that I have made a distribution or sign error is…</label><textarea id="r1"></textarea>
+<label for="r2">2. One equation in this homework that I can now solve by two representations is… The representations are…</label><textarea id="r2"></textarea>
+<label for="r3">3. The distinction between a candidate and a verified solution matters because…</label><textarea id="r3"></textarea>
+<label for="r4">4. On my next Digital SAT Math module, the correction rule I will apply first is…</label><textarea id="r4"></textarea>
+</div>
+<div class="footer-note">Page 4 of 4 · Bring the completed sheet and error log to the next session.</div>
+</section>
+</main>
+<div class="toast" id="toast" role="status" aria-live="polite">All responses cleared.</div>
+<script>
+function clearAll(){
+  if(!confirm('Clear all answers on this homework sheet?')) return;
+  document.querySelectorAll('input').forEach(el=>{if(el.type==='radio'||el.type==='checkbox')el.checked=false;else el.value='';});
+  document.querySelectorAll('textarea').forEach(el=>el.value='');
+  const toast=document.getElementById('toast');toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),1800);
+}
+</script>
+</body>
+</html>
