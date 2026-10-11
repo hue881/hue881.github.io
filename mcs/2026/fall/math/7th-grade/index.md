@@ -12,5 +12,5 @@
 | No. | Lesson | Activity | Homework | Practice | Notes |
 |:-----:|:----------|:---------------:|:-------|:-------|:----------|
 | **01** | [Welcome!](https://hue881.github.io/mcs/2026/fall/math/7th-grade/lesson/01) |[Test](https://hue881.github.io/mcs/2026/fall/math/7th-grade/test)  | [Homework](https://hue881.github.io/mcs/2026/fall/math/7th-grade/lesson/01/homework) | -- ||
-| **02** | [Diagnostic Review + Fractions/Decimals](https://hue881.github.io/mcs/2026/fall/math/7th-grade/lesson/02) |  | [Homework](https://hue881.github.io/mcs/2026/fall/math/7th-grade/lesson/02/homework) | -- ||
-| **03** | [Percents I Benchmarks & Change](https://hue881.github.io/mcs/2026/fall/math/7th-grade/lesson/03) |  | [Homework](https://hue881.github.io/mcs/2026/fall/math/7th-grade/lesson/03/homework) | -- ||
+| **02** | [Diagnostic Review + Fractions/Decimals](https://hue881.github.io/mcs/2026/fall/math/7th-grade/lesson/02) |  | [Homework 2](https://hue881.github.io/mcs/2026/fall/math/7th-grade/lesson/02/homework/homework02.pdf) | -- ||
+| **03** | [Percents I Benchmarks & Change](https://hue881.github.io/mcs/2026/fall/math/7th-grade/lesson/03) |  | [Homework 3](https://hue881.github.io/mcs/2026/fall/math/7th-grade/lesson/03/homework) | -- ||
