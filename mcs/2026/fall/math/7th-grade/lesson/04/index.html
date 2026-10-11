@@ -1,1 +1,318 @@
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="slides-format" content="viewport">
+<title>Session 4 — Percents II</title>
+<link href="https://api.fontshare.com/v2/css?f[]=chillax@400,500,600,700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300..800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f4f4f4;--surface:#ffffff;--ink:#1f1f1f;--ink-2:#4a4a4a;--ink-3:#767676;
+  --line:rgba(201,212,228,.55);--z1:#262626;--z1-soft:rgba(38,38,38,.10);
+  --z2:#4d4d4d;--z2-soft:rgba(77,77,77,.10);--z3:#6a6a6a;--z3-soft:rgba(106,106,106,.12);
+  --z4:#858585;--z4-soft:rgba(133,133,133,.12);--z5:#5c5c5c;--z5-soft:rgba(92,92,92,.10);
+  --font-display:'Chillax','Trebuchet MS',sans-serif;--font-body:'Lexend','Trebuchet MS',sans-serif;--font-math:'Lexend','Trebuchet MS',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box}html,body{background:var(--bg);margin:0}body{font-family:var(--font-body);color:var(--ink);overflow:hidden;height:100vh;width:100vw;font-weight:400}
+.deck{width:100vw;height:100vh;position:relative}.slide{position:absolute;inset:0;width:100%;height:100%;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;transform:scale(.97);transition:opacity .5s ease,transform .5s ease;pointer-events:none;overflow:hidden}.slide.active{opacity:1;transform:scale(1);pointer-events:all}.slide>.content{position:relative;z-index:2;width:100%;max-width:1100px;padding:clamp(1rem,3vw,2.6rem)}
+.pptx-mode .slide{width:960px!important;height:540px!important;position:relative!important}.pptx-mode .slide>.content{max-width:920px;padding:22px}.pptx-mode .nav-controls{display:none!important}
+.gradient-mesh{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none}.blob{position:absolute;border-radius:50%;filter:blur(75px);animation:drift 14s ease-in-out infinite}.blob.b1{width:420px;height:420px;right:-130px;top:-130px;background:#d9d9d9;opacity:.28}.blob.b2{width:320px;height:320px;left:-100px;bottom:-100px;background:#cbd5e1;opacity:.18;animation-direction:reverse}.blob.b3{width:200px;height:200px;left:42%;top:28%;background:#e5e7eb;opacity:.16}@keyframes drift{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(35px,-24px) scale(1.08)}}
+.particle-canvas{position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none;opacity:.32}
+.nav-controls{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:14px;z-index:100;background:rgba(255,255,255,.94);backdrop-filter:blur(12px);padding:8px 20px;border-radius:40px;border:1px solid var(--line);box-shadow:0 10px 28px rgba(201,212,228,.32),0 2px 8px rgba(201,212,228,.18)}.nav-btn{width:36px;height:36px;border:none;background:#EDF2F9;color:var(--ink);border-radius:50%;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center}.nav-btn:hover{background:#DCE7F7}.slide-dots{display:flex;gap:5px;max-width:360px;flex-wrap:wrap;justify-content:center}.dot{width:7px;height:7px;border-radius:50%;background:rgba(0,0,0,.18);cursor:pointer}.dot.active{background:var(--ink);transform:scale(1.35)}.slide-counter{font-size:.75rem;color:var(--ink-3);min-width:44px;text-align:center;font-weight:600}
+.reveal{opacity:0;transform:translateY(16px)}h1.deck-title{font-family:var(--font-display);font-weight:600;letter-spacing:-.01em;margin:0}h2.slide-title{font-family:var(--font-display);font-size:clamp(1.5rem,3vw,2.15rem);font-weight:600;letter-spacing:-.01em;margin:0 0 1rem;color:var(--ink)}h2.slide-title .tint{color:var(--zc,var(--z2))}.kicker{font-size:.7rem;font-weight:600;text-transform:uppercase;letter-spacing:.14em;color:var(--zc,var(--ink-3));margin-bottom:.35rem}.prose{font-size:.95rem;color:var(--ink-2);line-height:1.58}.math{font-family:var(--font-math);font-weight:700;font-size:1.45rem;color:var(--ink);letter-spacing:.01em;font-variant-numeric:lining-nums}.math-inline{font-family:var(--font-math);font-weight:700}.muted{color:var(--ink-3)}
+.zone-strip{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:.85rem}.zone-chip{display:inline-flex;align-items:center;gap:6px;font-size:.66rem;font-weight:500;padding:4px 10px;border-radius:20px;background:var(--surface);border:1px solid var(--line);color:var(--ink-3);white-space:nowrap}.zone-chip .zdot{width:7px;height:7px;border-radius:50%;background:var(--dc,#C9D4E4)}.zone-chip.on{color:#fff;font-weight:600;background:var(--dc);border-color:var(--dc)}.zone-chip.on .zdot{background:rgba(255,255,255,.85)}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem}.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:.65rem}.stack{display:grid;gap:.7rem}.prob-card,.info-card,.diagram-wrap,.step-card,.passage-card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:.82rem 1rem;box-shadow:0 10px 24px rgba(201,212,228,.20),0 2px 6px rgba(201,212,228,.14)}.prob-head{display:flex;align-items:center;gap:.5rem;margin-bottom:.43rem}.prob-num{font-family:var(--font-display);font-weight:600;font-size:.84rem;background:var(--zs,#EDF2F9);border-radius:8px;padding:2px 10px}.lvl-badge{font-size:.61rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;padding:3px 9px;border-radius:20px}.lvl-1{background:#E8EDF5;color:#3D4C63}.lvl-2{background:#DCEBFB;color:#1D4ED8}.lvl-3{background:#FBEBCF;color:#B45309}.lvl-4{background:#FADEE2;color:#BE123C}.timer{margin-left:auto;font-size:.68rem;font-weight:700;color:var(--ink-3);background:#eef1f5;border-radius:14px;padding:3px 8px}.inquiry-card{border:1px solid var(--line);border-left:5px solid #7C3AED;background:#F8F5FF;border-radius:12px;padding:.68rem .92rem}.inquiry-title{font-weight:700;font-size:.84rem;color:#5B21B6}.inquiry-body,.trap-body,.win-body{font-size:.84rem;color:var(--ink-2);margin-top:.22rem;line-height:1.48}.trap-card{border:1px solid var(--line);background:#FFF7F8;border-radius:12px;padding:.68rem .92rem}.trap-title{font-weight:700;font-size:.84rem;color:#9F1239}.win-card{border:1px solid var(--line);border-left:5px solid var(--z5);background:#F4FBF5;border-radius:12px;padding:.68rem .92rem}.win-title{font-weight:700;font-size:.84rem;color:#15803D}.formula-box{background:var(--zs,#EDF2F9);border:1px solid #d3dae5;border-radius:12px;padding:.58rem 1rem;text-align:center}.step-card{position:relative;padding-left:3.6rem}.step-num{position:absolute;left:1rem;top:.75rem;width:2rem;height:2rem;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#edf2f9;font-weight:800}.step-title{font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-3);font-weight:700}.step-body{font-size:.92rem;color:var(--ink);margin-top:.18rem;line-height:1.45}.passage-card{border-left:5px solid #6a6a6a}.passage-title{font-family:var(--font-display);font-weight:600;margin-bottom:.35rem}.passage-text{font-size:.88rem;line-height:1.55;color:var(--ink-2)}
+.mc-options{display:grid;grid-template-columns:1fr 1fr;gap:.32rem;margin-top:.45rem}.mc-option{display:flex;align-items:flex-start;gap:.45rem;padding:.38rem .58rem;border-radius:9px;border:1px solid var(--line);background:#FBFCFE;cursor:pointer;font-size:.82rem;line-height:1.4;color:var(--ink-2);user-select:none}.mc-option:hover{background:#F1F6FD}.mc-option.selected{background:var(--zs,#EDF2F9);border-color:var(--zc,var(--ink));font-weight:600;color:var(--ink)}.opt-letter{font-family:var(--font-math);font-weight:700;min-width:1.1rem}.work-box{border:1px dashed rgba(185,198,217,.8);border-radius:10px;background:#F9FBFE;overflow:hidden;margin-top:.5rem}.work-box textarea{width:100%;min-height:3rem;border:none;background:transparent;resize:none;padding:.52rem .75rem;font-size:.9rem;color:var(--ink-2);font-family:var(--font-math);outline:none}.work-box textarea:focus{background:#F1F6FD}.entry-row{display:flex;align-items:center;gap:.55rem;margin-top:.5rem}.entry-row input{width:160px;border:1px solid #b9c6d9;border-radius:9px;padding:.5rem .65rem;font-family:var(--font-math);font-size:1rem}.entry-label{font-size:.76rem;color:var(--ink-3);font-weight:600;text-transform:uppercase;letter-spacing:.08em}
+.timeline{display:grid;gap:.45rem}.tl-row{display:grid;grid-template-columns:80px 14px 1fr;gap:0 .7rem}.tl-time{font-family:var(--font-math);font-weight:700;font-size:.82rem;color:var(--rc);text-align:right;padding-top:.55rem}.tl-rail{position:relative;display:flex;justify-content:center}.tl-rail::before{content:'';position:absolute;top:0;bottom:0;width:2px;background:var(--line)}.tl-dot{position:relative;z-index:1;width:13px;height:13px;border-radius:50%;background:var(--rc);border:3px solid var(--bg);margin-top:.58rem}.tl-card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:.48rem .8rem}.tl-h{font-weight:600;font-size:.88rem}.tl-b{font-size:.78rem;color:var(--ink-2);margin-top:.1rem;line-height:1.42}
+.hero-mark{width:155px;height:155px;margin:0 auto .7rem;position:relative;animation:float 3.2s ease-in-out infinite}.hero-ring{position:absolute;border-radius:50%;border:14px solid #dce3ec;inset:0}.hero-ring::after{content:'';position:absolute;inset:-14px;border-radius:50%;border:14px solid transparent;border-top-color:#262626;border-right-color:#858585;transform:rotate(-20deg)}.hero-mark span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:2.5rem;font-weight:700}@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.progress-track{height:16px;border-radius:10px;background:#e8edf5;overflow:hidden;margin-top:.5rem}.progress-fill{height:100%;background:linear-gradient(90deg,#262626,#858585);width:0;transition:width .7s ease}.cat-top{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);padding-bottom:.55rem;margin-bottom:.8rem}.cat-q{font-size:.74rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-3)}.cat-rule{font-size:.72rem;color:#9F1239;font-weight:700}.diagram-wrap svg{max-width:100%;height:auto}.footer-note{font-size:.68rem;color:var(--ink-3);margin-top:.55rem;text-align:right}
+@media(max-width:800px){.grid-3,.grid-4{grid-template-columns:1fr 1fr}.slide-dots{max-width:220px}.content{font-size:.9rem}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.1s!important}}
+</style>
+</head>
+<body>
+<div class="deck">
+<!-- 1 -->
+<section class="slide active" data-slide="1">
+<canvas class="particle-canvas"></canvas>
+<div class="content" style="text-align:center">
+  <div class="reveal" style="display:inline-flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:24px;padding:6px 16px;font-size:.72rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);margin-bottom:.75rem"><span style="width:8px;height:8px;border-radius:50%;background:var(--z1)"></span> Unit 1 · Session 4</div>
+  <div class="hero-mark reveal" aria-hidden="true"><div class="hero-ring"></div><span>%</span></div>
+  <h1 class="deck-title reveal" style="font-size:clamp(2.1rem,5.5vw,3.7rem)">Percents II</h1>
+  <h2 class="reveal" style="font-family:var(--font-display);font-size:clamp(1.05rem,2.2vw,1.5rem);font-weight:500;color:var(--ink-2);margin:.55rem 0 .35rem">Multiplier Chains · Simple Interest · Successive Percents</h2>
+  <p class="reveal" style="font-size:.82rem;color:var(--ink-3);letter-spacing:.12em;text-transform:uppercase;font-weight:500;margin:0 0 1rem">Saturday, October 10 · 80 Minutes · Digital CAT SHSAT Math</p>
+  <div class="reveal" style="display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap"><span class="zone-chip">Discount + Tax</span><span class="zone-chip">Interest</span><span class="zone-chip">No-Return Decisions</span><span class="zone-chip">Typed Entry</span></div>
+</div></section>
+<!-- 2 -->
+<section class="slide" data-slide="2"><div class="content">
+<div class="kicker reveal">Mission</div><h2 class="slide-title reveal">What must become automatic today?</h2>
+<div class="grid-3">
+<div class="info-card reveal"><div class="prob-num">1</div><h3>Translate</h3><p class="prose">Turn each percent change into a multiplier before touching the starting value.</p></div>
+<div class="info-card reveal"><div class="prob-num">2</div><h3>Chain</h3><p class="prose">Apply changes in order; every percent acts on the value that exists at that moment.</p></div>
+<div class="info-card reveal"><div class="prob-num">3</div><h3>Commit</h3><p class="prose">Answer the exact quantity, check the entry format, then advance without returning.</p></div>
+</div>
+<div class="win-card reveal" style="margin-top:.8rem"><div class="win-title">Checkpoint</div><div class="win-body">At least 4 of 5 exit-ticket items correct, with no format error.</div></div>
+</div></section>
+<!-- 3 -->
+<section class="slide" data-slide="3"><div class="content">
+<div class="kicker reveal">Roadmap</div><h2 class="slide-title reveal">Your 80 minutes today</h2>
+<div class="timeline reveal">
+<div class="tl-row" style="--rc:#262626"><div class="tl-time">0–10</div><div class="tl-rail"><div class="tl-dot"></div></div><div class="tl-card"><div class="tl-h">Warm-up + retrieval</div><div class="tl-b">One prior percent, one circle strand, one range strand.</div></div></div>
+<div class="tl-row" style="--rc:#4d4d4d"><div class="tl-time">10–35</div><div class="tl-rail"><div class="tl-dot"></div></div><div class="tl-card"><div class="tl-h">Build the models</div><div class="tl-b">Multiplier chains, why percents do not add, and simple interest.</div></div></div>
+<div class="tl-row" style="--rc:#6a6a6a"><div class="tl-time">35–60</div><div class="tl-rail"><div class="tl-dot"></div></div><div class="tl-card"><div class="tl-h">Leveled guided practice</div><div class="tl-b">Levels 1–4; explain the multiplier and answer format before computing.</div></div></div>
+<div class="tl-row" style="--rc:#858585"><div class="tl-time">60–72</div><div class="tl-rail"><div class="tl-dot"></div></div><div class="tl-card"><div class="tl-h">CAT timed drill</div><div class="tl-b">Ten items, one visible at a time, commit and advance.</div></div></div>
+<div class="tl-row" style="--rc:#5c5c5c"><div class="tl-time">72–80</div><div class="tl-rail"><div class="tl-dot"></div></div><div class="tl-card"><div class="tl-h">Debrief + exit ticket</div><div class="tl-b">Classify errors, then prove 80% mastery.</div></div></div>
+</div></div></section>
+<!-- 4 -->
+<section class="slide" data-slide="4"><div class="content">
+<div class="zone-strip reveal"><span class="zone-chip on" style="--dc:#262626"><span class="zdot"></span>0–10 · Warm-up</span><span class="zone-chip">Formula first</span><span class="zone-chip">3 minutes silent</span></div>
+<h2 class="slide-title reveal">Fixed 1–1–1 warm-up</h2>
+<div class="grid-3">
+<div class="prob-card reveal"><div class="prob-head"><span class="prob-num">A</span><span class="lvl-badge lvl-1">Prior Unit</span></div><div class="prose">A quantity of 240 increases by 15%. What is the new quantity?</div><div class="work-box"><textarea placeholder="Formula → setup → result"></textarea></div></div>
+<div class="prob-card reveal"><div class="prob-head"><span class="prob-num">B</span><span class="lvl-badge lvl-2">Geometry G3</span></div><div class="prose">A circle has radius 6. Write its circumference and area in terms of π.</div><div class="work-box"><textarea placeholder="Write both formulas first"></textarea></div></div>
+<div class="prob-card reveal"><div class="prob-head"><span class="prob-num">C</span><span class="lvl-badge lvl-2">Statistics S3</span></div><div class="prose">A data set has range 18. Every value increases by 7. What is the new range?</div><div class="work-box"><textarea placeholder="State what changes—and what does not"></textarea></div></div>
+</div></div></section>
+<!-- 5 -->
+<section class="slide" data-slide="5"><div class="content">
+<div class="kicker reveal">Warm-up discussion</div><h2 class="slide-title reveal">Explain before anyone confirms</h2>
+<div class="grid-2">
+<div class="diagram-wrap reveal"><svg viewBox="0 0 480 270" role="img" aria-label="Circle with radius and diameter"><circle cx="240" cy="135" r="90" fill="#f8fafc" stroke="#262626" stroke-width="4"/><line x1="150" y1="135" x2="330" y2="135" stroke="#6a6a6a" stroke-width="4"/><line x1="240" y1="135" x2="240" y2="45" stroke="#9f1239" stroke-width="4"/><circle cx="240" cy="135" r="5" fill="#262626"/><text x="252" y="86" font-size="22" fill="#9f1239">r = 6</text><text x="190" y="165" font-size="19" fill="#4a4a4a">d = 2r</text><text x="125" y="250" font-size="18" fill="#767676">Which formula uses r? Which can use d?</text></svg></div>
+<div class="stack">
+<div class="inquiry-card reveal"><div class="inquiry-title">Percent</div><div class="inquiry-body">If 10% of 240 is 24, how can that anchor produce 15% without a calculator?</div></div>
+<div class="inquiry-card reveal"><div class="inquiry-title">Circle</div><div class="inquiry-body">Which measurement is squared? What error occurs if 6 is treated as the diameter?</div></div>
+<div class="inquiry-card reveal"><div class="inquiry-title">Range</div><div class="inquiry-body">What happens to the maximum and minimum after the same shift? What happens to their difference?</div></div>
+</div></div></div></section>
+<!-- 6 -->
+<section class="slide" data-slide="6"><div class="content">
+<div class="zone-strip reveal"><span class="zone-chip on" style="--dc:#4d4d4d"><span class="zdot"></span>10–35 · Build</span><span class="zone-chip">Multiplier language</span></div>
+<h2 class="slide-title reveal">One move: keep the part that remains</h2>
+<div class="grid-2">
+<div class="stack">
+<div class="formula-box reveal"><div class="prose">Increase by r</div><div class="math">new = original(1 + r)</div></div>
+<div class="formula-box reveal"><div class="prose">Decrease by r</div><div class="math">new = original(1 − r)</div></div>
+<div class="trap-card reveal"><div class="trap-title">Format check</div><div class="trap-body">Convert the percent rate to a decimal before building the multiplier: 8% becomes 0.08, so the growth multiplier is 1.08.</div></div>
+</div>
+<div class="diagram-wrap reveal"><svg viewBox="0 0 520 300" aria-label="Percent multiplier machine"><rect x="25" y="105" width="120" height="90" rx="14" fill="#ffffff" stroke="#c9d4e4" stroke-width="3"/><text x="85" y="143" text-anchor="middle" font-size="18" fill="#767676">ORIGINAL</text><text x="85" y="175" text-anchor="middle" font-size="28" font-weight="700">P</text><path d="M150 150 H218" stroke="#4d4d4d" stroke-width="5" marker-end="url(#a)"/><rect x="225" y="80" width="145" height="140" rx="18" fill="#edf2f9" stroke="#858585" stroke-width="3"/><text x="297" y="125" text-anchor="middle" font-size="18">MULTIPLY</text><text x="297" y="167" text-anchor="middle" font-size="28" font-weight="700">1 ± r</text><path d="M375 150 H440" stroke="#4d4d4d" stroke-width="5" marker-end="url(#a)"/><rect x="445" y="105" width="55" height="90" rx="14" fill="#ffffff" stroke="#c9d4e4" stroke-width="3"/><text x="472" y="158" text-anchor="middle" font-size="25" font-weight="700">N</text><defs><marker id="a" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#4d4d4d"/></marker></defs></svg></div>
+</div></div></section>
+<!-- 7 -->
+<section class="slide" data-slide="7"><div class="content">
+<div class="kicker reveal">Worked example · Level 3</div><h2 class="slide-title reveal">Discount, then tax: follow the timeline</h2>
+<div class="prob-card reveal"><div class="prob-head"><span class="prob-num">Model A</span><span class="lvl-badge lvl-3">Level 3</span></div><div class="prose">An $80 item is discounted 25%, then taxed 8%. What is the final cost?</div></div>
+<div class="grid-3" style="margin-top:.7rem">
+<div class="step-card reveal"><div class="step-num">1</div><div class="step-title">Translate</div><div class="step-body">25% off means keep 75%: <span class="math-inline">0.75</span>.</div></div>
+<div class="step-card reveal"><div class="step-num">2</div><div class="step-title">Chain</div><div class="step-body">8% tax means multiply the discounted price by <span class="math-inline">1.08</span>.</div></div>
+<div class="step-card reveal"><div class="step-num">3</div><div class="step-title">Compute</div><div class="step-body"><span class="math-inline">80(0.75)(1.08) = 64.80</span>.</div></div>
+</div>
+<div class="inquiry-card reveal" style="margin-top:.7rem"><div class="inquiry-title">Before calculating</div><div class="inquiry-body">Why must the final cost be below $80? Which multiplier makes that prediction visible immediately?</div></div>
+</div></section>
+<!-- 8 -->
+<section class="slide" data-slide="8"><div class="content">
+<div class="kicker reveal">Successive percents</div><h2 class="slide-title reveal">Equal rates do not undo each other</h2>
+<div class="grid-2">
+<div class="diagram-wrap reveal"><svg viewBox="0 0 520 320" aria-label="Percent bars showing 100 to 80 to 96"><text x="20" y="38" font-size="19" font-weight="700">Start: 100</text><rect x="20" y="55" width="460" height="54" rx="8" fill="#262626"/><text x="490" y="88" font-size="18" fill="#262626">100%</text><text x="20" y="148" font-size="19" font-weight="700">20% decrease: 80</text><rect x="20" y="165" width="368" height="54" rx="8" fill="#6a6a6a"/><rect x="388" y="165" width="92" height="54" rx="8" fill="#e5e7eb"/><text x="490" y="198" font-size="18">80%</text><text x="20" y="258" font-size="19" font-weight="700">20% increase on 80: 96</text><rect x="20" y="275" width="442" height="30" rx="8" fill="#858585"/><text x="470" y="298" font-size="18">96</text></svg></div>
+<div class="stack">
+<div class="formula-box reveal"><div class="math">100(0.80)(1.20) = 96</div></div>
+<div class="inquiry-card reveal"><div class="inquiry-title">Locate the changing base</div><div class="inquiry-body">The decrease is 20% of 100. The increase is 20% of what number? Why are those dollar changes unequal?</div></div>
+<div class="trap-card reveal"><div class="trap-title">SHSAT trap</div><div class="trap-body">Do not combine −20% and +20% as zero. Multiply the successive factors.</div></div>
+</div></div></div></section>
+<!-- 9 -->
+<section class="slide" data-slide="9"><div class="content">
+<div class="kicker reveal">Worked example · Level 4</div><h2 class="slide-title reveal">Reverse the chain instead of guessing backward</h2>
+<div class="prob-card reveal"><div class="prob-head"><span class="prob-num">Model B</span><span class="lvl-badge lvl-4">Level 4</span></div><div class="prose">After a 20% discount and then 5% tax, the final cost is $84. What was the original price?</div></div>
+<div class="grid-3" style="margin-top:.7rem">
+<div class="step-card reveal"><div class="step-num">1</div><div class="step-title">Build one factor</div><div class="step-body"><span class="math-inline">(0.80)(1.05) = 0.84</span>.</div></div>
+<div class="step-card reveal"><div class="step-num">2</div><div class="step-title">Write an equation</div><div class="step-body"><span class="math-inline">0.84P = 84</span>.</div></div>
+<div class="step-card reveal"><div class="step-num">3</div><div class="step-title">Undo multiplication</div><div class="step-body"><span class="math-inline">P = 84 ÷ 0.84 = 100</span>.</div></div>
+</div>
+<div class="win-card reveal" style="margin-top:.7rem"><div class="win-title">Fast check</div><div class="win-body">A combined multiplier below 1 means the original must exceed the final. The result passes that size check.</div></div>
+</div></section>
+<!-- 10 -->
+<section class="slide" data-slide="10"><div class="content">
+<div class="kicker reveal">Simple interest</div><h2 class="slide-title reveal">Interest grows from one fixed principal</h2>
+<div class="grid-2">
+<div class="stack">
+<div class="formula-box reveal"><div class="math">I = Prt</div><div class="prose">I = interest · P = principal · r = decimal annual rate · t = years</div></div>
+<div class="trap-card reveal"><div class="trap-title">Two conversions</div><div class="trap-body">A percent becomes a decimal. Months become a fraction of a year: <span class="math-inline">t = months ÷ 12</span>.</div></div>
+</div>
+<div class="diagram-wrap reveal"><svg viewBox="0 0 540 290" aria-label="Simple interest timeline"><line x1="60" y1="145" x2="480" y2="145" stroke="#4d4d4d" stroke-width="5"/><circle cx="70" cy="145" r="11" fill="#262626"/><circle cx="270" cy="145" r="11" fill="#6a6a6a"/><circle cx="470" cy="145" r="11" fill="#858585"/><text x="70" y="105" text-anchor="middle" font-size="19">0 years</text><text x="270" y="105" text-anchor="middle" font-size="19">1 year</text><text x="470" y="105" text-anchor="middle" font-size="19">2 years</text><text x="270" y="205" text-anchor="middle" font-size="21" font-weight="700">Each year adds Pr</text><text x="270" y="245" text-anchor="middle" font-size="17" fill="#767676">The principal P does not change in the formula.</text></svg></div>
+</div></div></section>
+<!-- 11 -->
+<section class="slide" data-slide="11"><div class="content">
+<div class="kicker reveal">Worked example · Level 3</div><h2 class="slide-title reveal">Months must enter the formula as years</h2>
+<div class="prob-card reveal"><div class="prob-head"><span class="prob-num">Model C</span><span class="lvl-badge lvl-3">Level 3</span></div><div class="prose">A $750 deposit earns 6% simple interest for 9 months. How much interest is earned?</div></div>
+<div class="grid-3" style="margin-top:.7rem">
+<div class="step-card reveal"><div class="step-num">1</div><div class="step-title">Convert</div><div class="step-body"><span class="math-inline">r = 0.06</span> and <span class="math-inline">t = 9/12 = 0.75</span>.</div></div>
+<div class="step-card reveal"><div class="step-num">2</div><div class="step-title">Substitute</div><div class="step-body"><span class="math-inline">I = 750(0.06)(0.75)</span>.</div></div>
+<div class="step-card reveal"><div class="step-num">3</div><div class="step-title">Name the quantity</div><div class="step-body"><span class="math-inline">I = 33.75</span>, the interest only.</div></div>
+</div>
+<div class="inquiry-card reveal" style="margin-top:.7rem"><div class="inquiry-title">Precision question</div><div class="inquiry-body">If the prompt asked for the account balance instead, what additional operation would be necessary?</div></div>
+</div></section>
+<!-- 12 -->
+<section class="slide" data-slide="12"><div class="content">
+<div class="kicker reveal">Digital response discipline</div><h2 class="slide-title reveal">Typed entry: answer exactly what is asked</h2>
+<div class="grid-3">
+<div class="info-card reveal"><h3>One value</h3><p class="prose">Do not enter an equation, explanation, list, unit, or percent symbol.</p></div>
+<div class="info-card reveal"><h3>Right quantity</h3><p class="prose">Interest is not total balance. Discount amount is not sale price.</p></div>
+<div class="info-card reveal"><h3>Final reread</h3><p class="prose">Before advancing, reread the final sentence and inspect the answer box.</p></div>
+</div>
+<div class="prob-card reveal" style="margin-top:.8rem"><div class="prob-head"><span class="prob-num">Entry rehearsal</span><span class="lvl-badge lvl-2">Typed Entry</span></div><div class="prose">A $90 jacket is discounted 20% and then taxed 5%. Enter the final cost.</div><div class="entry-row"><span class="entry-label">Your entry</span><input aria-label="Typed entry rehearsal" placeholder="one value"></div></div>
+</div></section>
+<!-- 13 -->
+<section class="slide" data-slide="13"><div class="content">
+<div class="zone-strip reveal"><span class="zone-chip on" style="--dc:#6a6a6a"><span class="zdot"></span>35–60 · Guided Practice</span><span class="zone-chip">Levels 1–4</span></div>
+<h2 class="slide-title reveal">The verbal checkpoint comes first</h2>
+<div class="grid-3">
+<div class="info-card reveal"><div class="prob-num">Before</div><p class="prose"><strong>State the multiplier chain.</strong><br>Example structure: decrease factor, then increase factor.</p></div>
+<div class="info-card reveal"><div class="prob-num">During</div><p class="prose"><strong>Estimate the direction.</strong><br>Should the result be above or below the starting value?</p></div>
+<div class="info-card reveal"><div class="prob-num">After</div><p class="prose"><strong>Name the format.</strong><br>One integer, decimal money amount, or fraction of a year?</p></div>
+</div>
+<div class="inquiry-card reveal" style="margin-top:.8rem"><div class="inquiry-title">Partner routine</div><div class="inquiry-body">One student asks the three checkpoints. The other solves. Switch roles after each slide.</div></div>
+</div></section>
+<!-- 14 -->
+<section class="slide" data-slide="14"><div class="content">
+<div class="kicker reveal">Levels 1–2</div><h2 class="slide-title reveal">Build clean multipliers</h2>
+<div class="grid-2">
+<div class="prob-card reveal"><div class="prob-head"><span class="prob-num">1</span><span class="lvl-badge lvl-1">Level 1</span></div><div class="prose">A $60 game is discounted 15%. What is the sale price?</div><div class="work-box"><textarea placeholder="Multiplier first"></textarea></div></div>
+<div class="prob-card reveal"><div class="prob-head"><span class="prob-num">2</span><span class="lvl-badge lvl-1">Level 1</span></div><div class="prose">A population of 200 increases by 7%. What is the new population?</div><div class="work-box"><textarea placeholder="Predict above or below 200"></textarea></div></div>
+<div class="prob-card reveal"><div class="prob-head"><span class="prob-num">3</span><span class="lvl-badge lvl-2">Level 2</span></div><div class="prose">Find the simple interest on $500 at 4% per year for 2 years.</div><div class="work-box"><textarea placeholder="I = Prt"></textarea></div></div>
+<div class="prob-card reveal"><div class="prob-head"><span class="prob-num">4</span><span class="lvl-badge lvl-2">Level 2</span></div><div class="prose">A $120 coat is discounted 20%, then taxed 6%. Enter the final cost.</div><div class="entry-row"><span class="entry-label">Entry</span><input placeholder="one value"></div></div>
+</div></div></section>
+<!-- 15 -->
+<section class="slide" data-slide="15"><div class="content">
+<div class="kicker reveal">Levels 2–3</div><h2 class="slide-title reveal">Track the base and the time unit</h2>
+<div class="grid-2">
+<div class="prob-card reveal"><div class="prob-head"><span class="prob-num">5</span><span class="lvl-badge lvl-2">Level 2</span></div><div class="prose">Find the simple interest on $900 at 3.5% for 8 months.</div><div class="work-box"><textarea placeholder="Convert both r and t"></textarea></div></div>
+<div class="prob-card reveal"><div class="prob-head"><span class="prob-num">6</span><span class="lvl-badge lvl-2">Level 2</span></div><div class="prose">A $400 device increases 10% and then decreases 10%. What is its final value?</div><div class="work-box"><textarea placeholder="Do not add the rates"></textarea></div></div>
+<div class="prob-card reveal"><div class="prob-head"><span class="prob-num">7</span><span class="lvl-badge lvl-3">Level 3</span></div><div class="prose">A $250 item is marked down 18%, then taxed 8.5%. A $20 rebate arrives later. What amount is paid at the register?</div><div class="work-box"><textarea placeholder="Underline the requested quantity"></textarea></div></div>
+<div class="prob-card reveal"><div class="prob-head"><span class="prob-num">8</span><span class="lvl-badge lvl-3">Level 3</span></div><div class="prose">A deposit earns $72 simple interest at 4.8% in 10 months. Find the principal.</div><div class="work-box"><textarea placeholder="Write an equation in P"></textarea></div></div>
+</div></div></section>
+<!-- 16 -->
+<section class="slide" data-slide="16"><div class="content">
+<div class="kicker reveal">Level 3</div><h2 class="slide-title reveal">Find the percent that restores the original</h2>
+<div class="grid-2">
+<div class="prob-card reveal"><div class="prob-head"><span class="prob-num">9</span><span class="lvl-badge lvl-3">Level 3</span></div><div class="prose">A price increases 25%. It is then discounted so the final price equals the original price. What percent discount was used?</div><div class="work-box"><textarea placeholder="Let the original be 100 or use an equation"></textarea></div></div>
+<div class="stack">
+<div class="inquiry-card reveal"><div class="inquiry-title">Choose a representation</div><div class="inquiry-body">Would an original value of 100 reveal the structure? What is the new base after the 25% increase?</div></div>
+<div class="trap-card reveal"><div class="trap-title">Tempting shortcut</div><div class="trap-body">A 25% decrease acts on the increased price, not on the original. Equal rates use unequal bases.</div></div>
+<div class="formula-box reveal"><div class="prose">Equation frame</div><div class="math">1.25(1 − d) = 1</div></div>
+</div></div></div></section>
+<!-- 17 -->
+<section class="slide" data-slide="17"><canvas class="particle-canvas"></canvas><div class="content">
+<div class="kicker reveal">Level 4 · Reading passage</div><h2 class="slide-title reveal">Separate checkout charges from later credits</h2>
+<div class="grid-2">
+<div class="passage-card reveal"><div class="passage-title">Metro Cycle Member Offer</div><div class="passage-text">A helmet is listed at $45. Members receive 30% off the listed price. Sales tax of 8.875% is applied to the discounted price. After the purchase, the member receives a $5 store reward for a future visit. The reward is not applied at checkout.</div></div>
+<div class="prob-card reveal"><div class="prob-head"><span class="prob-num">10</span><span class="lvl-badge lvl-4">Level 4</span></div><div class="prose">How much is charged at checkout? Enter one value rounded to the nearest cent.</div><div class="entry-row"><span class="entry-label">Entry</span><input placeholder="one value"></div><div class="inquiry-card" style="margin-top:.65rem"><div class="inquiry-title">Reading test</div><div class="inquiry-body">Which detail changes today’s charge? Which detail belongs to a later transaction?</div></div></div>
+</div></div></section>
+<!-- 18 -->
+<section class="slide" data-slide="18"><div class="content">
+<div class="kicker reveal">Level 4</div><h2 class="slide-title reveal">Compare offers without losing the order</h2>
+<div class="prob-card reveal"><div class="prob-head"><span class="prob-num">11</span><span class="lvl-badge lvl-4">Level 4</span></div><div class="prose">A $90 backpack has the same tax rate at both stores. Store A applies 20% off and then a $15 coupon. Store B applies the $15 coupon first and then 20% off. Which store has the lower pretax price, and by how much?</div></div>
+<div class="grid-2" style="margin-top:.75rem">
+<div class="formula-box reveal"><div class="prose">Store A frame</div><div class="math">90(0.80) − 15</div></div>
+<div class="formula-box reveal"><div class="prose">Store B frame</div><div class="math">(90 − 15)(0.80)</div></div>
+</div>
+<div class="inquiry-card reveal" style="margin-top:.75rem"><div class="inquiry-title">Structural shortcut</div><div class="inquiry-body">The same tax multiplier comes after either pretax result. Must you calculate tax to decide which offer is lower?</div></div>
+</div></section>
+<!-- 19 -->
+<section class="slide" data-slide="19"><div class="content">
+<div class="kicker reveal">Level 4</div><h2 class="slide-title reveal">Interest plus a bonus on interest only</h2>
+<div class="passage-card reveal"><div class="passage-title">Scholarship Fund Notice</div><div class="passage-text">A $2,400 scholarship fund earns 5% simple interest for 18 months. At the end of the term, a donor adds a bonus equal to 12% of the interest earned. The bonus is not calculated from the principal or the ending balance.</div></div>
+<div class="prob-card reveal" style="margin-top:.7rem"><div class="prob-head"><span class="prob-num">12</span><span class="lvl-badge lvl-4">Level 4</span></div><div class="prose">What is the combined amount of interest and donor bonus?</div><div class="work-box"><textarea placeholder="First find I; then identify the bonus base"></textarea></div></div>
+</div></section>
+<!-- 20 -->
+<section class="slide" data-slide="20"><div class="content">
+<div class="kicker reveal">Guided synthesis</div><h2 class="slide-title reveal">Choose the model from the wording</h2>
+<div class="grid-4">
+<div class="info-card reveal"><h3>“Off”</h3><p class="prose">Use a remaining-value multiplier: <span class="math-inline">1 − r</span>.</p></div>
+<div class="info-card reveal"><h3>“Taxed”</h3><p class="prose">Use a growth multiplier on the current price: <span class="math-inline">1 + r</span>.</p></div>
+<div class="info-card reveal"><h3>“Simple interest”</h3><p class="prose">Use <span class="math-inline">I = Prt</span>; time must be in years.</p></div>
+<div class="info-card reveal"><h3>“Original”</h3><p class="prose">Write an equation and divide by the entire chain.</p></div>
+</div>
+<div class="inquiry-card reveal" style="margin-top:.8rem"><div class="inquiry-title">Teach-back</div><div class="inquiry-body">Choose one guided problem. Explain why its model matches the nouns and verbs in the prompt—without computing.</div></div>
+</div></section>
+<!-- 21 -->
+<section class="slide" data-slide="21"><div class="content">
+<div class="zone-strip reveal"><span class="zone-chip on" style="--dc:#858585"><span class="zdot"></span>60–72 · CAT Drill</span><span class="zone-chip">10 items</span><span class="zone-chip">10 minutes</span></div>
+<h2 class="slide-title reveal">Commit-and-advance protocol</h2>
+<div class="grid-3">
+<div class="info-card reveal"><div class="prob-num">1</div><p class="prose">Read and underline the quantity requested.</p></div>
+<div class="info-card reveal"><div class="prob-num">2</div><p class="prose">At about 60 seconds, choose a path and execute it.</p></div>
+<div class="info-card reveal"><div class="prob-num">3</div><p class="prose">Before advancing, check format and reasonableness.</p></div>
+</div>
+<div class="trap-card reveal" style="margin-top:.8rem"><div class="trap-title">Digital rule</div><div class="trap-body">Only one item is visible. Once advanced, the item is finished. Record elapsed time after Item 5 and Item 10.</div></div>
+</div></section>
+<!-- 22 -->
+<section class="slide" data-slide="22"><div class="content"><div class="cat-top reveal"><span class="cat-q">CAT Drill · Item 1 of 10</span><span class="cat-rule">Commit before advancing</span></div><div class="prob-card reveal"><div class="prob-head"><span class="prob-num">1</span><span class="lvl-badge lvl-1">Level 1</span><span class="timer">Target 0:45</span></div><div class="math">What is 35% of 240?</div><div class="entry-row"><span class="entry-label">Entry</span><input placeholder="one value"></div></div></div></section>
+<!-- 23 -->
+<section class="slide" data-slide="23"><div class="content"><div class="cat-top reveal"><span class="cat-q">CAT Drill · Item 2 of 10</span><span class="cat-rule">No return</span></div><div class="prob-card reveal"><div class="prob-head"><span class="prob-num">2</span><span class="lvl-badge lvl-1">Level 1</span><span class="timer">Target 0:45</span></div><div class="prose">A $75 pair of shoes is discounted 12%. What is the sale price?</div><div class="entry-row"><span class="entry-label">Entry</span><input placeholder="one value"></div></div></div></section>
+<!-- 24 -->
+<section class="slide" data-slide="24"><div class="content"><div class="cat-top reveal"><span class="cat-q">CAT Drill · Item 3 of 10</span><span class="cat-rule">No return</span></div><div class="prob-card reveal"><div class="prob-head"><span class="prob-num">3</span><span class="lvl-badge lvl-2">Level 2</span><span class="timer">Target 0:55</span></div><div class="prose">A $90 jacket is discounted 20% and then taxed 5%. What is the final cost?</div><div class="entry-row"><span class="entry-label">Entry</span><input placeholder="one value"></div></div></div></section>
+<!-- 25 -->
+<section class="slide" data-slide="25"><div class="content"><div class="cat-top reveal"><span class="cat-q">CAT Drill · Item 4 of 10</span><span class="cat-rule">No return</span></div><div class="prob-card reveal"><div class="prob-head"><span class="prob-num">4</span><span class="lvl-badge lvl-2">Level 2</span><span class="timer">Target 1:00</span></div><div class="prose">How much simple interest does $600 earn at 5% per year for 30 months?</div><div class="entry-row"><span class="entry-label">Entry</span><input placeholder="interest only"></div></div></div></section>
+<!-- 26 -->
+<section class="slide" data-slide="26"><div class="content"><div class="cat-top reveal"><span class="cat-q">CAT Drill · Item 5 of 10</span><span class="cat-rule">Log elapsed time after this item</span></div><div class="prob-card reveal"><div class="prob-head"><span class="prob-num">5</span><span class="lvl-badge lvl-2">Level 2</span><span class="timer">Target 1:00</span></div><div class="prose">A value of 300 increases 20% and then decreases 20%. What is the final value?</div><div class="entry-row"><span class="entry-label">Entry</span><input placeholder="one value"></div></div></div></section>
+<!-- 27 -->
+<section class="slide" data-slide="27"><div class="content"><div class="cat-top reveal"><span class="cat-q">CAT Drill · Item 6 of 10</span><span class="cat-rule">No return</span></div><div class="prob-card reveal"><div class="prob-head"><span class="prob-num">6</span><span class="lvl-badge lvl-3">Level 3</span><span class="timer">Target 1:10</span></div><div class="prose">After a 15% discount and then a 20% tax, an item costs $153. What was its original price?</div><div class="entry-row"><span class="entry-label">Entry</span><input placeholder="one value"></div></div></div></section>
+<!-- 28 -->
+<section class="slide" data-slide="28"><div class="content"><div class="cat-top reveal"><span class="cat-q">CAT Drill · Item 7 of 10</span><span class="cat-rule">No return</span></div><div class="prob-card reveal"><div class="prob-head"><span class="prob-num">7</span><span class="lvl-badge lvl-3">Level 3</span><span class="timer">Target 1:05</span></div><div class="prose">An $800 principal earns $96 at 6% simple interest. For how many years was it invested?</div><div class="entry-row"><span class="entry-label">Entry</span><input placeholder="one value"></div></div></div></section>
+<!-- 29 -->
+<section class="slide" data-slide="29"><div class="content"><div class="cat-top reveal"><span class="cat-q">CAT Drill · Item 8 of 10</span><span class="cat-rule">Read the fee rule</span></div><div class="passage-card reveal"><div class="passage-title">Online Checkout</div><div class="passage-text">A $500 laptop receives a 10% promotional discount. Sales tax of 8% is applied to the discounted price. A $12 shipping fee is then added; the shipping fee is not taxed.</div></div><div class="prob-card reveal" style="margin-top:.55rem"><div class="prob-head"><span class="prob-num">8</span><span class="lvl-badge lvl-3">Level 3</span><span class="timer">Target 1:15</span></div><div class="prose">What is the final checkout total?</div><div class="entry-row"><span class="entry-label">Entry</span><input placeholder="one value"></div></div></div></section>
+<!-- 30 -->
+<section class="slide" data-slide="30"><div class="content"><div class="cat-top reveal"><span class="cat-q">CAT Drill · Item 9 of 10</span><span class="cat-rule">Compare multipliers</span></div><div class="prob-card reveal"><div class="prob-head"><span class="prob-num">9</span><span class="lvl-badge lvl-4">Level 4</span><span class="timer">Target 1:15</span></div><div class="prose">For the same original price, which offer gives the lower final price?</div><div class="mc-options"><div class="mc-option"><span class="opt-letter">A</span>40% off, then an additional 10% off</div><div class="mc-option"><span class="opt-letter">B</span>One discount of 50%</div><div class="mc-option"><span class="opt-letter">C</span>The offers are equal</div><div class="mc-option"><span class="opt-letter">D</span>Not enough information</div></div></div></div></section>
+<!-- 31 -->
+<section class="slide" data-slide="31"><div class="content"><div class="cat-top reveal"><span class="cat-q">CAT Drill · Item 10 of 10</span><span class="cat-rule">Log final elapsed time</span></div><div class="prob-card reveal"><div class="prob-head"><span class="prob-num">10</span><span class="lvl-badge lvl-4">Level 4</span><span class="timer">Target 1:20</span></div><div class="prose">A borrower receives $1,600 at 7.5% simple interest for 20 months. What total amount is owed at the end?</div><div class="mc-options"><div class="mc-option"><span class="opt-letter">A</span>$1,700</div><div class="mc-option"><span class="opt-letter">B</span>$1,760</div><div class="mc-option"><span class="opt-letter">C</span>$1,800</div><div class="mc-option"><span class="opt-letter">D</span>$1,840</div></div></div></div></section>
+<!-- 32 -->
+<section class="slide" data-slide="32"><div class="content">
+<div class="zone-strip reveal"><span class="zone-chip on" style="--dc:#5c5c5c"><span class="zdot"></span>72–75 · Debrief</span><span class="zone-chip">No answer key</span></div>
+<h2 class="slide-title reveal">Diagnose the process, not just the score</h2>
+<div class="grid-3">
+<div class="info-card reveal"><h3>Model</h3><p class="prose">Did you choose a chain, an equation, or <span class="math-inline">I = Prt</span> correctly?</p></div>
+<div class="info-card reveal"><h3>Execution</h3><p class="prose">Did decimal conversion, month conversion, or arithmetic break?</p></div>
+<div class="info-card reveal"><h3>Response</h3><p class="prose">Did you answer the requested quantity in the required format?</p></div>
+</div>
+<div class="inquiry-card reveal" style="margin-top:.8rem"><div class="inquiry-title">Select one item</div><div class="inquiry-body">Name the first decision that controlled the rest of your solution. If that decision was wrong, rewrite only that step.</div></div>
+</div></section>
+<!-- 33 -->
+<section class="slide" data-slide="33"><div class="content">
+<div class="zone-strip reveal"><span class="zone-chip on" style="--dc:#5c5c5c"><span class="zdot"></span>75–80 · Exit Ticket</span><span class="zone-chip">Goal: 4 of 5</span></div>
+<h2 class="slide-title reveal">Exit ticket · Items 1–3</h2>
+<div class="grid-3">
+<div class="prob-card reveal"><div class="prob-head"><span class="prob-num">1</span><span class="lvl-badge lvl-2">Chain</span></div><div class="prose">A $72 item is discounted 25%, then taxed 10%. Enter the final cost.</div><div class="entry-row"><input placeholder="one value"></div></div>
+<div class="prob-card reveal"><div class="prob-head"><span class="prob-num">2</span><span class="lvl-badge lvl-2">Interest</span></div><div class="prose">Find the simple interest on $1,000 at 3.6% for 15 months.</div><div class="entry-row"><input placeholder="one value"></div></div>
+<div class="prob-card reveal"><div class="prob-head"><span class="prob-num">3</span><span class="lvl-badge lvl-3">Reverse</span></div><div class="prose">After 20% off and 12.5% tax, the final cost is $90. Find the original price.</div><div class="entry-row"><input placeholder="one value"></div></div>
+</div></div></section>
+<!-- 34 -->
+<section class="slide" data-slide="34"><div class="content">
+<div class="zone-strip reveal"><span class="zone-chip on" style="--dc:#5c5c5c"><span class="zdot"></span>Exit Ticket</span><span class="zone-chip">Goal: 4 of 5</span></div>
+<h2 class="slide-title reveal">Exit ticket · Items 4–5</h2>
+<div class="grid-2">
+<div class="prob-card reveal"><div class="prob-head"><span class="prob-num">4</span><span class="lvl-badge lvl-3">Successive %</span></div><div class="prose">A value increases 50% and then decreases 40%. The original value was 200. What is the final value?</div><div class="entry-row"><input placeholder="one value"></div></div>
+<div class="prob-card reveal"><div class="prob-head"><span class="prob-num">5</span><span class="lvl-badge lvl-2">Statistics S3</span></div><div class="prose">A data set has range 14. Every value decreases by 9. What is the new range?</div><div class="entry-row"><input placeholder="one value"></div></div>
+</div>
+<div class="trap-card reveal" style="margin-top:.8rem"><div class="trap-title">Final scan</div><div class="trap-body">One value per box. No percent signs. No units. Answer the quantity named in the last sentence.</div></div>
+</div></section>
+<!-- 35 -->
+<section class="slide" data-slide="35"><canvas class="particle-canvas"></canvas><div class="content" style="text-align:center">
+<div class="hero-mark reveal" aria-hidden="true" style="width:120px;height:120px"><div class="hero-ring"></div><span style="font-size:2rem">×</span></div>
+<div class="kicker reveal">Session 4 complete</div><h1 class="deck-title reveal" style="font-size:clamp(2rem,5vw,3.4rem)">Translate. Chain. Check. Commit.</h1>
+<p class="prose reveal" style="max-width:760px;margin:.7rem auto 0">A percent change is a multiplier. A sequence of changes is a product. Simple interest uses one fixed principal. Digital accuracy depends on the final format check.</p>
+<div class="reveal" style="margin-top:1rem;display:flex;gap:.55rem;justify-content:center;flex-wrap:wrap"><span class="zone-chip">Discount → 1 − r</span><span class="zone-chip">Increase → 1 + r</span><span class="zone-chip">Interest → Prt</span></div>
+</div></section>
+</div>
+<div class="nav-controls"><button class="nav-btn" aria-label="Previous slide" onclick="changeSlide(-1)">&#8249;</button><div class="slide-dots" id="dots"></div><button class="nav-btn" aria-label="Next slide" onclick="changeSlide(1)">&#8250;</button><span class="slide-counter" id="counter">1 / 35</span></div>
+<script>
+let current=1;const slides=[...document.querySelectorAll('.slide')],total=slides.length,dots=document.getElementById('dots'),counter=document.getElementById('counter');
+slides.forEach((s,i)=>{if(!s.querySelector('.gradient-mesh')){const m=document.createElement('div');m.className='gradient-mesh';m.innerHTML='<div class="blob b1"></div><div class="blob b2"></div>'+(i===0||i===16||i===34?'<div class="blob b3"></div>':'');s.prepend(m)}const d=document.createElement('div');d.className='dot'+(i===0?' active':'');d.onclick=()=>goToSlide(i+1);dots.appendChild(d)});
+function animateSlide(slide){slide.querySelectorAll('.reveal').forEach((el,i)=>{el.style.transition='none';el.style.opacity='0';el.style.transform='translateY(16px)';el.offsetHeight;el.style.transition=`opacity .32s ease ${i*.045}s,transform .32s ease ${i*.045}s`;el.style.opacity='1';el.style.transform='translateY(0)'})}
+function goToSlide(n){document.querySelector('.slide.active')?.classList.remove('active');const s=document.querySelector(`.slide[data-slide="${n}"]`);s.classList.add('active');current=n;[...dots.children].forEach((d,i)=>d.classList.toggle('active',i===n-1));counter.textContent=`${n} / ${total}`;animateSlide(s)}
+function changeSlide(dir){let n=current+dir;if(n<1)n=total;if(n>total)n=1;goToSlide(n)}
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();changeSlide(1)}if(e.key==='ArrowLeft'){e.preventDefault();changeSlide(-1)}});let tx=0;document.addEventListener('touchstart',e=>tx=e.touches[0].clientX);document.addEventListener('touchend',e=>{const diff=tx-e.changedTouches[0].clientX;if(Math.abs(diff)>50)changeSlide(diff>0?1:-1)});
+document.querySelectorAll('.mc-option').forEach(o=>o.addEventListener('click',()=>{o.closest('.mc-options').querySelectorAll('.mc-option').forEach(x=>x.classList.remove('selected'));o.classList.add('selected')}));
+function initParticles(c){const ctx=c.getContext('2d');function size(){c.width=c.clientWidth;c.height=c.clientHeight}size();const ps=Array.from({length:28},()=>({x:Math.random()*c.width,y:Math.random()*c.height,vx:(Math.random()-.5)*.22,vy:(Math.random()-.5)*.22,r:Math.random()*2+1}));(function draw(){ctx.clearRect(0,0,c.width,c.height);ctx.fillStyle='rgba(38,38,38,.24)';ps.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.x<0)p.x=c.width;if(p.x>c.width)p.x=0;if(p.y<0)p.y=c.height;if(p.y>c.height)p.y=0;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill()});requestAnimationFrame(draw)})()}document.querySelectorAll('.particle-canvas').forEach(initParticles);animateSlide(document.querySelector('.slide.active'));
+</script>
+</body>
+</html>
