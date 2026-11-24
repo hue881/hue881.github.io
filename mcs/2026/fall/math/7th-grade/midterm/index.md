@@ -1,8 +1,10 @@
 # MCS Grade 7 SHSAT Math Midterm: Annotated Answer Key
 
+
 Companion to the attached Full-Length Math Module (Sessions 1–7 Cumulative Assessment): 50 core questions plus 4 very difficult bonus questions. Each entry identifies the answer, tested topic, and a brief solution. Questions **6, 10, 15, 20, 27, 33, 35, 37, 40, 46, and 48** are numeric-entry responses; question **26** is a fraction entry; questions **14, 31, 44, and 50** are select-all items, which earn credit only for the complete correct set with no extra choices; the others are select-one multiple choice. Bonus questions **51–54** are numeric entry and are scored separately from the core.
 
 ## Section 1: Questions 1–25
+
 
 | # | Answer | Topic | Brief solution |
 |---:|---|---|---|
